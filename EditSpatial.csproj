@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EditSpatial</RootNamespace>
+    <AssemblyName>EditSpatial</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>ICON_EditSpatial.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>3rdParty\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="libSbl2SBML">
+      <HintPath>3rdParty\libSbl2SBML.dll</HintPath>
+    </Reference>
+    <Reference Include="libsbmlcsP, Version=5.9.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>3rdParty\libsbmlcsP.dll</HintPath>
+    </Reference>
+    <Reference Include="mathLibrary">
+      <HintPath>3rdParty\mathLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="SBMLSupport">
+      <HintPath>3rdParty\SBMLSupport.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="uScanner">
+      <HintPath>3rdParty\uScanner.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\BaseSpatialControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BaseSpatialControl.Designer.cs">
+      <DependentUpon>BaseSpatialControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlCoordinateComponent.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlCoordinateComponent.Designer.cs">
+      <DependentUpon>ControlCoordinateComponent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlCoordinateComponents.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlCoordinateComponents.Designer.cs">
+      <DependentUpon>ControlCoordinateComponents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlDomainTypes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlDomainTypes.Designer.cs">
+      <DependentUpon>ControlDomainTypes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlDomains.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlDomains.Designer.cs">
+      <DependentUpon>ControlDomains.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlAjacentDomains.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlAjacentDomains.Designer.cs">
+      <DependentUpon>ControlAjacentDomains.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlAnalyticGeometry.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlAnalyticGeometry.Designer.cs">
+      <DependentUpon>ControlAnalyticGeometry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlSampleFieldGeometry.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlSampleFieldGeometry.Designer.cs">
+      <DependentUpon>ControlSampleFieldGeometry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlDisplayNode.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlDisplayNode.Designer.cs">
+      <DependentUpon>ControlDisplayNode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ControlText.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlText.Designer.cs">
+      <DependentUpon>ControlText.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormErrors.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormErrors.Designer.cs">
+      <DependentUpon>FormErrors.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\SpatialModel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
+    <EmbeddedResource Include="Controls\ControlCoordinateComponent.resx">
+      <DependentUpon>ControlCoordinateComponent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlCoordinateComponents.resx">
+      <DependentUpon>ControlCoordinateComponents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlDomainTypes.resx">
+      <DependentUpon>ControlDomainTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlDomains.resx">
+      <DependentUpon>ControlDomains.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlAjacentDomains.resx">
+      <DependentUpon>ControlAjacentDomains.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlAnalyticGeometry.resx">
+      <DependentUpon>ControlAnalyticGeometry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlSampleFieldGeometry.resx">
+      <DependentUpon>ControlSampleFieldGeometry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlDisplayNode.resx">
+      <DependentUpon>ControlDisplayNode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlText.resx">
+      <DependentUpon>ControlText.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormErrors.resx">
+      <DependentUpon>FormErrors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ICON_EditSpatial.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IMAGE_NoGeomery.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
