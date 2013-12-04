@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
+using SBW.Utils;
 
 namespace EditSpatial
 {
@@ -28,10 +29,25 @@ namespace EditSpatial
     public SpatialModel Model { get; set; }
     public FormErrors ErrorForm { get; set; }
 
+    private SBWMenu menu;
+    private SBWFavorites favs;
+
     public MainForm()
     {
       InitializeComponent();
       ErrorForm = new FormErrors();
+      menu = new SBWMenu(mnuSBW, "Edit Spatial", () =>
+      {
+        if (Model == null) return "";
+        if (Model.Document == null) return "";
+        return libsbml.writeSBMLToString(Model.Document);
+      });
+      favs = new SBWFavorites(() =>
+      {
+        if (Model == null) return "";
+        if (Model.Document == null) return "";
+        return libsbml.writeSBMLToString(Model.Document);
+      }, toolStrip1);
       NewModel();
     }
 
@@ -394,6 +410,24 @@ namespace EditSpatial
     private void OnLoad(object sender, EventArgs e)
     {
       ReadSettings();
+
+      bool remove = false;
+      try
+      {
+        favs.Update();
+        menu.UpdateSBWMenu();
+      }
+      catch
+      {
+        remove = true;
+      }
+
+      if (remove || mnuSBW.DropDownItems.Count == 0)
+      {
+        favs.RemoveFromToolStrip();
+        mnuSBW.Visible = false;
+      }
+
     }
 
     public void ReadSettings()

@@ -51,6 +51,9 @@
     <Reference Include="SBMLSupport">
       <HintPath>3rdParty\SBMLSupport.dll</HintPath>
     </Reference>
+    <Reference Include="SBWCSharp">
+      <HintPath>3rdParty\SBWCSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
