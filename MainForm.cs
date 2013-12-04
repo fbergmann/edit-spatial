@@ -346,6 +346,10 @@ namespace EditSpatial
       {
         ShowErrors();
       }
+      else
+      {
+        ErrorForm.Hide();
+      }
     }
 
     private void ShowErrors()
