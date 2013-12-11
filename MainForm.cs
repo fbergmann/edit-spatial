@@ -29,8 +29,8 @@ namespace EditSpatial
     public SpatialModel Model { get; set; }
     public FormErrors ErrorForm { get; set; }
 
-    private SBWMenu menu;
-    private SBWFavorites favs;
+    private readonly SBWMenu menu;
+    private readonly SBWFavorites favs;
 
     public MainForm()
     {
@@ -337,10 +337,26 @@ namespace EditSpatial
       OpenFile(dialog.FileName);
     }
 
-    public void OpenFile(string fileName)
+    public void LoadFromString(string content)
+    {      
+      OpenModel(SpatialModel.FromString(content));
+    }
+
+    public void LoadFromJarnac(string content)
     {
-      Model = SpatialModel.FromFile(fileName);      
+      OpenModel(SpatialModel.FromJarnac(content));
+    }
+
+    public void OpenFile(string fileName)
+    {      
+      OpenModel(SpatialModel.FromFile(fileName));
+    }
+
+    private void OpenModel(SpatialModel model)
+    {
+      Model = model;
       UpdateUI();
+
 
       if (Model != null && Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {
@@ -349,6 +365,35 @@ namespace EditSpatial
       else
       {
         ErrorForm.Hide();
+      }
+
+      if (Model != null && !Model.IsSpatial)
+      {
+        var dialog = new FormInitSpatial();
+        dialog.SpatialModel = Model;
+        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+          var selection = dialog.CreateModel;
+
+          if (!Model.ConvertToSpatial(
+            // spatial elements
+            (from s in selection.Species select s.Id).ToList()
+            ,
+            // intial conditions
+            (from s in selection.Species
+              select
+                new Tuple<string, string>(s.Id, s.InitialCondition)).ToList(),
+            // geometry
+            null
+            ))
+          {
+            ShowErrors();
+          }
+          else
+          {
+            UpdateUI();
+          }
+        }
       }
     }
 
@@ -464,6 +509,11 @@ namespace EditSpatial
     private void OnShowWarnings(object sender, EventArgs e)
     {
       ShowErrors();
+    }
+
+    private void OnApplyJarnacClick(object sender, EventArgs e)
+    {
+      LoadFromJarnac(txtJarnac.Text);
     }
   }
 }

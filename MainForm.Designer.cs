@@ -56,7 +56,10 @@
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.controlDisplayNode2 = new EditSpatial.Controls.ControlDisplayNode();
       this.tabPage3 = new System.Windows.Forms.TabPage();
+      this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.txtJarnac = new EditSpatial.Controls.ControlText();
+      this.panel1 = new System.Windows.Forms.Panel();
+      this.cmdApplyJarnac = new System.Windows.Forms.Button();
       this.tabPage4 = new System.Windows.Forms.TabPage();
       this.txtSBML = new EditSpatial.Controls.ControlText();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -78,6 +81,7 @@
       this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
       this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.mnuSBW = new System.Windows.Forms.ToolStripMenuItem();
       this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.showWarningsErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,7 +97,6 @@
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.mnuSBW = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -110,6 +113,8 @@
       this.splitInitial.Panel2.SuspendLayout();
       this.splitInitial.SuspendLayout();
       this.tabPage3.SuspendLayout();
+      this.tableLayoutPanel1.SuspendLayout();
+      this.panel1.SuspendLayout();
       this.tabPage4.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.toolStrip1.SuspendLayout();
@@ -351,7 +356,7 @@
       // 
       // tabPage3
       // 
-      this.tabPage3.Controls.Add(this.txtJarnac);
+      this.tabPage3.Controls.Add(this.tableLayoutPanel1);
       this.tabPage3.Location = new System.Drawing.Point(4, 22);
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -359,6 +364,21 @@
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "Model";
       this.tabPage3.UseVisualStyleBackColor = true;
+      // 
+      // tableLayoutPanel1
+      // 
+      this.tableLayoutPanel1.ColumnCount = 1;
+      this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel1.Controls.Add(this.txtJarnac, 0, 0);
+      this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 1);
+      this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+      this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+      this.tableLayoutPanel1.RowCount = 2;
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+      this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(591, 358);
+      this.tableLayoutPanel1.TabIndex = 1;
       // 
       // txtJarnac
       // 
@@ -369,9 +389,28 @@
       this.txtJarnac.Multiline = true;
       this.txtJarnac.Name = "txtJarnac";
       this.txtJarnac.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.txtJarnac.Size = new System.Drawing.Size(591, 358);
+      this.txtJarnac.Size = new System.Drawing.Size(585, 323);
       this.txtJarnac.TabIndex = 0;
       this.txtJarnac.WordWrap = false;
+      // 
+      // panel1
+      // 
+      this.panel1.Controls.Add(this.cmdApplyJarnac);
+      this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.panel1.Location = new System.Drawing.Point(3, 332);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(585, 23);
+      this.panel1.TabIndex = 1;
+      // 
+      // cmdApplyJarnac
+      // 
+      this.cmdApplyJarnac.Location = new System.Drawing.Point(3, 0);
+      this.cmdApplyJarnac.Name = "cmdApplyJarnac";
+      this.cmdApplyJarnac.Size = new System.Drawing.Size(75, 23);
+      this.cmdApplyJarnac.TabIndex = 0;
+      this.cmdApplyJarnac.Text = "&Apply";
+      this.cmdApplyJarnac.UseVisualStyleBackColor = true;
+      this.cmdApplyJarnac.Click += new System.EventHandler(this.OnApplyJarnacClick);
       // 
       // tabPage4
       // 
@@ -561,6 +600,12 @@
       this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.selectAllToolStripMenuItem.Text = "Select &All";
       // 
+      // mnuSBW
+      // 
+      this.mnuSBW.Name = "mnuSBW";
+      this.mnuSBW.Size = new System.Drawing.Size(43, 20);
+      this.mnuSBW.Text = "S&BW";
+      // 
       // modelToolStripMenuItem
       // 
       this.modelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -700,12 +745,6 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // mnuSBW
-      // 
-      this.mnuSBW.Name = "mnuSBW";
-      this.mnuSBW.Size = new System.Drawing.Size(43, 20);
-      this.mnuSBW.Text = "S&BW";
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -737,7 +776,9 @@
       ((System.ComponentModel.ISupportInitialize)(this.splitInitial)).EndInit();
       this.splitInitial.ResumeLayout(false);
       this.tabPage3.ResumeLayout(false);
-      this.tabPage3.PerformLayout();
+      this.tableLayoutPanel1.ResumeLayout(false);
+      this.tableLayoutPanel1.PerformLayout();
+      this.panel1.ResumeLayout(false);
       this.tabPage4.ResumeLayout(false);
       this.tabPage4.PerformLayout();
       this.menuStrip1.ResumeLayout(false);
@@ -806,6 +847,9 @@
     private System.Windows.Forms.ToolStripMenuItem modelToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem showWarningsErrorsToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem mnuSBW;
+    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+    private System.Windows.Forms.Panel panel1;
+    private System.Windows.Forms.Button cmdApplyJarnac;
   }
 }
 

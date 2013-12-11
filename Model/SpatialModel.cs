@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using libSbl2SBML;
 using libsbmlcs;
+using SBMLSupport;
 
 namespace EditSpatial.Model
 {
@@ -53,6 +55,15 @@ namespace EditSpatial.Model
 
       };
       return model;
+    }
+
+    public static SpatialModel FromJarnac(string content)
+    {
+      NOM.Namespaces = new List<string>();      
+      TModel model = TModel.ReadModel(content);
+      model.RemoveAnnotation();
+      model.RemoveNotes();
+      return FromString(model.toSBML(false));
     }
 
     public static SpatialModel FromString(string content)
@@ -190,10 +201,7 @@ namespace EditSpatial.Model
                 }
               }
             }
-            else
-            {
-              Debug.WriteLine(message);
-            }
+
             break;
           }
 
@@ -204,6 +212,247 @@ namespace EditSpatial.Model
 
       }
       Document.getErrorLog().clearLog();
+    }
+
+    public bool ConvertToSpatial(List<string> spatialElements, List<Tuple<string, string>> initialConditions, object geometryDescription)
+    {
+      if (Document == null) return true;
+
+      if (!Document.setLevelAndVersion(3, 1))
+        return false;
+
+      var result = Document.enablePackage(SpatialExtension.getXmlnsL3V1V1(), "spatial", true);
+      Document.setPackageRequired("spatial", true);
+      result = Document.enablePackage(RequiredElementsExtension.getXmlnsL3V1V1(), "req", true);
+      Document.setPackageRequired("req", false);
+
+      var model = Document.getModel();
+      var plugin = (SpatialModelPlugin) model.getPlugin("spatial");
+      if (plugin == null)
+        return false;
+      var geometry = plugin.getGeometry();
+      if (geometry == null)
+        return false;
+
+      // create coordinate components
+      geometry.setCoordinateSystem("Cartesian");
+      var coord = geometry.createCoordinateComponent();
+      coord.setSpatialId("x");
+      coord.setSbmlUnit("um");
+      coord.setComponentType("cartesianX");
+      coord.setIndex(0);
+      var min = coord.createBoundaryMin();
+      min.setSpatialId("Xmin");
+      min.setValue(0);
+      var max = coord.createBoundaryMax();
+      max.setSpatialId("Xmax");
+      max.setValue(100);
+
+      coord = geometry.createCoordinateComponent();
+      coord.setSpatialId("y");
+      coord.setSbmlUnit("um");
+      coord.setComponentType("cartesianY");
+      coord.setIndex(1);
+      min = coord.createBoundaryMin();
+      min.setSpatialId("Ymin");
+      min.setValue(0);
+      max = coord.createBoundaryMax();
+      max.setSpatialId("Ymax");
+      max.setValue(100);
+
+      var param = model.createParameter();
+      param.initDefaults();
+      param.setId("x");
+      param.setValue(0);
+      var pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+      var symbol = pplug.getSpatialSymbolReference();
+      symbol.setSpatialId("x");
+      symbol.setType("coordinateComponent");      
+      SetRequiredElements(param);
+
+      param = model.createParameter();
+      param.initDefaults();
+      param.setId("y");
+      param.setValue(0);
+      pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+      symbol = pplug.getSpatialSymbolReference();
+      symbol.setSpatialId("y");
+      symbol.setType("coordinateComponent");
+      SetRequiredElements(param);
+
+
+
+      if (model.getNumCompartments() == 1)
+      {
+
+        var domainType = geometry.createDomainType();
+        domainType.setSpatialId("domainType0");
+        domainType.setSpatialDimensions(3);
+
+        var domain = geometry.createDomain();
+        domain.setSpatialId("domain0");
+        domain.setDomainType("domainType0");
+        var point = domain.createInteriorPoint();
+        point.setCoord1(50);
+        point.setCoord2(50);
+        point.setCoord3(0);
+
+        var def = geometry.createAnalyticGeometry();
+        def.setSpatialId("geometry");
+        var vol = def.createAnalyticVolume();
+        vol.setSpatialId("vol0");
+        vol.setDomainType("domainType0");
+        vol.setFunctionType("layered");
+        vol.setOrdinal(0);
+        vol.setMath(libsbml.parseFormula("1"));
+
+        var comp = model.getCompartment(0);
+        var cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+        if (cplug == null)
+          return false;
+
+        var map = cplug.getCompartmentMapping();
+        map.setSpatialId("mapping0");
+        map.setCompartment(comp.getId());
+        map.setDomainType(domainType.getSpatialId());
+        map.setUnitSize(1);
+
+      }
+
+      for (int i = 0; i < model.getNumSpecies(); i++)
+      {
+        var species = model.getSpecies(i);
+        var splug = (SpatialSpeciesRxnPlugin)species.getPlugin("spatial");
+        if (splug == null) continue;
+        splug.setIsSpatial(false);
+        var id = species.getId();
+        if (spatialElements.Contains(id))
+        {
+          splug.setIsSpatial(true);
+          SetRequiredElements(species);
+
+          param = model.createParameter();
+          param.initDefaults();
+          param.setId(id + "_diff_X");
+          param.setValue(0.01);
+          pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+          var diff = pplug.getDiffusionCoefficient();
+          diff.setVariable(id);
+          diff.setCoordinateIndex(0);
+          SetRequiredElements(param);
+
+          param = model.createParameter();
+          param.initDefaults();
+          param.setId(id + "_diff_Y");
+          param.setValue(0.01);
+          pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+          diff = pplug.getDiffusionCoefficient();
+          diff.setVariable(id);
+          diff.setCoordinateIndex(1);
+          SetRequiredElements(param);
+
+          param = model.createParameter();
+          param.initDefaults();
+          param.setId(id + "_BC_Xmin");
+          param.setValue(0);
+          pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+          var bc = pplug.getBoundaryCondition();
+          bc.setVariable(id);
+          bc.setCoordinateBoundary("Xmin");
+          bc.setType("Flux");
+          SetRequiredElements(param);
+
+          param = model.createParameter();
+          param.initDefaults();
+          param.setId(id + "_BC_Xmax");
+          param.setValue(0);
+          pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+          bc = pplug.getBoundaryCondition();
+          bc.setVariable(id);
+          bc.setCoordinateBoundary("Xmax");
+          bc.setType("Flux");
+          SetRequiredElements(param);
+
+          param = model.createParameter();
+          param.initDefaults();
+          param.setId(id + "_BC_Ymin");
+          param.setValue(0);
+          pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+          bc = pplug.getBoundaryCondition();
+          bc.setVariable(id);
+          bc.setCoordinateBoundary("Ymin");
+          bc.setType("Flux");
+          SetRequiredElements(param);
+
+          param = model.createParameter();
+          param.initDefaults();
+          param.setId(id + "_BC_Ymax");
+          param.setValue(0);
+          pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+          bc = pplug.getBoundaryCondition();
+          bc.setVariable(id);
+          bc.setCoordinateBoundary("Ymax");
+          bc.setType("Flux");
+          SetRequiredElements(param);
+
+        }
+      }
+
+      for (int i = 0; i < model.getNumReactions(); i++)
+      {
+        var reaction = model.getReaction(i);
+        var rplug = (SpatialSpeciesRxnPlugin) reaction.getPlugin("spatial");
+        if (rplug == null) continue;
+        SetRequiredElements(reaction);
+        rplug.setIsLocal( GetSpeciesReferenceIdsContainedIn(reaction, spatialElements).Count > 0);
+      }
+
+      return true;
+
+    }
+
+    private List<string> GetSpeciesReferenceIdsContainedIn(Reaction reaction, List<string> spatialElements)
+    {
+      var result = new List<string>();
+      if (reaction == null || reaction.getSBMLDocument() == null) return result;
+      var model = reaction.getSBMLDocument().getModel();
+      if (model == null) return result;
+      for (int i = 0; i < reaction.getNumReactants(); ++i)
+      {
+        var current = reaction.getReactant(i);
+        var id = current.getSpecies();
+        var plug = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
+        var isSpatial = plug != null && plug.getIsSpatial();
+        if (isSpatial && !result.Contains(id))
+          result.Add(id);
+      }
+      for (int i = 0; i < reaction.getNumProducts(); ++i)
+      {
+        var current = reaction.getProduct(i);
+        var id = current.getSpecies();
+        var plug = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
+        var isSpatial = plug != null && plug.getIsSpatial();
+        if (isSpatial && !result.Contains(id))
+          result.Add(id);
+      }
+      for (int i = 0; i < reaction.getNumModifiers(); ++i)
+      {
+        var current = reaction.getModifier(i);
+        var id = current.getSpecies();
+        var plug = (SpatialSpeciesRxnPlugin)model.getSpecies(id).getPlugin("spatial");
+        var isSpatial = plug != null && plug.getIsSpatial();
+        if (isSpatial && !result.Contains(id))
+          result.Add(id);
+      }
+      return result;
+    }
+
+    private static void SetRequiredElements(SBase sbase)
+    {
+      var req = (RequiredElementsSBasePlugin) sbase.getPlugin("req");
+      if (req == null) return;
+      req.setCoreHasAlternateMath(true);
+      req.setMathOverridden("spatial");
     }
   }
 }

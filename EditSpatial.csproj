@@ -141,12 +141,19 @@
     <Compile Include="FormErrors.Designer.cs">
       <DependentUpon>FormErrors.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormInitSpatial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormInitSpatial.Designer.cs">
+      <DependentUpon>FormInitSpatial.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\CreateModel.cs" />
     <Compile Include="Model\SpatialModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -183,6 +190,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormErrors.resx">
       <DependentUpon>FormErrors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormInitSpatial.resx">
+      <DependentUpon>FormInitSpatial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

@@ -36,7 +36,7 @@ namespace EditSpatial.Controls
           builder.Append(";");
           builder.Append(current.getCoord2());
           builder.Append(";");
-          builder.Append(current.getCoord2());
+          builder.Append(current.getCoord3());
           builder.Append(")");
           if (j+1 < domain.getNumInteriorPoints())
             builder.Append(", ");
@@ -76,16 +76,19 @@ namespace EditSpatial.Controls
 
     private List<Tuple<double,double,double>> GetPoints(string value)
     {
-      var result = new List<Tuple<double, double, double>>();
-      var points = value.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
-      foreach (var point in points)
-      {
-        var coords = point.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-        if (coords.Length != 3) continue;
-        result.Add(new Tuple<double, double, double>(
-          Util.SaveDouble(coords[0]), Util.SaveDouble(coords[1]), Util.SaveDouble(coords[2])));
-      }
-      return result;
+      value = value.Replace("(", "");
+      value = value.Replace(")", "");
+      var points = value.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+      return (from point in points 
+              select point.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries) 
+              into coords 
+              where coords.Length == 3 
+              select 
+              new Tuple<double, double, double>
+                (Util.SaveDouble(coords[0]), 
+                 Util.SaveDouble(coords[1]), 
+                 Util.SaveDouble(coords[2])))
+             .ToList();
     }
 
     public override void InvalidateSelection()
