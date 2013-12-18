@@ -14,7 +14,7 @@ using SBW.Utils;
 
 namespace EditSpatial
 {
-  public partial class MainForm : Form
+  public partial class MainForm : Form, ISBWAnalyzer
   {
     private const string NODE_COORDINATES = "nodeCoordinateComponents";
     private const string NODE_DOMAINTYPES = "nodeOfDomainTypes";
@@ -514,6 +514,18 @@ namespace EditSpatial
     private void OnApplyJarnacClick(object sender, EventArgs e)
     {
       LoadFromJarnac(txtJarnac.Text);
+    }
+
+    public void doAnalysis(string model)
+    {
+      if (this.InvokeRequired)
+      {
+        Invoke(new doAnalysisDelegate(doAnalysis), model);
+      }
+      else
+      {
+        LoadFromString(model);
+      }
     }
   }
 }

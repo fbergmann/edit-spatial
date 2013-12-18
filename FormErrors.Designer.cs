@@ -31,12 +31,12 @@
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormErrors));
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.cmdFixCommon = new System.Windows.Forms.Button();
       this.cmdClose = new System.Windows.Forms.Button();
       this.cmdValidate = new System.Windows.Forms.Button();
       this.panel2 = new System.Windows.Forms.Panel();
       this.label1 = new System.Windows.Forms.Label();
       this.controlText1 = new EditSpatial.Controls.ControlText();
-      this.cmdFixCommon = new System.Windows.Forms.Button();
       this.tableLayoutPanel1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.panel2.SuspendLayout();
@@ -69,6 +69,16 @@
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(618, 28);
       this.panel1.TabIndex = 0;
+      // 
+      // cmdFixCommon
+      // 
+      this.cmdFixCommon.Location = new System.Drawing.Point(84, 3);
+      this.cmdFixCommon.Name = "cmdFixCommon";
+      this.cmdFixCommon.Size = new System.Drawing.Size(107, 23);
+      this.cmdFixCommon.TabIndex = 2;
+      this.cmdFixCommon.Text = "&Fix Common Errors";
+      this.cmdFixCommon.UseVisualStyleBackColor = true;
+      this.cmdFixCommon.Click += new System.EventHandler(this.OnFixCommonErrors);
       // 
       // cmdClose
       // 
@@ -124,16 +134,6 @@
       this.controlText1.TabIndex = 2;
       this.controlText1.WordWrap = false;
       // 
-      // cmdFixCommon
-      // 
-      this.cmdFixCommon.Location = new System.Drawing.Point(84, 3);
-      this.cmdFixCommon.Name = "cmdFixCommon";
-      this.cmdFixCommon.Size = new System.Drawing.Size(107, 23);
-      this.cmdFixCommon.TabIndex = 2;
-      this.cmdFixCommon.Text = "&Fix Common Errors";
-      this.cmdFixCommon.UseVisualStyleBackColor = true;
-      this.cmdFixCommon.Click += new System.EventHandler(this.OnFixCommonErrors);
-      // 
       // FormErrors
       // 
       this.AcceptButton = this.cmdClose;
@@ -146,6 +146,7 @@
       this.MinimumSize = new System.Drawing.Size(400, 400);
       this.Name = "FormErrors";
       this.Text = "Errors & Warnings";
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormErrors_FormClosing);
       this.tableLayoutPanel1.ResumeLayout(false);
       this.tableLayoutPanel1.PerformLayout();
       this.panel1.ResumeLayout(false);

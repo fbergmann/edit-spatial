@@ -147,6 +147,7 @@
     <Compile Include="FormInitSpatial.Designer.cs">
       <DependentUpon>FormInitSpatial.cs</DependentUpon>
     </Compile>
+    <Compile Include="ISBWAnalyzer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

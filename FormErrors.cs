@@ -40,8 +40,6 @@ namespace EditSpatial
     private void ReValidate()
     {
       if (Model == null || Model.Document == null) return;
-      Model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
-      Model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
       Model.Document.checkInternalConsistency();
       InitializeFrom(Model);
     }
@@ -85,6 +83,12 @@ namespace EditSpatial
       if (Model == null) return;
       Model.FixCommonErrors();
       ReValidate();
+    }
+
+    private void FormErrors_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      e.Cancel = true;
+      Hide();
     }
   }
 }
