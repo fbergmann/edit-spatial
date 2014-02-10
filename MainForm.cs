@@ -25,6 +25,8 @@ namespace EditSpatial
     private const string NODE_SPECIES = "nodeSpecies";
     private const string NODE_PARAMETERS = "nodeParameters";
     private const string NODE_REACTIONS = "nodeReactions";
+    private const string NODE_RULES = "nodeRules";
+    private const string NODE_INITIAL_ASSIGNMENTS = "nodeInitialAssignments";
     
     public SpatialModel Model { get; set; }
     public FormErrors ErrorForm { get; set; }
@@ -225,6 +227,22 @@ namespace EditSpatial
       {
         var current = model.getReaction(i);
         var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
+        root.Nodes.Add(node);
+      }
+      root = treeView2.Nodes[NODE_RULES];
+      root.Nodes.Clear();
+      for (long i = 0; i < model.getNumRules(); ++i)
+      {
+        var current = model.getRule(i);
+        var node = new TreeNode(current.getId()) { Tag = current.toSBML() };
+        root.Nodes.Add(node);
+      }
+      root = treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
+      root.Nodes.Clear();
+      for (long i = 0; i < model.getNumInitialAssignments(); ++i)
+      {
+        var current = model.getInitialAssignment(i);
+        var node = new TreeNode(current.getId()) { Tag = current.toSBML() };
         root.Nodes.Add(node);
       }
     }
@@ -526,6 +544,26 @@ namespace EditSpatial
       {
         LoadFromString(model);
       }
+    }
+
+    private void OnExportClick(object sender, EventArgs e)
+    {
+      var dialog = new SaveFileDialog
+      {
+        Title = "Save Morpheus Configuration File",
+        Filter = "Configuration file|*.xml|All files|*.*",
+        AutoUpgradeEnabled = true
+      };
+
+      if (dialog.ShowDialog() != DialogResult.OK)
+        return;
+
+      ExportMorpheusFile(dialog.FileName);
+    }
+
+    public void ExportMorpheusFile(string fileName)
+    {
+      File.WriteAllText(fileName, Model.ToMorpheus());
     }
   }
 }

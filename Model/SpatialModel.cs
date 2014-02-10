@@ -54,6 +54,7 @@ namespace EditSpatial.Model
         FileName = fileName
 
       };
+      model.Document.validateSBML();
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
       return model;
@@ -62,7 +63,7 @@ namespace EditSpatial.Model
     public static SpatialModel FromJarnac(string content)
     {
       NOM.Namespaces = new List<string>();      
-      TModel model = TModel.ReadModel(content);
+      var model = TModel.ReadModel(content);
       model.RemoveAnnotation();
       model.RemoveNotes();
       return FromString(model.toSBML(false));
@@ -75,6 +76,7 @@ namespace EditSpatial.Model
         Document = libsbml.readSBMLFromString(content), 
         FileName = "fromstring.xml"
       };
+      model.Document.validateSBML();
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
       return model;
@@ -107,11 +109,11 @@ namespace EditSpatial.Model
 
       if (Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) == 0) return;
 
-      for (int i = 0; i < Document.getNumErrors(); ++i)
+      for (var i = 0; i < Document.getNumErrors(); ++i)
       {
         var current = Document.getError(i);
-        long id = current.getErrorId();
-        string message = current.getMessage();
+        var id = current.getErrorId();
+        var message = current.getMessage();
 
         switch (current.getErrorId())
         {
@@ -124,7 +126,7 @@ namespace EditSpatial.Model
           }
           case 20517:
           {
-            for (int j = 0; j < Document.getModel().getNumCompartments(); ++j)
+            for (var j = 0; j < Document.getModel().getNumCompartments(); ++j)
             {
               var comp = Document.getModel().getCompartment(j);
               if (!comp.isSetConstant())
@@ -134,7 +136,7 @@ namespace EditSpatial.Model
           }
           case 20623:
           {
-            for (int j = 0; j < Document.getModel().getNumSpecies(); ++j)
+            for (var j = 0; j < Document.getModel().getNumSpecies(); ++j)
             {
               var species = Document.getModel().getSpecies(j);
               if (!species.isSetConstant())
@@ -145,16 +147,16 @@ namespace EditSpatial.Model
 
           case 21116:
           {
-            for (int j = 0; j < Document.getModel().getNumReactions(); ++j)
+            for (var j = 0; j < Document.getModel().getNumReactions(); ++j)
             {
               var reaction = Document.getModel().getReaction(j);
-              for (int k = 0; k < reaction.getNumProducts(); ++k)
+              for (var k = 0; k < reaction.getNumProducts(); ++k)
               {
                 var reference = reaction.getProduct(k);
                 if (!reference.isSetConstant())
                   reference.setConstant(true);
               }
-              for (int k = 0; k < reaction.getNumReactants(); ++k)
+              for (var k = 0; k < reaction.getNumReactants(); ++k)
               {
                 var reference = reaction.getReactant(k);
                 if (!reference.isSetConstant())
@@ -167,7 +169,7 @@ namespace EditSpatial.Model
 
           case 21110:
           {
-            for (int j = 0; j < Document.getModel().getNumReactions(); ++j)
+            for (var j = 0; j < Document.getModel().getNumReactions(); ++j)
             {
               var reaction = Document.getModel().getReaction(j);
               if (!reaction.isSetFast())
@@ -181,7 +183,7 @@ namespace EditSpatial.Model
 
           case 20706 :
           {
-            for (int j = 0; j < Document.getModel().getNumParameters(); ++j)
+            for (var j = 0; j < Document.getModel().getNumParameters(); ++j)
             {
               var parameter = Document.getModel().getParameter(j);
               if (!parameter.isSetConstant())
@@ -229,7 +231,7 @@ namespace EditSpatial.Model
 
       var dict = new Dictionary<string, List<Tuple<int, Parameter>>>();
 
-      for (int i = 0; i < Document.getModel().getNumParameters(); ++i)
+      for (var i = 0; i < Document.getModel().getNumParameters(); ++i)
       {
         var current = Document.getModel().getParameter(i);
         if (current == null) continue;
@@ -391,12 +393,12 @@ namespace EditSpatial.Model
       else
       {
         var numCompartments = model.getNumCompartments();
-        double length = xmax/numCompartments;
+        var length = xmax/numCompartments;
         var def = geometry.createAnalyticGeometry();
         def.setSpatialId("geometry");
 
         var order = OrderCompartments(model);
-        int i = 0;
+        var i = 0;
         AdjacentDomains lastAdjacent = null;
         Domain domain = null;
         Domain memDomain = null;
@@ -488,7 +490,7 @@ namespace EditSpatial.Model
       }
 
 
-      for (int i = 0; i < model.getNumSpecies(); i++)
+      for (var i = 0; i < model.getNumSpecies(); i++)
       {
         var species = model.getSpecies(i);
         var splug = (SpatialSpeciesRxnPlugin)species.getPlugin("spatial");
@@ -567,7 +569,7 @@ namespace EditSpatial.Model
         }
       }
 
-      for (int i = 0; i < model.getNumReactions(); i++)
+      for (var i = 0; i < model.getNumReactions(); i++)
       {
         var reaction = model.getReaction(i);
         var rplug = (SpatialSpeciesRxnPlugin) reaction.getPlugin("spatial");
@@ -587,17 +589,17 @@ namespace EditSpatial.Model
       var orders = new Dictionary<string, List<string>>();
       var matrix = new int[model.getNumReactions(), model.getNumCompartments()];
       var reactions = new List<string>();
-      for (int i = 0; i < model.getNumReactions(); i++)
+      for (var i = 0; i < model.getNumReactions(); i++)
         reactions.Add(model.getReaction(i).getId());
       var compartments = new List<string>();
-      for (int i = 0; i < model.getNumCompartments(); i++)
+      for (var i = 0; i < model.getNumCompartments(); i++)
         compartments.Add(model.getCompartment(i).getId());
 
-      for (int i = 0; i < model.getNumReactions(); i++)
+      for (var i = 0; i < model.getNumReactions(); i++)
       {
         var reaction = model.getReaction(i);
         var id = reaction.getId();
-        for (int j = 0; j < reaction.getNumReactants(); j++)
+        for (var j = 0; j < reaction.getNumReactants(); j++)
         {
           var reference = reaction.getReactant(j);
           if (!reference.isSetSpecies()) continue;
@@ -614,7 +616,7 @@ namespace EditSpatial.Model
 
         }
 
-        for (int j = 0; j < reaction.getNumProducts(); j++)
+        for (var j = 0; j < reaction.getNumProducts(); j++)
         {
           var reference = reaction.getProduct(j);
           if (!reference.isSetSpecies()) continue;
@@ -630,7 +632,7 @@ namespace EditSpatial.Model
           matrix[reactions.IndexOf(id), compartments.IndexOf(species.getCompartment())] = 1;
         }
 
-        for (int j = 0; j < reaction.getNumModifiers(); j++)
+        for (var j = 0; j < reaction.getNumModifiers(); j++)
         {
           var reference = reaction.getModifier(j);
           if (!reference.isSetSpecies()) continue;
@@ -658,7 +660,7 @@ namespace EditSpatial.Model
           uniqueOrders.Add(order);
       }
 
-      for (int i = uniqueOrders.Count - 1; i >= 0; i--)
+      for (var i = uniqueOrders.Count - 1; i >= 0; i--)
         if (uniqueOrders[i].Count < 2)
           uniqueOrders.RemoveAt(i);
 
@@ -691,7 +693,7 @@ namespace EditSpatial.Model
       }
 
       // add remaining
-      for (int i = 0; i < model.getNumCompartments(); ++i)
+      for (var i = 0; i < model.getNumCompartments(); ++i)
       {
         var current = model.getCompartment(i);
         if (!list.Contains(current.getId())) list.Add(current.getId());
@@ -726,7 +728,7 @@ namespace EditSpatial.Model
 
     private bool Contains(List<List<string>> uniqueOrders, List<string> order)
     {      
-      string stringOrder = Combine(order);
+      var stringOrder = Combine(order);
       foreach (var item in uniqueOrders)
       {
         if (Combine(item) == stringOrder)
@@ -738,7 +740,7 @@ namespace EditSpatial.Model
     private string Combine(List<string> order)
     {
       var builder = new StringBuilder();
-      for (int i = 0; i < order.Count; i++)
+      for (var i = 0; i < order.Count; i++)
       {
         builder.Append(order[i]);
         if (i + 1 < order.Count)
@@ -753,7 +755,7 @@ namespace EditSpatial.Model
       if (reaction == null || reaction.getSBMLDocument() == null) return result;
       var model = reaction.getSBMLDocument().getModel();
       if (model == null) return result;
-      for (int i = 0; i < reaction.getNumReactants(); ++i)
+      for (var i = 0; i < reaction.getNumReactants(); ++i)
       {
         var current = reaction.getReactant(i);
         var id = current.getSpecies();
@@ -762,7 +764,7 @@ namespace EditSpatial.Model
         if (isSpatial && !result.Contains(id))
           result.Add(id);
       }
-      for (int i = 0; i < reaction.getNumProducts(); ++i)
+      for (var i = 0; i < reaction.getNumProducts(); ++i)
       {
         var current = reaction.getProduct(i);
         var id = current.getSpecies();
@@ -771,7 +773,7 @@ namespace EditSpatial.Model
         if (isSpatial && !result.Contains(id))
           result.Add(id);
       }
-      for (int i = 0; i < reaction.getNumModifiers(); ++i)
+      for (var i = 0; i < reaction.getNumModifiers(); ++i)
       {
         var current = reaction.getModifier(i);
         var id = current.getSpecies();
@@ -789,6 +791,12 @@ namespace EditSpatial.Model
       if (req == null) return;
       req.setCoreHasAlternateMath(true);
       req.setMathOverridden("spatial");
+    }
+
+    public string ToMorpheus()
+    {
+      var converter = new MorpheusConverter(Document);
+      return converter.ToMorpheus();
     }
   }
 }

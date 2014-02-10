@@ -40,7 +40,7 @@ namespace EditSpatial
     private void ReValidate()
     {
       if (Model == null || Model.Document == null) return;
-      Model.Document.checkInternalConsistency();
+      Model.Document.validateSBML();
       InitializeFrom(Model);
     }
 
