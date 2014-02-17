@@ -45,6 +45,27 @@ namespace EditSpatial.Model
 
       Model = document.getModel();
 
+
+      boundaryLables = new Dictionary<string, string>();
+      coordinates = new Dictionary<string, string>();
+      for (int i = 0; i < Geometry.getNumCoordinateComponents(); ++i)
+      {
+        var current = Geometry.getCoordinateComponent(i);
+        string prefix = "x";
+        if (current.getComponentType() == "cartesianX")
+          prefix = "x";
+        else if (current.getComponentType() == "cartesianY")
+          prefix = "y";
+        else if (current.getComponentType() == "cartesianZ")
+          prefix = "z";
+
+        coordinates[current.getSpatialId()] = prefix;
+
+        boundaryLables[current.getBoundaryMin().getSpatialId()] = "-" + prefix;
+        boundaryLables[current.getBoundaryMax().getSpatialId()] = prefix;
+
+      }
+
       dims = new Dimensions();
       dims.setWidth(GetBoundaryMaxValue(0));
       dims.setHeight(GetBoundaryMaxValue(1));
@@ -69,25 +90,6 @@ namespace EditSpatial.Model
         }
       }
 
-      boundaryLables = new Dictionary<string, string>();
-      coordinates = new Dictionary<string, string>();
-      for (int i = 0; i < Geometry.getNumCoordinateComponents(); ++i)
-      {
-        var current = Geometry.getCoordinateComponent(i);        
-        string prefix = "x";
-        if (current.getComponentType() == "cartesianX")
-          prefix = "x";
-        else if (current.getComponentType() == "cartesianY")
-          prefix = "y";
-        else if (current.getComponentType() == "cartesianZ")
-          prefix = "z";
-
-        coordinates[current.getSpatialId()] = prefix;
-
-        boundaryLables[current.getBoundaryMin().getSpatialId()] = "-" + prefix;
-        boundaryLables[current.getBoundaryMax().getSpatialId()] = prefix;
-
-      }
 
       initial = new Dictionary<string, string>();
       for (int i = 0; i < Model.getNumSpecies(); ++i)
@@ -299,8 +301,8 @@ namespace EditSpatial.Model
       writer.WriteStartElement("Terminal");
       writer.WriteAttributeString("size", 
         string.Format("{0} {1} {2}",
-          scale*dims.getWidth(),
-          scale*dims.getHeight(),
+          Math.Max(200, scale*dims.getWidth()),
+          Math.Max(200, scale*dims.getHeight()),
           scale*dims.getDepth())
         );
       writer.WriteAttributeString("name","png");
@@ -328,6 +330,7 @@ namespace EditSpatial.Model
 
     private double GetBoundaryMaxValue(int val)
     {
+      if (val >= Geometry.getNumCoordinateComponents()) return 0;
       try
       {
         return Geometry.getCoordinateComponent(val).getBoundaryMax().getValue();

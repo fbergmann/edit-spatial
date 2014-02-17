@@ -33,6 +33,8 @@
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabSpecies = new System.Windows.Forms.TabPage();
       this.panel2 = new System.Windows.Forms.Panel();
+      this.lstSpatialSpecies = new System.Windows.Forms.ListBox();
+      this.lstAllSpecies = new System.Windows.Forms.ListBox();
       this.lblIntro = new System.Windows.Forms.Label();
       this.tabGeometry = new System.Windows.Forms.TabPage();
       this.tabInitial = new System.Windows.Forms.TabPage();
@@ -40,8 +42,7 @@
       this.cmdFinish = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.cmdNext = new System.Windows.Forms.Button();
-      this.lstAllSpecies = new System.Windows.Forms.ListBox();
-      this.lstSpatialSpecies = new System.Windows.Forms.ListBox();
+      this.cmdPrev = new System.Windows.Forms.Button();
       this.tableLayoutPanel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabSpecies.SuspendLayout();
@@ -100,6 +101,28 @@
       this.panel2.Size = new System.Drawing.Size(600, 362);
       this.panel2.TabIndex = 1;
       // 
+      // lstSpatialSpecies
+      // 
+      this.lstSpatialSpecies.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.lstSpatialSpecies.FormattingEnabled = true;
+      this.lstSpatialSpecies.Location = new System.Drawing.Point(397, 52);
+      this.lstSpatialSpecies.Name = "lstSpatialSpecies";
+      this.lstSpatialSpecies.Size = new System.Drawing.Size(200, 251);
+      this.lstSpatialSpecies.TabIndex = 2;
+      this.lstSpatialSpecies.DoubleClick += new System.EventHandler(this.OnSpatialSpeciesDoubleClick);
+      // 
+      // lstAllSpecies
+      // 
+      this.lstAllSpecies.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+      this.lstAllSpecies.FormattingEnabled = true;
+      this.lstAllSpecies.Location = new System.Drawing.Point(6, 52);
+      this.lstAllSpecies.Name = "lstAllSpecies";
+      this.lstAllSpecies.Size = new System.Drawing.Size(200, 251);
+      this.lstAllSpecies.TabIndex = 1;
+      this.lstAllSpecies.DoubleClick += new System.EventHandler(this.OnAllSpeciesDoubleClick);
+      // 
       // lblIntro
       // 
       this.lblIntro.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -132,6 +155,7 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.cmdPrev);
       this.panel1.Controls.Add(this.cmdFinish);
       this.panel1.Controls.Add(this.cmdCancel);
       this.panel1.Controls.Add(this.cmdNext);
@@ -148,10 +172,10 @@
       this.cmdFinish.Location = new System.Drawing.Point(453, 5);
       this.cmdFinish.Name = "cmdFinish";
       this.cmdFinish.Size = new System.Drawing.Size(75, 23);
-      this.cmdFinish.TabIndex = 1;
+      this.cmdFinish.TabIndex = 2;
       this.cmdFinish.Text = "&Finish";
       this.cmdFinish.UseVisualStyleBackColor = true;
-      this.cmdFinish.Click += new System.EventHandler(this.cmdFinish_Click);
+      this.cmdFinish.Click += new System.EventHandler(this.OnFinishClick);
       // 
       // cmdCancel
       // 
@@ -160,42 +184,34 @@
       this.cmdCancel.Location = new System.Drawing.Point(534, 5);
       this.cmdCancel.Name = "cmdCancel";
       this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-      this.cmdCancel.TabIndex = 2;
+      this.cmdCancel.TabIndex = 3;
       this.cmdCancel.Text = "&Cancel";
       this.cmdCancel.UseVisualStyleBackColor = true;
-      this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+      this.cmdCancel.Click += new System.EventHandler(this.OnCancelClick);
       // 
       // cmdNext
       // 
       this.cmdNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdNext.Enabled = false;
       this.cmdNext.Location = new System.Drawing.Point(345, 5);
       this.cmdNext.Name = "cmdNext";
       this.cmdNext.Size = new System.Drawing.Size(75, 23);
-      this.cmdNext.TabIndex = 0;
+      this.cmdNext.TabIndex = 1;
       this.cmdNext.Text = "&Next";
       this.cmdNext.UseVisualStyleBackColor = true;
+      this.cmdNext.Click += new System.EventHandler(this.OnNextClick);
       // 
-      // lstAllSpecies
+      // cmdPrev
       // 
-      this.lstAllSpecies.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-      this.lstAllSpecies.FormattingEnabled = true;
-      this.lstAllSpecies.Location = new System.Drawing.Point(6, 52);
-      this.lstAllSpecies.Name = "lstAllSpecies";
-      this.lstAllSpecies.Size = new System.Drawing.Size(200, 251);
-      this.lstAllSpecies.TabIndex = 1;
-      this.lstAllSpecies.DoubleClick += new System.EventHandler(this.OnAllSpeciesDoubleClick);
-      // 
-      // lstSpatialSpecies
-      // 
-      this.lstSpatialSpecies.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.lstSpatialSpecies.FormattingEnabled = true;
-      this.lstSpatialSpecies.Location = new System.Drawing.Point(397, 52);
-      this.lstSpatialSpecies.Name = "lstSpatialSpecies";
-      this.lstSpatialSpecies.Size = new System.Drawing.Size(200, 251);
-      this.lstSpatialSpecies.TabIndex = 2;
-      this.lstSpatialSpecies.DoubleClick += new System.EventHandler(this.OnSpatialSpeciesDoubleClick);
+      this.cmdPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdPrev.Enabled = false;
+      this.cmdPrev.Location = new System.Drawing.Point(264, 5);
+      this.cmdPrev.Name = "cmdPrev";
+      this.cmdPrev.Size = new System.Drawing.Size(75, 23);
+      this.cmdPrev.TabIndex = 0;
+      this.cmdPrev.Text = "&Prev";
+      this.cmdPrev.UseVisualStyleBackColor = true;
+      this.cmdPrev.Click += new System.EventHandler(this.OnPrevClick);
       // 
       // FormInitSpatial
       // 
@@ -234,5 +250,6 @@
     private System.Windows.Forms.Button cmdFinish;
     private System.Windows.Forms.ListBox lstSpatialSpecies;
     private System.Windows.Forms.ListBox lstAllSpecies;
+    private System.Windows.Forms.Button cmdPrev;
   }
 }

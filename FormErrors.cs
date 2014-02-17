@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
@@ -14,22 +7,17 @@ namespace EditSpatial
 {
   public partial class FormErrors : Form
   {
-    SpatialModel Model { get; set; }
-
-    public string Label {
-      get
-      {
-        return label1.Text; 
-      }
-      set
-      {
-        label1.Text = value;
-      }
-    }
-
     public FormErrors()
     {
       InitializeComponent();
+    }
+
+    private SpatialModel Model { get; set; }
+
+    public string Label
+    {
+      get { return label1.Text; }
+      set { label1.Text = value; }
     }
 
     private void OnValidateClick(object sender, EventArgs e)
@@ -48,9 +36,22 @@ namespace EditSpatial
     {
       Model = model;
 
-      var numWarnings = model.Document.getNumErrors(libsbml.LIBSBML_SEV_WARNING);
-      var numErrors  = model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR);
-      var numFatals  = model.Document.getNumErrors(libsbml.LIBSBML_SEV_FATAL);
+      bool haveNoDocument = model == null || model.Document == null;
+
+      string errors = haveNoDocument
+        ? "No document loaded ..."
+        : model.Document.getErrorLog().toString().Replace("\n", Environment.NewLine);
+      controlText1.Text = errors;
+
+      if (haveNoDocument)
+      {
+        label1.Text = "";
+        return;
+      }
+
+      long numWarnings = model.Document.getNumErrors(libsbml.LIBSBML_SEV_WARNING);
+      long numErrors = model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR);
+      long numFatals = model.Document.getNumErrors(libsbml.LIBSBML_SEV_FATAL);
 
       if (numErrors + numFatals > 0)
       {
@@ -60,17 +61,13 @@ namespace EditSpatial
       {
         label1.Text = "The document is valid SBML, but there were warnings.";
       }
-      else 
+      else
       {
         label1.Text = "The document is valid SBML.";
       }
 
-      label1.Text += string.Format("( Warning(s): {0}, Error(s): {1}, Fatal Error(s): {2}", numWarnings, numErrors, numFatals);
-
-      string errors = model == null || model.Document == null
-        ? "No document loaded ..."
-        : model.Document.getErrorLog().toString().Replace("\n", Environment.NewLine);
-      controlText1.Text = errors;
+      label1.Text += string.Format(" Warning(s): {0}, Error(s): {1}, Fatal Error(s): {2}", numWarnings, numErrors,
+        numFatals);
     }
 
     private void OnCloseClick(object sender, EventArgs e)
@@ -85,7 +82,7 @@ namespace EditSpatial
       ReValidate();
     }
 
-    private void FormErrors_FormClosing(object sender, FormClosingEventArgs e)
+    private void OnFormClosing(object sender, FormClosingEventArgs e)
     {
       e.Cancel = true;
       Hide();

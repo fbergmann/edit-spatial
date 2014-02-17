@@ -34,12 +34,12 @@ namespace EditSpatial
     }
     public SpatialModel SpatialModel { get; set; }
 
-    private void cmdCancel_Click(object sender, EventArgs e)
+    private void OnCancelClick(object sender, EventArgs e)
     {
       Close();
     }
 
-    private void cmdFinish_Click(object sender, EventArgs e)
+    private void OnFinishClick(object sender, EventArgs e)
     {
       Close();
     }
@@ -100,6 +100,16 @@ namespace EditSpatial
           continue;        
         lstSpatialSpecies.Items.Add(current.getId());        
       }
+
+    }
+
+    private void OnPrevClick(object sender, EventArgs e)
+    {
+
+    }
+
+    private void OnNextClick(object sender, EventArgs e)
+    {
 
     }
 

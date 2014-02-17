@@ -387,8 +387,7 @@ namespace EditSpatial
 
       if (Model != null && !Model.IsSpatial)
       {
-        var dialog = new FormInitSpatial();
-        dialog.SpatialModel = Model;
+        var dialog = new FormInitSpatial {SpatialModel = Model};
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
           var selection = dialog.CreateModel;
