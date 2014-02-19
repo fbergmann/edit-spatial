@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using EditSpatial.Controls;
 using EditSpatial.Model;
 using libsbmlcs;
+using Microsoft.Win32;
 using SBW.Utils;
 
 namespace EditSpatial
@@ -27,12 +24,9 @@ namespace EditSpatial
     private const string NODE_REACTIONS = "nodeReactions";
     private const string NODE_RULES = "nodeRules";
     private const string NODE_INITIAL_ASSIGNMENTS = "nodeInitialAssignments";
-    
-    public SpatialModel Model { get; set; }
-    public FormErrors ErrorForm { get; set; }
 
-    private readonly SBWMenu menu;
     private readonly SBWFavorites favs;
+    private readonly SBWMenu menu;
 
     public MainForm()
     {
@@ -50,14 +44,58 @@ namespace EditSpatial
         if (Model.Document == null) return "";
         return libsbml.writeSBMLToString(Model.Document);
       }, toolStrip1);
+
+      controlInitialAssignments1.UpdateAction = () =>
+      {
+        if (Model.Document != null && Model.Document.getModel() != null)
+          UpdateTreeWithInitialAssignments(Model.Document.getModel());
+      };
+
       NewModel();
+    }
+
+    public SpatialModel Model { get; set; }
+    public FormErrors ErrorForm { get; set; }
+
+    public void doAnalysis(string model)
+    {
+      if (InvokeRequired)
+      {
+        Invoke(new doAnalysisDelegate(doAnalysis), model);
+      }
+      else
+      {
+        LoadFromString(model);
+      }
+    }
+
+    public void InvalidateCoreAll()
+    {
+      foreach (object control in splitInitial.Panel2.Controls)
+      {
+        var current = control as BaseSpatialControl;
+        if (current == null) continue;
+        current.InvalidateSelection();
+      }
+    }
+
+    public void SaveCoreAll()
+    {
+      foreach (object control in splitInitial.Panel2.Controls)
+      {
+        var current = control as BaseSpatialControl;
+        if (current == null) continue;
+        current.SaveChanges();
+        if (current.UpdateAction != null)
+          current.UpdateAction();
+      }
     }
 
     public void InvalidateGeometryAll()
     {
-      foreach (var control in splitGeometry.Panel2.Controls)
+      foreach (object control in splitGeometry.Panel2.Controls)
       {
-        var current = control as Controls.BaseSpatialControl;
+        var current = control as BaseSpatialControl;
         if (current == null) continue;
         current.InvalidateSelection();
       }
@@ -65,11 +103,13 @@ namespace EditSpatial
 
     public void SaveGeormetryAll()
     {
-      foreach (var control in splitGeometry.Panel2.Controls)
+      foreach (object control in splitGeometry.Panel2.Controls)
       {
-        var current = control as Controls.BaseSpatialControl;
+        var current = control as BaseSpatialControl;
         if (current == null) continue;
         current.SaveChanges();
+        if (current.UpdateAction != null)
+          current.UpdateAction();
       }
     }
 
@@ -172,7 +212,7 @@ namespace EditSpatial
 
       InvalidateGeometryAll();
       splitGeometry.Enabled = Model.IsSpatial;
-      
+
       FillGeometryFromModel(Model);
       FillCoreTreeFromModel(Model);
 
@@ -183,89 +223,132 @@ namespace EditSpatial
 
       Text = "Edit Spatial: [ " + Path.GetFileName(Model.FileName) + " ]";
 
-      treeView1.SelectedNode = 
-        treeView1.Nodes[NODE_GEOMS].Nodes.Count > 0 ? 
-        treeView1.Nodes[NODE_GEOMS].FirstNode : 
-        treeView1.Nodes[NODE_GEOMS];
+      treeView2.SelectedNode =
+        treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
 
+      treeView1.SelectedNode =
+        treeView1.Nodes[NODE_GEOMS].Nodes.Count > 0
+          ? treeView1.Nodes[NODE_GEOMS].FirstNode
+          : treeView1.Nodes[NODE_GEOMS];
     }
 
     private void FillCoreTreeFromModel(SpatialModel spatialModel)
     {
       if (spatialModel.Document == null) return;
-      var model = spatialModel.Document.getModel();
+      libsbmlcs.Model model = spatialModel.Document.getModel();
       if (model == null) return;
 
-      var root = treeView2.Nodes[NODE_COMPARTMENTS];
-      root.Nodes.Clear();
-      for (long i = 0; i < model.getNumCompartments(); ++i)
-      {
-        var current = model.getCompartment(i);
-        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
-        root.Nodes.Add(node);
-      }
 
-      root = treeView2.Nodes[NODE_SPECIES];
-      root.Nodes.Clear();
-      for (long i = 0; i < model.getNumSpecies(); ++i)
+      FillTreeWithCompartments(model);
+      FillTreeWithSpecies(model);
+      FillTreeWithParameters(model);
+      FillTreeWithReactions(model);
+      FillTreeWithRules(model);
+      FillTreeWithInitialAssignments(model);
+    }
+
+    private void UpdateTreeWithInitialAssignments(libsbmlcs.Model model)
+    {
+      TreeNode root = treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
+      foreach (TreeNode item in root.Nodes)
       {
-        var current = model.getSpecies(i);
-        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
-        root.Nodes.Add(node);
+        InitialAssignment current = model.getInitialAssignment(item.Text);
+        if (current == null) continue;
+        item.Tag = current.toSBML();
       }
-      root = treeView2.Nodes[NODE_PARAMETERS];
-      root.Nodes.Clear();
-      for (long i = 0; i < model.getNumParameters(); ++i)
-      {
-        var current = model.getParameter(i);
-        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
-        root.Nodes.Add(node);
-      }
-      root = treeView2.Nodes[NODE_REACTIONS];
-      root.Nodes.Clear();
-      for (long i = 0; i < model.getNumReactions(); ++i)
-      {
-        var current = model.getReaction(i);
-        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
-        root.Nodes.Add(node);
-      }
-      root = treeView2.Nodes[NODE_RULES];
-      root.Nodes.Clear();
-      for (long i = 0; i < model.getNumRules(); ++i)
-      {
-        var current = model.getRule(i);
-        var node = new TreeNode(current.getId()) { Tag = current.toSBML() };
-        root.Nodes.Add(node);
-      }
-      root = treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
+    }
+
+    private void FillTreeWithInitialAssignments(libsbmlcs.Model model)
+    {
+      TreeNode root = treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumInitialAssignments(); ++i)
       {
-        var current = model.getInitialAssignment(i);
-        var node = new TreeNode(current.getId()) { Tag = current.toSBML() };
+        InitialAssignment current = model.getInitialAssignment(i);
+        var node = new TreeNode(current.getSymbol()) {Tag = current.toSBML()};
+        root.Nodes.Add(node);
+      }
+    }
+
+    private void FillTreeWithRules(libsbmlcs.Model model)
+    {
+      TreeNode root = treeView2.Nodes[NODE_RULES];
+      root.Nodes.Clear();
+      for (long i = 0; i < model.getNumRules(); ++i)
+      {
+        Rule current = model.getRule(i);
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
+        root.Nodes.Add(node);
+      }
+    }
+
+    private void FillTreeWithReactions(libsbmlcs.Model model)
+    {
+      TreeNode root = treeView2.Nodes[NODE_REACTIONS];
+      root.Nodes.Clear();
+      for (long i = 0; i < model.getNumReactions(); ++i)
+      {
+        Reaction current = model.getReaction(i);
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
+        root.Nodes.Add(node);
+      }
+    }
+
+    private void FillTreeWithParameters(libsbmlcs.Model model)
+    {
+      TreeNode root = treeView2.Nodes[NODE_PARAMETERS];
+      root.Nodes.Clear();
+      for (long i = 0; i < model.getNumParameters(); ++i)
+      {
+        Parameter current = model.getParameter(i);
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
+        root.Nodes.Add(node);
+      }
+    }
+
+    private void FillTreeWithSpecies(libsbmlcs.Model model)
+    {
+      TreeNode root = treeView2.Nodes[NODE_SPECIES];
+      root.Nodes.Clear();
+      for (long i = 0; i < model.getNumSpecies(); ++i)
+      {
+        Species current = model.getSpecies(i);
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
+        root.Nodes.Add(node);
+      }
+    }
+
+    private void FillTreeWithCompartments(libsbmlcs.Model model)
+    {
+      TreeNode root = treeView2.Nodes[NODE_COMPARTMENTS];
+      root.Nodes.Clear();
+      for (long i = 0; i < model.getNumCompartments(); ++i)
+      {
+        Compartment current = model.getCompartment(i);
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
     }
 
     private void FillGeometryFromModel(SpatialModel model)
     {
-      var geom = model.Geometry;
+      Geometry geom = model.Geometry;
       if (geom == null) return;
 
-      var root = treeView1.Nodes[NODE_COORDINATES];
+      TreeNode root = treeView1.Nodes[NODE_COORDINATES];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumCoordinateComponents(); ++i)
       {
-        var current = geom.getCoordinateComponent(i);
+        CoordinateComponent current = geom.getCoordinateComponent(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
-        root.Nodes.Add( node );
+        root.Nodes.Add(node);
       }
 
       root = treeView1.Nodes[NODE_DOMAINTYPES];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumDomainTypes(); ++i)
       {
-        var current = geom.getDomainType(i);
+        DomainType current = geom.getDomainType(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -275,7 +358,7 @@ namespace EditSpatial
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumDomains(); ++i)
       {
-        var current = geom.getDomain(i);
+        Domain current = geom.getDomain(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -284,7 +367,7 @@ namespace EditSpatial
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumAdjacentDomains(); ++i)
       {
-        var current = geom.getAdjacentDomains(i);
+        AdjacentDomains current = geom.getAdjacentDomains(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -293,7 +376,7 @@ namespace EditSpatial
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumGeometryDefinitions(); ++i)
       {
-        var current = geom.getGeometryDefinition(i);
+        GeometryDefinition current = geom.getGeometryDefinition(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
 
         var analytic = current as AnalyticGeometry;
@@ -301,24 +384,22 @@ namespace EditSpatial
         {
           for (long j = 0; j < analytic.getNumAnalyticVolumes(); ++j)
           {
-            var vol = analytic.getAnalyticVolume(j);
+            AnalyticVolume vol = analytic.getAnalyticVolume(j);
             var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
             node.Nodes.Add(volNode);
-
           }
-          
         }
 
         var sample = current as SampledFieldGeometry;
         if (sample != null)
         {
-          var field = sample.getSampledField();
+          SampledField field = sample.getSampledField();
           var fieldNode = new TreeNode(field.getSpatialId()) {Tag = field.toSBML()};
           node.Nodes.Add(fieldNode);
 
           for (long j = 0; j < sample.getNumSampledVolumes(); ++j)
           {
-            var vol = sample.getSampledVolume(j);
+            SampledVolume vol = sample.getSampledVolume(j);
             var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
             node.Nodes.Add(volNode);
           }
@@ -356,7 +437,7 @@ namespace EditSpatial
     }
 
     public void LoadFromString(string content)
-    {      
+    {
       OpenModel(SpatialModel.FromString(content));
     }
 
@@ -366,7 +447,7 @@ namespace EditSpatial
     }
 
     public void OpenFile(string fileName)
-    {      
+    {
       OpenModel(SpatialModel.FromFile(fileName));
     }
 
@@ -388,9 +469,9 @@ namespace EditSpatial
       if (Model != null && !Model.IsSpatial)
       {
         var dialog = new FormInitSpatial {SpatialModel = Model};
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dialog.ShowDialog() == DialogResult.OK)
         {
-          var selection = dialog.CreateModel;
+          CreateModel selection = dialog.CreateModel;
 
           if (!Model.ConvertToSpatial(
             // spatial elements
@@ -435,27 +516,22 @@ namespace EditSpatial
       SaveGeormetryAll();
       Model.SaveTo(dialog.FileName);
       UpdateUI();
-
     }
 
     private void OnPrint(object sender, EventArgs e)
     {
-
     }
 
     private void OnCut(object sender, EventArgs e)
     {
-
     }
 
     private void OnCopy(object sender, EventArgs e)
     {
-
     }
 
     private void OnPaste(object sender, EventArgs e)
     {
-
     }
 
     private void OnAbout(object sender, EventArgs e)
@@ -470,7 +546,27 @@ namespace EditSpatial
 
     private void OnCoreSelect(object sender, TreeViewEventArgs e)
     {
+      TreeNode node = e.Node;
+      SaveCoreAll();
+      InvalidateCoreAll();
+      SelectCoreNode(node);
       controlDisplayNode2.DisplayNode(e.Node);
+    }
+
+    private void SelectCoreNode(TreeNode node)
+    {
+      if (node.Name == NODE_INITIAL_ASSIGNMENTS)
+      {
+        controlDisplayNode2.Visible = false;
+        controlInitialAssignments1.Visible = true;
+        controlInitialAssignments1.InitializeFrom(Model.Document);
+      }
+      else
+      {
+        controlDisplayNode2.Visible = true;
+        controlInitialAssignments1.Visible = false;
+        controlDisplayNode2.DisplayNode(node);
+      }
     }
 
     private void OnLoad(object sender, EventArgs e)
@@ -493,21 +589,18 @@ namespace EditSpatial
         favs.RemoveFromToolStrip();
         mnuSBW.Visible = false;
       }
-
     }
 
     public void ReadSettings()
     {
-      var reg = Application.UserAppDataRegistry;
+      RegistryKey reg = Application.UserAppDataRegistry;
       if (reg == null) return;
-      
-      var width = (int)reg.GetValue("width", Size.Width);
-      var height = (int)reg.GetValue("height", Size.Height);
+
+      var width = (int) reg.GetValue("width", Size.Width);
+      var height = (int) reg.GetValue("height", Size.Height);
 
       if (width < Screen.FromControl(this).WorkingArea.Width && height < Screen.FromControl(this).WorkingArea.Height)
         Size = new Size(width, height);
-
-
     }
 
     private void OnFormClosed(object sender, FormClosedEventArgs e)
@@ -517,7 +610,7 @@ namespace EditSpatial
 
     private void WriteSettings()
     {
-      var reg = Application.UserAppDataRegistry;
+      RegistryKey reg = Application.UserAppDataRegistry;
       if (reg == null) return;
       reg.SetValue("width", Size.Width);
       reg.SetValue("height", Size.Height);
@@ -531,18 +624,6 @@ namespace EditSpatial
     private void OnApplyJarnacClick(object sender, EventArgs e)
     {
       LoadFromJarnac(txtJarnac.Text);
-    }
-
-    public void doAnalysis(string model)
-    {
-      if (this.InvokeRequired)
-      {
-        Invoke(new doAnalysisDelegate(doAnalysis), model);
-      }
-      else
-      {
-        LoadFromString(model);
-      }
     }
 
     private void OnExportClick(object sender, EventArgs e)

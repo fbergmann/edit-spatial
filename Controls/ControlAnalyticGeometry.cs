@@ -251,5 +251,91 @@ namespace EditSpatial.Controls
       SpatialGeometry = null;
       InitializeFrom(null, null);
     }
+
+    private Image GenerateTiff(AnalyticGeometry analytic, Geometry geometry, int resX = 128, int resY = 128, int ordinal=1)
+    {
+      if (geometry == null || analytic == null || geometry.getNumCoordinateComponents() < 2)
+        return new Bitmap(1, 1);
+
+      try
+      {
+        var formulas = new List<Tuple<int, ASTNode>>();
+        for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
+        {
+          var current = analytic.getAnalyticVolume(i);
+          formulas.Add(new Tuple<int, ASTNode>((int)current.getOrdinal(), current.getMath()));
+        }
+        formulas.Sort((a, b) => b.Item1.CompareTo(a.Item1));
+
+
+        var range1 = geometry.getCoordinateComponent(0);
+        double r1Min = range1.getBoundaryMin().getValue();
+        double r1Max = range1.getBoundaryMax().getValue();
+        var range2 = geometry.getCoordinateComponent(1);
+        double r2Min = range2.getBoundaryMin().getValue();
+        double r2Max = range2.getBoundaryMax().getValue();
+
+        var result = new Bitmap(resX, resY);
+        for (int i = 0; i < resX; ++i)
+        {
+          double x = r1Min
+                     +
+                     (r1Max - r1Min) /
+                     (double)resX * (double)i;
+          for (int j = 0; j < resY; ++j)
+          {
+            double y = r2Min
+                     +
+                     (r2Max - r2Min) /
+                     (double)resY * (double)j;
+
+            for (int index = 0; index < formulas.Count; index++)
+            {
+              var item = formulas[index];
+              var isInside = Util.Evaluate(item.Item2,
+                new List<string> { "x", "y", "z" },
+                new List<double> { x, y, CurrentZ },
+                new List<Tuple<string, double>>()
+                );
+              if (Math.Abs((isInside - 1.0)) < 1E-10)
+              {
+                result.SetPixel(i, j,  ordinal == index ? Color.White : Color.Black);
+                break;
+              }
+            }
+          }
+        }
+        return result;
+      }
+      catch
+      {
+
+      }
+      return new Bitmap(1, 1);
+    }
+
+    private void OnExportTiffClick(object sender, EventArgs e)
+    {
+      if (grid.SelectedRows.Count == 0) return;
+      var ordinal = (long)grid.SelectedRows[0].Cells[2].Value;
+
+      var range1 = SpatialGeometry.getCoordinateComponent(0);
+      double r1Min = range1.getBoundaryMin().getValue();
+      double r1Max = range1.getBoundaryMax().getValue();
+      var range2 = SpatialGeometry.getCoordinateComponent(1);
+      double r2Min = range2.getBoundaryMin().getValue();
+      double r2Max = range2.getBoundaryMax().getValue();
+
+      var image = GenerateTiff(Current, SpatialGeometry, (int)r1Max, (int)r2Max, (int)ordinal);
+
+      using (var dialog = new SaveFileDialog { Filter = "TIFF files|*.tif|All files|*.*" })
+      {
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+          image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+        }
+      }
+
+    }
   }
 }

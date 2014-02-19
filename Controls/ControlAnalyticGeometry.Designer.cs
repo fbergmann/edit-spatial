@@ -40,6 +40,7 @@
       this.thumbGeometry = new System.Windows.Forms.PictureBox();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.cmdCreateTiff = new System.Windows.Forms.Button();
       this.trackBar1 = new System.Windows.Forms.TrackBar();
       this.cmdUpdateImage = new System.Windows.Forms.Button();
       this.txtZ = new System.Windows.Forms.TextBox();
@@ -167,6 +168,7 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.cmdCreateTiff);
       this.panel1.Controls.Add(this.trackBar1);
       this.panel1.Controls.Add(this.cmdUpdateImage);
       this.panel1.Controls.Add(this.txtZ);
@@ -182,6 +184,17 @@
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(267, 142);
       this.panel1.TabIndex = 5;
+      // 
+      // cmdCreateTiff
+      // 
+      this.cmdCreateTiff.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdCreateTiff.Location = new System.Drawing.Point(178, 63);
+      this.cmdCreateTiff.Name = "cmdCreateTiff";
+      this.cmdCreateTiff.Size = new System.Drawing.Size(75, 23);
+      this.cmdCreateTiff.TabIndex = 11;
+      this.cmdCreateTiff.Text = "Tiff";
+      this.cmdCreateTiff.UseVisualStyleBackColor = true;
+      this.cmdCreateTiff.Click += new System.EventHandler(this.OnExportTiffClick);
       // 
       // trackBar1
       // 
@@ -298,5 +311,6 @@
     private System.Windows.Forms.TextBox txtZ;
     private System.Windows.Forms.Label lblZ;
     private System.Windows.Forms.TrackBar trackBar1;
+    private System.Windows.Forms.Button cmdCreateTiff;
   }
 }

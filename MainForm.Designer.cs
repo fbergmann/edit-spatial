@@ -56,6 +56,7 @@
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.splitInitial = new System.Windows.Forms.SplitContainer();
       this.treeView2 = new System.Windows.Forms.TreeView();
+      this.controlInitialAssignments1 = new EditSpatial.Controls.ControlInitialAssignments();
       this.controlDisplayNode2 = new EditSpatial.Controls.ControlDisplayNode();
       this.tabPage3 = new System.Windows.Forms.TabPage();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -70,6 +71,7 @@
       this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
       this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolExport = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -99,7 +101,6 @@
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.toolExport = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -321,6 +322,7 @@
       // 
       // splitInitial.Panel2
       // 
+      this.splitInitial.Panel2.Controls.Add(this.controlInitialAssignments1);
       this.splitInitial.Panel2.Controls.Add(this.controlDisplayNode2);
       this.splitInitial.Size = new System.Drawing.Size(591, 358);
       this.splitInitial.SplitterDistance = 197;
@@ -353,6 +355,15 @@
       this.treeView2.Size = new System.Drawing.Size(197, 358);
       this.treeView2.TabIndex = 0;
       this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
+      // 
+      // controlInitialAssignments1
+      // 
+      this.controlInitialAssignments1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlInitialAssignments1.Location = new System.Drawing.Point(0, 0);
+      this.controlInitialAssignments1.Name = "controlInitialAssignments1";
+      this.controlInitialAssignments1.Size = new System.Drawing.Size(390, 358);
+      this.controlInitialAssignments1.TabIndex = 1;
+      this.controlInitialAssignments1.Visible = false;
       // 
       // controlDisplayNode2
       // 
@@ -482,7 +493,7 @@
       this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.newToolStripMenuItem.Name = "newToolStripMenuItem";
       this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-      this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.newToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
       this.newToolStripMenuItem.Text = "&New";
       this.newToolStripMenuItem.Click += new System.EventHandler(this.OnNewModel);
       // 
@@ -492,14 +503,14 @@
       this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.openToolStripMenuItem.Name = "openToolStripMenuItem";
       this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-      this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.openToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
       this.openToolStripMenuItem.Text = "&Open";
       this.openToolStripMenuItem.Click += new System.EventHandler(this.OnOpenFile);
       // 
       // toolStripSeparator
       // 
       this.toolStripSeparator.Name = "toolStripSeparator";
-      this.toolStripSeparator.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator.Size = new System.Drawing.Size(144, 6);
       // 
       // saveToolStripMenuItem
       // 
@@ -507,14 +518,23 @@
       this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
       this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-      this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.saveToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
       this.saveToolStripMenuItem.Text = "&Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFile);
+      // 
+      // toolExport
+      // 
+      this.toolExport.Name = "toolExport";
+      this.toolExport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+      this.toolExport.Size = new System.Drawing.Size(147, 22);
+      this.toolExport.Text = "&Export";
+      this.toolExport.ToolTipText = "Export model to Morpheus";
+      this.toolExport.Click += new System.EventHandler(this.OnExportClick);
       // 
       // toolStripSeparator1
       // 
       this.toolStripSeparator1.Name = "toolStripSeparator1";
-      this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator1.Size = new System.Drawing.Size(144, 6);
       // 
       // printToolStripMenuItem
       // 
@@ -522,19 +542,19 @@
       this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.printToolStripMenuItem.Name = "printToolStripMenuItem";
       this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-      this.printToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.printToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
       this.printToolStripMenuItem.Text = "&Print";
       this.printToolStripMenuItem.Click += new System.EventHandler(this.OnPrint);
       // 
       // toolStripSeparator2
       // 
       this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator2.Size = new System.Drawing.Size(144, 6);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-      this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
       this.exitToolStripMenuItem.Text = "E&xit";
       this.exitToolStripMenuItem.Click += new System.EventHandler(this.OnExit);
       // 
@@ -755,15 +775,6 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // toolExport
-      // 
-      this.toolExport.Name = "toolExport";
-      this.toolExport.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-      this.toolExport.Size = new System.Drawing.Size(152, 22);
-      this.toolExport.Text = "&Export";
-      this.toolExport.ToolTipText = "Export model to Morpheus";
-      this.toolExport.Click += new System.EventHandler(this.OnExportClick);
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -870,6 +881,7 @@
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Button cmdApplyJarnac;
     private System.Windows.Forms.ToolStripMenuItem toolExport;
+    private Controls.ControlInitialAssignments controlInitialAssignments1;
   }
 }
 

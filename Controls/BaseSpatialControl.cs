@@ -13,6 +13,8 @@ namespace EditSpatial.Controls
   public  partial class BaseSpatialControl : UserControl
   {
 
+    public Action UpdateAction { get; set; }
+
     public virtual void SaveChanges()
     {
       

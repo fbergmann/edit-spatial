@@ -117,6 +117,12 @@
     <Compile Include="Controls\ControlSampleFieldGeometry.Designer.cs">
       <DependentUpon>ControlSampleFieldGeometry.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ControlInitialAssignments.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlInitialAssignments.Designer.cs">
+      <DependentUpon>ControlInitialAssignments.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ControlSampleFieldGeometry.resx">
       <DependentUpon>ControlSampleFieldGeometry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlInitialAssignments.resx">
+      <DependentUpon>ControlInitialAssignments.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
