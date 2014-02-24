@@ -145,6 +145,7 @@
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MinimumSize = new System.Drawing.Size(400, 400);
       this.Name = "FormErrors";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Errors & Warnings";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
       this.tableLayoutPanel1.ResumeLayout(false);

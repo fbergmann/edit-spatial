@@ -13,6 +13,122 @@ namespace EditSpatial
 {
   static class Util
   {
+
+    public static void setInitialExpession(this libsbmlcs.Species species, string expression)
+    {
+      if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
+        return;
+
+      var model = species.getSBMLDocument().getModel();
+
+      var node = libsbml.parseFormula(expression);
+
+      if (node == null) return;
+
+      if (node.isNumber())
+      {
+        if (species.isSetInitialAmount())
+          species.setInitialAmount(GetRealValue(node));
+        else
+          species.setInitialConcentration(GetRealValue(node));
+        return;
+      }
+
+      var initial = model.getInitialAssignment(species.getId());
+      if (initial == null)
+      {
+        initial = model.createInitialAssignment();
+        initial.setSymbol(species.getId());
+      }
+
+      initial.setMath(node);
+
+    }
+
+    private static double GetRealValue(ASTNode node)
+    {
+      switch(node.getType())
+      {
+        default:
+        case libsbml.AST_REAL:
+          return node.getReal();
+        case libsbml.AST_REAL_E:
+          return Math.Pow(node.getMantissa(), node.getExponent());
+        case libsbml.AST_INTEGER:
+          return node.getInteger();
+        case libsbml.AST_RATIONAL:
+          return (double)node.getNumerator() / (double)node.getDenominator();
+      }
+    }
+
+    public static string getInitialExpession(this libsbmlcs.Species species)
+    {
+      string result = "";
+      if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
+        return result;
+      
+      var model = species.getSBMLDocument().getModel();
+
+      var initial = model.getInitialAssignment(species.getId());
+      if (initial != null && initial.isSetMath()) return libsbml.formulaToString(initial.getMath());
+
+      if (species.isSetInitialAmount())
+        return species.getInitialAmount().ToString();
+
+      if (species.isSetInitialConcentration())
+        return species.getInitialConcentration().ToString();
+
+      return result;
+    }
+
+    public static double? getDiffusionY(this libsbmlcs.Species species)
+    {
+      if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
+        return null;
+
+      var model = species.getSBMLDocument().getModel();
+      for (int i = 0; i < model.getNumParameters(); ++i)
+      {
+        var parameter = model.getParameter(i);
+        if (parameter == null) continue;
+        var plugin = parameter.getPlugin("spatial") as SpatialParameterPlugin;
+        if (plugin == null) continue;
+
+        if (plugin.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
+
+        var diff = plugin.getDiffusionCoefficient();
+        if (diff == null || diff.getCoordinateIndex() != 1 || diff.getVariable() != species.getId()) continue;
+
+        return parameter.getValue();
+      }
+
+      return null;
+    }
+
+    public static double? getDiffusionX(this libsbmlcs.Species species)
+    {
+      if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)        
+      return null;
+
+      var model = species.getSBMLDocument().getModel();
+      for (int i = 0; i < model.getNumParameters(); ++i)
+      {
+        var parameter = model.getParameter(i);
+        if (parameter == null) continue;
+        var plugin = parameter.getPlugin("spatial") as SpatialParameterPlugin;
+        if (plugin == null) continue;
+
+        if (plugin.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
+
+        var diff = plugin.getDiffusionCoefficient();
+        if (diff == null || diff.getCoordinateIndex() != 0 || diff.getVariable() != species.getId()) continue;
+
+        return parameter.getValue();
+      }
+
+      return null;
+    }
+
     internal static byte[] ToBytes(int[] array)
     {
       var result = new byte[array.Length];

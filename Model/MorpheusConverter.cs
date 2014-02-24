@@ -35,12 +35,23 @@ namespace EditSpatial.Model
     {
       errorBuilder = new StringBuilder();
       this.document = original.clone();
+
+      document.getErrorLog().setSeverityOverride(libsbml.LIBSBML_OVERRIDE_DONT_LOG);
       var prop = new ConversionProperties();
       prop.addOption("replaceReactions", true,
         "Replace reactions with rateRules");
-      if (document.convert(prop) != libsbml.LIBSBML_OPERATION_SUCCESS)
+      var status = document.convert(prop);
+      if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
-        errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", 1, 1);
+        errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", status, Environment.NewLine);      
+      }
+
+      prop = new ConversionProperties();
+      prop.addOption("expandFunctionDefinitions", true);
+      status = document.convert(prop);
+      if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
+      {
+        errorBuilder.AppendFormat("expanding function definitions failed: {0}{1}", status , Environment.NewLine);
       }
 
       Model = document.getModel();
@@ -328,16 +339,16 @@ namespace EditSpatial.Model
       writer.WriteEndElement(); // Analysis
     }
 
-    private double GetBoundaryMaxValue(int val)
+    private double GetBoundaryMaxValue(int val, double defaultValue = 0)
     {
-      if (val >= Geometry.getNumCoordinateComponents()) return 0;
+      if (val >= Geometry.getNumCoordinateComponents()) return defaultValue;
       try
       {
         return Geometry.getCoordinateComponent(val).getBoundaryMax().getValue();
       }
       catch
       {
-        return 0;
+        return defaultValue;
       }
     }
 

@@ -101,6 +101,7 @@
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.spatialWizardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -238,6 +239,7 @@
       this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(390, 358);
       this.controlSampleFieldGeometry1.SpatialGeometry = null;
       this.controlSampleFieldGeometry1.TabIndex = 6;
+      this.controlSampleFieldGeometry1.UpdateAction = null;
       this.controlSampleFieldGeometry1.Visible = false;
       // 
       // controlAnalyticGeometry1
@@ -249,6 +251,7 @@
       this.controlAnalyticGeometry1.Size = new System.Drawing.Size(390, 358);
       this.controlAnalyticGeometry1.SpatialGeometry = null;
       this.controlAnalyticGeometry1.TabIndex = 5;
+      this.controlAnalyticGeometry1.UpdateAction = null;
       this.controlAnalyticGeometry1.Visible = false;
       // 
       // controlAdjacentDomains1
@@ -259,6 +262,7 @@
       this.controlAdjacentDomains1.Name = "controlAdjacentDomains1";
       this.controlAdjacentDomains1.Size = new System.Drawing.Size(390, 358);
       this.controlAdjacentDomains1.TabIndex = 4;
+      this.controlAdjacentDomains1.UpdateAction = null;
       this.controlAdjacentDomains1.Visible = false;
       // 
       // controlDomains1
@@ -268,6 +272,7 @@
       this.controlDomains1.Name = "controlDomains1";
       this.controlDomains1.Size = new System.Drawing.Size(390, 358);
       this.controlDomains1.TabIndex = 3;
+      this.controlDomains1.UpdateAction = null;
       this.controlDomains1.Visible = false;
       // 
       // controlDomainTypes1
@@ -277,6 +282,7 @@
       this.controlDomainTypes1.Name = "controlDomainTypes1";
       this.controlDomainTypes1.Size = new System.Drawing.Size(390, 358);
       this.controlDomainTypes1.TabIndex = 2;
+      this.controlDomainTypes1.UpdateAction = null;
       this.controlDomainTypes1.Visible = false;
       // 
       // controlCoordinateComponents1
@@ -288,6 +294,7 @@
       this.controlCoordinateComponents1.Name = "controlCoordinateComponents1";
       this.controlCoordinateComponents1.Size = new System.Drawing.Size(390, 358);
       this.controlCoordinateComponents1.TabIndex = 1;
+      this.controlCoordinateComponents1.UpdateAction = null;
       this.controlCoordinateComponents1.Visible = false;
       // 
       // controlDisplayNode1
@@ -298,6 +305,7 @@
       this.controlDisplayNode1.Padding = new System.Windows.Forms.Padding(4);
       this.controlDisplayNode1.Size = new System.Drawing.Size(390, 358);
       this.controlDisplayNode1.TabIndex = 0;
+      this.controlDisplayNode1.UpdateAction = null;
       // 
       // tabPage2
       // 
@@ -363,6 +371,7 @@
       this.controlInitialAssignments1.Name = "controlInitialAssignments1";
       this.controlInitialAssignments1.Size = new System.Drawing.Size(390, 358);
       this.controlInitialAssignments1.TabIndex = 1;
+      this.controlInitialAssignments1.UpdateAction = null;
       this.controlInitialAssignments1.Visible = false;
       // 
       // controlDisplayNode2
@@ -373,6 +382,7 @@
       this.controlDisplayNode2.Padding = new System.Windows.Forms.Padding(4);
       this.controlDisplayNode2.Size = new System.Drawing.Size(390, 358);
       this.controlDisplayNode2.TabIndex = 0;
+      this.controlDisplayNode2.UpdateAction = null;
       // 
       // tabPage3
       // 
@@ -639,7 +649,8 @@
       // modelToolStripMenuItem
       // 
       this.modelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showWarningsErrorsToolStripMenuItem});
+            this.showWarningsErrorsToolStripMenuItem,
+            this.spatialWizardToolStripMenuItem});
       this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
       this.modelToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
       this.modelToolStripMenuItem.Text = "&Model";
@@ -775,6 +786,13 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
+      // spatialWizardToolStripMenuItem
+      // 
+      this.spatialWizardToolStripMenuItem.Name = "spatialWizardToolStripMenuItem";
+      this.spatialWizardToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+      this.spatialWizardToolStripMenuItem.Text = "Spatial Wizard";
+      this.spatialWizardToolStripMenuItem.Click += new System.EventHandler(this.OnShowSpatialWizard);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -882,6 +900,7 @@
     private System.Windows.Forms.Button cmdApplyJarnac;
     private System.Windows.Forms.ToolStripMenuItem toolExport;
     private Controls.ControlInitialAssignments controlInitialAssignments1;
+    private System.Windows.Forms.ToolStripMenuItem spatialWizardToolStripMenuItem;
   }
 }
 

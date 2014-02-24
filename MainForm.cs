@@ -473,17 +473,7 @@ namespace EditSpatial
         {
           CreateModel selection = dialog.CreateModel;
 
-          if (!Model.ConvertToSpatial(
-            // spatial elements
-            (from s in selection.Species select s.Id).ToList()
-            ,
-            // intial conditions
-            (from s in selection.Species
-              select
-                new Tuple<string, string>(s.Id, s.InitialCondition)).ToList(),
-            // geometry
-            null
-            ))
+          if (!Model.ConvertToSpatial(selection))
           {
             ShowErrors();
           }
@@ -628,6 +618,18 @@ namespace EditSpatial
 
     private void OnExportClick(object sender, EventArgs e)
     {
+      if (Model == null || Model.Document == null)
+        return;
+      Model.Document.checkConsistency();
+      if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
+      {
+        MessageBox.Show(
+          "Unfortunately, the SBML model contains a number of errors. These need to be corrected, before the model can be exported to Morpheus.",
+          "Invalid Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        ShowErrors();
+        return;
+      }
+
       var dialog = new SaveFileDialog
       {
         Title = "Save Morpheus Configuration File",
@@ -638,12 +640,32 @@ namespace EditSpatial
       if (dialog.ShowDialog() != DialogResult.OK)
         return;
 
-      ExportMorpheusFile(dialog.FileName);
+        ExportMorpheusFile(dialog.FileName);        
+  
     }
 
     public void ExportMorpheusFile(string fileName)
     {
       File.WriteAllText(fileName, Model.ToMorpheus());
+    }
+
+    private void OnShowSpatialWizard(object sender, EventArgs e)
+    {
+      var dialog = new FormInitSpatial { SpatialModel = Model };
+      if (dialog.ShowDialog() == DialogResult.OK)
+      {
+
+        CreateModel selection = dialog.CreateModel;
+
+        if (!Model.ConvertToSpatial(selection))
+        {
+          ShowErrors();
+        }
+        else
+        {
+          UpdateUI();
+        }
+      }
     }
   }
 }

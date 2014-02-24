@@ -13,11 +13,46 @@ namespace EditSpatial.Model
   public class SpatialModel
   {
     public double DefaultWidth { get; set; }
-    public double DefaultHeigth { get; set; }
+    public double DefaultHeight { get; set; }
+
+    public double Width
+    {
+      get
+      {
+        if (!IsSpatial || Geometry == null ) return DefaultWidth;
+
+        return GetBoundaryMaxValue(0, DefaultWidth);
+
+      }
+    }
+
+    public double Height
+    {
+      get
+      {
+        if (!IsSpatial || Geometry == null) return DefaultHeight;
+
+        return GetBoundaryMaxValue(1, DefaultHeight);
+
+      }
+    }
+
+    private double GetBoundaryMaxValue(int val, double defaultValue = 0)
+    {
+      if (val >= Geometry.getNumCoordinateComponents()) return defaultValue;
+      try
+      {
+        return Geometry.getCoordinateComponent(val).getBoundaryMax().getValue();
+      }
+      catch
+      {
+        return defaultValue;
+      }
+    }
 
     public SpatialModel()
     {
-      DefaultHeigth = DefaultWidth = 100;
+      DefaultHeight = DefaultWidth = 50;
       FileName = "untitled.xml";
     }
 
@@ -100,7 +135,14 @@ namespace EditSpatial.Model
     public string ToJarnac()
     {
       if (Document == null) return "";
-      return convertSBML.ToSBL(ToSBML());
+      try
+      {
+        return convertSBML.ToSBL(ToSBML());
+      }
+      catch
+      {
+        return "";
+      }
     }
 
     public void FixCommonErrors()
@@ -269,8 +311,7 @@ namespace EditSpatial.Model
       }
     }
 
-    public bool ConvertToSpatial(List<string> spatialElements, List<Tuple<string, string>> initialConditions,
-      object geometryDescription)
+    public bool ConvertToSpatial(CreateModel createModel)
     {
       if (Document == null) return true;
 
@@ -289,6 +330,14 @@ namespace EditSpatial.Model
           return false;
         }
       }
+
+      List<string> spatialElements = (from s in createModel.Species select s.Id).ToList();
+      List<Tuple<string, string>> initialConditions = (from s in createModel.Species
+        select
+          new Tuple<string, string>(s.Id, s.InitialCondition)).ToList();
+      //object geometryDescription = null;
+
+
       Document.enablePackage(SpatialExtension.getXmlnsL3V1V1(), "spatial", true);
       Document.setPackageRequired("spatial", true);
 
@@ -305,7 +354,7 @@ namespace EditSpatial.Model
 
       // create coordinate components
       
-      CreateCoordinateSystem(geometry, model);
+      CreateCoordinateSystem(geometry, model, createModel.Geometry);
 
       Parameter param = null;
       SpatialParameterPlugin pplug = null;
@@ -321,7 +370,7 @@ namespace EditSpatial.Model
         domain.setDomainType("domainType0");
         InteriorPoint point = domain.createInteriorPoint();
         point.setCoord1(DefaultWidth/2.0);
-        point.setCoord2(DefaultHeigth/2.0);
+        point.setCoord2(DefaultHeight/2.0);
         point.setCoord3(0);
 
         AnalyticGeometry def = geometry.createAnalyticGeometry();
@@ -367,7 +416,7 @@ namespace EditSpatial.Model
           domain.setDomainType("domainType_" + compid);
           InteriorPoint point = domain.createInteriorPoint();
           point.setCoord1(i*length + length/2.0);
-          point.setCoord2(DefaultHeigth/2.0);
+          point.setCoord2(DefaultHeight/2.0);
           point.setCoord3(0);
 
           if (lastAdjacent != null)
@@ -449,13 +498,15 @@ namespace EditSpatial.Model
         string id = species.getId();
         if (spatialElements.Contains(id))
         {
+          var currentSpecies = createModel[id];
+          species.setInitialExpession(currentSpecies.InitialCondition);
           splug.setIsSpatial(true);
           SetRequiredElements(species);
 
           param = model.createParameter();
           param.initDefaults();
           param.setId(id + "_diff_X");
-          param.setValue(0.01);
+          param.setValue(currentSpecies.DiffusionX);
           pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
           DiffusionCoefficient diff = pplug.getDiffusionCoefficient();
           diff.setVariable(id);
@@ -465,7 +516,7 @@ namespace EditSpatial.Model
           param = model.createParameter();
           param.initDefaults();
           param.setId(id + "_diff_Y");
-          param.setValue(0.01);
+          param.setValue(currentSpecies.DiffusionY);
           pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
           diff = pplug.getDiffusionCoefficient();
           diff.setVariable(id);
@@ -475,7 +526,7 @@ namespace EditSpatial.Model
           param = model.createParameter();
           param.initDefaults();
           param.setId(id + "_BC_Xmin");
-          param.setValue(0);
+          param.setValue(currentSpecies.MinBoundaryX);
           pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
           BoundaryCondition bc = pplug.getBoundaryCondition();
           bc.setVariable(id);
@@ -486,7 +537,7 @@ namespace EditSpatial.Model
           param = model.createParameter();
           param.initDefaults();
           param.setId(id + "_BC_Xmax");
-          param.setValue(0);
+          param.setValue(currentSpecies.MaxBoundaryX);
           pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
           bc = pplug.getBoundaryCondition();
           bc.setVariable(id);
@@ -497,7 +548,7 @@ namespace EditSpatial.Model
           param = model.createParameter();
           param.initDefaults();
           param.setId(id + "_BC_Ymin");
-          param.setValue(0);
+          param.setValue(currentSpecies.MinBoundaryY);
           pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
           bc = pplug.getBoundaryCondition();
           bc.setVariable(id);
@@ -508,7 +559,7 @@ namespace EditSpatial.Model
           param = model.createParameter();
           param.initDefaults();
           param.setId(id + "_BC_Ymax");
-          param.setValue(0);
+          param.setValue(currentSpecies.MaxBoundaryY);
           pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
           bc = pplug.getBoundaryCondition();
           bc.setVariable(id);
@@ -532,7 +583,8 @@ namespace EditSpatial.Model
       return true;
     }
 
-    private void CreateCoordinateSystem(Geometry geometry, libsbmlcs.Model model)
+    private void CreateCoordinateSystem(Geometry geometry, libsbmlcs.Model model, 
+      GeometrySettings settings)
     {
       geometry.setCoordinateSystem("Cartesian");
       CoordinateComponent coord = geometry.createCoordinateComponent();
@@ -542,10 +594,10 @@ namespace EditSpatial.Model
       coord.setIndex(0);
       BoundaryMin min = coord.createBoundaryMin();
       min.setSpatialId("Xmin");
-      min.setValue(0);
+      min.setValue(settings.Xmin);
       BoundaryMax max = coord.createBoundaryMax();
       max.setSpatialId("Xmax");
-      max.setValue(DefaultWidth);
+      max.setValue(settings.Xmax);
 
       coord = geometry.createCoordinateComponent();
       coord.setSpatialId("y");
@@ -554,10 +606,10 @@ namespace EditSpatial.Model
       coord.setIndex(1);
       min = coord.createBoundaryMin();
       min.setSpatialId("Ymin");
-      min.setValue(0);
+      min.setValue(settings.Ymin);
       max = coord.createBoundaryMax();
       max.setSpatialId("Ymax");
-      max.setValue(DefaultHeigth);
+      max.setValue(settings.Ymax);
 
       Parameter param = model.createParameter();
       param.initDefaults();
@@ -567,7 +619,7 @@ namespace EditSpatial.Model
       SpatialSymbolReference symbol = pplug.getSpatialSymbolReference();
       symbol.setSpatialId("x");
       symbol.setType("coordinateComponent");
-      SetRequiredElements(param);
+      SetRequiredElements(param, false);
 
       param = model.createParameter();
       param.initDefaults();
@@ -577,7 +629,7 @@ namespace EditSpatial.Model
       symbol = pplug.getSpatialSymbolReference();
       symbol.setSpatialId("y");
       symbol.setType("coordinateComponent");
-      SetRequiredElements(param);
+      SetRequiredElements(param, false);
     }
 
     private List<string> OrderCompartments(libsbmlcs.Model model)
@@ -786,11 +838,11 @@ namespace EditSpatial.Model
       return result;
     }
 
-    private static void SetRequiredElements(SBase sbase)
+    private static void SetRequiredElements(SBase sbase, bool hasAlternativeMath = true)
     {
       var req = (RequiredElementsSBasePlugin) sbase.getPlugin("req");
       if (req == null) return;
-      req.setCoreHasAlternateMath(true);
+      req.setCoreHasAlternateMath(hasAlternativeMath);
       req.setMathOverridden("spatial");
     }
 
