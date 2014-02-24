@@ -486,6 +486,81 @@ namespace EditSpatial.Model
       map.setCompartment(comp.getId());
       map.setDomainType(domainType.getSpatialId());
       map.setUnitSize(1);
+
+      if (createModel.Geometry.WrapOutside)
+      {
+        comp = model.createCompartment();
+        comp.initDefaults();
+        comp.setId("__outside");
+        cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+
+        domainType = geometry.createDomainType();
+        domainType.setSpatialId("domainType1");
+        domainType.setSpatialDimensions(3);
+
+        domain = geometry.createDomain();
+        domain.setSpatialId("domain1");
+        domain.setDomainType("domainType1");
+        point = domain.createInteriorPoint();
+        point.setCoord1(0);
+        point.setCoord2(0);
+        point.setCoord3(0);
+
+        map = cplug.getCompartmentMapping();
+        map.setSpatialId("mapping1");
+        map.setCompartment(comp.getId());
+        map.setDomainType(domainType.getSpatialId());
+        map.setUnitSize(1);
+
+        vol.setOrdinal(1);
+        vol.setMath(
+          libsbml.parseFormula(
+          string.Format("piecewise(1, and(geq(x, {0}), leq(x, {1}), geq(y, {2}), leq(y, {3})), 0)",
+          createModel.Geometry.Xmin + 1, createModel.Geometry.Xmax-1,
+          createModel.Geometry.Ymin + 1, createModel.Geometry.Ymax-1
+          )
+          ));
+
+        vol = def.createAnalyticVolume();
+        vol.setSpatialId("vol1");
+        vol.setDomainType("domainType1");
+        vol.setFunctionType("layered");
+        vol.setOrdinal(0);
+        vol.setMath(libsbml.parseFormula("1"));
+
+        // membrane
+        comp = model.createCompartment();
+        comp.initDefaults();
+        comp.setId("__membrane");
+        cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+
+        domainType = geometry.createDomainType();
+        domainType.setSpatialId("domainType2");
+        domainType.setSpatialDimensions(2);
+
+        domain = geometry.createDomain();
+        domain.setSpatialId("domain2");
+        domain.setDomainType("domainType2");
+
+        map = cplug.getCompartmentMapping();
+        map.setSpatialId("mapping2");
+        map.setCompartment(comp.getId());
+        map.setDomainType(domainType.getSpatialId());
+        map.setUnitSize(1);
+
+        var adjacent = geometry.createAdjacentDomains();
+        adjacent.setSpatialId("adj_1");
+        adjacent.setDomain1("domain2");
+        adjacent.setDomain2("domain1");
+
+        adjacent = geometry.createAdjacentDomains();
+        adjacent.setSpatialId("adj_2");
+        adjacent.setDomain1("domain2");
+        adjacent.setDomain2("domain0");
+
+
+      }
+
       return true;
     }
 

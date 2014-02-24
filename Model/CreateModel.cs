@@ -64,8 +64,11 @@ namespace EditSpatial.Model
 
     public List<AnalyticSettings> AnalyticDomains { get; set; }
 
+    public bool WrapOutside { get; set; }
+
     public GeometrySettings()
     {
+      WrapOutside = false;
       AnalyticDomains = new List<AnalyticSettings>();
     }
 
