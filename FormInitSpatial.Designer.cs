@@ -47,6 +47,7 @@
       this.colBoundaryXm = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colBoundaryYm = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.panel3 = new System.Windows.Forms.Panel();
+      this.label2 = new System.Windows.Forms.Label();
       this.txtDimY = new System.Windows.Forms.TextBox();
       this.txtDimX = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
@@ -57,7 +58,6 @@
       this.cmdFinish = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.cmdNext = new System.Windows.Forms.Button();
-      this.label2 = new System.Windows.Forms.Label();
       this.tableLayoutPanel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabSpecies.SuspendLayout();
@@ -264,6 +264,15 @@
       this.panel3.Size = new System.Drawing.Size(507, 30);
       this.panel3.TabIndex = 6;
       // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(164, 9);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(44, 13);
+      this.label2.TabIndex = 3;
+      this.label2.Text = "Height: ";
+      // 
       // txtDimY
       // 
       this.txtDimY.Location = new System.Drawing.Point(214, 6);
@@ -370,15 +379,6 @@
       this.cmdNext.UseVisualStyleBackColor = true;
       this.cmdNext.Click += new System.EventHandler(this.OnNextClick);
       // 
-      // label2
-      // 
-      this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(164, 9);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(44, 13);
-      this.label2.TabIndex = 3;
-      this.label2.Text = "Height: ";
-      // 
       // FormInitSpatial
       // 
       this.AcceptButton = this.cmdFinish;
@@ -388,6 +388,7 @@
       this.ClientSize = new System.Drawing.Size(624, 441);
       this.Controls.Add(this.tableLayoutPanel1);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+      this.MinimumSize = new System.Drawing.Size(640, 480);
       this.Name = "FormInitSpatial";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Spatial Wizard";

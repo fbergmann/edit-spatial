@@ -317,9 +317,6 @@ namespace EditSpatial.Model
 
       if (Document.getLevel() < 3)
       {
-        //if (!Document.setLevelAndVersion(3, 1, false))
-        //  return false;
-
         var prop = new ConversionProperties(new SBMLNamespaces(3, 1));
         prop.addOption("strict", false);
         prop.addOption("setLevelAndVersion", true);
@@ -330,13 +327,6 @@ namespace EditSpatial.Model
           return false;
         }
       }
-
-      List<string> spatialElements = (from s in createModel.Species select s.Id).ToList();
-      List<Tuple<string, string>> initialConditions = (from s in createModel.Species
-        select
-          new Tuple<string, string>(s.Id, s.InitialCondition)).ToList();
-      //object geometryDescription = null;
-
 
       Document.enablePackage(SpatialExtension.getXmlnsL3V1V1(), "spatial", true);
       Document.setPackageRequired("spatial", true);
@@ -352,142 +342,156 @@ namespace EditSpatial.Model
       if (geometry == null)
         return false;
 
-      // create coordinate components
-      
+      // create coordinate components      
       CreateCoordinateSystem(geometry, model, createModel.Geometry);
 
-      Parameter param = null;
-      SpatialParameterPlugin pplug = null;
+      if (!SetupGeometry(model, geometry, createModel)) return false;
 
+      SetupSpecies(createModel, model);
+
+      SetIsLocalOnReactions(model);
+
+      return true;
+    }
+
+    private bool SetupGeometry(libsbmlcs.Model model, Geometry geometry, 
+      CreateModel createModel)
+    {
       if (model.getNumCompartments() == 1)
+        return SetupUnicompartmentalGeometry(model, geometry, createModel);
+
+      long numCompartments = model.getNumCompartments();
+      double length = createModel.Geometry.Xmax / numCompartments;
+      AnalyticGeometry def = geometry.createAnalyticGeometry();
+      def.setSpatialId("geometry");
+
+      List<string> order = OrderCompartments(model);
+      int i = 0;
+      AdjacentDomains lastAdjacent = null;
+      Domain memDomain = null;
+      foreach (string compid in order)
       {
         DomainType domainType = geometry.createDomainType();
-        domainType.setSpatialId("domainType0");
+        domainType.setSpatialId("domainType_" + compid);
         domainType.setSpatialDimensions(3);
 
         Domain domain = geometry.createDomain();
-        domain.setSpatialId("domain0");
-        domain.setDomainType("domainType0");
+        domain.setSpatialId("domain_" + compid);
+        domain.setDomainType("domainType_" + compid);
         InteriorPoint point = domain.createInteriorPoint();
-        point.setCoord1(DefaultWidth/2.0);
-        point.setCoord2(DefaultHeight/2.0);
+        point.setCoord1(i*length + length/2.0);
+        point.setCoord2(createModel.Geometry.Ymax / 2.0);
         point.setCoord3(0);
 
-        AnalyticGeometry def = geometry.createAnalyticGeometry();
-        def.setSpatialId("geometry0");
-        AnalyticVolume vol = def.createAnalyticVolume();
-        vol.setSpatialId("vol0");
-        vol.setDomainType("domainType0");
-        vol.setFunctionType("layered");
-        vol.setOrdinal(0);
-        vol.setMath(libsbml.parseFormula("1"));
+        if (lastAdjacent != null)
+        {
+          AdjacentDomains adj = geometry.createAdjacentDomains();
+          adj.setSpatialId("adj_" + memDomain.getSpatialId() + "_" + domain.getSpatialId());
+          adj.setDomain1(memDomain.getSpatialId());
+          adj.setDomain2(domain.getSpatialId());
+        }
 
-        Compartment comp = model.getCompartment(0);
+        AnalyticVolume vol = def.createAnalyticVolume();
+        vol.setSpatialId("vol_" + compid);
+        vol.setDomainType("domainType_" + compid);
+        vol.setFunctionType("layered");
+        vol.setOrdinal(i);
+        vol.setMath(libsbml.parseFormula(
+          i == 0
+            ? "1"
+            //            string.Format(
+            //"and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))
+            : string.Format(
+              //"and(and(geq(x, {0}), lt(x, {1})), and(geq(y, {0}), lt(y, {1})))", (i * length), ((i + 1) * length))
+              "and(geq(x, {0}), lt(x, {1}))", (i*length), ((i + 1)*length))
+          ));
+
+        Compartment comp = model.getCompartment(compid);
         var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
         if (cplug == null)
           return false;
 
         CompartmentMapping map = cplug.getCompartmentMapping();
-        map.setSpatialId("mapping0");
+        map.setSpatialId("mapping_" + compid);
         map.setCompartment(comp.getId());
         map.setDomainType(domainType.getSpatialId());
         map.setUnitSize(1);
-      }
 
-      else
-      {
-        long numCompartments = model.getNumCompartments();
-        double length = DefaultWidth/numCompartments;
-        AnalyticGeometry def = geometry.createAnalyticGeometry();
-        def.setSpatialId("geometry");
-
-        List<string> order = OrderCompartments(model);
-        int i = 0;
-        AdjacentDomains lastAdjacent = null;
-        Domain memDomain = null;
-        foreach (string compid in order)
+        if (i + 1 < numCompartments)
         {
-          DomainType domainType = geometry.createDomainType();
-          domainType.setSpatialId("domainType_" + compid);
-          domainType.setSpatialDimensions(3);
+          domainType = geometry.createDomainType();
+          domainType.setSpatialId("mem_" + compid);
+          domainType.setSpatialDimensions(2);
 
-          Domain domain = geometry.createDomain();
-          domain.setSpatialId("domain_" + compid);
-          domain.setDomainType("domainType_" + compid);
-          InteriorPoint point = domain.createInteriorPoint();
-          point.setCoord1(i*length + length/2.0);
-          point.setCoord2(DefaultHeight/2.0);
-          point.setCoord3(0);
+          comp = model.createCompartment();
+          comp.initDefaults();
+          comp.setId("c_mem_" + compid);
+          comp.setSize(1);
 
-          if (lastAdjacent != null)
-          {
-            AdjacentDomains adj = geometry.createAdjacentDomains();
-            adj.setSpatialId("adj_" + memDomain.getSpatialId() + "_" + domain.getSpatialId());
-            adj.setDomain1(memDomain.getSpatialId());
-            adj.setDomain2(domain.getSpatialId());
-          }
-
-          AnalyticVolume vol = def.createAnalyticVolume();
-          vol.setSpatialId("vol_" + compid);
-          vol.setDomainType("domainType_" + compid);
-          vol.setFunctionType("layered");
-          vol.setOrdinal(i);
-          vol.setMath(libsbml.parseFormula(
-            i == 0
-              ? "1"
-              //            string.Format(
-              //"and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))
-              : string.Format(
-                //"and(and(geq(x, {0}), lt(x, {1})), and(geq(y, {0}), lt(y, {1})))", (i * length), ((i + 1) * length))
-                "and(geq(x, {0}), lt(x, {1}))", (i*length), ((i + 1)*length))
-            ));
-
-          Compartment comp = model.getCompartment(compid);
-          var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
+          cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
           if (cplug == null)
             return false;
 
-          CompartmentMapping map = cplug.getCompartmentMapping();
-          map.setSpatialId("mapping_" + compid);
+          map = cplug.getCompartmentMapping();
+          map.setSpatialId("mapping_" + comp.getId());
           map.setCompartment(comp.getId());
           map.setDomainType(domainType.getSpatialId());
           map.setUnitSize(1);
 
-          if (i + 1 < numCompartments)
-          {
-            domainType = geometry.createDomainType();
-            domainType.setSpatialId("mem_" + compid);
-            domainType.setSpatialDimensions(2);
+          memDomain = geometry.createDomain();
+          memDomain.setSpatialId("domain_mem_" + compid);
+          memDomain.setDomainType("mem_" + compid);
 
-            comp = model.createCompartment();
-            comp.initDefaults();
-            comp.setId("c_mem_" + compid);
-            comp.setSize(1);
-
-            cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
-            if (cplug == null)
-              return false;
-
-            map = cplug.getCompartmentMapping();
-            map.setSpatialId("mapping_" + comp.getId());
-            map.setCompartment(comp.getId());
-            map.setDomainType(domainType.getSpatialId());
-            map.setUnitSize(1);
-
-            memDomain = geometry.createDomain();
-            memDomain.setSpatialId("domain_mem_" + compid);
-            memDomain.setDomainType("mem_" + compid);
-
-            lastAdjacent = geometry.createAdjacentDomains();
-            lastAdjacent.setSpatialId("adj_" + memDomain.getSpatialId() + "_" + domain.getSpatialId());
-            lastAdjacent.setDomain1(memDomain.getSpatialId());
-            lastAdjacent.setDomain2(domain.getSpatialId());
-          }
-
-          ++i;
+          lastAdjacent = geometry.createAdjacentDomains();
+          lastAdjacent.setSpatialId("adj_" + memDomain.getSpatialId() + "_" + domain.getSpatialId());
+          lastAdjacent.setDomain1(memDomain.getSpatialId());
+          lastAdjacent.setDomain2(domain.getSpatialId());
         }
-      }
 
+        ++i;
+      }
+      return true;
+    }
+
+    private static bool SetupUnicompartmentalGeometry(libsbmlcs.Model model, Geometry geometry, CreateModel createModel)
+    {
+      DomainType domainType = geometry.createDomainType();
+      domainType.setSpatialId("domainType0");
+      domainType.setSpatialDimensions(3);
+
+      Domain domain = geometry.createDomain();
+      domain.setSpatialId("domain0");
+      domain.setDomainType("domainType0");
+      InteriorPoint point = domain.createInteriorPoint();
+      point.setCoord1(createModel.Geometry.Xmax/2.0);
+      point.setCoord2(createModel.Geometry.Ymax/2.0);
+      point.setCoord3(0);
+
+      AnalyticGeometry def = geometry.createAnalyticGeometry();
+      def.setSpatialId("geometry0");
+      AnalyticVolume vol = def.createAnalyticVolume();
+      vol.setSpatialId("vol0");
+      vol.setDomainType("domainType0");
+      vol.setFunctionType("layered");
+      vol.setOrdinal(0);
+      vol.setMath(libsbml.parseFormula("1"));
+
+      Compartment comp = model.getCompartment(0);
+      var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
+      if (cplug == null)
+        return false;
+
+      CompartmentMapping map = cplug.getCompartmentMapping();
+      map.setSpatialId("mapping0");
+      map.setCompartment(comp.getId());
+      map.setDomainType(domainType.getSpatialId());
+      map.setUnitSize(1);
+      return true;
+    }
+
+    private static void SetupSpecies(CreateModel createModel, libsbmlcs.Model model)
+    {
+      List<string> spatialElements = (from s in createModel.Species select s.Id).ToList();
 
       for (int i = 0; i < model.getNumSpecies(); i++)
       {
@@ -496,79 +500,81 @@ namespace EditSpatial.Model
         if (splug == null) continue;
         splug.setIsSpatial(false);
         string id = species.getId();
-        if (spatialElements.Contains(id))
-        {
-          var currentSpecies = createModel[id];
-          species.setInitialExpession(currentSpecies.InitialCondition);
-          splug.setIsSpatial(true);
-          SetRequiredElements(species);
+        if (!spatialElements.Contains(id)) continue;
+        
+        var currentSpecies = createModel[id];
+        species.setInitialExpession(currentSpecies.InitialCondition);
+        splug.setIsSpatial(true);
+        SetRequiredElements(species);
 
-          param = model.createParameter();
-          param.initDefaults();
-          param.setId(id + "_diff_X");
-          param.setValue(currentSpecies.DiffusionX);
-          pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-          DiffusionCoefficient diff = pplug.getDiffusionCoefficient();
-          diff.setVariable(id);
-          diff.setCoordinateIndex(0);
-          SetRequiredElements(param);
+        Parameter param = model.createParameter();
+        param.initDefaults();
+        param.setId(id + "_diff_X");
+        param.setValue(currentSpecies.DiffusionX);
+        var pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
+        var diff = pplug.getDiffusionCoefficient();
+        diff.setVariable(id);
+        diff.setCoordinateIndex(0);
+        SetRequiredElements(param);
 
-          param = model.createParameter();
-          param.initDefaults();
-          param.setId(id + "_diff_Y");
-          param.setValue(currentSpecies.DiffusionY);
-          pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-          diff = pplug.getDiffusionCoefficient();
-          diff.setVariable(id);
-          diff.setCoordinateIndex(1);
-          SetRequiredElements(param);
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId(id + "_diff_Y");
+        param.setValue(currentSpecies.DiffusionY);
+        pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
+        diff = pplug.getDiffusionCoefficient();
+        diff.setVariable(id);
+        diff.setCoordinateIndex(1);
+        SetRequiredElements(param);
 
-          param = model.createParameter();
-          param.initDefaults();
-          param.setId(id + "_BC_Xmin");
-          param.setValue(currentSpecies.MinBoundaryX);
-          pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-          BoundaryCondition bc = pplug.getBoundaryCondition();
-          bc.setVariable(id);
-          bc.setCoordinateBoundary("Xmin");
-          bc.setType("Flux");
-          SetRequiredElements(param);
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId(id + "_BC_Xmin");
+        param.setValue(currentSpecies.MinBoundaryX);
+        pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
+        BoundaryCondition bc = pplug.getBoundaryCondition();
+        bc.setVariable(id);
+        bc.setCoordinateBoundary("Xmin");
+        bc.setType("Flux");
+        SetRequiredElements(param);
 
-          param = model.createParameter();
-          param.initDefaults();
-          param.setId(id + "_BC_Xmax");
-          param.setValue(currentSpecies.MaxBoundaryX);
-          pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-          bc = pplug.getBoundaryCondition();
-          bc.setVariable(id);
-          bc.setCoordinateBoundary("Xmax");
-          bc.setType("Flux");
-          SetRequiredElements(param);
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId(id + "_BC_Xmax");
+        param.setValue(currentSpecies.MaxBoundaryX);
+        pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
+        bc = pplug.getBoundaryCondition();
+        bc.setVariable(id);
+        bc.setCoordinateBoundary("Xmax");
+        bc.setType("Flux");
+        SetRequiredElements(param);
 
-          param = model.createParameter();
-          param.initDefaults();
-          param.setId(id + "_BC_Ymin");
-          param.setValue(currentSpecies.MinBoundaryY);
-          pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-          bc = pplug.getBoundaryCondition();
-          bc.setVariable(id);
-          bc.setCoordinateBoundary("Ymin");
-          bc.setType("Flux");
-          SetRequiredElements(param);
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId(id + "_BC_Ymin");
+        param.setValue(currentSpecies.MinBoundaryY);
+        pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
+        bc = pplug.getBoundaryCondition();
+        bc.setVariable(id);
+        bc.setCoordinateBoundary("Ymin");
+        bc.setType("Flux");
+        SetRequiredElements(param);
 
-          param = model.createParameter();
-          param.initDefaults();
-          param.setId(id + "_BC_Ymax");
-          param.setValue(currentSpecies.MaxBoundaryY);
-          pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-          bc = pplug.getBoundaryCondition();
-          bc.setVariable(id);
-          bc.setCoordinateBoundary("Ymax");
-          bc.setType("Flux");
-          SetRequiredElements(param);
-        }
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId(id + "_BC_Ymax");
+        param.setValue(currentSpecies.MaxBoundaryY);
+        pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
+        bc = pplug.getBoundaryCondition();
+        bc.setVariable(id);
+        bc.setCoordinateBoundary("Ymax");
+        bc.setType("Flux");
+        SetRequiredElements(param);
       }
+    }
 
+    private void SetIsLocalOnReactions(libsbmlcs.Model model)
+    {
       for (int i = 0; i < model.getNumReactions(); i++)
       {
         Reaction reaction = model.getReaction(i);
@@ -579,8 +585,6 @@ namespace EditSpatial.Model
         var isLocal = idsContainedIn.Count > 0;
         rplug.setIsLocal(isLocal);
       }
-
-      return true;
     }
 
     private void CreateCoordinateSystem(Geometry geometry, libsbmlcs.Model model, 

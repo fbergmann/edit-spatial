@@ -72,6 +72,7 @@
       // 
       // cmdFixCommon
       // 
+      this.cmdFixCommon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.cmdFixCommon.Location = new System.Drawing.Point(84, 3);
       this.cmdFixCommon.Name = "cmdFixCommon";
       this.cmdFixCommon.Size = new System.Drawing.Size(107, 23);
@@ -82,7 +83,7 @@
       // 
       // cmdClose
       // 
-      this.cmdClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.cmdClose.Location = new System.Drawing.Point(540, 3);
       this.cmdClose.Name = "cmdClose";
@@ -94,6 +95,7 @@
       // 
       // cmdValidate
       // 
+      this.cmdValidate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.cmdValidate.Location = new System.Drawing.Point(3, 3);
       this.cmdValidate.Name = "cmdValidate";
       this.cmdValidate.Size = new System.Drawing.Size(75, 23);
