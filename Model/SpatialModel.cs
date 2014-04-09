@@ -931,5 +931,11 @@ namespace EditSpatial.Model
       var converter = new MorpheusConverter(Document);
       return converter.ToMorpheus();
     }
+
+    public void ExportToDune(string path)
+    {
+      var converter = new DuneConverter(Document);
+      converter.ExportTo(path);
+    }
   }
 }

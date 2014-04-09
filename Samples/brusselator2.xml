@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:spatial="http://www.sbml.org/sbml/level3/version1/spatial/version1" xmlns:req="http://www.sbml.org/sbml/level3/version1/requiredElements/version1" level="3" version="1" spatial:required="true" req:required="false">
+  <model id="brusselator" name="brusselator" substanceUnits="substance" timeUnits="second" volumeUnits="volume" areaUnits="area" lengthUnits="metre" extentUnits="substance">
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="area">
+        <listOfUnits>
+          <unit kind="metre" exponent="2" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment" spatialDimensions="3" size="1" units="volume" constant="true">
+        <spatial:compartmentMapping spatial:spatialId="mapping0" spatial:compartment="compartment" spatial:domainType="domainType0" spatial:unitSize="1"/>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="A" compartment="compartment" initialConcentration="2.5" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false" spatial:isSpatial="false"/>
+      <species id="B" compartment="compartment" initialConcentration="5.24" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false" spatial:isSpatial="false"/>
+      <species id="D" compartment="compartment" initialConcentration="0" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false" spatial:isSpatial="false"/>
+      <species id="E" compartment="compartment" initialConcentration="0" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="true" constant="false" spatial:isSpatial="false"/>
+      <species id="X" compartment="compartment" initialConcentration="3" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false" spatial:isSpatial="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true"/>
+      <species id="Y" compartment="compartment" initialConcentration="3" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false" spatial:isSpatial="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="J0_k_1" value="1" constant="true"/>
+      <parameter id="J1_k_2" value="1" constant="true"/>
+      <parameter id="J2_k_3" value="1" constant="true"/>
+      <parameter id="J3_k_4" value="1" constant="true"/>
+      <parameter id="x" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:spatialSymbolReference spatial:spatialId="x" spatial:type="coordinateComponent"/>
+      </parameter>
+      <parameter id="y" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:spatialSymbolReference spatial:spatialId="y" spatial:type="coordinateComponent"/>
+      </parameter>
+      <parameter id="X_diff_X" value="0.016" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="X" spatial:coordinateIndex="0"/>
+      </parameter>
+      <parameter id="X_diff_Y" value="0.016" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="X" spatial:coordinateIndex="1"/>
+      </parameter>
+      <parameter id="X_BC_Xmin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="X" spatial:coordinateBoundary="Xmin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="X_BC_Xmax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="X" spatial:coordinateBoundary="Xmax" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="X_BC_Ymin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="X" spatial:coordinateBoundary="Ymin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="X_BC_Ymax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="X" spatial:coordinateBoundary="Ymax" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="Y_diff_X" value="0.08" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="Y" spatial:coordinateIndex="0"/>
+      </parameter>
+      <parameter id="Y_diff_Y" value="0.08" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="Y" spatial:coordinateIndex="1"/>
+      </parameter>
+      <parameter id="Y_BC_Xmin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="Y" spatial:coordinateBoundary="Xmin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="Y_BC_Xmax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="Y" spatial:coordinateBoundary="Xmax" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="Y_BC_Ymin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="Y" spatial:coordinateBoundary="Ymin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="Y_BC_Ymax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="Y" spatial:coordinateBoundary="Ymax" spatial:type="Flux"/>
+      </parameter>
+    </listOfParameters>
+    <listOfReactions>
+      <reaction id="J0" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfReactants>
+          <speciesReference species="A" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="X" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> J0_k_1 </ci>
+              <ci> A </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J1" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfReactants>
+          <speciesReference species="X" stoichiometry="2" constant="true"/>
+          <speciesReference species="Y" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="X" stoichiometry="3" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> J1_k_2 </ci>
+              <ci> X </ci>
+              <ci> X </ci>
+              <ci> Y </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J2" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfReactants>
+          <speciesReference species="X" stoichiometry="1" constant="true"/>
+          <speciesReference species="B" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="Y" stoichiometry="1" constant="true"/>
+          <speciesReference species="D" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> J2_k_3 </ci>
+              <ci> X </ci>
+              <ci> B </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="J3" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfReactants>
+          <speciesReference species="X" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="E" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> J3_k_4 </ci>
+              <ci> X </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+    <spatial:geometry spatial:coordinateSystem="Cartesian">
+      <spatial:listOfCoordinateComponents>
+        <spatial:coordinateComponent spatial:spatialId="x" spatial:componentType="cartesianX" spatial:sbmlUnit="um" spatial:index="0">
+          <spatial:boundaryMin spatial:spatialId="Xmin" spatial:value="0"/>
+          <spatial:boundaryMax spatial:spatialId="Xmax" spatial:value="100"/>
+        </spatial:coordinateComponent>
+        <spatial:coordinateComponent spatial:spatialId="y" spatial:componentType="cartesianY" spatial:sbmlUnit="um" spatial:index="1">
+          <spatial:boundaryMin spatial:spatialId="Ymin" spatial:value="0"/>
+          <spatial:boundaryMax spatial:spatialId="Ymax" spatial:value="100"/>
+        </spatial:coordinateComponent>
+      </spatial:listOfCoordinateComponents>
+      <spatial:listOfDomainTypes>
+        <spatial:domainType spatial:spatialId="domainType0" spatial:spatialDimensions="3"/>
+      </spatial:listOfDomainTypes>
+      <spatial:listOfDomains>
+        <spatial:domain spatial:spatialId="domain0" spatial:domainType="domainType0">
+          <spatial:listOfInteriorPoints>
+            <spatial:interiorPoint spatial:coord1="50" spatial:coord2="50" spatial:coord3="0"/>
+          </spatial:listOfInteriorPoints>
+        </spatial:domain>
+      </spatial:listOfDomains>
+      <spatial:listOfGeometryDefinitions>
+        <spatial:analyticGeometry spatial:spatialId="geometry0">
+          <spatial:listOfAnalyticVolumes>
+            <spatial:analyticVolume spatial:spatialId="vol0" spatial:domainType="domainType0" spatial:functionType="layered" spatial:ordinal="0">
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <cn type="integer"> 1 </cn>
+              </math>
+            </spatial:analyticVolume>
+          </spatial:listOfAnalyticVolumes>
+        </spatial:analyticGeometry>
+      </spatial:listOfGeometryDefinitions>
+    </spatial:geometry>
+  </model>
+</sbml>

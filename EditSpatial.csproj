@@ -123,6 +123,7 @@
     <Compile Include="Controls\ControlInitialAssignments.Designer.cs">
       <DependentUpon>ControlInitialAssignments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Converter\DuneConverter.cs" />
     <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,6 +231,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Templates\config.conf" />
+    <None Include="Templates\main.conf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -239,6 +242,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="IMAGE_NoGeomery.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\componentparameters.hh" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\initial_conditions.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\local_operator.hh" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\main.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\reactionadapter.h" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

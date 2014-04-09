@@ -105,6 +105,13 @@ namespace EditSpatial
       return null;
     }
 
+    public static bool IsSpatial(this libsbmlcs.Parameter parameter)
+    {
+      var plug = (SpatialParameterPlugin)parameter.getPlugin("spatial");
+      if (plug == null) return false;
+      return plug.isSpatialParameter();
+    }
+
     public static double? getDiffusionX(this libsbmlcs.Species species)
     {
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)        

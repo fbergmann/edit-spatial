@@ -617,7 +617,7 @@ namespace EditSpatial
       LoadFromJarnac(txtJarnac.Text);
     }
 
-    private void OnExportClick(object sender, EventArgs e)
+    private void OnExportMorpheusClick(object sender, EventArgs e)
     {
       if (Model == null || Model.Document == null)
         return;
@@ -667,6 +667,34 @@ namespace EditSpatial
           UpdateUI();
         }
       }
+    }
+
+    private void OnExportDuneClick(object sender, EventArgs e)
+    {
+      if (Model == null || Model.Document == null)
+        return;
+      Model.Document.checkConsistency();
+      if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
+      {
+        MessageBox.Show(
+          "Unfortunately, the SBML model contains a number of errors. These need to be corrected, before the model can be exported to Morpheus.",
+          "Invalid Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        ShowErrors();
+        return;
+      }
+
+      var dialog = new SaveFileDialog
+      {
+        Title = "Export Model to DUNE",
+        Filter = "Main Implementation file|*.cc|All files|*.*",
+        AutoUpgradeEnabled = true
+      };
+
+      if (dialog.ShowDialog() != DialogResult.OK)
+        return;
+
+      Model.ExportToDune(Path.GetDirectoryName(dialog.FileName));
+  
     }
   }
 }

@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbml xmlns="http://www.sbml.org/sbml/level3/version1/core" xmlns:spatial="http://www.sbml.org/sbml/level3/version1/spatial/version1" xmlns:req="http://www.sbml.org/sbml/level3/version1/requiredElements/version1" level="3" version="1" spatial:required="true" req:required="false">
+  <model metaid="COPASI0" id="New_Model_Application0" name="New Model_Application0" substanceUnits="substance" timeUnits="second" volumeUnits="volume" areaUnits="area" lengthUnits="metre" extentUnits="substance">
+    <annotation>
+      <COPASI xmlns="http://www.copasi.org/static/sbml">
+        <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <rdf:Description rdf:about="#COPASI0">
+            <dcterms:created>
+              <rdf:Description>
+                <dcterms:W3CDTF>2014-01-31T09:57:06Z</dcterms:W3CDTF>
+              </rdf:Description>
+            </dcterms:created>
+          </rdf:Description>
+        </rdf:RDF>
+      </COPASI>
+    </annotation>
+    <listOfFunctionDefinitions>
+      <functionDefinition id="Function_for_reaction_2" name="Function for reaction_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> compartment_1 </ci>
+            </bvar>
+            <bvar>
+              <ci> v2 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <ci> v2 </ci>
+              <ci> compartment_1 </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_reaction_1" name="Function for reaction_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> compartment_1 </ci>
+            </bvar>
+            <bvar>
+              <ci> k1 </ci>
+            </bvar>
+            <bvar>
+              <ci> species_1 </ci>
+            </bvar>
+            <bvar>
+              <ci> species_2 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> k1 </ci>
+                <ci> species_1 </ci>
+                <ci> species_2 </ci>
+              </apply>
+              <ci> compartment_1 </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_reaction_3" name="Function for reaction_3">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> compartment_1 </ci>
+            </bvar>
+            <bvar>
+              <ci> v1 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <ci> v1 </ci>
+              <ci> compartment_1 </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+      <functionDefinition id="Function_for_reaction_4" name="Function for reaction_4">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <lambda>
+            <bvar>
+              <ci> Km </ci>
+            </bvar>
+            <bvar>
+              <ci> V </ci>
+            </bvar>
+            <bvar>
+              <ci> compartment_1 </ci>
+            </bvar>
+            <bvar>
+              <ci> species_2 </ci>
+            </bvar>
+            <apply>
+              <divide/>
+              <apply>
+                <times/>
+                <ci> V </ci>
+                <ci> species_2 </ci>
+                <apply>
+                  <divide/>
+                  <cn> 1 </cn>
+                  <apply>
+                    <plus/>
+                    <ci> Km </ci>
+                    <ci> species_2 </ci>
+                  </apply>
+                </apply>
+              </apply>
+              <ci> compartment_1 </ci>
+            </apply>
+          </lambda>
+        </math>
+      </functionDefinition>
+    </listOfFunctionDefinitions>
+    <listOfUnitDefinitions>
+      <unitDefinition id="volume">
+        <listOfUnits>
+          <unit kind="litre" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="substance">
+        <listOfUnits>
+          <unit kind="mole" exponent="1" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+      <unitDefinition id="area">
+        <listOfUnits>
+          <unit kind="metre" exponent="2" scale="0" multiplier="1"/>
+        </listOfUnits>
+      </unitDefinition>
+    </listOfUnitDefinitions>
+    <listOfCompartments>
+      <compartment id="compartment_1" name="compartment_1" spatialDimensions="3" size="1" units="volume" constant="true">
+        <spatial:compartmentMapping spatial:spatialId="mapping0" spatial:compartment="compartment_1" spatial:domainType="domainType0" spatial:unitSize="1"/>
+      </compartment>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species metaid="COPASI1" id="species_1" name="species_1" compartment="compartment_1" initialConcentration="0.5" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false" spatial:isSpatial="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI1">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-02-11T19:47:49Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+      </species>
+      <species metaid="COPASI2" id="species_2" name="species_2" compartment="compartment_1" initialConcentration="0.1" substanceUnits="substance" hasOnlySubstanceUnits="false" boundaryCondition="false" constant="false" spatial:isSpatial="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <annotation>
+          <COPASI xmlns="http://www.copasi.org/static/sbml">
+            <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+              <rdf:Description rdf:about="#COPASI2">
+                <dcterms:created>
+                  <rdf:Description>
+                    <dcterms:W3CDTF>2014-02-11T19:47:52Z</dcterms:W3CDTF>
+                  </rdf:Description>
+                </dcterms:created>
+              </rdf:Description>
+            </rdf:RDF>
+          </COPASI>
+        </annotation>
+      </species>
+    </listOfSpecies>
+    <listOfParameters>
+      <parameter id="x" name="x" value="0" constant="true"/>
+      <parameter id="y" name="y" value="0" constant="true"/>
+      <parameter id="species_1_diff" name="species_1_diff" value="4" constant="true"/>
+      <parameter id="species_1_diff_Y" name="species_1_diff_Y" value="4" constant="true"/>
+      <parameter id="species_1_BC_Xm" name="species_1_BC_Xm" value="0" constant="true"/>
+      <parameter id="species_1_BC_Xp" name="species_1_BC_Xp" value="0" constant="true"/>
+      <parameter id="species_1_BC_Ym" name="species_1_BC_Ym" value="0" constant="true"/>
+      <parameter id="species_1_BC_Yp" name="species_1_BC_Yp" value="0" constant="true"/>
+      <parameter id="species_2_diff" name="species_2_diff" value="0.4" constant="true"/>
+      <parameter id="species_2_diff_y" name="species_2_diff_y" value="0.4" constant="true"/>
+      <parameter id="species_2_BC_Xm" name="species_2_BC_Xm" value="0" constant="true"/>
+      <parameter id="species_2_BC_Xp" name="species_2_BC_Xp" value="0" constant="true"/>
+      <parameter id="species_2_BC_Ym" name="species_2_BC_Ym" value="0" constant="true"/>
+      <parameter id="species_2_BC_Yp" name="species_2_BC_Yp" value="0" constant="true"/>
+      <parameter id="v1" name="v1" value="0.06" constant="true"/>
+      <parameter id="v2" name="v2" value="0.12" constant="true"/>
+      <parameter id="V" name="V" value="0.5" constant="true"/>
+      <parameter id="Km" name="Km" value="0.1" constant="true"/>
+      <parameter id="k1" name="k1" value="1" constant="true"/>
+      <parameter id="x" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:spatialSymbolReference spatial:spatialId="x" spatial:type="coordinateComponent"/>
+      </parameter>
+      <parameter id="y" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:spatialSymbolReference spatial:spatialId="y" spatial:type="coordinateComponent"/>
+      </parameter>
+      <parameter id="species_1_diff_X" value="0.01" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="species_1" spatial:coordinateIndex="0"/>
+      </parameter>
+      <parameter id="species_1_diff_Y" value="0.01" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="species_1" spatial:coordinateIndex="1"/>
+      </parameter>
+      <parameter id="species_1_BC_Xmin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_1" spatial:coordinateBoundary="Xmin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="species_1_BC_Xmax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_1" spatial:coordinateBoundary="Xmax" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="species_1_BC_Ymin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_1" spatial:coordinateBoundary="Ymin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="species_1_BC_Ymax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_1" spatial:coordinateBoundary="Ymax" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="species_2_diff_X" value="0.01" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="species_2" spatial:coordinateIndex="0"/>
+      </parameter>
+      <parameter id="species_2_diff_Y" value="0.01" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:diffusionCoefficient spatial:variable="species_2" spatial:coordinateIndex="1"/>
+      </parameter>
+      <parameter id="species_2_BC_Xmin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_2" spatial:coordinateBoundary="Xmin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="species_2_BC_Xmax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_2" spatial:coordinateBoundary="Xmax" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="species_2_BC_Ymin" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_2" spatial:coordinateBoundary="Ymin" spatial:type="Flux"/>
+      </parameter>
+      <parameter id="species_2_BC_Ymax" value="0" constant="true" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <spatial:boundaryCondition spatial:variable="species_2" spatial:coordinateBoundary="Ymax" spatial:type="Flux"/>
+      </parameter>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <initialAssignment symbol="species_1">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <piecewise>
+            <piece>
+              <cn> 20 </cn>
+              <apply>
+                <and/>
+                <apply>
+                  <and/>
+                  <apply>
+                    <gt/>
+                    <ci> x </ci>
+                    <cn> 20 </cn>
+                  </apply>
+                  <apply>
+                    <lt/>
+                    <ci> x </ci>
+                    <cn> 25 </cn>
+                  </apply>
+                </apply>
+                <apply>
+                  <and/>
+                  <apply>
+                    <gt/>
+                    <ci> y </ci>
+                    <cn> 70 </cn>
+                  </apply>
+                  <apply>
+                    <lt/>
+                    <ci> y </ci>
+                    <cn> 85 </cn>
+                  </apply>
+                </apply>
+              </apply>
+            </piece>
+            <otherwise>
+              <cn> 0.5 </cn>
+            </otherwise>
+          </piecewise>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="species_2">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <cn> 0.1 </cn>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfReactions>
+      <reaction id="reaction_1" name="reaction_1" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfReactants>
+          <speciesReference species="species_1" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="species_2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_1 </ci>
+              <apply>
+                <ci> Function_for_reaction_1 </ci>
+                <ci> compartment_1 </ci>
+                <ci> k1 </ci>
+                <ci> species_1 </ci>
+                <ci> species_2 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_2" name="reaction_2" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfProducts>
+          <speciesReference species="species_1" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_1 </ci>
+              <apply>
+                <ci> Function_for_reaction_2 </ci>
+                <ci> compartment_1 </ci>
+                <ci> v2 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_3" name="reaction_3" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfProducts>
+          <speciesReference species="species_2" stoichiometry="1" constant="true"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_1 </ci>
+              <apply>
+                <ci> Function_for_reaction_3 </ci>
+                <ci> compartment_1 </ci>
+                <ci> v1 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="reaction_4" name="reaction_4" reversible="false" fast="false" spatial:isLocal="false" req:mathOverridden="spatial" req:coreHasAlternateMath="true">
+        <listOfReactants>
+          <speciesReference species="species_2" stoichiometry="1" constant="true"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> compartment_1 </ci>
+              <apply>
+                <ci> Function_for_reaction_4 </ci>
+                <ci> Km </ci>
+                <ci> V </ci>
+                <ci> compartment_1 </ci>
+                <ci> species_2 </ci>
+              </apply>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+    <spatial:geometry spatial:coordinateSystem="Cartesian">
+      <spatial:listOfCoordinateComponents>
+        <spatial:coordinateComponent spatial:spatialId="x" spatial:componentType="cartesianX" spatial:sbmlUnit="um" spatial:index="0">
+          <spatial:boundaryMin spatial:spatialId="Xmin" spatial:value="0"/>
+          <spatial:boundaryMax spatial:spatialId="Xmax" spatial:value="100"/>
+        </spatial:coordinateComponent>
+        <spatial:coordinateComponent spatial:spatialId="y" spatial:componentType="cartesianY" spatial:sbmlUnit="um" spatial:index="1">
+          <spatial:boundaryMin spatial:spatialId="Ymin" spatial:value="0"/>
+          <spatial:boundaryMax spatial:spatialId="Ymax" spatial:value="100"/>
+        </spatial:coordinateComponent>
+      </spatial:listOfCoordinateComponents>
+      <spatial:listOfDomainTypes>
+        <spatial:domainType spatial:spatialId="domainType0" spatial:spatialDimensions="3"/>
+      </spatial:listOfDomainTypes>
+      <spatial:listOfDomains>
+        <spatial:domain spatial:spatialId="domain0" spatial:domainType="domainType0">
+          <spatial:listOfInteriorPoints>
+            <spatial:interiorPoint spatial:coord1="50" spatial:coord2="50" spatial:coord3="0"/>
+          </spatial:listOfInteriorPoints>
+        </spatial:domain>
+      </spatial:listOfDomains>
+      <spatial:listOfGeometryDefinitions>
+        <spatial:analyticGeometry spatial:spatialId="geometry0">
+          <spatial:listOfAnalyticVolumes>
+            <spatial:analyticVolume spatial:spatialId="vol0" spatial:domainType="domainType0" spatial:functionType="layered" spatial:ordinal="0">
+              <math xmlns="http://www.w3.org/1998/Math/MathML">
+                <cn type="integer"> 1 </cn>
+              </math>
+            </spatial:analyticVolume>
+          </spatial:listOfAnalyticVolumes>
+        </spatial:analyticGeometry>
+      </spatial:listOfGeometryDefinitions>
+    </spatial:geometry>
+  </model>
+</sbml>
