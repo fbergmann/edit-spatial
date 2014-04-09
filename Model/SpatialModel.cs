@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using EditSpatial.Converter;
 using libSbl2SBML;
 using libsbmlcs;
 using SBMLSupport;

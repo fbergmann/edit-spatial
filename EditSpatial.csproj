@@ -163,7 +163,7 @@
     <Compile Include="Model\AnalyticSettings.cs" />
     <Compile Include="Model\CreateModel.cs" />
     <Compile Include="Model\GeometrySettings.cs" />
-    <Compile Include="Model\MorpheusConverter.cs" />
+    <Compile Include="Converter\MorpheusConverter.cs" />
     <Compile Include="Model\SpatialModel.cs" />
     <Compile Include="Model\SpatialSpecies.cs" />
     <Compile Include="Program.cs" />

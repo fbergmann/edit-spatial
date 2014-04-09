@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 using libsbmlcs;
 
-namespace EditSpatial.Model
+namespace EditSpatial.Converter
 {
   public class MorpheusConverter : IDisposable
   {
