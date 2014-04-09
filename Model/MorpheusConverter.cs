@@ -6,7 +6,7 @@ using libsbmlcs;
 
 namespace EditSpatial.Model
 {
-  public class MorpheusConverter
+  public class MorpheusConverter : IDisposable
   {
     private readonly SBMLDocument document;
     private readonly StringBuilder errorBuilder;
@@ -29,8 +29,18 @@ namespace EditSpatial.Model
         return plugin.getGeometry();
       }
     }
-    
-    
+
+
+    public void Dispose()
+    {
+      if (document != null)
+        document.Dispose();
+      if (Model != null)
+        Model.Dispose();
+      if (dims != null)
+        dims.Dispose();
+    }
+
     public MorpheusConverter(SBMLDocument original)
     {
       errorBuilder = new StringBuilder();

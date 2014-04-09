@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
 
-namespace EditSpatial
+namespace EditSpatial.Forms
 {
   public partial class FormErrors : Form
   {

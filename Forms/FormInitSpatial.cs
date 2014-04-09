@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
 
-namespace EditSpatial
+namespace EditSpatial.Forms
 {
   public partial class FormInitSpatial : Form
   {
@@ -68,7 +61,7 @@ namespace EditSpatial
       AddSelected(selected as string);
     }
 
-    private void AddSelected(libsbmlcs.Species species)
+    private void AddSelected(Species species)
     {
       if (species == null || _model == null) return;
 
@@ -126,7 +119,7 @@ namespace EditSpatial
       for (int i = lstSpatialSpecies.Items.Count - 1; i >= 0; i--)
       {
         var current = lstSpatialSpecies.Items[i] as SpatialSpecies;
-        if (current.Id == id)
+        if (current != null &&  current.Id == id)
         {
           species = current;
           break;
@@ -138,7 +131,7 @@ namespace EditSpatial
     private void RemoveSelected(SpatialSpecies o)
     {
       if (o == null) return;
-      var current = o as SpatialSpecies;
+      var current = o;
       lstSpatialSpecies.Items.Remove(o);
 
       for (int i = grid.Rows.Count - 1; i >= 0; i--)

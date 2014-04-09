@@ -123,10 +123,10 @@
     <Compile Include="Controls\ControlInitialAssignments.Designer.cs">
       <DependentUpon>ControlInitialAssignments.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAbout.cs">
+    <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormAbout.Designer.cs">
+    <Compile Include="Forms\FormAbout.Designer.cs">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ControlDisplayNode.cs">
@@ -141,16 +141,16 @@
     <Compile Include="Controls\ControlText.Designer.cs">
       <DependentUpon>ControlText.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormErrors.cs">
+    <Compile Include="Forms\FormErrors.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormErrors.Designer.cs">
+    <Compile Include="Forms\FormErrors.Designer.cs">
       <DependentUpon>FormErrors.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormInitSpatial.cs">
+    <Compile Include="Forms\FormInitSpatial.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormInitSpatial.Designer.cs">
+    <Compile Include="Forms\FormInitSpatial.Designer.cs">
       <DependentUpon>FormInitSpatial.cs</DependentUpon>
     </Compile>
     <Compile Include="ISBWAnalyzer.cs" />
@@ -160,9 +160,12 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\AnalyticSettings.cs" />
     <Compile Include="Model\CreateModel.cs" />
+    <Compile Include="Model\GeometrySettings.cs" />
     <Compile Include="Model\MorpheusConverter.cs" />
     <Compile Include="Model\SpatialModel.cs" />
+    <Compile Include="Model\SpatialSpecies.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
@@ -190,7 +193,7 @@
     <EmbeddedResource Include="Controls\ControlInitialAssignments.resx">
       <DependentUpon>ControlInitialAssignments.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormAbout.resx">
+    <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ControlDisplayNode.resx">
@@ -199,10 +202,10 @@
     <EmbeddedResource Include="Controls\ControlText.resx">
       <DependentUpon>ControlText.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormErrors.resx">
+    <EmbeddedResource Include="Forms\FormErrors.resx">
       <DependentUpon>FormErrors.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormInitSpatial.resx">
+    <EmbeddedResource Include="Forms\FormInitSpatial.resx">
       <DependentUpon>FormInitSpatial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">

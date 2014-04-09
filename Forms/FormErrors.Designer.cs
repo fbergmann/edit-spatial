@@ -1,4 +1,4 @@
-﻿namespace EditSpatial
+﻿namespace EditSpatial.Forms
 {
   partial class FormErrors
   {

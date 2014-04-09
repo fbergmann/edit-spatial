@@ -386,7 +386,7 @@ namespace EditSpatial.Model
         if (lastAdjacent != null)
         {
           AdjacentDomains adj = geometry.createAdjacentDomains();
-          adj.setSpatialId("adj_" + memDomain.getSpatialId() + "_" + domain.getSpatialId());
+          adj.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
           adj.setDomain1(memDomain.getSpatialId());
           adj.setDomain2(domain.getSpatialId());
         }

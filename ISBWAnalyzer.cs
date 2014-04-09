@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SBW;
+
 namespace EditSpatial
 {
   delegate void doAnalysisDelegate(string model);

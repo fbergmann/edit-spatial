@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using EditSpatial.Controls;
+using EditSpatial.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
 using Microsoft.Win32;
