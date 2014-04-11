@@ -10,7 +10,7 @@
   to system of PDE's (as source term)
   What need to be implemented is only the evaluate function
 */
-template<typename RF, int N>
+template<typename RF>
 class ReactionAdapter
 {
 public:
@@ -33,11 +33,6 @@ public:
     void evaluate (const EG& eg, const LFSU& lfsu, const X& x, const LFSV& lfsv, R& r)
     {
 %ODES%
-//        RF r1 = -k1*x(lfsu,0)*x(lfsu,1)+v2;
-//        RF r2 = k1*x(lfsu,0)*x(lfsu,1)+v1-V*x(lfsu,1)/(Km+x(lfsu,1));
-//
-//        r.accumulate(lfsv,0,-r1*eg.geometry().volume());
-//        r.accumulate(lfsv,1,-r2*eg.geometry().volume());
     }
 
 private:

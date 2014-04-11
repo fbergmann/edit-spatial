@@ -5,9 +5,11 @@
     with finite volume scheme. This class tests the
     multi domain grid.
 */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
 #include <math.h>
 #include <iostream>
 #include <vector>
@@ -28,18 +30,22 @@
 #include <dune/grid/multidomaingrid/subdomainset.hh>
 #include <dune/grid/multidomaingrid.hh>
 #include <dune/grid/common/gridinfo.hh>
+
 #if HAVE_ALBERTA
 #include <dune/grid/albertagrid.hh>
 #include <dune/grid/albertagrid/dgfparser.hh>
 #endif
+
 #if HAVE_UG
 #include <dune/grid/uggrid.hh>
 #endif
+
 #if HAVE_ALUGRID
 #include <dune/grid/alugrid.hh>
 #include <dune/grid/io/file/dgfparser/dgfalu.hh>
 #include <dune/grid/io/file/dgfparser/dgfparser.hh>
 #endif
+
 #include <dune/istl/bvector.hh>
 #include <dune/istl/operators.hh>
 #include <dune/istl/solvers.hh>
@@ -84,8 +90,6 @@
 #include "reactionadapter.hh"
 
 
-
-
 /** \brief Control time step after reaction.
 
     If some concentration is negative, then it returns false.
@@ -96,15 +100,13 @@
 template<typename V>
 bool controlReactionTimeStep (V &v)
 {
-
     for (auto it=v.begin(); it!=v.end();++it)
         if (*it<0) return false;
 
-    //std::cout << "concentration control was successfull" << std::endl;
     return true;
 }
 
-template<class GV, int numComponents = 2>
+template<class GV>
 void run (const GV& gv, Dune::ParameterTree & param)
 {
     const bool verbosity = param.sub("Verbosity").get<bool>("verbosity", false);
@@ -123,11 +125,10 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
     // for each component parameters different classes
     typedef DiffusionParameter<GV,RF> DP;
-    DP dp1(param, "Component1");
-    DP dp2(param, "Component2");
+%DPCREATION%
 
-    typedef Dune::PDELab::MulticomponentDiffusion<GV,RF,DP,numComponents> VCT;
-    VCT vct(dp1,dp2);
+    typedef Dune::PDELab::MulticomponentDiffusion<GV,RF,DP,%NUMCOMPONENTS%> VCT;
+    VCT vct(%DPINITIALIZATION%);
 
     // <<<2>>> Make grid function space
     typedef Dune::PDELab::P0LocalFiniteElementMap<DF,RF,dim> FEM;
@@ -152,10 +153,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
 
     // <<<2b>>> make subspaces for visualization
-    typedef Dune::PDELab::GridFunctionSubSpace<TPGFS,Dune::TypeTree::TreePath<0> > U0SUB;
-    U0SUB u0sub(tpgfs);
-    typedef Dune::PDELab::GridFunctionSubSpace<TPGFS,Dune::TypeTree::TreePath<1> > U1SUB;
-    U1SUB u1sub(tpgfs);
+%SUBCREATION%
 
     // make constraints map and initialize it from a function (boundary conditions)
     typedef typename TPGFS::template ConstraintsContainer<RF>::Type CC;
@@ -163,7 +161,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
     cg.clear();
     Dune::PDELab::constraints(tpgfs,cg,false);
 
-    typedef ReactionAdapter<RF,numComponents> RA;
+    typedef ReactionAdapter<RF> RA;
     RA ra(param);
 
     typedef Dune::PDELab::MulticomponentCCFVSpatialDiffusionOperator<VCT,RA> LOP;
@@ -187,14 +185,12 @@ void run (const GV& gv, Dune::ParameterTree & param)
     typedef typename IGO::Traits::Domain V;
     V uold(tpgfs,0.0);
     V unew(tpgfs,0.0);
-    // initial conditions
-    typedef U0Initial<GV,RF> U0InitialType;
-    U0InitialType u0initial(gv);
-    typedef U1Initial<GV,RF> U1InitialType;
-    U1InitialType u1initial(gv);
 
-    typedef Dune::PDELab::CompositeGridFunction<U0InitialType,U1InitialType> UInitialType; //new
-    UInitialType uinitial(u0initial,u1initial); //new
+    // initial conditions
+%INITIALTYPECREATION%
+
+    typedef Dune::PDELab::CompositeGridFunction<%INITIALTYPES%> UInitialType; //new
+    UInitialType uinitial(%INITIALARGS%); //new
     Dune::PDELab::interpolate(uinitial,tpgfs,uold);
     unew = uold;
 
@@ -224,19 +220,13 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
     osm.setVerbosityLevel(param.sub("Verbosity").get<int>("Instationary", 0));
 
-    // discrete grid functions
-    typedef Dune::PDELab::DiscreteGridFunction<U0SUB,V> U0DGF;
-    U0DGF u0dgf(u0sub,uold);
-    typedef Dune::PDELab::DiscreteGridFunction<U1SUB,V> U1DGF;
-    U1DGF u1dgf(u1sub,uold);
-
     char basename[255];
     sprintf(basename,"%s-%01d",param.get<std::string>("VTKname","").c_str(),param.sub("Domain").get<int>("refine"));
 
     typedef Dune::PVDWriter<GV> PVDWriter;
     PVDWriter pvdwriter(gv,basename,Dune::VTK::conforming);
-    pvdwriter.addVertexData(new Dune::PDELab::VTKGridFunctionAdapter<U0DGF>(u0dgf,"u0"));
-    pvdwriter.addVertexData(new Dune::PDELab::VTKGridFunctionAdapter<U1DGF>(u1dgf,"u1"));
+    // discrete grid functions
+%CREATEGRIDFUNCTIONS%
 
 
     // <<<9>>> time loop
@@ -333,18 +323,9 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
 bool isInside(const Dune::FieldVector<double,2>& point)
 {
-//    /center[0], center[1]
 
-    const auto& x = point[0];
-    const auto& y = point[1];
+%GEOMETRY%
 
-    bool inside=
-            (pow(0.27 * (-42. + x), 2.) + pow(0.4 * (-50. + y), 2.) < 100. ||
-            (y < (-10.+ x) &&  y > (110. + -x) && x < 90.));
-
-    //if (inside)
-    //    std::cout << "found inside... x: " << x << " y: " << y  << std::endl;
-    return inside;
 }
 
 //===============================================================
@@ -356,13 +337,6 @@ int main(int argc, char** argv)
     try{
         //Maybe initialize Mpi
         Dune::MPIHelper& helper = Dune::MPIHelper::instance(argc, argv);
-        /*if(Dune::MPIHelper::isFake)
-            std::cout<< "This is a sequential program." << std::endl;
-        else
-        {
-            if(helper.rank()==0)
-                std::cout << "parallel run on " << helper.size() << " process(es)" << std::endl;
-        }*/
 
         std::string configfile = argv[0]; configfile += ".conf";
 
@@ -383,7 +357,6 @@ int main(int argc, char** argv)
         Dune::ParameterTree param;
         Dune::ParameterTreeParser parser;
         parser.readINITree(configfile, param);
-
 
         int dim=param.sub("Domain").get<int>("dim", 2);
 

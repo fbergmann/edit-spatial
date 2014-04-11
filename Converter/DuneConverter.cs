@@ -124,28 +124,28 @@ namespace EditSpatial.Converter
         case libsbml.AST_RELATIONAL_LEQ:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
             builder.AppendFormat(" <= {0}", TranslateExpression(math.getChild(1), map));
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_LT:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
             builder.AppendFormat(" < {0}", TranslateExpression(math.getChild(1), map));
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_GT:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
             builder.AppendFormat(" > {0}", TranslateExpression(math.getChild(1), map));
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_GEQ:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
             builder.AppendFormat(" >= {0}", TranslateExpression(math.getChild(1), map));
             return builder.ToString();
           }
@@ -320,10 +320,10 @@ namespace EditSpatial.Converter
 
       int count = 1;
       // add component sections
-      for (int i = 0; i < Model.getNumSpecies(); ++i)
+      for (int i = 0; i < OdeVariables.Count; ++i)
       {
-        var species = Model.getSpecies(i);
-        if (species.getBoundaryCondition()) continue;
+        var species = Model.getSpecies(OdeVariables[i]);
+        if (species == null) continue;
         var plug = (SpatialSpeciesRxnPlugin)species.getPlugin("spatial");
         if (plug == null || plug.getIsSpatial() == false) continue;
 
@@ -331,7 +331,7 @@ namespace EditSpatial.Converter
         if (!diff.HasValue)
           diff = species.getDiffusionY();
 
-        if (!diff.HasValue) continue;
+        if (!diff.HasValue) diff = 0;
 
         builder.AppendFormat("[Component{0}]{1}", count, Environment.NewLine);
         builder.AppendFormat("D = {0}{1}", diff.Value, Environment.NewLine);
@@ -348,8 +348,107 @@ namespace EditSpatial.Converter
 
     private void WriteMainFile(string path)
     {
+      var builder = new StringBuilder();
+      var map = new Dictionary<string, string>();
+
+      var dpCreation = new StringBuilder();
+      var dpInitialization = new StringBuilder();
+      var subCreation = new StringBuilder();
+      var initialTypeCreation = new StringBuilder();
+      var initialTypes = new StringBuilder();
+      var initialArgs = new StringBuilder();
+      var gridFunctions = new StringBuilder();
+
+      map["%NUMCOMPONENTS%"] = OdeVariables.Count.ToString();
+      map["%GEOMETRY%"] = GenerateGeometryExpression();
+
+      for (int index = 0; index < OdeVariables.Count; index++)
+      {
+        dpCreation.AppendFormat("    DP dp{0}(param, \"Component{0}\");{1}"
+          , index+1
+          , Environment.NewLine);
+
+        dpInitialization.AppendFormat("dp{0}", index + 1);
+        initialTypes.AppendFormat("U{0}InitialType", index);
+        initialArgs.AppendFormat("u{0}initial", index);
+        if (index + 1 < OdeVariables.Count)
+        {
+          dpInitialization.Append(",");
+          initialTypes.Append(",");
+          initialArgs.Append(",");
+        }
+
+        subCreation.AppendFormat("    typedef Dune::PDELab::GridFunctionSubSpace<TPGFS,Dune::TypeTree::TreePath<{0}> > U{0}SUB;{1}"
+          , index, Environment.NewLine);
+        subCreation.AppendFormat("    U{0}SUB u{0}sub(tpgfs);{1}"
+          , index, Environment.NewLine);
+
+        initialTypeCreation.AppendFormat("    typedef U{0}Initial<GV,RF> U{0}InitialType;{1}"
+          , index, Environment.NewLine);
+        initialTypeCreation.AppendFormat("    U{0}InitialType u{0}initial(gv);{1}"
+          , index, Environment.NewLine);
+
+        gridFunctions.AppendFormat("    typedef Dune::PDELab::DiscreteGridFunction<U{0}SUB,V> U{0}DGF;{1}"
+          , index, Environment.NewLine);
+        gridFunctions.AppendFormat("    U{0}DGF u{0}dgf(u{0}sub,uold);{1}"
+          , index, Environment.NewLine);
+        gridFunctions.AppendFormat("    pvdwriter.addVertexData(new Dune::PDELab::VTKGridFunctionAdapter<U{0}DGF>(u{0}dgf,\"{1}\"));{2}"
+          , index
+          , OdeVariables[index]
+          , Environment.NewLine);
+
+      }
+
+
+      map["%DPCREATION%"] = dpCreation.ToString();
+      map["%SUBCREATION%"] = subCreation.ToString();
+      map["%DPINITIALIZATION%"] = dpInitialization.ToString();
+      map["%INITIALTYPECREATION%"] = initialTypeCreation.ToString();
+      map["%INITIALTYPES%"] = initialTypes.ToString();
+      map["%INITIALARGS%"] = initialArgs.ToString();
+      map["%CREATEGRIDFUNCTIONS%"] = gridFunctions.ToString();
+
+      builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.main, map));
+
       File.WriteAllText(Path.Combine(path, "main.cc"),
-        ExpandTemplate(EditSpatial.Properties.Resources.main));
+        builder.ToString());
+    }
+
+    private static string GenerateGeometryExpression()
+    {
+
+      return GenerateFish();
+      //return "return true;";
+
+      //map["%GEOMETRY%"] = TranslateExpression(initial.getMath(),
+      //new Dictionary<string, string>
+      //{
+      //  {"x", "x[0]"},
+      //  {"y", "x[1]"},
+      //  {"z", "x[2]"}
+      //}
+      //)
+
+//          const auto& x = point[0];
+//    const auto& y = point[1];
+//
+//    bool inside= %GEOMETRY%;
+//
+//    return inside;
+
+
+    }
+
+    private static string GenerateFish()
+    {
+      return
+        "    const auto& x = point[0];\n" +
+        "    const auto& y = point[1];\n" +
+        "\n" +
+        "    bool inside= (pow(0.27 * (-42. + x), 2.) + pow(0.4 * (-50. + y), 2.) < 100. ||\n" +
+        "            (y < (-10.+ x) &&  y > (110. + -x) && x < 90.));\n" +
+        "\n" +
+        "    return inside;\n";
     }
 
     private void WriteLocalOperator(string path)
@@ -360,8 +459,66 @@ namespace EditSpatial.Converter
 
     private void WriteInitialConditions(string path)
     {
+      var builder = new StringBuilder();
+      builder.AppendLine("#ifndef INITIAL_CONDITIONS_H");
+      builder.AppendLine("#define INITIAL_CONDITIONS_H");
+
+      int count = 0;
+      foreach(var item in OdeVariables)
+      {
+        var map = new Dictionary<string, string>();
+        map["%COUNT%"] = count.ToString();
+
+        var initial = Model.getInitialAssignment(item);
+        if (initial != null && initial.isSetMath())
+        {
+          var tempBuilder = new StringBuilder();
+          tempBuilder.AppendLine("        const int dim = Traits::GridViewType::Grid::dimension;");
+          tempBuilder.AppendLine("        typedef typename Traits::GridViewType::Grid::ctype ctype;");
+          tempBuilder.AppendLine("        Dune::FieldVector<ctype,dim> x = e.geometry().global(xlocal);");
+          tempBuilder.AppendLine();
+          tempBuilder.AppendFormat(
+            "        __initial = {0};{1}",
+            TranslateExpression(initial.getMath(),
+              new Dictionary<string, string>
+              {
+                {"x", "x[0]"},
+                {"y", "x[1]"},
+                {"z", "x[2]"}
+              }
+              ),
+            Environment.NewLine
+            );
+          map["%INITIALCONDITION%"] = tempBuilder.ToString();
+        }
+        else
+        {
+          var species = Model.getSpecies(item);
+          if (species != null)
+          {
+            if (species.isSetInitialConcentration())
+              map["%INITIALCONDITION%"] = string.Format(
+                "        __initial = {0};{1}"
+                , species.getInitialConcentration().ToString("E17")
+                , Environment.NewLine);
+            else
+              map["%INITIALCONDITION%"] = string.Format(
+                "        __initial = {0};{1}"
+                , species.getInitialAmount().ToString("E17")
+                , Environment.NewLine);
+          }
+        }
+        
+        //map["%INITIALCONDITION%"] =TranslateExpression(rule.getMath(), varMap),;
+        builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.initial_conditions, map));
+        builder.AppendLine();
+        ++count;
+      }
+
+      builder.AppendLine("#endif // INITIAL_CONDITIONS_H");
+
       File.WriteAllText(Path.Combine(path, "initial_conditions.hh"),
-        ExpandTemplate(EditSpatial.Properties.Resources.initial_conditions));
+        builder.ToString());
     }
 
     private void WriteComponentParameters(string path)

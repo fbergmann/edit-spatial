@@ -218,25 +218,6 @@ public:
             r.accumulate(lfsv,k,-q*eg.geometry().volume());
         }
 
-        // eq. 0: - d_0 \Delta u_0 - (-k1*u_0*u_1 +v2) = 0
-        // eq. 1: - d_1 \Delta u_1 - (k1*u_0*u_1 +v1 - v*u_1*1/(km+u_1)) = 0
-
-        //const RF v1 = 0.06;
-        //const RF v2 = 0.12;
-        //const RF V = 0.5;
-        //const RF k1 = 1.0;
-        //const RF Km = 0.1;
-        //
-        //RF r1 = -k1*x(lfsu,0)*x(lfsu,1)+v2;
-        //RF r2 = k1*x(lfsu,0)*x(lfsu,1)+v1-V*x(lfsu,1)/(Km+x(lfsu,1));
-        //
-        //r.accumulate(lfsv,0,-r1*eg.geometry().volume());
-        //r.accumulate(lfsv,1,-r2*eg.geometry().volume());
-
-        // evaluate the reaction adapter which is done on the local basis
-        // if we are using CCFV, then x contains DOF's corresponding to the entity eg
-        // sorting of x depends on the powergridfunction structure and ordering
-        // in this case it is sorted lexikographically
         ra.evaluate(eg.entity(),lfsu,x,lfsv,r);
 
     }
@@ -447,7 +428,6 @@ public:
 
     }
 
-
     //! to be called once before each time step
     void preStep (typename TP::Traits::RangeFieldType time, typename TP::Traits::RangeFieldType dt,
                   int stages)
@@ -473,7 +453,6 @@ private:
         static RA ra;
         return ra;
     }
-
 
     TP& tp;
     RA& ra;
