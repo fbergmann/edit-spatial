@@ -24,7 +24,7 @@ namespace EditSpatial.Forms
           Geometry = new GeometrySettings
           {
             Xmax = Util.SaveDouble(txtDimX.Text, 50),
-            Ymax = Util.SaveDouble(txtDimX.Text, 50),
+            Ymax = Util.SaveDouble(txtDimY.Text, 50),
           }
         };
         foreach (var item in lstSpatialSpecies.Items)

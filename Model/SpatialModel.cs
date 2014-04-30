@@ -343,9 +343,10 @@ namespace EditSpatial.Model
       if (geometry == null)
         return false;
 
-      // create coordinate components      
+      // create coordinate components    
       CreateCoordinateSystem(geometry, model, createModel.Geometry);
 
+      if (geometry.getNumGeometryDefinitions()==0)
       if (!SetupGeometry(model, geometry, createModel)) return false;
 
       SetupSpecies(createModel, model);
@@ -583,6 +584,9 @@ namespace EditSpatial.Model
         splug.setIsSpatial(true);
         SetRequiredElements(species);
 
+        var temp = species.getParameterDiffusionX();        
+        if (temp != null && temp.isSetId())
+        model.removeParameter(temp.getId());
         Parameter param = model.createParameter();
         param.initDefaults();
         param.setId(id + "_diff_X");
@@ -593,6 +597,10 @@ namespace EditSpatial.Model
         diff.setCoordinateIndex(0);
         SetRequiredElements(param);
 
+        temp = species.getParameterDiffusionY();
+        if (temp != null && temp.isSetId())
+          model.removeParameter(temp.getId());
+        model.removeParameter(id + "_diff_Y");
         param = model.createParameter();
         param.initDefaults();
         param.setId(id + "_diff_Y");
@@ -603,6 +611,9 @@ namespace EditSpatial.Model
         diff.setCoordinateIndex(1);
         SetRequiredElements(param);
 
+        temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmin");
+        if (temp != null && temp.isSetId())
+          model.removeParameter(temp.getId());
         param = model.createParameter();
         param.initDefaults();
         param.setId(id + "_BC_Xmin");
@@ -614,6 +625,9 @@ namespace EditSpatial.Model
         bc.setType("Flux");
         SetRequiredElements(param);
 
+        temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmax");
+        if (temp != null && temp.isSetId())
+          model.removeParameter(temp.getId());
         param = model.createParameter();
         param.initDefaults();
         param.setId(id + "_BC_Xmax");
@@ -625,6 +639,10 @@ namespace EditSpatial.Model
         bc.setType("Flux");
         SetRequiredElements(param);
 
+        temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymin");
+        if (temp != null && temp.isSetId())
+          model.removeParameter(temp.getId());
+
         param = model.createParameter();
         param.initDefaults();
         param.setId(id + "_BC_Ymin");
@@ -635,6 +653,10 @@ namespace EditSpatial.Model
         bc.setCoordinateBoundary("Ymin");
         bc.setType("Flux");
         SetRequiredElements(param);
+
+        temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymax");
+        if (temp != null && temp.isSetId())
+          model.removeParameter(temp.getId());
 
         param = model.createParameter();
         param.initDefaults();
@@ -663,34 +685,51 @@ namespace EditSpatial.Model
       }
     }
 
-    private void CreateCoordinateSystem(Geometry geometry, libsbmlcs.Model model, 
+    private void CreateCoordinateSystem(Geometry geometry, libsbmlcs.Model model,
       GeometrySettings settings)
     {
       geometry.setCoordinateSystem("Cartesian");
-      CoordinateComponent coord = geometry.createCoordinateComponent();
+
+      CoordinateComponent coord = geometry.getCoordinateComponent("x");
+      if (coord == null)
+      {
+        coord = geometry.createCoordinateComponent();
+      }
+
       coord.setSpatialId("x");
       coord.setSbmlUnit("um");
       coord.setComponentType("cartesianX");
       coord.setIndex(0);
-      BoundaryMin min = coord.createBoundaryMin();
+
+      BoundaryMin min = coord.getBoundaryMin();
+      if (min == null)
+        min = coord.createBoundaryMin();
       min.setSpatialId("Xmin");
       min.setValue(settings.Xmin);
-      BoundaryMax max = coord.createBoundaryMax();
+      BoundaryMax max = coord.getBoundaryMax();
+      if (max == null) max = coord.createBoundaryMax();
       max.setSpatialId("Xmax");
       max.setValue(settings.Xmax);
 
+      coord = geometry.getCoordinateComponent("y");
+      if (coord == null)
       coord = geometry.createCoordinateComponent();
       coord.setSpatialId("y");
       coord.setSbmlUnit("um");
       coord.setComponentType("cartesianY");
       coord.setIndex(1);
+      min = coord.getBoundaryMin();
+      if (min == null)
       min = coord.createBoundaryMin();
       min.setSpatialId("Ymin");
       min.setValue(settings.Ymin);
+      max = coord.getBoundaryMax();
+      if (max == null)
       max = coord.createBoundaryMax();
       max.setSpatialId("Ymax");
       max.setValue(settings.Ymax);
 
+      model.removeParameter("x");
       Parameter param = model.createParameter();
       param.initDefaults();
       param.setId("x");
@@ -701,6 +740,7 @@ namespace EditSpatial.Model
       symbol.setType("coordinateComponent");
       SetRequiredElements(param, false);
 
+      model.removeParameter("y");
       param = model.createParameter();
       param.initDefaults();
       param.setId("y");
@@ -932,10 +972,10 @@ namespace EditSpatial.Model
       return converter.ToMorpheus();
     }
 
-    public void ExportToDune(string path)
+    public void ExportToDune(string filename)
     {
       var converter = new DuneConverter(Document);
-      converter.ExportTo(path);
+      converter.ExportTo(filename);
     }
   }
 }

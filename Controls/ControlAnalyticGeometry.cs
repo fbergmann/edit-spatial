@@ -56,7 +56,7 @@ namespace EditSpatial.Controls
       {
         var vol = analytic.getAnalyticVolume(i);
         string spatialId = vol.getSpatialId();
-        grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal(), vol.getDomainType(),
+        grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal().ToString(), vol.getDomainType(),
           libsbml.formulaToString(vol.getMath()));          
       }
 
@@ -90,7 +90,7 @@ namespace EditSpatial.Controls
         var current = Current.getAnalyticVolume(i);
         current.setSpatialId((string)row.Cells[0].Value);
         current.setFunctionType((string)row.Cells[1].Value);
-        current.setOrdinal((long)row.Cells[2].Value);
+        current.setOrdinal(Util.SaveInt((string)row.Cells[2].Value, 0L));
         current.setDomainType((string)row.Cells[3].Value);
         current.setMath(libsbml.parseFormula((string)row.Cells[4].Value));
       }

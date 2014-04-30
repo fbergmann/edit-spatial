@@ -83,6 +83,20 @@ namespace EditSpatial
 
     public static double? getDiffusionY(this libsbmlcs.Species species)
     {
+      var param = species.getParameterDiffusionY();
+      if (param == null) return null;
+      return param.getValue();
+    }
+
+    public static bool IsSpatial(this libsbmlcs.Parameter parameter)
+    {
+      var plug = (SpatialParameterPlugin)parameter.getPlugin("spatial");
+      if (plug == null) return false;
+      return plug.isSpatialParameter();
+    }
+
+    public static Parameter getSpatialParameter(this libsbmlcs.Species species, int typeCode, object box = null)
+    {
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
         return null;
 
@@ -94,46 +108,50 @@ namespace EditSpatial
         var plugin = parameter.getPlugin("spatial") as SpatialParameterPlugin;
         if (plugin == null) continue;
 
-        if (plugin.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
+        if (plugin.getType() != typeCode) continue;
 
-        var diff = plugin.getDiffusionCoefficient();
-        if (diff == null || diff.getCoordinateIndex() != 1 || diff.getVariable() != species.getId()) continue;
+        if (typeCode == libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT)
+        {
+          var diff = plugin.getDiffusionCoefficient();
+          int index = 0;
+          if (box != null && box is int)
+            index = (int)box;
+          if (diff == null || diff.getCoordinateIndex() != index || diff.getVariable() != species.getId()) continue;
+        }
+        else if (typeCode == libsbml.SBML_SPATIAL_BOUNDARYCONDITION)
+        {
+          var bc = plugin.getBoundaryCondition();
+          if (bc == null || bc.getVariable() != species.getId()) continue;
+          if (box != null && box is string)
+          {
+            var bound = box as string;
+            if (bc.getCoordinateBoundary() != bound) continue;
+          }
+        }
 
-        return parameter.getValue();
+        return parameter;
       }
 
       return null;
     }
 
-    public static bool IsSpatial(this libsbmlcs.Parameter parameter)
-    {
-      var plug = (SpatialParameterPlugin)parameter.getPlugin("spatial");
-      if (plug == null) return false;
-      return plug.isSpatialParameter();
+
+    public static Parameter getParameterDiffusionX(this libsbmlcs.Species species)
+    {      
+      return species.getSpatialParameter(libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT, 0);
     }
+
+    public static Parameter getParameterDiffusionY(this libsbmlcs.Species species)
+    {
+      return species.getSpatialParameter(libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT, 1);
+    }
+
 
     public static double? getDiffusionX(this libsbmlcs.Species species)
     {
-      if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)        
-      return null;
-
-      var model = species.getSBMLDocument().getModel();
-      for (int i = 0; i < model.getNumParameters(); ++i)
-      {
-        var parameter = model.getParameter(i);
-        if (parameter == null) continue;
-        var plugin = parameter.getPlugin("spatial") as SpatialParameterPlugin;
-        if (plugin == null) continue;
-
-        if (plugin.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
-
-        var diff = plugin.getDiffusionCoefficient();
-        if (diff == null || diff.getCoordinateIndex() != 0 || diff.getVariable() != species.getId()) continue;
-
-        return parameter.getValue();
-      }
-
-      return null;
+      var param = species.getParameterDiffusionX();
+      if (param == null) return null;
+      return param.getValue();
     }
 
     internal static byte[] ToBytes(int[] array)

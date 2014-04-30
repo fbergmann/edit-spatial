@@ -28,6 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
+      this.components = new System.ComponentModel.Container();
       System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("List of Coordinate Components");
       System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("List of Domain Types");
       System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("List of Domains");
@@ -56,6 +57,8 @@
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.splitInitial = new System.Windows.Forms.SplitContainer();
       this.treeView2 = new System.Windows.Forms.TreeView();
+      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.controlInitialAssignments1 = new EditSpatial.Controls.ControlInitialAssignments();
       this.controlDisplayNode2 = new EditSpatial.Controls.ControlDisplayNode();
       this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -71,6 +74,7 @@
       this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
       this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolExportDune = new System.Windows.Forms.ToolStripMenuItem();
       this.toolExportMorpheus = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,7 +106,6 @@
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.toolExportDune = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -118,6 +121,7 @@
       this.splitInitial.Panel1.SuspendLayout();
       this.splitInitial.Panel2.SuspendLayout();
       this.splitInitial.SuspendLayout();
+      this.contextMenuStrip1.SuspendLayout();
       this.tabPage3.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.panel1.SuspendLayout();
@@ -339,6 +343,7 @@
       // 
       // treeView2
       // 
+      this.treeView2.ContextMenuStrip = this.contextMenuStrip1;
       this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
       this.treeView2.Location = new System.Drawing.Point(0, 0);
       this.treeView2.Name = "treeView2";
@@ -364,6 +369,20 @@
       this.treeView2.Size = new System.Drawing.Size(200, 330);
       this.treeView2.TabIndex = 0;
       this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
+      // 
+      // contextMenuStrip1
+      // 
+      this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteToolStripMenuItem});
+      this.contextMenuStrip1.Name = "contextMenuStrip1";
+      this.contextMenuStrip1.Size = new System.Drawing.Size(108, 26);
+      // 
+      // deleteToolStripMenuItem
+      // 
+      this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.deleteToolStripMenuItem.Text = "&Delete";
+      this.deleteToolStripMenuItem.Click += new System.EventHandler(this.OnItemDeleteClick);
       // 
       // controlInitialAssignments1
       // 
@@ -533,6 +552,13 @@
       this.saveToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
       this.saveToolStripMenuItem.Text = "&Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFile);
+      // 
+      // toolExportDune
+      // 
+      this.toolExportDune.Name = "toolExportDune";
+      this.toolExportDune.Size = new System.Drawing.Size(204, 22);
+      this.toolExportDune.Text = "&Export Dune";
+      this.toolExportDune.Click += new System.EventHandler(this.OnExportDuneClick);
       // 
       // toolExportMorpheus
       // 
@@ -795,15 +821,9 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // toolExportDune
-      // 
-      this.toolExportDune.Name = "toolExportDune";
-      this.toolExportDune.Size = new System.Drawing.Size(204, 22);
-      this.toolExportDune.Text = "&Export Dune";
-      this.toolExportDune.Click += new System.EventHandler(this.OnExportDuneClick);
-      // 
       // MainForm
       // 
+      this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(624, 441);
@@ -815,6 +835,8 @@
       this.Text = "Edit Spatial";
       this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
       this.Load += new System.EventHandler(this.OnLoad);
+      this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+      this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
       this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
       this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
       this.toolStripContainer1.ContentPanel.ResumeLayout(false);
@@ -833,6 +855,7 @@
       this.splitInitial.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitInitial)).EndInit();
       this.splitInitial.ResumeLayout(false);
+      this.contextMenuStrip1.ResumeLayout(false);
       this.tabPage3.ResumeLayout(false);
       this.tableLayoutPanel1.ResumeLayout(false);
       this.tableLayoutPanel1.PerformLayout();
@@ -912,6 +935,8 @@
     private Controls.ControlInitialAssignments controlInitialAssignments1;
     private System.Windows.Forms.ToolStripMenuItem spatialWizardToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem toolExportDune;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+    private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
   }
 }
 

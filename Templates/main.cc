@@ -57,6 +57,7 @@
 #include <dune/copasi/utilities/newtonutilities.hh>
 #include <dune/copasi/utilities/timemanager.hh>
 #include <dune/copasi/utilities/sbmlhelper.hh>
+#include <dune/copasi/utilities/solutioncontrol.hh>
 
 #include <dune/pdelab/common/function.hh>
 #include <dune/pdelab/common/vtkexport.hh>
@@ -194,13 +195,23 @@ void run (const GV& gv, Dune::ParameterTree & param)
     Dune::PDELab::interpolate(uinitial,tpgfs,uold);
     unew = uold;
 
+  // <<<5>>> Select a linear solver backend
+#if HAVE_MPI
+#if HAVE_SUPERLU
+  typedef Dune::PDELab::ISTLBackend_BCGS_AMG_SSOR<IGO> LS;
+  LS ls(tpgfs,param.sub("Newton").get<int>("LSMaxIterations", 100),param.sub("Newton").get<int>("LinearVerbosity", 0));
+#else
+  typedef Dune::PDELab::ISTLBackend_OVLP_BCGS_SSORk<GFS,CC> LS;
+  LS ls(tpgfs,cc,5000,5,param.sub("Newton").get<int>("LinearVerbosity", 0));
+#endif
+#else //!parallel
 #if HAVE_SUPERLU
     typedef Dune::PDELab::ISTLBackend_SEQ_SuperLU LS;
     LS ls (param.sub("Newton").get<int>("LinearVerbosity", 0));
-    //LS ls(true);
 #else
     typedef Dune::PDELab::ISTLBackend_SEQ_BCGS_SSOR LS;
-    LS ls(5000,verbosity);
+  LS ls(5000,param.sub("Newton").get<int>("LinearVerbosity", 0));
+#endif
 #endif
 
     // <<<6>>> Solver for non-linear problem per stage
@@ -213,7 +224,6 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
     // <<<7>>> time-stepper
     Dune::PDELab::Alexander2Parameter<RF> method;
-    //Dune::PDELab::TimeSteppingParameterInterface<RF> method;
     Dune::PDELab::OneStepMethod<RF,IGO,PDESOLVER,V,V> osm(method,igo,pdesolver);
     Dune::PDELab::TimeSteppingMethods<RF> tsmethods;
     tsmethods.setTimestepMethod(osm,param.get<std::string>("timesolver"));
@@ -258,7 +268,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
             // do time step
             osm.apply(timemanager.getTime(),dt,uold,unew);
 
-            if (!controlReactionTimeStep(unew))
+            if (!controlReactionTimeStep(gv, unew))
             {
                 timemanager.notifyFailure();
                 unew = uold;
@@ -308,9 +318,6 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
         if (graphics && timemanager.isTimeForOutput())
             pvdwriter.write(timemanager.getTime());
-
-        //  solutiontimeoutput.write(timemanager.getTime(),u0dgf,u1dgf);
-
     }
 
 

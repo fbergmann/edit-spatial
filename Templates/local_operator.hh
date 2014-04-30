@@ -16,9 +16,11 @@
 #include<dune/pdelab/localoperator/flags.hh>
 #include<dune/pdelab/localoperator/idefault.hh>
 
+#define ANALYTICAL_JACOBIAN FALSE
 
 namespace Dune {
 namespace PDELab {
+
 
 // reaction base class
 // do not compute anything
@@ -157,6 +159,10 @@ template<typename TP, typename RA = ReactionBaseAdapter>
 class MulticomponentCCFVSpatialDiffusionOperator :
         public NumericalJacobianVolume<MulticomponentCCFVSpatialDiffusionOperator<TP,RA> >,
         public NumericalJacobianApplyVolume<MulticomponentCCFVSpatialDiffusionOperator<TP,RA> >,
+        public NumericalJacobianSkeleton<MulticomponentCCFVSpatialDiffusionOperator<TP,RA> >,
+        public NumericalJacobianBoundary<MulticomponentCCFVSpatialDiffusionOperator<TP,RA> >,
+        public NumericalJacobianApplySkeleton<MulticomponentCCFVSpatialDiffusionOperator<TP,RA> >,
+        public NumericalJacobianApplyBoundary<MulticomponentCCFVSpatialDiffusionOperator<TP,RA> >,
 
         public FullSkeletonPattern,
         public FullVolumePattern,
@@ -197,9 +203,6 @@ public:
         // domain and range field type
         typedef typename Space::Traits::FiniteElementType::
                 Traits::LocalBasisType::Traits::DomainFieldType DF;
-
-        typedef typename Space::Traits::FiniteElementType::
-                Traits::LocalBasisType::Traits::RangeFieldType RF;
 
         // dimensions
         const int dim = EG::Geometry::dimension;
@@ -280,7 +283,7 @@ public:
 
     }
 
-
+#ifdef ANALYTICAL_JACOBIAN
     // jacobian of boundary term
     template<typename IG, typename LFSU, typename X, typename LFSV, typename M>
     void jacobian_boundary (const IG& ig,
@@ -328,7 +331,7 @@ public:
             }
         }
     }
-
+#endif //ANALYTICAL_JACOBIAN
 
 
     // skeleton integral depending on test and ansatz functions
@@ -377,6 +380,7 @@ public:
 
     }
 
+#ifdef ANALYTICAL_JACOBIAN
     // jacobian of skeleton term
     template<typename IG, typename LFSU, typename X, typename LFSV, typename M>
     void jacobian_skeleton (const IG& ig,
@@ -427,6 +431,7 @@ public:
         }
 
     }
+#endif //ANALYTICAL_JACOBIAN
 
     //! to be called once before each time step
     void preStep (typename TP::Traits::RangeFieldType time, typename TP::Traits::RangeFieldType dt,
@@ -454,6 +459,7 @@ private:
         return ra;
     }
 
+
     TP& tp;
     RA& ra;
 };
@@ -469,7 +475,9 @@ private:
      */
 template<class TP>
 class MulticomponentCCFVTemporalOperator
-        :  public FullVolumePattern,
+      : public NumericalJacobianVolume<MulticomponentCCFVTemporalOperator<TP> >,
+        public NumericalJacobianApplyVolume<MulticomponentCCFVTemporalOperator<TP> >,
+        public FullVolumePattern,
         public LocalOperatorDefaultFlags,
         public InstationaryLocalOperatorDefaultMethods<typename TP::Traits::RangeFieldType>
 {
@@ -497,6 +505,7 @@ public:
     }
 
 
+#ifdef ANALYTICAL_JACOBIAN
     // jacobian of volume term
     template<typename EG, typename LFSU, typename X, typename LFSV, typename M>
     void jacobian_volume (const EG& eg, const LFSU& lfsu, const X& x, const LFSV& lfsv,
@@ -508,7 +517,7 @@ public:
             mat.accumulate(lfsu,k,lfsu,k,eg.geometry().volume());
         }
     }
-
+#endif //ANALYTICAL_JACOBIAN
 
     //! to be called once before each time step
     void preStep (typename TP::Traits::RangeFieldType time, typename TP::Traits::RangeFieldType dt,

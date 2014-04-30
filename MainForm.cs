@@ -693,8 +693,96 @@ namespace EditSpatial
       if (dialog.ShowDialog() != DialogResult.OK)
         return;
 
-      Model.ExportToDune(Path.GetDirectoryName(dialog.FileName));
+      Model.ExportToDune(dialog.FileName);
   
+    }
+
+
+
+    #region Drag / Drop
+
+    private void MainForm_DragDrop(object sender, DragEventArgs e)
+    {
+      try
+      {
+        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".xml" || oInfo.Extension.ToLower() == ".sbml")
+        {
+          OpenFile(sFilenames[0]);
+        }
+      }
+      catch (Exception)
+      {
+      }
+    }
+
+    private void MainForm_DragEnter(object sender, DragEventArgs e)
+    {
+      if (e.Data.GetDataPresent(DataFormats.FileDrop))
+      {
+        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".xml" || oInfo.Extension.ToLower() == ".sbml")
+        {
+          e.Effect = DragDropEffects.Copy;
+          return;
+        }
+      }
+      e.Effect = DragDropEffects.None;
+    }
+
+    #endregion
+
+    private void OnItemDeleteClick(object sender, EventArgs e)
+    {
+      var selected = treeView2.SelectedNode;
+      if (selected == null || selected.Level == 0) return;
+
+      var selectedId = selected.Text;
+      TreeNode parent = selected.Parent;
+      switch (parent.Name)
+      {
+        case NODE_PARAMETERS:
+          {
+            Model.Document.getModel().removeParameter(selectedId);
+            UpdateUI();
+            break;
+          }
+        case NODE_COMPARTMENTS:
+        {
+          Model.Document.getModel().removeCompartment(selectedId);
+          UpdateUI();
+          break;
+        }
+        case NODE_SPECIES:
+        {
+          Model.Document.getModel().removeSpecies(selectedId);
+          UpdateUI();
+          break;
+        }
+        case NODE_REACTIONS:
+        {
+          Model.Document.getModel().removeSpecies(selectedId);
+          UpdateUI();
+          break;
+        }
+        case NODE_RULES:
+        {
+          Model.Document.getModel().removeRule(selectedId);
+          UpdateUI();
+          break;
+        }
+        case NODE_INITIAL_ASSIGNMENTS:
+        {
+          Model.Document.getModel().removeInitialAssignment(selectedId);
+          UpdateUI();
+          break;
+        }
+      }
+      treeView2.SelectedNode = parent;
+      
+
     }
   }
 }

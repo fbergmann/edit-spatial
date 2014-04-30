@@ -11,9 +11,16 @@ class U%COUNT%Initial
 public:
     typedef Dune::PDELab::GridFunctionTraits<GV,RF,1,Dune::FieldVector<RF,1> > Traits;
 
-    //! construct from grid view
     U%COUNT%Initial (const GV& gv_)
+      : gv(gv_)
+      , param()
+    {}
+
+    //! construct from grid view
+    U%COUNT%Initial (const GV& gv_, const Dune::ParameterTree & param_)
         : gv(gv_)
+        , param(param_)
+%INITIALIZER%
     {}
 
     //! evaluate extended function on element
@@ -28,4 +35,7 @@ public:
 
     //! get a reference to the grid view
     inline const GV& getGridView () {return gv;}
+private:
+    const Dune::ParameterTree & param;
+%DECLARATION%
 };

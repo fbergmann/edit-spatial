@@ -53,6 +53,17 @@ namespace EditSpatial.Converter
         errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", status, Environment.NewLine);
       }
 
+      prop = new ConversionProperties();
+      prop.addOption("renameSIds", true);
+      prop.addOption("currentIds", "default");
+      prop.addOption("newIds", "__default");
+      status = document.convert(prop);
+      if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
+      {
+        errorBuilder.AppendFormat("rename of ids failed: {0}{1}", status, Environment.NewLine);
+      }
+
+
       Model = document.getModel();
 
       for (int i = 0; i < Model.getNumRules(); ++i)
@@ -79,6 +90,15 @@ namespace EditSpatial.Converter
           return math.getInteger().ToString("E17");
         case libsbml.AST_REAL:
           return math.getReal().ToString("E17");
+        case libsbml.AST_FUNCTION_POWER:
+          {
+            {
+              var builder = new StringBuilder();
+              builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map));
+              builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
+              return builder.ToString();
+            }
+          }
         case libsbml.AST_DIVIDE:
           {
             var builder = new StringBuilder();
@@ -186,8 +206,9 @@ namespace EditSpatial.Converter
           }
         case libsbml.AST_FUNCTION:
           {
+            string name = math.getName();
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}(", math.getName());
+            builder.AppendFormat("{0}(", name);
             builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
             for (int i = 1; i < math.getNumChildren(); ++i)
             {
@@ -198,11 +219,14 @@ namespace EditSpatial.Converter
           }
         case libsbml.AST_NAME:
         default:
-          if (map != null && map.ContainsKey(math.getName()))
+        {
+          string name = math.getName();
+          if (map != null && map.ContainsKey(name))
           {
-            return map[math.getName()];
+            return map[name];
           }
-          return math.getName();
+          return name;
+        }
 
 
       }
@@ -213,14 +237,16 @@ namespace EditSpatial.Converter
       return libsbml.writeSBMLToString(document);
     }
 
-    public void ExportTo(string path)
+    public void ExportTo(string filename)
     {
-      WriteCMakeLists(path);
+      var path = Path.GetDirectoryName(filename);
+      string name = Path.GetFileNameWithoutExtension(filename);
+      WriteCMakeLists(path, name);
       WriteConfigFile(path);
       WriteComponentParameters(path);
       WriteInitialConditions(path);
       WriteLocalOperator(path);
-      WriteMainFile(path);
+      WriteMainFile(path, name);
       WriteReactionAdapter(path);
     }
 
@@ -315,6 +341,15 @@ namespace EditSpatial.Converter
         
       }
 
+      for (int i = 0; i < Model.getNumSpecies(); ++i)
+      {
+        var current = Model.getSpecies(i);
+        if (current == null || !current.getBoundaryCondition()) continue;
+        ParameterIds.Add(current.getId());
+        builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getInitialConcentration(), Environment.NewLine);
+
+      }
+
 
       builder.AppendLine();
 
@@ -346,7 +381,7 @@ namespace EditSpatial.Converter
         builder.ToString());
     }
 
-    private void WriteMainFile(string path)
+    private void WriteMainFile(string path, string name)
     {
       var builder = new StringBuilder();
       var map = new Dictionary<string, string>();
@@ -385,7 +420,7 @@ namespace EditSpatial.Converter
 
         initialTypeCreation.AppendFormat("    typedef U{0}Initial<GV,RF> U{0}InitialType;{1}"
           , index, Environment.NewLine);
-        initialTypeCreation.AppendFormat("    U{0}InitialType u{0}initial(gv);{1}"
+        initialTypeCreation.AppendFormat("    U{0}InitialType u{0}initial(gv,param);{1}"
           , index, Environment.NewLine);
 
         gridFunctions.AppendFormat("    typedef Dune::PDELab::DiscreteGridFunction<U{0}SUB,V> U{0}DGF;{1}"
@@ -410,7 +445,7 @@ namespace EditSpatial.Converter
 
       builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.main, map));
 
-      File.WriteAllText(Path.Combine(path, "main.cc"),
+      File.WriteAllText(Path.Combine(path, name + ".cc"),
         builder.ToString());
     }
 
@@ -468,6 +503,29 @@ namespace EditSpatial.Converter
       {
         var map = new Dictionary<string, string>();
         map["%COUNT%"] = count.ToString();
+
+        var initializer = new StringBuilder();
+        var declarations = new StringBuilder();
+        var odes = new StringBuilder();
+        var odes2 = new StringBuilder();
+
+        foreach (var pItem in ParameterIds)
+        {
+          initializer.AppendFormat(
+            "	   , {0}(param.sub(\"Reaction\").template get<RF>(\"{0}\")){1}"
+            , pItem
+            , Environment.NewLine
+            );
+          declarations.AppendFormat(
+            "    const RF {0};{1}"
+            , pItem
+            , Environment.NewLine
+            );
+        }        
+
+
+        map["%INITIALIZER%"] = initializer.ToString();
+        map["%DECLARATION%"] = declarations.ToString();
 
         var initial = Model.getInitialAssignment(item);
         if (initial != null && initial.isSetMath())
@@ -527,10 +585,14 @@ namespace EditSpatial.Converter
         ExpandTemplate(EditSpatial.Properties.Resources.componentparameters));
     }
 
-    private void WriteCMakeLists(string path)
+    private void WriteCMakeLists(string path, string name)
     {
       File.WriteAllText(Path.Combine(path, "CMakeLists.txt"), 
-        ExpandTemplate(EditSpatial.Properties.Resources.CMakeLists));
+        ExpandTemplate(EditSpatial.Properties.Resources.CMakeLists,
+        new Dictionary<string,string>{
+          {"%NAME%", name}
+        }
+        ));
     }
 
     private string ExpandTemplate(string content, 

@@ -232,7 +232,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="Templates\config.conf" />
-    <None Include="Templates\main.conf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
