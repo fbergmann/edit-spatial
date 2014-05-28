@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("EditSpatial")]
-[assembly: AssemblyCopyright("Copyright ©  2013 Frank T. Bergmann")]
+[assembly: AssemblyCopyright("Copyright ©  2014 Frank T. Bergmann")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -40,24 +40,31 @@ namespace EditSpatial.Controls
     }
 
 
-    public void InitializeFrom(Geometry geometry, string id)
+    public void InitializeFrom(Geometry geometry, AnalyticGeometry analytic)
     {
-      txtId.Text = id;
+      if (geometry == null)
+      {
+        txtId.Text = "";
+        grid.Rows.Clear();
+        SpatialGeometry = geometry;
+        thumbGeometry.Image = thumbGeometry.InitialImage;
+        return;
+      }
+
       grid.Rows.Clear();
       SpatialGeometry = geometry;
       thumbGeometry.Image = thumbGeometry.InitialImage;
-      if (geometry == null) return;
-
-      var analytic = geometry.getGeometryDefinition(id) as AnalyticGeometry;
       Current = analytic;
       if (analytic == null) return;
+
+      txtId.Text = analytic.getId();
 
       for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
       {
         var vol = analytic.getAnalyticVolume(i);
         string spatialId = vol.getSpatialId();
         grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal().ToString(), vol.getDomainType(),
-          libsbml.formulaToString(vol.getMath()));          
+          libsbml.formulaToString(vol.getMath()));
       }
 
       if (SpatialGeometry.getNumCoordinateComponents() < 3)
@@ -75,7 +82,21 @@ namespace EditSpatial.Controls
 
 
       thumbGeometry.Image = GenerateImage(analytic, geometry, ThumbSize, ThumbSize);
+    }
+    public void InitializeFrom(Geometry geometry, string id)
+    {
 
+      if (geometry == null)
+      {
+        txtId.Text = id;
+        grid.Rows.Clear();
+        SpatialGeometry = geometry;
+        thumbGeometry.Image = thumbGeometry.InitialImage;
+        return;
+      }
+
+      var analytic = geometry.getGeometryDefinition(id) as AnalyticGeometry;
+      InitializeFrom(geometry, analytic);
     }
 
 
@@ -249,7 +270,7 @@ namespace EditSpatial.Controls
     {
       Current = null;
       SpatialGeometry = null;
-      InitializeFrom(null, null);
+      InitializeFrom(null, string.Empty);
     }
 
     private Image GenerateTiff(AnalyticGeometry analytic, Geometry geometry, int resX = 128, int resY = 128, int ordinal=1)

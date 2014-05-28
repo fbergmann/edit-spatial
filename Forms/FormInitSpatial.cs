@@ -15,6 +15,8 @@ namespace EditSpatial.Forms
       _model = null;
     }
 
+
+
     public CreateModel CreateModel
     {
       get
@@ -41,6 +43,11 @@ namespace EditSpatial.Forms
 
     private void OnFinishClick(object sender, EventArgs e)
     {
+      if (tabControl1.SelectedIndex == 1)
+      {
+        txtDimX.Text = txtWidth.Text;
+        txtDimY.Text = txtHeight.Text;
+      }
       Close();
     }
 
@@ -155,6 +162,8 @@ namespace EditSpatial.Forms
 
       txtDimX.Text = SpatialModel.Width.ToString();
       txtDimY.Text = SpatialModel.Height.ToString();
+      
+
 
       lstSpatialSpecies.Items.Clear();
       grid.Rows.Clear();
@@ -172,14 +181,30 @@ namespace EditSpatial.Forms
 
     }
 
+    public string TextWidth { get; set; }
+    public string TextHeight { get; set; }
+    public string TextDepth { get; set; }
+
+    private void ShowPage(int index)
+    {
+      if (index < 0) index = 0;
+      if (index >= tabControl1.TabCount) index = tabControl1.TabCount - 1;
+      
+      var oldIndex = tabControl1.SelectedIndex;
+      if (oldIndex == index) return;
+
+      tabControl1.SelectedIndex = index;
+
+    }
+
     private void OnPrevClick(object sender, EventArgs e)
     {
-
+      ShowPage(tabControl1.SelectedIndex - 1);
     }
 
     private void OnNextClick(object sender, EventArgs e)
     {
-
+      ShowPage(tabControl1.SelectedIndex + 1);
     }
 
     private void OnCellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -245,8 +270,68 @@ namespace EditSpatial.Forms
       RemoveSelected(id);
     }
 
+    private void OnSelectedTabChanged(object sender, EventArgs e)
+    {
+      if (tabControl1.SelectedIndex == 0)
+      {
+        txtDimX.Text = txtWidth.Text;
+        txtDimY.Text = txtHeight.Text;
+        cmdNext.Enabled = true;
+        cmdPrev.Enabled = false;
+      }
+      else if (tabControl1.SelectedIndex == 1)
+      {
+        txtWidth.Text = txtDimX.Text;
+        txtHeight.Text = txtDimY.Text;
+        cmdNext.Enabled = false;
+        cmdPrev.Enabled = true;
+      }
+
+    }
+
+    private AnalyticGeometry _analyticGeometry; 
+    private SampledFieldGeometry _sampleGeometry;
+    private Geometry _geometry;
 
 
+    private void radAnalytic_CheckedChanged(object sender, EventArgs e)
+    {
+      controlAnalyticGeometry1.Visible = true;
+      controlSampleFieldGeometry1.Visible = false;
+
+      _geometry = SpatialModel.Geometry;
+      
+
+      if (_geometry == null)
+      {
+        _geometry = new Geometry(3, 1);
+        ;
+      }
+
+      if (_analyticGeometry == null)
+      { 
+        _analyticGeometry = new AnalyticGeometry(3, 1);
+      }
+
+      if (!_analyticGeometry.isSetId())
+        _analyticGeometry.setId("");
+
+      controlAnalyticGeometry1.InitializeFrom(SpatialModel.Geometry, _analyticGeometry);
+
+
+    }
+
+    private void radSample_CheckedChanged(object sender, EventArgs e)
+    {
+      controlAnalyticGeometry1.Visible = false;
+      controlSampleFieldGeometry1.Visible = true;
+    }
+
+    private void radDefault_CheckedChanged(object sender, EventArgs e)
+    {
+      controlAnalyticGeometry1.Visible = false;
+      controlSampleFieldGeometry1.Visible = false;
+    }
 
 
   }

@@ -58,7 +58,6 @@
       // 
       // grid
       // 
-      this.grid.AllowUserToAddRows = false;
       this.grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colSpatialId,
@@ -77,14 +76,14 @@
       this.colSpatialId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colSpatialId.HeaderText = "Spatial Id";
       this.colSpatialId.Name = "colSpatialId";
-      this.colSpatialId.Width = 74;
+      this.colSpatialId.Width = 68;
       // 
       // colType
       // 
       this.colType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader;
       this.colType.HeaderText = "Function Type";
       this.colType.Name = "colType";
-      this.colType.Width = 5;
+      this.colType.Width = 21;
       // 
       // colOrdinal
       // 
@@ -98,7 +97,7 @@
       this.colDomainType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader;
       this.colDomainType.HeaderText = "Domain Type";
       this.colDomainType.Name = "colDomainType";
-      this.colDomainType.Width = 5;
+      this.colDomainType.Width = 21;
       // 
       // colMath
       // 
