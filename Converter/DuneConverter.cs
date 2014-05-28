@@ -242,7 +242,7 @@ namespace EditSpatial.Converter
       var path = Path.GetDirectoryName(filename);
       string name = Path.GetFileNameWithoutExtension(filename);
       WriteCMakeLists(path, name);
-      WriteConfigFile(path);
+      WriteConfigFile(path, name);
       WriteComponentParameters(path);
       WriteInitialConditions(path);
       WriteLocalOperator(path);
@@ -315,7 +315,7 @@ namespace EditSpatial.Converter
 
     List<string> ParameterIds { get; set; }
 
-    private void WriteConfigFile(string path)
+    private void WriteConfigFile(string path, string name)
     {
       var builder = new StringBuilder();
       builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.config));
@@ -377,7 +377,7 @@ namespace EditSpatial.Converter
 
 
 
-      File.WriteAllText(Path.Combine(path, "main.conf"),
+      File.WriteAllText(Path.Combine(path, name + ".conf"),
         builder.ToString());
     }
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using EditSpatial.Controls;
+using EditSpatial.Converter;
 using EditSpatial.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
@@ -669,6 +670,36 @@ namespace EditSpatial
       }
     }
 
+
+    private void OnExportDuneSBMLClick(object sender, EventArgs e)
+    {
+      if (Model == null || Model.Document == null)
+        return;
+      Model.Document.checkConsistency();
+      if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
+      {
+        MessageBox.Show(
+          "Unfortunately, the SBML model contains a number of errors. These need to be corrected, before the model can be exported to Dune.",
+          "Invalid Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        ShowErrors();
+        return;
+      }
+
+      var dialog = new SaveFileDialog
+      {
+        Title = "Export DUNE SBML Model",
+        Filter = "SBML files|*.xml;*.sbml|All files|*.*",
+        AutoUpgradeEnabled = true
+      };
+
+      if (dialog.ShowDialog() != DialogResult.OK)
+        return;
+
+      var converter = new DuneConverter(Model.Document);
+      File.WriteAllText(dialog.FileName, converter.ToSBML());
+
+    }
+
     private void OnExportDuneClick(object sender, EventArgs e)
     {
       if (Model == null || Model.Document == null)
@@ -677,7 +708,7 @@ namespace EditSpatial
       if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {
         MessageBox.Show(
-          "Unfortunately, the SBML model contains a number of errors. These need to be corrected, before the model can be exported to Morpheus.",
+          "Unfortunately, the SBML model contains a number of errors. These need to be corrected, before the model can be exported to Dune.",
           "Invalid Model", MessageBoxButtons.OK, MessageBoxIcon.Error);
         ShowErrors();
         return;
@@ -784,5 +815,7 @@ namespace EditSpatial
       
 
     }
+
+    
   }
 }

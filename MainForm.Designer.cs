@@ -106,6 +106,8 @@
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -510,6 +512,8 @@
             this.saveToolStripMenuItem,
             this.toolExportDune,
             this.toolExportMorpheus,
+            this.toolStripSeparator5,
+            this.toolStripMenuItem1,
             this.toolStripSeparator1,
             this.printToolStripMenuItem,
             this.toolStripSeparator2,
@@ -821,6 +825,18 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
+      // toolStripSeparator5
+      // 
+      this.toolStripSeparator5.Name = "toolStripSeparator5";
+      this.toolStripSeparator5.Size = new System.Drawing.Size(201, 6);
+      // 
+      // toolStripMenuItem1
+      // 
+      this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+      this.toolStripMenuItem1.Size = new System.Drawing.Size(204, 22);
+      this.toolStripMenuItem1.Text = "Export DUNE SBML";
+      this.toolStripMenuItem1.Click += new System.EventHandler(this.OnExportDuneSBMLClick);
+      // 
       // MainForm
       // 
       this.AllowDrop = true;
@@ -937,6 +953,8 @@
     private System.Windows.Forms.ToolStripMenuItem toolExportDune;
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
     private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+    private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
   }
 }
 
