@@ -470,6 +470,8 @@ namespace EditSpatial
 
       if (Model != null && !Model.IsSpatial)
       {
+        Model.ConvertToL3();
+
         var dialog = new FormInitSpatial {SpatialModel = Model};
         if (dialog.ShowDialog() == DialogResult.OK)
         {

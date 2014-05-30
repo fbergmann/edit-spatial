@@ -56,6 +56,7 @@ namespace EditSpatial.Forms
       AddSelected();
 
     }
+
     private void OnSpatialSpeciesDoubleClick(object sender, EventArgs e)
     {
       RemoveSelected();
@@ -163,10 +164,9 @@ namespace EditSpatial.Forms
       txtDimX.Text = SpatialModel.Width.ToString();
       txtDimY.Text = SpatialModel.Height.ToString();
       
-
-
       lstSpatialSpecies.Items.Clear();
       grid.Rows.Clear();
+      
       for (int i = 0; i < _model.getNumSpecies(); ++i)
       {
         var current = _model.getSpecies(i);
@@ -180,10 +180,6 @@ namespace EditSpatial.Forms
       }
 
     }
-
-    public string TextWidth { get; set; }
-    public string TextHeight { get; set; }
-    public string TextDepth { get; set; }
 
     private void ShowPage(int index)
     {
@@ -299,6 +295,8 @@ namespace EditSpatial.Forms
       controlAnalyticGeometry1.Visible = true;
       controlSampleFieldGeometry1.Visible = false;
 
+      if (!radAnalytic.Checked) return;
+
       _geometry = SpatialModel.Geometry;
       
 
@@ -308,15 +306,31 @@ namespace EditSpatial.Forms
         ;
       }
 
+      SpatialModel.CreateCoordinateSystem(_geometry, 
+        SpatialModel.Document.getModel(), 
+        new GeometrySettings
+        {
+          Xmax = Util.SaveDouble(txtDimX.Text, 50),
+          Ymax = Util.SaveDouble(txtDimY.Text, 50),
+        }
+      );
+
+      _analyticGeometry = _geometry.GetFirstAnalyticGeometry();
+
       if (_analyticGeometry == null)
-      { 
-        _analyticGeometry = new AnalyticGeometry(3, 1);
+      {
+        _analyticGeometry = _geometry.createAnalyticGeometry();
+        var vol = _analyticGeometry.createAnalyticVolume();
+        vol.setSpatialId("vol0");
+        vol.setDomainType("");
+        vol.setFunctionType("layered");
+        vol.setMath(libsbml.parseFormula("1"));
       }
 
-      if (!_analyticGeometry.isSetId())
-        _analyticGeometry.setId("");
+      if (!_analyticGeometry.isSetSpatialId())
+        _analyticGeometry.setSpatialId("ana1");
 
-      controlAnalyticGeometry1.InitializeFrom(SpatialModel.Geometry, _analyticGeometry);
+      controlAnalyticGeometry1.InitializeFrom(_geometry, _analyticGeometry);
 
 
     }

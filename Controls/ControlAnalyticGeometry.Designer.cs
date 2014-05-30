@@ -70,13 +70,14 @@
       this.grid.Name = "grid";
       this.grid.Size = new System.Drawing.Size(535, 123);
       this.grid.TabIndex = 0;
+      this.grid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.OnRowsAdded);
       // 
       // colSpatialId
       // 
       this.colSpatialId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colSpatialId.HeaderText = "Spatial Id";
       this.colSpatialId.Name = "colSpatialId";
-      this.colSpatialId.Width = 68;
+      this.colSpatialId.Width = 76;
       // 
       // colType
       // 
@@ -90,7 +91,7 @@
       this.colOrdinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colOrdinal.HeaderText = "Ordinal";
       this.colOrdinal.Name = "colOrdinal";
-      this.colOrdinal.Width = 63;
+      this.colOrdinal.Width = 65;
       // 
       // colDomainType
       // 

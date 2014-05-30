@@ -14,6 +14,8 @@ namespace EditSpatial.Controls
 {
   public partial class ControlAnalyticGeometry : BaseSpatialControl
   {
+    public List<int> RowsAdded { get; set; }
+
     public Geometry SpatialGeometry { get; set; }
     public AnalyticGeometry Current { get; set; }
 
@@ -39,50 +41,76 @@ namespace EditSpatial.Controls
       }
     }
 
+    
 
     public void InitializeFrom(Geometry geometry, AnalyticGeometry analytic)
     {
-      if (geometry == null)
+      IsInitializing = true;
+      try
       {
-        txtId.Text = "";
+        if (geometry == null)
+        {
+          txtId.Text = "";
+          grid.Rows.Clear();
+          SpatialGeometry = geometry;
+          thumbGeometry.Image = thumbGeometry.InitialImage;
+          return;
+        }
+
+        if (RowsAdded.Count > 0 && analytic != null)
+        {
+          for (int i = RowsAdded.Count - 1; i >= 0; i--)
+          {
+            var row = grid.Rows[RowsAdded[i]];
+            var vol = analytic.createAnalyticVolume();
+            vol.setSpatialId(row.Cells[0].Value as string);
+            vol.setFunctionType(row.Cells[1].Value as string);
+            long ordinal = 0;
+            if (long.TryParse(row.Cells[2].Value as string, out ordinal))
+              vol.setOrdinal(ordinal);
+            vol.setDomainType(row.Cells[3].Value as string);
+            vol.setMath(libsbml.parseL3Formula(row.Cells[4].Value as string));
+            RowsAdded.RemoveAt(i);
+          }
+        }
+
         grid.Rows.Clear();
         SpatialGeometry = geometry;
         thumbGeometry.Image = thumbGeometry.InitialImage;
-        return;
+        Current = analytic;
+        if (analytic == null) return;
+
+        txtId.Text = analytic.getSpatialId();
+
+        for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
+        {
+          var vol = analytic.getAnalyticVolume(i);
+          string spatialId = vol.getSpatialId();
+          grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal().ToString(), vol.getDomainType(),
+            libsbml.formulaToL3String(vol.getMath()));          
+        }
+
+        if (SpatialGeometry.getNumCoordinateComponents() < 3)
+        {
+          txtZ.Visible = false;
+          trackBar1.Visible = false;
+          lblZ.Visible = false;
+        }
+        else
+        {
+          txtZ.Visible = true;
+          trackBar1.Visible = true;
+          lblZ.Visible = true;
+        }
+
+        thumbGeometry.Image = GenerateImage(analytic, geometry, ThumbSize, ThumbSize);
       }
-
-      grid.Rows.Clear();
-      SpatialGeometry = geometry;
-      thumbGeometry.Image = thumbGeometry.InitialImage;
-      Current = analytic;
-      if (analytic == null) return;
-
-      txtId.Text = analytic.getId();
-
-      for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
+      finally
       {
-        var vol = analytic.getAnalyticVolume(i);
-        string spatialId = vol.getSpatialId();
-        grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal().ToString(), vol.getDomainType(),
-          libsbml.formulaToString(vol.getMath()));
+        IsInitializing = false;
       }
-
-      if (SpatialGeometry.getNumCoordinateComponents() < 3)
-      {
-        txtZ.Visible = false;
-        trackBar1.Visible = false;
-        lblZ.Visible = false;
-      }
-      else
-      {
-        txtZ.Visible = true;
-        trackBar1.Visible = true;
-        lblZ.Visible = true;
-      }
-
-
-      thumbGeometry.Image = GenerateImage(analytic, geometry, ThumbSize, ThumbSize);
     }
+
     public void InitializeFrom(Geometry geometry, string id)
     {
 
@@ -99,7 +127,6 @@ namespace EditSpatial.Controls
       InitializeFrom(geometry, analytic);
     }
 
-
     public override void SaveChanges()
     {
       if (Current == null || SpatialGeometry == null) return;
@@ -113,12 +140,10 @@ namespace EditSpatial.Controls
         current.setFunctionType((string)row.Cells[1].Value);
         current.setOrdinal(Util.SaveInt((string)row.Cells[2].Value, 0L));
         current.setDomainType((string)row.Cells[3].Value);
-        current.setMath(libsbml.parseFormula((string)row.Cells[4].Value));
+        current.setMath(libsbml.parseL3Formula((string)row.Cells[4].Value));
       }
 
     }
-
-
 
     private Image GenerateImage(AnalyticGeometry analytic, Geometry geometry, int resX = 128, int resY = 128)
     {
@@ -135,13 +160,17 @@ namespace EditSpatial.Controls
         }
         formulas.Sort((a, b) => b.Item1.CompareTo(a.Item1));
 
-
         var range1 = geometry.getCoordinateComponent(0);
         double r1Min = range1.getBoundaryMin().getValue();
         double r1Max = range1.getBoundaryMax().getValue();
         var range2 = geometry.getCoordinateComponent(1);
         double r2Min = range2.getBoundaryMin().getValue();
         double r2Max = range2.getBoundaryMax().getValue();
+
+        double depth = geometry.getNumCoordinateComponents() == 3
+  ? geometry.getCoordinateComponent(2).getBoundaryMax().getValue()
+  : 0;
+
 
         var result = new Bitmap(resX, resY);
         for (int i = 0; i < resX; ++i)
@@ -161,8 +190,8 @@ namespace EditSpatial.Controls
             {
               var item = formulas[index];
               var isInside = Util.Evaluate(item.Item2,
-                new List<string> {"x", "y", "z"},
-                new List<double> {x, y, CurrentZ},
+                new List<string> { "x", "y", "z", "width", "height", "depth" },
+                new List<double> { x, y, CurrentZ, r1Max, r2Max, depth },
                 new List<Tuple<string, double>>()
                 );
               if ( Math.Abs((isInside - 1.0)) < 1E-10)
@@ -195,14 +224,19 @@ namespace EditSpatial.Controls
           return Color.Blue;
         case 3:
           return Color.Green;
+        case 4:
+          return Color.Chocolate;
+        case 5:
+          return Color.SlateGray;
       }
     }
 
     public ControlAnalyticGeometry()
     {
       InitializeComponent();
+      IsInitializing = false;
+      RowsAdded = new List<int>();
     }
-
 
     private void FlipOrder(AnalyticGeometry geometry)
     {
@@ -224,9 +258,7 @@ namespace EditSpatial.Controls
         current.setOrdinal((geometry.getNumAnalyticVolumes()-1)- item.Item2);
       }
 
-
     }
-
 
     private void OnReorderClick(object sender, EventArgs e)
     {
@@ -240,8 +272,10 @@ namespace EditSpatial.Controls
 
     private void OnUpdateImage(object sender, EventArgs e)
     {
-      if (Current == null)
+      if (Current == null)        
         return;
+
+      SaveChanges();
       InitializeFrom(SpatialGeometry, Current.getSpatialId());
     }
 
@@ -296,6 +330,10 @@ namespace EditSpatial.Controls
         double r2Min = range2.getBoundaryMin().getValue();
         double r2Max = range2.getBoundaryMax().getValue();
 
+        double depth = geometry.getNumCoordinateComponents() == 3
+          ? geometry.getCoordinateComponent(2).getBoundaryMax().getValue()
+          : 0;
+
         var result = new Bitmap(resX, resY);
         for (int i = 0; i < resX; ++i)
         {
@@ -314,8 +352,8 @@ namespace EditSpatial.Controls
             {
               var item = formulas[index];
               var isInside = Util.Evaluate(item.Item2,
-                new List<string> { "x", "y", "z" },
-                new List<double> { x, y, CurrentZ },
+                new List<string> { "x", "y", "z", "width", "height", "depth" },
+                new List<double> { x, y, CurrentZ, r1Max, r2Max, depth },
                 new List<Tuple<string, double>>()
                 );
               if (Math.Abs((isInside - 1.0)) < 1E-10)
@@ -338,8 +376,9 @@ namespace EditSpatial.Controls
     private void OnExportTiffClick(object sender, EventArgs e)
     {
       if (grid.SelectedRows.Count == 0) return;
-      var ordinal = (long)grid.SelectedRows[0].Cells[2].Value;
-
+      long ordinal = 0;
+      long.TryParse(grid.SelectedRows[0].Cells[2].Value as string, out ordinal);
+      
       var range1 = SpatialGeometry.getCoordinateComponent(0);
       double r1Min = range1.getBoundaryMin().getValue();
       double r1Max = range1.getBoundaryMax().getValue();
@@ -356,6 +395,14 @@ namespace EditSpatial.Controls
           image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
         }
       }
+
+    }
+
+    private void OnRowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+    {
+      if (Current == null || IsInitializing) return;
+
+      RowsAdded.Add(e.RowIndex-1);
 
     }
   }

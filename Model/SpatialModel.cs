@@ -312,10 +312,8 @@ namespace EditSpatial.Model
       }
     }
 
-    public bool ConvertToSpatial(CreateModel createModel)
+    public bool ConvertToL3()
     {
-      if (Document == null) return true;
-
       if (Document.getLevel() < 3)
       {
         var prop = new ConversionProperties(new SBMLNamespaces(3, 1));
@@ -334,6 +332,14 @@ namespace EditSpatial.Model
 
       Document.enablePackage(RequiredElementsExtension.getXmlnsL3V1V1(), "req", true);
       Document.setPackageRequired("req", false);
+
+      return true;
+    }
+    public bool ConvertToSpatial(CreateModel createModel)
+    {
+      if (Document == null) return true;
+
+      if (!ConvertToL3()) return false;
 
       libsbmlcs.Model model = Document.getModel();
       var plugin = (SpatialModelPlugin) model.getPlugin("spatial");
@@ -685,7 +691,7 @@ namespace EditSpatial.Model
       }
     }
 
-    private void CreateCoordinateSystem(Geometry geometry, libsbmlcs.Model model,
+    public void CreateCoordinateSystem(Geometry geometry, libsbmlcs.Model model,
       GeometrySettings settings)
     {
       geometry.setCoordinateSystem("Cartesian");
