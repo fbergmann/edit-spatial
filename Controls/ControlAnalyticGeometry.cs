@@ -143,7 +143,11 @@ namespace EditSpatial.Controls
         current.setMath(libsbml.parseL3Formula((string)row.Cells[4].Value));
       }
 
+      Current.ExpandMath();
+
+
     }
+
 
     private Image GenerateImage(AnalyticGeometry analytic, Geometry geometry, int resX = 128, int resY = 128)
     {
@@ -152,6 +156,9 @@ namespace EditSpatial.Controls
 
       try
       {
+
+        Current.ExpandMath();
+
         var formulas = new List<Tuple<int, ASTNode>>();
         for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
         {
@@ -167,8 +174,11 @@ namespace EditSpatial.Controls
         double r2Min = range2.getBoundaryMin().getValue();
         double r2Max = range2.getBoundaryMax().getValue();
 
-        double depth = geometry.getNumCoordinateComponents() == 3
+        double r3Max = geometry.getNumCoordinateComponents() == 3
   ? geometry.getCoordinateComponent(2).getBoundaryMax().getValue()
+  : 0;
+        double r3Min = geometry.getNumCoordinateComponents() == 3
+  ? geometry.getCoordinateComponent(2).getBoundaryMin().getValue()
   : 0;
 
 
@@ -190,8 +200,8 @@ namespace EditSpatial.Controls
             {
               var item = formulas[index];
               var isInside = Util.Evaluate(item.Item2,
-                new List<string> { "x", "y", "z", "width", "height", "depth" },
-                new List<double> { x, y, CurrentZ, r1Max, r2Max, depth },
+                new List<string> { "x", "y", "z", "width", "height", "depth", "Xmin", "Xmax", "Ymin", "Ymax", "Zmin", "Zmax" },
+                new List<double> { x, y, CurrentZ, r1Max, r2Max, r3Max, r1Min, r1Max, r2Min, r2Max, r3Min, r3Max },
                 new List<Tuple<string, double>>()
                 );
               if ( Math.Abs((isInside - 1.0)) < 1E-10)
@@ -275,7 +285,9 @@ namespace EditSpatial.Controls
       if (Current == null)        
         return;
 
+      IsInitializing = true;
       SaveChanges();
+      IsInitializing = false;
       InitializeFrom(SpatialGeometry, Current.getSpatialId());
     }
 

@@ -352,7 +352,7 @@ namespace EditSpatial.Model
       // create coordinate components    
       CreateCoordinateSystem(geometry, model, createModel.Geometry);
 
-      if (geometry.getNumGeometryDefinitions()==0)
+      //if (geometry.getNumGeometryDefinitions()==0)
       if (!SetupGeometry(model, geometry, createModel)) return false;
 
       SetupSpecies(createModel, model);
@@ -475,14 +475,32 @@ namespace EditSpatial.Model
       point.setCoord2(createModel.Geometry.Ymax/2.0);
       point.setCoord3(0);
 
-      AnalyticGeometry def = geometry.createAnalyticGeometry();
-      def.setSpatialId("geometry0");
-      AnalyticVolume vol = def.createAnalyticVolume();
-      vol.setSpatialId("vol0");
+
+      AnalyticVolume vol = null;
+      AnalyticGeometry def = null;
+
+      def = geometry.GetFirstAnalyticGeometry();
+      if (def == null)
+      {
+        def = geometry.createAnalyticGeometry();
+        def.setSpatialId("geometry0");
+      }
+
+      vol = def.getAnalyticVolume(0);
+      if (vol == null)
+      {
+        vol = def.createAnalyticVolume();
+        vol.setSpatialId("vol0");
+        vol.setOrdinal(0);
+      }
+
+      if (!vol.isSetMath() || string.IsNullOrWhiteSpace(libsbml.formulaToString(vol.getMath())))
+        vol.setMath(libsbml.parseFormula("1"));
+
       vol.setDomainType("domainType0");
       vol.setFunctionType("layered");
-      vol.setOrdinal(0);
-      vol.setMath(libsbml.parseFormula("1"));
+
+
 
       Compartment comp = model.getCompartment(0);
       var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
@@ -756,6 +774,94 @@ namespace EditSpatial.Model
       symbol.setSpatialId("y");
       symbol.setType("coordinateComponent");
       SetRequiredElements(param, false);
+
+      if (settings.UsedSymbols.Contains("width"))
+      {
+        model.removeParameter("width");
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId("width");
+        param.setValue(settings.Xmax);
+        pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+        symbol = pplug.getSpatialSymbolReference();
+        symbol.setSpatialId("Xmax");
+        symbol.setType("");
+        SetRequiredElements(param, false);
+      }
+
+      if (settings.UsedSymbols.Contains("height"))
+      {
+        model.removeParameter("height");
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId("height");
+        param.setValue(settings.Ymax);
+        pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+        symbol = pplug.getSpatialSymbolReference();
+        symbol.setSpatialId("Ymax");
+        symbol.setType("");
+        SetRequiredElements(param, false);
+      }
+
+      if (settings.UsedSymbols.Contains("Xmax"))
+      {
+        model.removeParameter("Xmax");
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId("Xmax");
+        param.setValue(settings.Xmax);
+        pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+        symbol = pplug.getSpatialSymbolReference();
+        symbol.setSpatialId("Xmax");
+        symbol.setType("");
+        SetRequiredElements(param, false);
+      }
+
+      if (settings.UsedSymbols.Contains("Ymax"))
+      {
+        model.removeParameter("Ymax");
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId("Ymax");
+        param.setValue(settings.Ymax);
+        pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+        symbol = pplug.getSpatialSymbolReference();
+        symbol.setSpatialId("Ymax");
+        symbol.setType("");
+        SetRequiredElements(param, false);
+      }
+
+
+      if (settings.UsedSymbols.Contains("Xmin"))
+      {
+        model.removeParameter("Xmin");
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId("Xmin");
+        param.setValue(settings.Xmin);
+        pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+        symbol = pplug.getSpatialSymbolReference();
+        symbol.setSpatialId("Xmin");
+        symbol.setType("");
+        SetRequiredElements(param, false);
+      }
+
+      if (settings.UsedSymbols.Contains("Ymin"))
+      {
+        model.removeParameter("Ymin");
+        param = model.createParameter();
+        param.initDefaults();
+        param.setId("Ymin");
+        param.setValue(settings.Ymin);
+        pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
+        symbol = pplug.getSpatialSymbolReference();
+        symbol.setSpatialId("Ymin");
+        symbol.setType("");
+        SetRequiredElements(param, false);
+      }
+
+
+
     }
 
     private List<string> OrderCompartments(libsbmlcs.Model model)

@@ -5,8 +5,10 @@ using libsbmlcs;
 
 namespace EditSpatial.Forms
 {
+
   public partial class FormInitSpatial : Form
   {
+
     private libsbmlcs.Model _model;
 
     public FormInitSpatial()
@@ -15,25 +17,72 @@ namespace EditSpatial.Forms
       _model = null;
     }
 
-
-
     public CreateModel CreateModel
     {
       get
       {
         var result = new CreateModel
         {
-          Geometry = new GeometrySettings
-          {
-            Xmax = Util.SaveDouble(txtDimX.Text, 50),
-            Ymax = Util.SaveDouble(txtDimY.Text, 50),
-          }
+          Geometry = GeometryModel
         };
         foreach (var item in lstSpatialSpecies.Items)
           result.Species.Add(item as SpatialSpecies);
         return result;
       }
     }
+
+
+    public GeometrySettings GeometryModel
+    {
+      get
+      {
+        var geom = new GeometrySettings
+        {
+          Xmax = Util.SaveDouble(txtDimX.Text, 50),
+          Ymax = Util.SaveDouble(txtDimY.Text, 50),
+          Type = GeometryType.Default
+        };
+
+        if (radAnalytic.Checked)
+        {
+          geom.Type = GeometryType.Analytic;
+
+          if (_analyticGeometry != null && _analyticGeometry.getNumAnalyticVolumes() > 0)
+          {
+            _analyticGeometry.ExpandMath();
+
+            for (int i = 0;i < _analyticGeometry.getNumAnalyticVolumes();++i)
+            {
+              var current = _analyticGeometry.getAnalyticVolume(i);
+              var math = libsbml.formulaToString(current.getMath());
+              if (math.Contains(" width "))
+                geom.UsedSymbols.Add("width");
+              if (math.Contains(" height "))
+                geom.UsedSymbols.Add("height");
+              if (math.Contains(" Xmax "))
+                geom.UsedSymbols.Add("Xmax");
+              if (math.Contains(" Ymax "))
+                geom.UsedSymbols.Add("Ymax");
+              if (math.Contains(" Xmin "))
+                geom.UsedSymbols.Add("Xmin");
+              if (math.Contains(" Ymin "))
+                geom.UsedSymbols.Add("Ymin");
+            }
+          }
+
+        } 
+
+        if (radSample.Checked)
+        {
+          geom.Type = GeometryType.Sample;
+        }
+      
+
+      return
+      geom;
+      }
+    }
+
     public SpatialModel SpatialModel { get; set; }
 
     private void OnCancelClick(object sender, EventArgs e)
@@ -303,7 +352,6 @@ namespace EditSpatial.Forms
       if (_geometry == null)
       {
         _geometry = new Geometry(3, 1);
-        ;
       }
 
       SpatialModel.CreateCoordinateSystem(_geometry, 

@@ -109,7 +109,7 @@ namespace EditSpatial
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;
-        current.SaveChanges();
+        current.SaveChanges();        
         if (current.UpdateAction != null)
           current.UpdateAction();
       }

@@ -14,6 +14,52 @@ namespace EditSpatial
   static class Util
   {
 
+
+    public static string[][] InbuiltFunctions = new string[][]
+    {
+      new [] {
+        "CIRCLE", 
+        "lambda(x,y,centerX,centerY,r,piecewise(1, lt(pow(x-centerX, 2) + pow(y-centerY, 2), r*r), 0))",
+        "CIRCLE(x,y,25,25,10)",
+        "True, if inside circle with given center and radius"
+      },
+      new [] {
+        "RECTANGLE", 
+        "lambda(x,y,startX, startY, w,h,and(geq(x, startX), leq(x, startX+w), geq(y, startY), leq(y, startY+h)))",
+        "RECT(x,y,10,10,10, 10)",
+        "Generates a rectangle with given start position and width and height"
+      },
+    };
+
+
+    public static void ExpandMath(this AnalyticGeometry analytic)
+    {
+      if (analytic == null) return;
+
+      for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
+      {
+        var current = analytic.getAnalyticVolume(i);
+        if (current == null || !current.isSetMath())
+          continue;
+        var formula = libsbml.formulaToString(current.getMath());
+
+        for (int k = 0; k < InbuiltFunctions.Length; ++k)
+        {
+          if (formula.Contains(InbuiltFunctions[k][0]))
+          {
+            var fd = new FunctionDefinition(3, 1);
+            fd.setId(InbuiltFunctions[k][0]);
+            fd.setMath(libsbml.parseFormula(InbuiltFunctions[k][1]));
+            SBMLTransforms.replaceFD(current.getMath(), fd);
+            fd.Dispose();
+          }
+        }
+
+
+      }
+
+    }
+
     public static AnalyticGeometry GetFirstAnalyticGeometry(this libsbmlcs.Geometry geometry)
     {
       if (geometry == null) return null;
