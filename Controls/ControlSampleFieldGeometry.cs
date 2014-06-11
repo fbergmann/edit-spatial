@@ -223,5 +223,32 @@ namespace EditSpatial.Controls
 
       InitializeFrom(SpatialGeometry, Current.getSpatialId());
     }
+
+    private void OnImageLoad(object sender, EventArgs e)
+    {
+      using (var dialog = new OpenFileDialog { Filter = "TIFF files|*.tif|All files|*.*" })
+      {
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+          LoadImage(dialog.FileName);
+        }
+      }
+    }
+
+    private void LoadImage(string fileName)
+    {
+      
+    }
+
+    private void OnImageSave(object sender, EventArgs e)
+    {
+      using (var dialog = new SaveFileDialog { Filter = "TIFF files|*.tif|All files|*.*" })
+      {
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+          thumbGeometry.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+        }
+      }
+    }
   }
 }
