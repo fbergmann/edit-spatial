@@ -109,29 +109,6 @@ namespace EditSpatial.Controls
         var array = new int[uncompressedLength];
         _Data.getUncompressed(array);
 
-        //for (int i = 0; i < array.Length; ++i)
-        //{
-        //  var current = array[i];
-        //  if (current != 0)
-        //  {
-        //    int x = i % _Field.getNumSamples1();
-        //    int y = i / (_Field.getNumSamples3()) % _Field.getNumSamples2();
-        //    int z1 = i / (_Field.getNumSamples1() * _Field.getNumSamples2());
-        //    var val = array[x + _Field.getNumSamples1() * y + _Field.getNumSamples1() * _Field.getNumSamples2() * z1];
-
-        //    Debug.WriteLine(
-        //      string.Format("x={0}{3}y={1}{3}z={2}{3}original={4}{3}reverse={5}{3}",
-        //      x, y, z1, Environment.NewLine,current,val
-        //      )
-        //      );
-
-            
-        //  }
-        //}
-
-
-        var count = array.Count(i => i != 0);
-
         int z = Util.SaveInt(txtZ.Text, 0);
         if (z >= _Field.getNumSamples3())
           z = _Field.getNumSamples3() - 1;

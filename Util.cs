@@ -71,6 +71,18 @@ namespace EditSpatial
       return null;
     }
 
+    public static SampledFieldGeometry GetFirstSampledFieldGeometry(this libsbmlcs.Geometry geometry)
+    {
+      if (geometry == null) return null;
+      for (int i = 0; i < geometry.getNumGeometryDefinitions(); ++i)
+      {
+        var sampledFieldGeometry = geometry.getGeometryDefinition(i) as SampledFieldGeometry;
+        if (sampledFieldGeometry != null) return sampledFieldGeometry;
+      }
+      return null;
+    }
+
+
     public static void setInitialExpession(this libsbmlcs.Species species, string expression)
     {
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)

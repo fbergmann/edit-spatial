@@ -396,14 +396,17 @@ namespace EditSpatial
         if (sample != null)
         {
           SampledField field = sample.getSampledField();
-          var fieldNode = new TreeNode(field.getSpatialId()) {Tag = field.toSBML()};
-          node.Nodes.Add(fieldNode);
-
-          for (long j = 0; j < sample.getNumSampledVolumes(); ++j)
+          if (field != null)
           {
-            SampledVolume vol = sample.getSampledVolume(j);
-            var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
-            node.Nodes.Add(volNode);
+            var fieldNode = new TreeNode(field.getSpatialId()) { Tag = field.toSBML() };
+            node.Nodes.Add(fieldNode);
+
+            for (long j = 0; j < sample.getNumSampledVolumes(); ++j)
+            {
+              SampledVolume vol = sample.getSampledVolume(j);
+              var volNode = new TreeNode(vol.getSpatialId()) { Tag = vol.toSBML() };
+              node.Nodes.Add(volNode);
+            }
           }
         }
 

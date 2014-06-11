@@ -225,7 +225,25 @@ namespace EditSpatial.Forms
           continue;
 
         AddSelected(current);
+      }
 
+      var geom = SpatialModel.Geometry;
+      if (geom == null) return;
+
+      _analyticGeometry = geom.GetFirstAnalyticGeometry();
+      if (_analyticGeometry != null)
+      {
+        if (_analyticGeometry.getNumAnalyticVolumes() == 1 && _analyticGeometry.getAnalyticVolume(0).isSetMath()
+          && (libsbml.formulaToString(_analyticGeometry.getAnalyticVolume(0).getMath()) == "1"))
+          radDefault.Checked = true;
+        else
+          radAnalytic.Checked = true;
+      }
+
+      _sampleGeometry = geom.GetFirstSampledFieldGeometry();
+      if (_sampleGeometry != null)
+      {
+        radSample.Checked = true;
       }
 
     }
@@ -338,7 +356,6 @@ namespace EditSpatial.Forms
     private SampledFieldGeometry _sampleGeometry;
     private Geometry _geometry;
 
-
     private void radAnalytic_CheckedChanged(object sender, EventArgs e)
     {
       controlAnalyticGeometry1.Visible = true;
@@ -347,7 +364,9 @@ namespace EditSpatial.Forms
       if (!radAnalytic.Checked) return;
 
       _geometry = SpatialModel.Geometry;
-      
+
+      if (SpatialModel.Document == null)
+        return;
 
       if (_geometry == null)
       {
@@ -387,6 +406,41 @@ namespace EditSpatial.Forms
     {
       controlAnalyticGeometry1.Visible = false;
       controlSampleFieldGeometry1.Visible = true;
+
+      if (!radSample.Checked) return;
+
+      _geometry = SpatialModel.Geometry;
+
+      if (SpatialModel.Document == null) return;
+
+      if (_geometry == null)
+      {
+        _geometry = new Geometry(3, 1);
+      }
+
+      SpatialModel.CreateCoordinateSystem(_geometry,
+        SpatialModel.Document.getModel(),
+        new GeometrySettings
+        {
+          Xmax = Util.SaveDouble(txtDimX.Text, 50),
+          Ymax = Util.SaveDouble(txtDimY.Text, 50),
+        }
+      );
+
+      _sampleGeometry = _geometry.GetFirstSampledFieldGeometry();
+
+      if (_sampleGeometry == null)
+      {
+        _sampleGeometry = _geometry.createSampledFieldGeometry();
+      }
+
+      if (!_sampleGeometry.isSetSpatialId())
+        _sampleGeometry.setSpatialId("sample1");
+
+      controlSampleFieldGeometry1.InitializeFrom(_geometry, _sampleGeometry.getSpatialId());
+
+
+
     }
 
     private void radDefault_CheckedChanged(object sender, EventArgs e)
