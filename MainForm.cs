@@ -221,9 +221,9 @@ namespace EditSpatial
       controlDisplayNode1.ResetText();
       controlDisplayNode2.ResetText();
       txtSBML.Text = Model.ToSBML();
-      txtJarnac.Text = Model.ToJarnac();
+      txtJarnac.Text = Model.HaveModel ? Model.ToJarnac() : "";
 
-      Text = "Edit Spatial: [ " + Path.GetFileName(Model.FileName) + " ]";
+      Text = string.Format("Edit Spatial: [ {0} ]", Path.GetFileName(Model.FileName));
 
       treeView2.SelectedNode =
         treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
@@ -234,11 +234,28 @@ namespace EditSpatial
           : treeView1.Nodes[NODE_GEOMS];
     }
 
+    private void ClearCoreTree()
+    {
+      treeView2.Nodes[NODE_COMPARTMENTS].Nodes.Clear();
+      treeView2.Nodes[NODE_SPECIES].Nodes.Clear();
+      treeView2.Nodes[NODE_PARAMETERS].Nodes.Clear();
+      treeView2.Nodes[NODE_REACTIONS].Nodes.Clear();
+      treeView2.Nodes[NODE_RULES].Nodes.Clear();
+      treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS].Nodes.Clear();
+    }
     private void FillCoreTreeFromModel(SpatialModel spatialModel)
     {
-      if (spatialModel.Document == null) return;
+      if (spatialModel.Document == null)
+      {
+        ClearCoreTree();
+        return;
+      }
       libsbmlcs.Model model = spatialModel.Document.getModel();
-      if (model == null) return;
+      if (model == null)
+      {
+        ClearCoreTree();        
+        return;
+      }
 
 
       FillTreeWithCompartments(model);
@@ -335,7 +352,15 @@ namespace EditSpatial
     private void FillGeometryFromModel(SpatialModel model)
     {
       Geometry geom = model.Geometry;
-      if (geom == null) return;
+      if (geom == null)
+      {
+        treeView1.Nodes[NODE_COORDINATES].Nodes.Clear();
+        treeView1.Nodes[NODE_DOMAINTYPES].Nodes.Clear();
+        treeView1.Nodes[NODE_DOMAINS].Nodes.Clear();
+        treeView1.Nodes[NODE_ADJACENTDOMAINS].Nodes.Clear();
+        treeView1.Nodes[NODE_GEOMS].Nodes.Clear();
+        return;
+      }
 
       TreeNode root = treeView1.Nodes[NODE_COORDINATES];
       root.Nodes.Clear();
@@ -423,6 +448,7 @@ namespace EditSpatial
     private void NewModel()
     {
       Model = new SpatialModel();
+      Model.ModelChanged += (o, args) => UpdateUI();
       UpdateUI();
     }
 
@@ -459,8 +485,9 @@ namespace EditSpatial
     private void OpenModel(SpatialModel model)
     {
       Model = model;
-      UpdateUI();
+      Model.ModelChanged += (o, args) => UpdateUI();
 
+      UpdateUI();
 
       if (Model != null && Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {
@@ -557,11 +584,31 @@ namespace EditSpatial
         controlDisplayNode2.Visible = false;
         controlInitialAssignments1.Visible = true;
         controlInitialAssignments1.InitializeFrom(Model.Document);
+        controlParameters1.Visible = false;
+        controlSpecies1.Visible = false;
+      }
+      else if (node.Name == NODE_PARAMETERS)
+      {
+        controlDisplayNode2.Visible = false;
+        controlInitialAssignments1.Visible = false;
+        controlParameters1.Visible = true;
+        controlSpecies1.Visible = false;
+        controlParameters1.InitializeFrom(Model.Document);
+      }
+      else if (node.Name == NODE_SPECIES)
+      {
+        controlDisplayNode2.Visible = false;
+        controlInitialAssignments1.Visible = false;
+        controlParameters1.Visible = false;
+        controlSpecies1.Visible = true;
+        controlSpecies1.InitializeFrom(Model.Document);
       }
       else
       {
         controlDisplayNode2.Visible = true;
         controlInitialAssignments1.Visible = false;
+        controlParameters1.Visible = false;
+        controlSpecies1.Visible = false;
         controlDisplayNode2.DisplayNode(node);
       }
     }
@@ -819,6 +866,13 @@ namespace EditSpatial
       treeView2.SelectedNode = parent;
       
 
+    }
+
+    private void OnMoveARtoIAClick(object sender, EventArgs e)
+    {
+      if (Model == null) return;
+      Model.MoveAllRulesToAssignments();
+      UpdateUI();
     }
 
     

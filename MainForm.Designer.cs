@@ -59,6 +59,7 @@
       this.treeView2 = new System.Windows.Forms.TreeView();
       this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.controlParameters1 = new EditSpatial.Controls.ControlParameters();
       this.controlInitialAssignments1 = new EditSpatial.Controls.ControlInitialAssignments();
       this.controlDisplayNode2 = new EditSpatial.Controls.ControlDisplayNode();
       this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -95,6 +96,8 @@
       this.modelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.showWarningsErrorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.spatialWizardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+      this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -108,6 +111,7 @@
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.controlSpecies1 = new EditSpatial.Controls.ControlSpecies();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -328,7 +332,7 @@
       this.tabPage2.Location = new System.Drawing.Point(4, 22);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage2.Size = new System.Drawing.Size(608, 336);
+      this.tabPage2.Size = new System.Drawing.Size(768, 456);
       this.tabPage2.TabIndex = 1;
       this.tabPage2.Text = "Core Elements";
       this.tabPage2.UseVisualStyleBackColor = true;
@@ -345,10 +349,12 @@
       // 
       // splitInitial.Panel2
       // 
+      this.splitInitial.Panel2.Controls.Add(this.controlSpecies1);
+      this.splitInitial.Panel2.Controls.Add(this.controlParameters1);
       this.splitInitial.Panel2.Controls.Add(this.controlInitialAssignments1);
       this.splitInitial.Panel2.Controls.Add(this.controlDisplayNode2);
-      this.splitInitial.Size = new System.Drawing.Size(602, 330);
-      this.splitInitial.SplitterDistance = 200;
+      this.splitInitial.Size = new System.Drawing.Size(762, 450);
+      this.splitInitial.SplitterDistance = 253;
       this.splitInitial.TabIndex = 1;
       // 
       // treeView2
@@ -376,7 +382,7 @@
             treeNode9,
             treeNode10,
             treeNode11});
-      this.treeView2.Size = new System.Drawing.Size(200, 330);
+      this.treeView2.Size = new System.Drawing.Size(253, 450);
       this.treeView2.TabIndex = 0;
       this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
       // 
@@ -394,13 +400,24 @@
       this.deleteToolStripMenuItem.Text = "&Delete";
       this.deleteToolStripMenuItem.Click += new System.EventHandler(this.OnItemDeleteClick);
       // 
+      // controlParameters1
+      // 
+      this.controlParameters1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlParameters1.IsInitializing = false;
+      this.controlParameters1.Location = new System.Drawing.Point(0, 0);
+      this.controlParameters1.Name = "controlParameters1";
+      this.controlParameters1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlParameters1.RowsAdded")));
+      this.controlParameters1.Size = new System.Drawing.Size(505, 450);
+      this.controlParameters1.TabIndex = 2;
+      this.controlParameters1.UpdateAction = null;
+      // 
       // controlInitialAssignments1
       // 
       this.controlInitialAssignments1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.controlInitialAssignments1.IsInitializing = false;
       this.controlInitialAssignments1.Location = new System.Drawing.Point(0, 0);
       this.controlInitialAssignments1.Name = "controlInitialAssignments1";
-      this.controlInitialAssignments1.Size = new System.Drawing.Size(398, 330);
+      this.controlInitialAssignments1.Size = new System.Drawing.Size(505, 450);
       this.controlInitialAssignments1.TabIndex = 1;
       this.controlInitialAssignments1.UpdateAction = null;
       this.controlInitialAssignments1.Visible = false;
@@ -412,7 +429,7 @@
       this.controlDisplayNode2.Location = new System.Drawing.Point(0, 0);
       this.controlDisplayNode2.Name = "controlDisplayNode2";
       this.controlDisplayNode2.Padding = new System.Windows.Forms.Padding(4);
-      this.controlDisplayNode2.Size = new System.Drawing.Size(398, 330);
+      this.controlDisplayNode2.Size = new System.Drawing.Size(505, 450);
       this.controlDisplayNode2.TabIndex = 0;
       this.controlDisplayNode2.UpdateAction = null;
       // 
@@ -422,7 +439,7 @@
       this.tabPage3.Location = new System.Drawing.Point(4, 22);
       this.tabPage3.Name = "tabPage3";
       this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage3.Size = new System.Drawing.Size(608, 336);
+      this.tabPage3.Size = new System.Drawing.Size(768, 456);
       this.tabPage3.TabIndex = 2;
       this.tabPage3.Text = "Model";
       this.tabPage3.UseVisualStyleBackColor = true;
@@ -439,7 +456,7 @@
       this.tableLayoutPanel1.RowCount = 2;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(602, 330);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(762, 450);
       this.tableLayoutPanel1.TabIndex = 1;
       // 
       // txtJarnac
@@ -451,7 +468,7 @@
       this.txtJarnac.Multiline = true;
       this.txtJarnac.Name = "txtJarnac";
       this.txtJarnac.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.txtJarnac.Size = new System.Drawing.Size(596, 295);
+      this.txtJarnac.Size = new System.Drawing.Size(756, 415);
       this.txtJarnac.TabIndex = 0;
       this.txtJarnac.WordWrap = false;
       // 
@@ -459,9 +476,9 @@
       // 
       this.panel1.Controls.Add(this.cmdApplyJarnac);
       this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panel1.Location = new System.Drawing.Point(3, 304);
+      this.panel1.Location = new System.Drawing.Point(3, 424);
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(596, 23);
+      this.panel1.Size = new System.Drawing.Size(756, 23);
       this.panel1.TabIndex = 1;
       // 
       // cmdApplyJarnac
@@ -480,7 +497,7 @@
       this.tabPage4.Location = new System.Drawing.Point(4, 22);
       this.tabPage4.Name = "tabPage4";
       this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPage4.Size = new System.Drawing.Size(608, 336);
+      this.tabPage4.Size = new System.Drawing.Size(768, 456);
       this.tabPage4.TabIndex = 3;
       this.tabPage4.Text = "SBML";
       this.tabPage4.UseVisualStyleBackColor = true;
@@ -494,7 +511,7 @@
       this.txtSBML.Multiline = true;
       this.txtSBML.Name = "txtSBML";
       this.txtSBML.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.txtSBML.Size = new System.Drawing.Size(602, 330);
+      this.txtSBML.Size = new System.Drawing.Size(762, 450);
       this.txtSBML.TabIndex = 0;
       this.txtSBML.WordWrap = false;
       // 
@@ -704,7 +721,9 @@
       // 
       this.modelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showWarningsErrorsToolStripMenuItem,
-            this.spatialWizardToolStripMenuItem});
+            this.spatialWizardToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem});
       this.modelToolStripMenuItem.Name = "modelToolStripMenuItem";
       this.modelToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
       this.modelToolStripMenuItem.Text = "&Model";
@@ -712,16 +731,28 @@
       // showWarningsErrorsToolStripMenuItem
       // 
       this.showWarningsErrorsToolStripMenuItem.Name = "showWarningsErrorsToolStripMenuItem";
-      this.showWarningsErrorsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+      this.showWarningsErrorsToolStripMenuItem.Size = new System.Drawing.Size(305, 22);
       this.showWarningsErrorsToolStripMenuItem.Text = "Show Warnings / Errors";
       this.showWarningsErrorsToolStripMenuItem.Click += new System.EventHandler(this.OnShowWarnings);
       // 
       // spatialWizardToolStripMenuItem
       // 
       this.spatialWizardToolStripMenuItem.Name = "spatialWizardToolStripMenuItem";
-      this.spatialWizardToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+      this.spatialWizardToolStripMenuItem.Size = new System.Drawing.Size(305, 22);
       this.spatialWizardToolStripMenuItem.Text = "Spatial Wizard";
       this.spatialWizardToolStripMenuItem.Click += new System.EventHandler(this.OnShowSpatialWizard);
+      // 
+      // toolStripMenuItem2
+      // 
+      this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+      this.toolStripMenuItem2.Size = new System.Drawing.Size(302, 6);
+      // 
+      // moveAssignmentRuleToInitialAssignmentToolStripMenuItem
+      // 
+      this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem.Name = "moveAssignmentRuleToInitialAssignmentToolStripMenuItem";
+      this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem.Size = new System.Drawing.Size(305, 22);
+      this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem.Text = "Move AssignmentRule to Initial Assignment";
+      this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem.Click += new System.EventHandler(this.OnMoveARtoIAClick);
       // 
       // helpToolStripMenuItem
       // 
@@ -847,6 +878,18 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
+      // controlSpecies1
+      // 
+      this.controlSpecies1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlSpecies1.IsInitializing = false;
+      this.controlSpecies1.Location = new System.Drawing.Point(0, 0);
+      this.controlSpecies1.Name = "controlSpecies1";
+      this.controlSpecies1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlSpecies1.RowsAdded")));
+      this.controlSpecies1.Size = new System.Drawing.Size(505, 450);
+      this.controlSpecies1.TabIndex = 3;
+      this.controlSpecies1.UpdateAction = null;
+      this.controlSpecies1.Visible = false;
+      // 
       // MainForm
       // 
       this.AllowDrop = true;
@@ -965,6 +1008,10 @@
     private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+    private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+    private System.Windows.Forms.ToolStripMenuItem moveAssignmentRuleToInitialAssignmentToolStripMenuItem;
+    private Controls.ControlParameters controlParameters1;
+    private Controls.ControlSpecies controlSpecies1;
   }
 }
 

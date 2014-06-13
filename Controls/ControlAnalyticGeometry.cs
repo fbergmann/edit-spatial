@@ -41,7 +41,27 @@ namespace EditSpatial.Controls
       }
     }
 
-    
+
+
+    private void CommitAddedRows(AnalyticGeometry analytic)
+    {
+      if (RowsAdded.Count > 0 && analytic != null)
+      {
+        for (int i = RowsAdded.Count - 1; i >= 0; i--)
+        {
+          var row = grid.Rows[RowsAdded[i]];
+          var vol = analytic.createAnalyticVolume();
+          vol.setSpatialId(row.Cells[0].Value as string);
+          vol.setFunctionType(row.Cells[1].Value as string);
+          long ordinal = 0;
+          if (long.TryParse(row.Cells[2].Value as string, out ordinal))
+            vol.setOrdinal(ordinal);
+          vol.setDomainType(row.Cells[3].Value as string);
+          vol.setMath(libsbml.parseL3Formula(row.Cells[4].Value as string));
+          RowsAdded.RemoveAt(i);
+        }
+      }
+    }
 
     public void InitializeFrom(Geometry geometry, AnalyticGeometry analytic)
     {
@@ -57,22 +77,7 @@ namespace EditSpatial.Controls
           return;
         }
 
-        if (RowsAdded.Count > 0 && analytic != null)
-        {
-          for (int i = RowsAdded.Count - 1; i >= 0; i--)
-          {
-            var row = grid.Rows[RowsAdded[i]];
-            var vol = analytic.createAnalyticVolume();
-            vol.setSpatialId(row.Cells[0].Value as string);
-            vol.setFunctionType(row.Cells[1].Value as string);
-            long ordinal = 0;
-            if (long.TryParse(row.Cells[2].Value as string, out ordinal))
-              vol.setOrdinal(ordinal);
-            vol.setDomainType(row.Cells[3].Value as string);
-            vol.setMath(libsbml.parseL3Formula(row.Cells[4].Value as string));
-            RowsAdded.RemoveAt(i);
-          }
-        }
+        CommitAddedRows(analytic);
 
         grid.Rows.Clear();
         SpatialGeometry = geometry;
@@ -132,6 +137,9 @@ namespace EditSpatial.Controls
       if (Current == null || SpatialGeometry == null) return;
 
       Current.setSpatialId(txtId.Text);
+
+      CommitAddedRows(Current);
+
       for (int i = 0; i < grid.Rows.Count && i < Current.getNumAnalyticVolumes(); ++i)
       {
         var row = grid.Rows[i];

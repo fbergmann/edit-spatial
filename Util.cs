@@ -60,6 +60,19 @@ namespace EditSpatial
 
     }
 
+    public static void MoveRuleToAssignment(this libsbmlcs.Model model, string id)
+    {
+      if (model == null) return;
+      var rule = model.getRuleByVariable(id) as AssignmentRule;
+      if (rule != null)
+      {
+        var ia = model.createInitialAssignment();
+        ia.setSymbol(rule.getVariable());
+        ia.setMath(rule.getMath());
+        model.removeRule(rule.getVariable());
+      }
+    }
+
     public static AnalyticGeometry GetFirstAnalyticGeometry(this libsbmlcs.Geometry geometry)
     {
       if (geometry == null) return null;

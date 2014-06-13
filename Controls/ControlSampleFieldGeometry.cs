@@ -47,7 +47,14 @@ namespace EditSpatial.Controls
       {
         var vol = sampledFieldGeometry.getSampledVolume(i);
         string spatialId = vol.getSpatialId();
-        grid.Rows.Add(spatialId, vol.getDomainType(), vol.getSampledValue(), vol.getMinValue(), vol.getMaxValue());
+        
+        grid.Rows.Add(
+          spatialId, 
+          vol.getDomainType(), 
+          vol.getSampledValue().ToString(),
+          vol.getMinValue().ToString(),
+          vol.getMaxValue().ToString()
+        );
       }
 
       _Field = sampledFieldGeometry.getSampledField();
@@ -86,14 +93,27 @@ namespace EditSpatial.Controls
         var current = Current.getSampledVolume(i);
         current.setSpatialId((string) row.Cells[0].Value);
         current.setDomainType((string) row.Cells[1].Value);
-        current.setSampledValue((double) row.Cells[2].Value);
-        current.setMinValue((double) row.Cells[3].Value);
-        current.setMaxValue((double) row.Cells[4].Value);
+        double value; 
+        if (double.TryParse((string)row.Cells[2].Value, out value))
+          current.setSampledValue(value);
+        if (double.TryParse((string)row.Cells[3].Value, out value))
+          current.setMinValue(value);
+        if (double.TryParse((string)row.Cells[4].Value, out value))
+          current.setMaxValue(value);
       }
 
     }
 
 
+    private List<int> GetUniqueValues(int[] data)
+    {
+      var result = new List<int>();
+      foreach (int t in data.Where(t => !result.Contains(t)))
+      {
+        result.Add(t);
+      }
+      return result;
+    }
     private Image GenerateImage(SampledFieldGeometry sampledFieldGeometry, Geometry geometry, int resX = 128, int resY = 128)
     {
       if (geometry == null || sampledFieldGeometry == null || geometry.getNumCoordinateComponents() < 2)
@@ -108,6 +128,9 @@ namespace EditSpatial.Controls
         long uncompressedLength = _Data.getUncompressedLength();
         var array = new int[uncompressedLength];
         _Data.getUncompressed(array);
+
+        var values = GetUniqueValues(array);
+
 
         int z = Util.SaveInt(txtZ.Text, 0);
         if (z >= _Field.getNumSamples3())
@@ -142,7 +165,11 @@ namespace EditSpatial.Controls
       for (long i = 0; i < Current.getNumSampledVolumes(); ++i)
       {
         var current = Current.getSampledVolume(i);
-        if (Math.Abs(current.getSampledValue() - value) < 1e-10)
+        var currentValue = current.getSampledValue();
+        var currentIntValue = (uint) currentValue;
+        if (Math.Abs(currentValue - value) < 1e-10)
+          return (int)i;
+        if (currentIntValue == (byte)value)
           return (int)i;
         if (current.isSetMinValue() && current.isSetMaxValue() &&
           (value >= current.getMinValue() && value <= current.getMaxValue()))
@@ -156,6 +183,8 @@ namespace EditSpatial.Controls
     {
       switch (index)
       {
+        case -1:
+          return Color.Transparent;
         default:
           case 0:
           return Color.Black;

@@ -32,7 +32,7 @@ namespace EditSpatial.Controls
         var current = model.getInitialAssignment(i);
         grid.Rows.Add(current.getSymbol(), 
           current.isSetMath() ? 
-          libsbml.formulaToString(current.getMath()): "" );
+          libsbml.formulaToL3String(current.getMath()): "" );
       }
     }
 
@@ -47,16 +47,18 @@ namespace EditSpatial.Controls
       for (int i = 0; i < grid.Rows.Count; ++i)
       {
         var row = grid.Rows[i];
-        var node = libsbml.parseFormula((string)row.Cells[1].Value);
+        string value = (string)row.Cells[1].Value;
+        if (string.IsNullOrEmpty(value)) continue;
+        var node = libsbml.parseL3Formula(value);
         if (node == null) continue;
 
         var current = Current.getModel().getInitialAssignment((string)row.Cells[0].Value);
         if (current == null)
           current = Current.getModel().createInitialAssignment();
 
-        current.setSymbol((string) row.Cells[0].Value);
+        current.setSymbol((string)row.Cells[0].Value);
         current.setMath(node);
-      
+
       }
     }
 
