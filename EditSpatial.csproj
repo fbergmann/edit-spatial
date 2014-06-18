@@ -111,6 +111,12 @@
     <Compile Include="Controls\ControlAnalyticGeometry.Designer.cs">
       <DependentUpon>ControlAnalyticGeometry.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ControlCompartment.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlCompartment.Designer.cs">
+      <DependentUpon>ControlCompartment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ControlSpecies.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -199,6 +205,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ControlAnalyticGeometry.resx">
       <DependentUpon>ControlAnalyticGeometry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlCompartment.resx">
+      <DependentUpon>ControlCompartment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ControlSpecies.resx">
       <DependentUpon>ControlSpecies.cs</DependentUpon>

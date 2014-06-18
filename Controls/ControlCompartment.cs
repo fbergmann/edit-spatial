@@ -13,7 +13,7 @@ using Model = libsbmlcs.Model;
 
 namespace EditSpatial.Controls
 {
-  public partial class ControlSpecies : BaseSpatialControl
+  public partial class ControlCompartment : BaseSpatialControl
   {
 
     libsbmlcs.SBMLDocument Current { get; set; }
@@ -29,15 +29,13 @@ namespace EditSpatial.Controls
       var model = document.getModel();
 
       CommitAddedRows(Current);
-      for (long i = 0; i < model.getNumSpecies(); ++i)
+      for (long i = 0; i < model.getNumCompartments(); ++i)
       {
-        var current = model.getSpecies(i);
+        var current = model.getCompartment(i);
           grid.Rows.Add(current.getId(), 
           current.getName(), 
-          current.isSetInitialConcentration() ?  current.getInitialConcentration().ToString() :
-           current.getInitialAmount().ToString(), 
-           current.getCompartment(), 
-           current.getBoundaryCondition().ToString()
+          current.getSize().ToString(), 
+           current.getSpatialDimensionsAsDouble().ToString()
           );
       }
       }
@@ -47,7 +45,7 @@ namespace EditSpatial.Controls
       }
     }
 
-    public ControlSpecies()
+    public ControlCompartment()
     {
       InitializeComponent();
       RowsAdded = new List<int>();
@@ -62,15 +60,14 @@ namespace EditSpatial.Controls
           try
           {
             var row = grid.Rows[RowsAdded[i]];
-            var species = current.getModel().createSpecies();
-            species.initDefaults();
-            species.setId(row.Cells[0].Value as string);
-            species.setName(row.Cells[1].Value as string);
+            var comp = current.getModel().createCompartment();
+            comp.initDefaults();
+            comp.setId(row.Cells[0].Value as string);
+            comp.setName(row.Cells[1].Value as string);
             double value; if (double.TryParse((string)row.Cells[2].Value, out value))
-              species.setInitialConcentration(value);
-            species.setCompartment(row.Cells[3].Value as string);
-            bool bvalue; if (bool.TryParse((string)row.Cells[2].Value, out bvalue))
-              species.setBoundaryCondition(bvalue);
+              comp.setSize(value);
+            if (double.TryParse((string)row.Cells[2].Value, out value))
+              comp.setSpatialDimensions(value);
             RowsAdded.RemoveAt(i);
           }
           catch 
@@ -91,15 +88,14 @@ namespace EditSpatial.Controls
       for (int i = 0; i < grid.Rows.Count; ++i)
       {
         var row = grid.Rows[i];
-        var current = Current.getModel().getSpecies((string)row.Cells[0].Value);
+        var current = Current.getModel().getCompartment((string)row.Cells[0].Value);
         if (current == null) continue;
 
         current.setName(row.Cells[1].Value as string);
         double value; if (double.TryParse((string)row.Cells[2].Value, out value))
-          current.setInitialConcentration(value);
-        current.setCompartment(row.Cells[3].Value as string);
-        bool bvalue; if (bool.TryParse((string)row.Cells[2].Value, out bvalue))
-          current.setBoundaryCondition(bvalue);
+          current.setSize(value);
+        if (double.TryParse((string)row.Cells[2].Value, out value))
+          current.setSpatialDimensions(value);
       
       }
     }

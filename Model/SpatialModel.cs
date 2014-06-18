@@ -446,6 +446,9 @@ namespace EditSpatial.Model
       // create coordinate components    
       CreateCoordinateSystem(geometry, model, createModel.Geometry);
 
+      // Correct compartments & Transport
+      CorrectCompartmentsAndTransport(model);
+
       //if (geometry.getNumGeometryDefinitions()==0)
       if (!SetupGeometry(model, geometry, createModel)) return false;
 
@@ -454,6 +457,26 @@ namespace EditSpatial.Model
       SetIsLocalOnReactions(model);
 
       return true;
+    }
+
+    /// <summary>
+    /// This method first goes ahead, and looks through reactions, 
+    /// whether a transport reaction can be found. If so, it tests
+    /// whether the comparments differ in spatialDimensions (i.e
+    /// checks that the transport goes via a membrane), if it does 
+    /// not, it will create a membrane compartment, and split the 
+    /// reaction such that it will go from the compartment -&gt; to 
+    /// the membrane -&gt; to the other compartment. 
+    /// </summary>
+    /// <param name="model">the model to check</param>
+    private void CorrectCompartmentsAndTransport(libsbmlcs.Model model)
+    {
+      for (int i = 0; i < model.getNumReactions(); ++i)
+      {
+        var reaction = model.getReaction(i);
+        var comps = Util.GetCompartmentsFromReaction(reaction);
+        if (comps.Count < 2) continue;
+      }
     }
 
     private bool SetupGeometry(libsbmlcs.Model model, Geometry geometry,
@@ -954,8 +977,6 @@ namespace EditSpatial.Model
         SetRequiredElements(param, false);
       }
 
-
-
     }
 
     private List<string> OrderCompartments(libsbmlcs.Model model)
@@ -1041,7 +1062,7 @@ namespace EditSpatial.Model
 
       Dictionary<string, int> counts = CountOccurances(uniqueOrders);
 
-      int max = counts.Values.Max();
+      int max = counts.Any() ? counts.Values.Max() : 0;
 
       while (max > 1)
       {
@@ -1057,7 +1078,7 @@ namespace EditSpatial.Model
         list.AddRange(order.Where(item => !item.Equals(id)));
 
         counts = CountOccurances(uniqueOrders);
-        max = counts.Values.Max();
+        max = counts.Any() ? counts.Values.Max() : 0;
       }
 
       // add remaining

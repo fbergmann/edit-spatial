@@ -57,7 +57,9 @@ namespace EditSpatial.Controls
         {
           try
           {
-            var row = grid.Rows[RowsAdded[i]];
+            int index = RowsAdded[i];
+            if (index < 0) continue;
+            var row = grid.Rows[index];
             var param = current.getModel().createParameter();
             param.initDefaults();
             param.setId(row.Cells[0].Value as string);
@@ -66,12 +68,13 @@ namespace EditSpatial.Controls
               param.setValue(value);
             RowsAdded.RemoveAt(i);
           }
-          catch 
+          catch
           {
             
           }
         }
-      }  
+      }
+
     }
 
 
@@ -103,14 +106,29 @@ namespace EditSpatial.Controls
     private void OnUserDeletedRow(object sender, DataGridViewRowEventArgs e)
     {
       if (Current == null) return;
-      var id = e.Row.Cells[0].Value as string;
+
+      var ids = new List<string>();
+      if (grid.SelectedRows.Count > 1)
+      {
+        foreach (DataGridViewRow row in grid.SelectedRows)
+        {
+          ids.Add(row.Cells[0].Value as string);
+        }
+      }
+      else
+      {
+        ids.Add(e.Row.Cells[0].Value as string);
+      }
+
+      foreach (var id in ids)
       Current.getModel().removeParameter(id);
+
       InitializeFrom(Current);
     }
 
     private void OnRowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
     {
-      if (Current == null || IsInitializing) return;
+      if (Current == null || IsInitializing || e.RowIndex == 0) return;
 
       RowsAdded.Add(e.RowIndex - 1);
     }

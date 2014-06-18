@@ -420,7 +420,7 @@ namespace EditSpatial.Controls
 
     private void OnRowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
     {
-      if (Current == null || IsInitializing) return;
+      if (Current == null || IsInitializing || e.RowIndex - 1 < 0) return;
 
       RowsAdded.Add(e.RowIndex-1);
 

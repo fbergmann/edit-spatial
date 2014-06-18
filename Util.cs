@@ -60,6 +60,42 @@ namespace EditSpatial
 
     }
 
+    public static List<string> GetCompartmentsFromReaction(Reaction reaction)
+    {
+      var result = new List<string>();
+      if (reaction == null) return result;
+
+      var model = reaction.getModel();
+      if (model == null) return result;
+      for (int i = 0; i < reaction.getNumReactants(); ++i)
+      {
+        var reference = reaction.getReactant(i);
+        if (reference != null && reference.isSetSpecies())
+        {
+          var species = model.getSpecies(reference.getSpecies());
+          if (species == null || !species.isSetCompartment()) continue;
+          string compartment = species.getCompartment();
+          if (!result.Contains(compartment))
+            result.Add(compartment);
+        }
+      }
+
+      for (int i = 0; i < reaction.getNumProducts(); ++i)
+      {
+        var reference = reaction.getProduct(i);
+        if (reference != null && reference.isSetSpecies())
+        {
+          var species = model.getSpecies(reference.getSpecies());
+          if (species == null || !species.isSetCompartment()) continue;
+          string compartment = species.getCompartment();
+          if (!result.Contains(compartment))
+            result.Add(compartment);
+        }
+      }
+
+      return result;
+    }
+
     public static void MoveRuleToAssignment(this libsbmlcs.Model model, string id)
     {
       if (model == null) return;

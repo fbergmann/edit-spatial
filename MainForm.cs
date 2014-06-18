@@ -586,6 +586,7 @@ namespace EditSpatial
         controlInitialAssignments1.InitializeFrom(Model.Document);
         controlParameters1.Visible = false;
         controlSpecies1.Visible = false;
+        controlCompartment1.Visible = false;
       }
       else if (node.Name == NODE_PARAMETERS)
       {
@@ -593,6 +594,7 @@ namespace EditSpatial
         controlInitialAssignments1.Visible = false;
         controlParameters1.Visible = true;
         controlSpecies1.Visible = false;
+        controlCompartment1.Visible = false;
         controlParameters1.InitializeFrom(Model.Document);
       }
       else if (node.Name == NODE_SPECIES)
@@ -601,7 +603,17 @@ namespace EditSpatial
         controlInitialAssignments1.Visible = false;
         controlParameters1.Visible = false;
         controlSpecies1.Visible = true;
+        controlCompartment1.Visible = false;
         controlSpecies1.InitializeFrom(Model.Document);
+      }
+      else if (node.Name == NODE_COMPARTMENTS)
+      {
+        controlDisplayNode2.Visible = false;
+        controlInitialAssignments1.Visible = false;
+        controlParameters1.Visible = false;
+        controlSpecies1.Visible = false;
+        controlCompartment1.Visible = true;
+        controlCompartment1.InitializeFrom(Model.Document);
       }
       else
       {
@@ -609,6 +621,7 @@ namespace EditSpatial
         controlInitialAssignments1.Visible = false;
         controlParameters1.Visible = false;
         controlSpecies1.Visible = false;
+        controlCompartment1.Visible = false;
         controlDisplayNode2.DisplayNode(node);
       }
     }

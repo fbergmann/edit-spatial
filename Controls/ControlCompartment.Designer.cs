@@ -1,6 +1,6 @@
 ﻿namespace EditSpatial.Controls
 {
-  partial class ControlParameters
+  partial class ControlCompartment
   {
     /// <summary> 
     /// Required designer variable.
@@ -32,6 +32,7 @@
       this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colDimensions = new System.Windows.Forms.DataGridViewTextBoxColumn();
       ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
       this.SuspendLayout();
       // 
@@ -41,14 +42,14 @@
       this.grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colId,
             this.colName,
-            this.colValue});
+            this.colValue,
+            this.colDimensions});
       this.grid.Dock = System.Windows.Forms.DockStyle.Fill;
       this.grid.Location = new System.Drawing.Point(0, 0);
       this.grid.Name = "grid";
       this.grid.Size = new System.Drawing.Size(484, 370);
       this.grid.TabIndex = 0;
       this.grid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.OnRowsAdded);
-      
       this.grid.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.OnUserDeletedRow);
       // 
       // colId
@@ -63,15 +64,20 @@
       // 
       // colValue
       // 
-      this.colValue.HeaderText = "Value";
+      this.colValue.HeaderText = "Size";
       this.colValue.Name = "colValue";
       // 
-      // ControlParameters
+      // colDimensions
+      // 
+      this.colDimensions.HeaderText = "Spatial Dimentsions";
+      this.colDimensions.Name = "colDimensions";
+      // 
+      // ControlCompartment
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.grid);
-      this.Name = "ControlParameters";
+      this.Name = "ControlCompartment";
       this.Size = new System.Drawing.Size(484, 370);
       ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
       this.ResumeLayout(false);
@@ -84,5 +90,6 @@
     private System.Windows.Forms.DataGridViewTextBoxColumn colId;
     private System.Windows.Forms.DataGridViewTextBoxColumn colName;
     private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colDimensions;
   }
 }
