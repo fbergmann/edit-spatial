@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Core;
@@ -13,7 +12,6 @@ namespace EditSpatial
 {
   static class Util
   {
-
 
     public static string[][] InbuiltFunctions = new string[][]
     {
@@ -96,6 +94,41 @@ namespace EditSpatial
       return result;
     }
 
+    public static Dictionary<string,List<string>> GetSpeciesCompartmentMap(libsbmlcs.Model model, Reaction reaction)
+    {
+      var result = new Dictionary<string, List<string>>();
+      if (reaction == null) return result;
+
+      for (int i = 0; i < reaction.getNumReactants(); ++i)
+      {
+        var reference = reaction.getReactant(i);
+        if (reference != null && reference.isSetSpecies())
+        {
+          var species = model.getSpecies(reference.getSpecies());
+          if (species == null || !species.isSetCompartment()) continue;
+          string compartment = species.getCompartment();
+          if (!result.ContainsKey(compartment))
+            result[compartment] = new List<string>();
+            result[compartment].Add(species.getId());
+        }
+      }
+
+      for (int i = 0; i < reaction.getNumProducts(); ++i)
+      {
+        var reference = reaction.getProduct(i);
+        if (reference != null && reference.isSetSpecies())
+        {
+          var species = model.getSpecies(reference.getSpecies());
+          if (species == null || !species.isSetCompartment()) continue;
+          string compartment = species.getCompartment();
+          if (!result.ContainsKey(compartment))
+            result[compartment] = new List<string>();
+          result[compartment].Add(species.getId());
+        }
+      }
+
+      return result;
+    }
     public static void MoveRuleToAssignment(this libsbmlcs.Model model, string id)
     {
       if (model == null) return;

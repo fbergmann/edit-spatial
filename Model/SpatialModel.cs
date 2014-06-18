@@ -446,9 +446,6 @@ namespace EditSpatial.Model
       // create coordinate components    
       CreateCoordinateSystem(geometry, model, createModel.Geometry);
 
-      // Correct compartments & Transport
-      CorrectCompartmentsAndTransport(model);
-
       //if (geometry.getNumGeometryDefinitions()==0)
       if (!SetupGeometry(model, geometry, createModel)) return false;
 
@@ -459,6 +456,151 @@ namespace EditSpatial.Model
       return true;
     }
 
+    private void SplitReaction(libsbmlcs.Model model, Reaction reaction)
+    {
+      var info = new ReactionInfo(reaction);
+      if (info.CompartmentIds.Count < 2) return;
+
+      if (info.CompartmentIds.Count == 2)
+      {
+        // straight transport
+        string comp1Id = info.CompartmentIds[0];
+        var comp1 = model.getCompartment(comp1Id);
+        if (comp1 == null || comp1.getSpatialDimensions() == 2) return;
+        string comp2Id = info.CompartmentIds[1];
+        var comp2 = model.getCompartment(comp2Id);
+        if (comp2 == null || comp2.getSpatialDimensions() == 2) return;
+
+        var memId = String.Format("mem_{0}_{1}", comp2Id, comp1Id);
+        var memComp = model.getCompartment(memId);
+        if (memComp == null)
+        {
+          memId = String.Format("mem_{0}_{1}", comp1Id, comp2Id);
+          memComp = model.getCompartment(memId);
+        }
+        if (memComp == null)
+        {
+          memComp = model.createCompartment();
+          memComp.initDefaults();
+          memComp.setId(memId);
+          memComp.setSize(1);
+          memComp.setUnits("area");
+          memComp.setSpatialDimensions(2);
+        }
+
+        var math = new ASTNode(reaction.getKineticLaw().getMath());
+        var react1 = model.createReaction();
+        react1.initDefaults();
+        react1.setReversible(reaction.getReversible());
+        react1.setId(String.Format("mem_{0}_{1}", comp1Id, reaction.getId()));
+
+        var react2builder = new StringBuilder("1");
+        var react2 = model.createReaction();
+        react2.initDefaults();
+        react2.setReversible(reaction.getReversible());
+        react2.setId(String.Format("mem_{0}_{1}", comp2Id, reaction.getId()));
+
+
+        for (int i = 0; i < reaction.getNumReactants(); ++i)
+        {
+          var reference = reaction.getReactant(i);
+          var species = model.getSpecies(reference.getSpecies());
+          if (species.getCompartment() == comp1Id)
+          {
+            var newRef = react1.createReactant();
+            newRef.setSpecies(reference.getSpecies());
+            newRef.setStoichiometry(reference.getStoichiometry());
+          }
+          else
+          {
+            var newId = "mem_" + species.getId();
+            var newSpecies = model.getSpecies(newId);
+            if (newSpecies == null)
+            {
+              newSpecies = model.createSpecies();
+              newSpecies.initDefaults();
+              newSpecies.setId(newId);
+              newSpecies.setName(species.getId());
+              newSpecies.setCompartment(memId);
+              newSpecies.setInitialConcentration(0);
+            }
+
+            var newRef = react2.createProduct();
+            newRef.setSpecies(newSpecies.getId());
+            newRef.setStoichiometry(reference.getStoichiometry());
+
+            newRef = react1.createReactant();
+            newRef.setSpecies(newSpecies.getId());
+            newRef.setStoichiometry(reference.getStoichiometry());
+
+            react2builder.Append(" * " + newSpecies.getId());
+            math.renameSIdRefs(species.getId(), newSpecies.getId());
+          }
+        }
+
+
+        for (int i = 0; i < reaction.getNumProducts(); ++i)
+        {
+          var reference = reaction.getProduct(i);
+          var species = model.getSpecies(reference.getSpecies());
+          if (species.getCompartment() == comp1Id)
+          {
+            var newRef = react1.createProduct();
+            newRef.setSpecies(species.getId());
+            newRef.setStoichiometry(reference.getStoichiometry());
+          }
+          else
+          {
+
+            var newId = "mem_" + species.getId();
+            var newSpecies = model.getSpecies(newId);
+            if (newSpecies == null)
+            {
+              newSpecies = model.createSpecies();
+              newSpecies.initDefaults();
+              newSpecies.setId(newId);
+              newSpecies.setName(species.getId());
+              newSpecies.setCompartment(memId);
+              newSpecies.setInitialConcentration(0);
+            }
+
+            var newRef = react1.createProduct();
+            newRef.setSpecies(newSpecies.getId());
+            newRef.setStoichiometry(reference.getStoichiometry());
+
+            newRef = react2.createReactant();
+            newRef.setSpecies(newSpecies.getId());
+            newRef.setStoichiometry(reference.getStoichiometry());
+            react2builder.Append(" * " + newSpecies.getId());
+
+            newRef = react2.createProduct();
+            newRef.setSpecies(species.getId());
+            newRef.setStoichiometry(reference.getStoichiometry());
+            math.renameSIdRefs(species.getId(), newSpecies.getId());
+
+          }
+        }
+
+        var law = react2.createKineticLaw();
+        law.setFormula(react2builder.ToString());
+
+        law = react1.createKineticLaw();
+        for (int l = 0; l < reaction.getKineticLaw().getNumLocalParameters(); ++l)
+        {
+          var param = reaction.getKineticLaw().getParameter(l);
+          var newParam = law.createParameter();
+          newParam.initDefaults();
+          newParam.setId(param.getId());
+          newParam.setValue(param.getValue());
+        }
+        law.setMath(math);
+
+        model.removeReaction(reaction.getId());
+        reaction.Dispose();
+
+      }
+
+    }
     /// <summary>
     /// This method first goes ahead, and looks through reactions, 
     /// whether a transport reaction can be found. If so, it tests
@@ -469,13 +611,17 @@ namespace EditSpatial.Model
     /// the membrane -&gt; to the other compartment. 
     /// </summary>
     /// <param name="model">the model to check</param>
-    private void CorrectCompartmentsAndTransport(libsbmlcs.Model model)
+    internal void CorrectCompartmentsAndTransport(libsbmlcs.Model model)
     {
-      for (int i = 0; i < model.getNumReactions(); ++i)
+      for (int i = (int)model.getNumReactions() - 1; i >= 0; --i)
       {
         var reaction = model.getReaction(i);
         var comps = Util.GetCompartmentsFromReaction(reaction);
-        if (comps.Count < 2) continue;
+        if (comps.Count < 2)
+          continue;
+
+        SplitReaction(model, reaction);
+
       }
     }
 
@@ -494,85 +640,111 @@ namespace EditSpatial.Model
       int i = 0;
       AdjacentDomains lastAdjacent = null;
       Domain memDomain = null;
-      foreach (string compid in order)
+      for (int j = 0; j < order.Count; j++)
       {
-        DomainType domainType = geometry.createDomainType();
-        domainType.setSpatialId("domainType_" + compid);
-        domainType.setSpatialDimensions(3);
-
-        Domain domain = geometry.createDomain();
-        domain.setSpatialId("domain_" + compid);
-        domain.setDomainType("domainType_" + compid);
-        InteriorPoint point = domain.createInteriorPoint();
+        Compartment comp = model.getCompartment(order[j]);
+        var cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+        if (cplug == null)
+          return false;
+        var domainType = geometry.createDomainType();
+        domainType.setSpatialId("domainType_" + order[j]);
+        domainType.setSpatialDimensions((int)comp.getSpatialDimensionsAsDouble());
+        var domain = geometry.createDomain();
+        domain.setSpatialId("domain_" + order[j]);
+        domain.setDomainType("domainType_" + order[j]);
+        var point = domain.createInteriorPoint();
         point.setCoord1(i * length + length / 2.0);
         point.setCoord2(createModel.Geometry.Ymax / 2.0);
         point.setCoord3(0);
-
         if (lastAdjacent != null)
         {
-          AdjacentDomains adj = geometry.createAdjacentDomains();
+          var adj = geometry.createAdjacentDomains();
           adj.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
           adj.setDomain1(memDomain.getSpatialId());
           adj.setDomain2(domain.getSpatialId());
         }
-
-        AnalyticVolume vol = def.createAnalyticVolume();
-        vol.setSpatialId("vol_" + compid);
-        vol.setDomainType("domainType_" + compid);
+        var vol = def.createAnalyticVolume();
+        vol.setSpatialId("vol_" + order[j]);
+        vol.setDomainType("domainType_" + order[j]);
         vol.setFunctionType("layered");
         vol.setOrdinal(i);
-        vol.setMath(libsbml.parseFormula(
-          i == 0
-            ? "1"
-          //            string.Format(
+        vol.setMath(libsbml.parseFormula(i == 0 ? "1" : //            string.Format(
           //"and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))
-            : string.Format(
-          //"and(and(geq(x, {0}), lt(x, {1})), and(geq(y, {0}), lt(y, {1})))", (i * length), ((i + 1) * length))
-              "and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))
-          ));
-
-        Compartment comp = model.getCompartment(compid);
-        var cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
-        if (cplug == null)
-          return false;
-
-        CompartmentMapping map = cplug.getCompartmentMapping();
-        map.setSpatialId("mapping_" + compid);
+        string.Format(//"and(and(geq(x, {0}), lt(x, {1})), and(geq(y, {0}), lt(y, {1})))", (i * length), ((i + 1) * length))
+        "and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))));
+        var map = cplug.getCompartmentMapping();
+        map.setSpatialId("mapping_" + order[j]);
         map.setCompartment(comp.getId());
         map.setDomainType(domainType.getSpatialId());
         map.setUnitSize(1);
 
         if (i + 1 < numCompartments)
         {
-          domainType = geometry.createDomainType();
-          domainType.setSpatialId("mem_" + compid);
-          domainType.setSpatialDimensions(2);
+          if (j + 1 < order.Count && model.getCompartment(order[j + 1]).getSpatialDimensions() == 2)
+          {
+            // next compartment is a 2D compartment!
+            domainType = geometry.createDomainType();
+            domainType.setSpatialId("domainType_" + order[j + 1]);
+            domainType.setSpatialDimensions(2);
 
-          comp = model.createCompartment();
-          comp.initDefaults();
-          comp.setId("c_mem_" + compid);
-          comp.setSize(1);
+            comp = model.getCompartment(order[j + 1]);
+            cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+            if (cplug == null)
+              return false;
+            map = cplug.getCompartmentMapping();
+            map.setSpatialId("mapping_" + comp.getId());
+            map.setCompartment(comp.getId());
+            map.setDomainType(domainType.getSpatialId());
+            map.setUnitSize(1);
 
-          cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
-          if (cplug == null)
-            return false;
+            memDomain = geometry.createDomain();
+            memDomain.setSpatialId("domain_mem_" + order[j]);
+            memDomain.setDomainType(domainType.getSpatialId());
+            lastAdjacent = geometry.createAdjacentDomains();
+            lastAdjacent.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
+            lastAdjacent.setDomain1(memDomain.getSpatialId());
+            lastAdjacent.setDomain2(domain.getSpatialId());
 
-          map = cplug.getCompartmentMapping();
-          map.setSpatialId("mapping_" + comp.getId());
-          map.setCompartment(comp.getId());
-          map.setDomainType(domainType.getSpatialId());
-          map.setUnitSize(1);
+            ++j; ++i;
 
-          memDomain = geometry.createDomain();
-          memDomain.setSpatialId("domain_mem_" + compid);
-          memDomain.setDomainType("mem_" + compid);
+            //vol = def.createAnalyticVolume();
+            //vol.setSpatialId("vol_" + order[j]);
+            //vol.setDomainType("domainType_" + order[j]);
+            //vol.setFunctionType("layered");
+            //vol.setOrdinal(i);
+            //vol.setMath(libsbml.parseFormula(i == 0 ? "1" : //            string.Format(
+            //  //"and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))
+            //string.Format(//"and(and(geq(x, {0}), lt(x, {1})), and(geq(y, {0}), lt(y, {1})))", (i * length), ((i + 1) * length))
+            //"and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))));
 
-          lastAdjacent = geometry.createAdjacentDomains();
-          lastAdjacent.setSpatialId("adj_" + memDomain.getSpatialId() + "_" + domain.getSpatialId());
-          lastAdjacent.setDomain1(memDomain.getSpatialId());
-          lastAdjacent.setDomain2(domain.getSpatialId());
+
+          }
+          else
+          {
+            domainType = geometry.createDomainType();
+            domainType.setSpatialId("mem_" + order[j]);
+            domainType.setSpatialDimensions(2);
+            comp = model.createCompartment();
+            comp.initDefaults();
+            comp.setId("c_mem_" + order[j]);
+            comp.setSize(1);
+            cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+            if (cplug == null)
+              return false;
+            map = cplug.getCompartmentMapping();
+            map.setSpatialId("mapping_" + comp.getId());
+            map.setCompartment(comp.getId());
+            map.setDomainType(domainType.getSpatialId());
+            map.setUnitSize(1);
+            memDomain = geometry.createDomain();
+            memDomain.setSpatialId("domain_mem_" + order[j]);
+            memDomain.setDomainType("mem_" + order[j]);
+            lastAdjacent = geometry.createAdjacentDomains();
+            lastAdjacent.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
+            lastAdjacent.setDomain1(memDomain.getSpatialId());
+            lastAdjacent.setDomain2(domain.getSpatialId());
+          }
         }
-
         ++i;
       }
       return true;
@@ -1069,6 +1241,7 @@ namespace EditSpatial.Model
         // get first one that occurs only once
         KeyValuePair<string, int> current = counts.FirstOrDefault(e => e.Value == 1);
         string id = current.Key;
+        if (string.IsNullOrEmpty(id)) break;
 
         List<string> order = RemoveIdFrom(uniqueOrders, id);
         if (list.Contains(id))
@@ -1078,6 +1251,8 @@ namespace EditSpatial.Model
         list.AddRange(order.Where(item => !item.Equals(id)));
 
         counts = CountOccurances(uniqueOrders);
+        if (counts.ContainsKey(id))
+          counts.Remove(id);
         max = counts.Any() ? counts.Values.Max() : 0;
       }
 

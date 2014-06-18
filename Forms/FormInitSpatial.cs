@@ -210,6 +210,9 @@ namespace EditSpatial.Forms
         SpatialModel.Document.getModel() == null) return;
       _model = SpatialModel.Document.getModel();
 
+      // Correct compartments & Transport
+      SpatialModel.CorrectCompartmentsAndTransport(_model);
+
       txtDimX.Text = SpatialModel.Width.ToString();
       txtDimY.Text = SpatialModel.Height.ToString();
       
