@@ -628,11 +628,19 @@ namespace EditSpatial.Model
     private bool SetupGeometry(libsbmlcs.Model model, Geometry geometry,
       CreateModel createModel)
     {
-      if (model.getNumCompartments() == 1)
+      long numCompartments = model.getNumCompartments();
+      if (numCompartments == 1)
         return SetupUnicompartmentalGeometry(model, geometry, createModel);
 
-      long numCompartments = model.getNumCompartments();
-      double length = createModel.Geometry.Xmax / numCompartments;
+      var num3DComps = 0;
+      for (int index =0 ; index < numCompartments; ++index)
+      {
+        var current = model.getCompartment(index);
+        if (current == null || !current.isSetSpatialDimensions()) continue;
+        if (current.getSpatialDimensions() == 3) num3DComps ++;
+      }
+
+      double length = createModel.Geometry.Xmax / num3DComps;
       AnalyticGeometry def = geometry.createAnalyticGeometry();
       def.setSpatialId("geometry");
 
@@ -668,10 +676,11 @@ namespace EditSpatial.Model
         vol.setDomainType("domainType_" + order[j]);
         vol.setFunctionType("layered");
         vol.setOrdinal(i);
-        vol.setMath(libsbml.parseFormula(i == 0 ? "1" : //            string.Format(
-          //"and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))
-        string.Format(//"and(and(geq(x, {0}), lt(x, {1})), and(geq(y, {0}), lt(y, {1})))", (i * length), ((i + 1) * length))
-        "and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))));
+        vol.setMath(libsbml.parseFormula(i == 0 
+          ?  "1"  // first compartment gets all
+          : j == order.Count -1
+          ? string.Format("geq(x, {0})", (i * length)) // last compartment gets rest
+          : string.Format("and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))));
         var map = cplug.getCompartmentMapping();
         map.setSpatialId("mapping_" + order[j]);
         map.setCompartment(comp.getId());
@@ -705,7 +714,7 @@ namespace EditSpatial.Model
             lastAdjacent.setDomain1(memDomain.getSpatialId());
             lastAdjacent.setDomain2(domain.getSpatialId());
 
-            ++j; ++i;
+            ++j; //++i;
 
             //vol = def.createAnalyticVolume();
             //vol.setSpatialId("vol_" + order[j]);
@@ -1245,7 +1254,11 @@ namespace EditSpatial.Model
 
         List<string> order = RemoveIdFrom(uniqueOrders, id);
         if (list.Contains(id))
+        {
+          if (counts.ContainsKey(id))
+            counts.Remove(id);
           continue;
+        }
         list.Add(id);
 
         list.AddRange(order.Where(item => !item.Equals(id)));
