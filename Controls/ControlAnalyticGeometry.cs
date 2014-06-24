@@ -278,6 +278,30 @@ namespace EditSpatial.Controls
 
     }
 
+    private void SortedOrder(AnalyticGeometry geometry)
+    {
+      if (geometry == null)
+        return;
+      if (geometry.getNumAnalyticVolumes() == 0)
+        return;
+      var list = new List<Tuple<int, int, string>>();
+      for (long i = 0; i < geometry.getNumAnalyticVolumes(); ++i)
+      {
+        var current = geometry.getAnalyticVolume(i);
+        list.Add(new Tuple<int, int, string>((int)i, (int)current.getOrdinal(), current.getSpatialId()));
+      }
+
+      var ordered = list.OrderByDescending(item => item.Item2);
+      var volList = geometry.getListOfAnalyticVolumes();
+      foreach (var item in ordered)
+      {
+        var vol = volList.remove(item.Item3);
+        volList.insert(item.Item2, vol);
+      }
+
+    }
+
+
     private void OnReorderClick(object sender, EventArgs e)
     {
       if (Current == null)
@@ -287,6 +311,16 @@ namespace EditSpatial.Controls
       InitializeFrom(SpatialGeometry, Current.getSpatialId());
 
     }
+
+    private void OnSortClick(object sender, EventArgs e)
+    {
+      if (Current == null)
+        return;
+
+      SortedOrder(Current);
+      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+    }
+
 
     private void OnUpdateImage(object sender, EventArgs e)
     {
@@ -425,5 +459,7 @@ namespace EditSpatial.Controls
       RowsAdded.Add(e.RowIndex-1);
 
     }
+
+   
   }
 }

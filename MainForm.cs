@@ -34,6 +34,7 @@ namespace EditSpatial
     {
       InitializeComponent();
       ErrorForm = new FormErrors();
+      Annotation = new FormSpatialAnnotation();
       menu = new SBWMenu(mnuSBW, "Edit Spatial", () =>
       {
         if (Model == null) return "";
@@ -58,6 +59,8 @@ namespace EditSpatial
 
     public SpatialModel Model { get; set; }
     public FormErrors ErrorForm { get; set; }
+    public FormSpatialAnnotation Annotation { get; set; }
+
 
     public void doAnalysis(string model)
     {
@@ -886,6 +889,20 @@ namespace EditSpatial
       if (Model == null) return;
       Model.MoveAllRulesToAssignments();
       UpdateUI();
+    }
+
+    private void OnEditSpatialAnnotationClick(object sender, EventArgs e)
+    {
+      if (Model == null || Model.Document == null) return;
+
+      Annotation.InitFrom(Model);
+
+      Annotation.ShowDialog();
+      if (Annotation.Status == DialogResult.OK)
+      {
+        Annotation.SaveToModel(Model.Document.getModel());
+      }
+
     }
 
     

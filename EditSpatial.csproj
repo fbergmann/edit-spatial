@@ -172,6 +172,12 @@
     <Compile Include="Forms\FormInitSpatial.Designer.cs">
       <DependentUpon>FormInitSpatial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormSpatialAnnotation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSpatialAnnotation.Designer.cs">
+      <DependentUpon>FormSpatialAnnotation.cs</DependentUpon>
+    </Compile>
     <Compile Include="ISBWAnalyzer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -237,6 +243,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormInitSpatial.resx">
       <DependentUpon>FormInitSpatial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSpatialAnnotation.resx">
+      <DependentUpon>FormSpatialAnnotation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

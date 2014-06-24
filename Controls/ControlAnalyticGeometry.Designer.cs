@@ -50,6 +50,7 @@
       this.label2 = new System.Windows.Forms.Label();
       this.cmdReorder = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.cmdSort = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.thumbGeometry)).BeginInit();
@@ -171,6 +172,7 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.cmdSort);
       this.panel1.Controls.Add(this.cmdCreateTiff);
       this.panel1.Controls.Add(this.trackBar1);
       this.panel1.Controls.Add(this.cmdUpdateImage);
@@ -191,7 +193,7 @@
       // cmdCreateTiff
       // 
       this.cmdCreateTiff.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdCreateTiff.Location = new System.Drawing.Point(178, 78);
+      this.cmdCreateTiff.Location = new System.Drawing.Point(178, 51);
       this.cmdCreateTiff.Name = "cmdCreateTiff";
       this.cmdCreateTiff.Size = new System.Drawing.Size(75, 23);
       this.cmdCreateTiff.TabIndex = 11;
@@ -214,7 +216,7 @@
       // cmdUpdateImage
       // 
       this.cmdUpdateImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdUpdateImage.Location = new System.Drawing.Point(178, 105);
+      this.cmdUpdateImage.Location = new System.Drawing.Point(178, 78);
       this.cmdUpdateImage.Name = "cmdUpdateImage";
       this.cmdUpdateImage.Size = new System.Drawing.Size(75, 23);
       this.cmdUpdateImage.TabIndex = 9;
@@ -267,13 +269,24 @@
       // cmdReorder
       // 
       this.cmdReorder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdReorder.Location = new System.Drawing.Point(178, 131);
+      this.cmdReorder.Location = new System.Drawing.Point(178, 104);
       this.cmdReorder.Name = "cmdReorder";
       this.cmdReorder.Size = new System.Drawing.Size(75, 23);
       this.cmdReorder.TabIndex = 4;
       this.cmdReorder.Text = "&Flip Order";
       this.cmdReorder.UseVisualStyleBackColor = true;
       this.cmdReorder.Click += new System.EventHandler(this.OnReorderClick);
+      // 
+      // cmdSort
+      // 
+      this.cmdSort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdSort.Location = new System.Drawing.Point(178, 130);
+      this.cmdSort.Name = "cmdSort";
+      this.cmdSort.Size = new System.Drawing.Size(75, 23);
+      this.cmdSort.TabIndex = 12;
+      this.cmdSort.Text = "Sor&t";
+      this.cmdSort.UseVisualStyleBackColor = true;
+      this.cmdSort.Click += new System.EventHandler(this.OnSortClick);
       // 
       // ControlAnalyticGeometry
       // 
@@ -316,5 +329,6 @@
     private System.Windows.Forms.TrackBar trackBar1;
     private System.Windows.Forms.Button cmdCreateTiff;
     private System.Windows.Forms.ToolTip toolTip1;
+    private System.Windows.Forms.Button cmdSort;
   }
 }
