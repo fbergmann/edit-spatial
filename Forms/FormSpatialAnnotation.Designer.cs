@@ -35,9 +35,6 @@
       this.cmdFromNotes = new System.Windows.Forms.ToolStripButton();
       this.cmdClear = new System.Windows.Forms.ToolStripButton();
       this.grid = new System.Windows.Forms.DataGridView();
-      this.colId = new System.Windows.Forms.DataGridViewComboBoxColumn();
-      this.colPalette = new System.Windows.Forms.DataGridViewComboBoxColumn();
-      this.colMax = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.panel1 = new System.Windows.Forms.Panel();
       this.txtUpdate = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -46,6 +43,9 @@
       this.cmdOK = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.label1 = new System.Windows.Forms.Label();
+      this.colId = new System.Windows.Forms.DataGridViewComboBoxColumn();
+      this.colPalette = new System.Windows.Forms.DataGridViewComboBoxColumn();
+      this.colMax = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.tableLayoutPanel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -139,32 +139,6 @@
       this.grid.Size = new System.Drawing.Size(564, 402);
       this.grid.TabIndex = 0;
       // 
-      // colId
-      // 
-      this.colId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-      this.colId.HeaderText = "SBML ID";
-      this.colId.Items.AddRange(new object[] {
-            "A"});
-      this.colId.Name = "colId";
-      this.colId.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-      this.colId.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-      // 
-      // colPalette
-      // 
-      this.colPalette.HeaderText = "Palette";
-      this.colPalette.Items.AddRange(new object[] {
-            "black-blue.txt",
-            "black-green.txt",
-            "black-red.txt"});
-      this.colPalette.Name = "colPalette";
-      this.colPalette.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-      this.colPalette.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-      // 
-      // colMax
-      // 
-      this.colMax.HeaderText = "Max";
-      this.colMax.Name = "colMax";
-      // 
       // panel1
       // 
       this.panel1.Controls.Add(this.txtUpdate);
@@ -249,6 +223,32 @@
       this.label1.Text = "Here you can specify the initial display for  Akira\'s simulator";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
+      // colId
+      // 
+      this.colId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+      this.colId.HeaderText = "SBML ID";
+      this.colId.Items.AddRange(new object[] {
+            "A"});
+      this.colId.Name = "colId";
+      this.colId.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.colId.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      // 
+      // colPalette
+      // 
+      this.colPalette.HeaderText = "Palette";
+      this.colPalette.Items.AddRange(new object[] {
+            "black-blue",
+            "black-green",
+            "black-red"});
+      this.colPalette.Name = "colPalette";
+      this.colPalette.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.colPalette.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      // 
+      // colMax
+      // 
+      this.colMax.HeaderText = "Max";
+      this.colMax.Name = "colMax";
+      // 
       // FormSpatialAnnotation
       // 
       this.AcceptButton = this.cmdOK;
@@ -290,11 +290,11 @@
     private System.Windows.Forms.Button cmdOK;
     private System.Windows.Forms.Button cmdCancel;
     private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.DataGridViewComboBoxColumn colId;
-    private System.Windows.Forms.DataGridViewComboBoxColumn colPalette;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colMax;
     private System.Windows.Forms.ToolStrip toolStrip1;
     private System.Windows.Forms.ToolStripButton cmdFromNotes;
     private System.Windows.Forms.ToolStripButton cmdClear;
+    private System.Windows.Forms.DataGridViewComboBoxColumn colId;
+    private System.Windows.Forms.DataGridViewComboBoxColumn colPalette;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colMax;
   }
 }

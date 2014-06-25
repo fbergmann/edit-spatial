@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,13 +84,21 @@ namespace EditSpatial.Forms
       if (!text.Contains("spatial")) return;
 
 
-      var palette = "black-blue.txt";
+      var palette = "black-blue";
       if (text.Contains("GFP"))
-        palette = "black-green.txt";
+        palette = "black-green";
       if (text.Contains("RFP"))
-        palette = "black-red.txt";
+        palette = "black-red";
 
-      grid.Rows.Add(species.getId(), palette, "6.0");
+      double max = 6;
+      double scale = 10;
+      if (species.isSetInitialConcentration() && species.getInitialConcentration() > 0)
+        max = scale * species.getInitialConcentration();
+      else if (species.isSetInitialAmount() && species.getInitialAmount() > 0)
+        max = scale * species.getInitialAmount();
+
+
+      grid.Rows.Add(species.getId(), palette, max.ToString(CultureInfo.InvariantCulture));
 
     }
 
