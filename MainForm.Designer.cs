@@ -46,7 +46,7 @@
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.splitGeometry = new System.Windows.Forms.SplitContainer();
-      this.treeView1 = new System.Windows.Forms.TreeView();
+      this.treeSpatial = new System.Windows.Forms.TreeView();
       this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
       this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
       this.controlAdjacentDomains1 = new EditSpatial.Controls.ControlAdjacentDomains();
@@ -56,8 +56,8 @@
       this.controlDisplayNode1 = new EditSpatial.Controls.ControlDisplayNode();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.splitInitial = new System.Windows.Forms.SplitContainer();
-      this.treeView2 = new System.Windows.Forms.TreeView();
-      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.treeCore = new System.Windows.Forms.TreeView();
+      this.contextMenuStripCore = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.controlCompartment1 = new EditSpatial.Controls.ControlCompartment();
       this.controlSpecies1 = new EditSpatial.Controls.ControlSpecies();
@@ -100,6 +100,8 @@
       this.spatialWizardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
       this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+      this.editSpatialAnnotationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -111,10 +113,12 @@
       this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+      this.cmdAkira = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-      this.editSpatialAnnotationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.contextMenuStripSpatial = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -130,13 +134,14 @@
       this.splitInitial.Panel1.SuspendLayout();
       this.splitInitial.Panel2.SuspendLayout();
       this.splitInitial.SuspendLayout();
-      this.contextMenuStrip1.SuspendLayout();
+      this.contextMenuStripCore.SuspendLayout();
       this.tabPage3.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.tabPage4.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.toolStrip1.SuspendLayout();
+      this.contextMenuStripSpatial.SuspendLayout();
       this.SuspendLayout();
       // 
       // toolStripContainer1
@@ -203,7 +208,7 @@
       // 
       // splitGeometry.Panel1
       // 
-      this.splitGeometry.Panel1.Controls.Add(this.treeView1);
+      this.splitGeometry.Panel1.Controls.Add(this.treeSpatial);
       // 
       // splitGeometry.Panel2
       // 
@@ -219,11 +224,12 @@
       this.splitGeometry.SplitterDistance = 253;
       this.splitGeometry.TabIndex = 0;
       // 
-      // treeView1
+      // treeSpatial
       // 
-      this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeView1.Location = new System.Drawing.Point(0, 0);
-      this.treeView1.Name = "treeView1";
+      this.treeSpatial.ContextMenuStrip = this.contextMenuStripSpatial;
+      this.treeSpatial.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.treeSpatial.Location = new System.Drawing.Point(0, 0);
+      this.treeSpatial.Name = "treeSpatial";
       treeNode1.Name = "nodeCoordinateComponents";
       treeNode1.Text = "List of Coordinate Components";
       treeNode2.Name = "nodeOfDomainTypes";
@@ -234,15 +240,15 @@
       treeNode4.Text = "List Of Adjacent Domains";
       treeNode5.Name = "nodeOfGeometryDefinitions";
       treeNode5.Text = "List of Geometry Definitions";
-      this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+      this.treeSpatial.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
             treeNode3,
             treeNode4,
             treeNode5});
-      this.treeView1.Size = new System.Drawing.Size(253, 450);
-      this.treeView1.TabIndex = 0;
-      this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnGeometrySelect);
+      this.treeSpatial.Size = new System.Drawing.Size(253, 450);
+      this.treeSpatial.TabIndex = 0;
+      this.treeSpatial.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnGeometrySelect);
       // 
       // controlSampleFieldGeometry1
       // 
@@ -348,7 +354,7 @@
       // 
       // splitInitial.Panel1
       // 
-      this.splitInitial.Panel1.Controls.Add(this.treeView2);
+      this.splitInitial.Panel1.Controls.Add(this.treeCore);
       // 
       // splitInitial.Panel2
       // 
@@ -361,12 +367,12 @@
       this.splitInitial.SplitterDistance = 253;
       this.splitInitial.TabIndex = 1;
       // 
-      // treeView2
+      // treeCore
       // 
-      this.treeView2.ContextMenuStrip = this.contextMenuStrip1;
-      this.treeView2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.treeView2.Location = new System.Drawing.Point(0, 0);
-      this.treeView2.Name = "treeView2";
+      this.treeCore.ContextMenuStrip = this.contextMenuStripCore;
+      this.treeCore.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.treeCore.Location = new System.Drawing.Point(0, 0);
+      this.treeCore.Name = "treeCore";
       treeNode6.Name = "nodeCompartments";
       treeNode6.Text = "Compartments";
       treeNode7.Name = "nodeSpecies";
@@ -379,30 +385,30 @@
       treeNode10.Text = "Rules";
       treeNode11.Name = "nodeInitialAssignments";
       treeNode11.Text = "Initial Assignments";
-      this.treeView2.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+      this.treeCore.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode6,
             treeNode7,
             treeNode8,
             treeNode9,
             treeNode10,
             treeNode11});
-      this.treeView2.Size = new System.Drawing.Size(253, 450);
-      this.treeView2.TabIndex = 0;
-      this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
+      this.treeCore.Size = new System.Drawing.Size(253, 450);
+      this.treeCore.TabIndex = 0;
+      this.treeCore.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
       // 
-      // contextMenuStrip1
+      // contextMenuStripCore
       // 
-      this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.contextMenuStripCore.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteToolStripMenuItem});
-      this.contextMenuStrip1.Name = "contextMenuStrip1";
-      this.contextMenuStrip1.Size = new System.Drawing.Size(108, 26);
+      this.contextMenuStripCore.Name = "contextMenuStrip1";
+      this.contextMenuStripCore.Size = new System.Drawing.Size(108, 26);
       // 
       // deleteToolStripMenuItem
       // 
       this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
       this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.deleteToolStripMenuItem.Text = "&Delete";
-      this.deleteToolStripMenuItem.Click += new System.EventHandler(this.OnItemDeleteClick);
+      this.deleteToolStripMenuItem.Click += new System.EventHandler(this.OnCoreItemDeleteClick);
       // 
       // controlCompartment1
       // 
@@ -784,6 +790,18 @@
       this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem.Text = "Move AssignmentRule to Initial Assignment";
       this.moveAssignmentRuleToInitialAssignmentToolStripMenuItem.Click += new System.EventHandler(this.OnMoveARtoIAClick);
       // 
+      // toolStripMenuItem3
+      // 
+      this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+      this.toolStripMenuItem3.Size = new System.Drawing.Size(302, 6);
+      // 
+      // editSpatialAnnotationToolStripMenuItem
+      // 
+      this.editSpatialAnnotationToolStripMenuItem.Name = "editSpatialAnnotationToolStripMenuItem";
+      this.editSpatialAnnotationToolStripMenuItem.Size = new System.Drawing.Size(305, 22);
+      this.editSpatialAnnotationToolStripMenuItem.Text = "Edit Spatial Annotation";
+      this.editSpatialAnnotationToolStripMenuItem.Click += new System.EventHandler(this.OnEditSpatialAnnotationClick);
+      // 
       // helpToolStripMenuItem
       // 
       this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -811,11 +829,13 @@
             this.cutToolStripButton,
             this.copyToolStripButton,
             this.pasteToolStripButton,
+            this.toolStripSeparator8,
+            this.cmdAkira,
             this.toolStripSeparator7,
             this.helpToolStripButton});
       this.toolStrip1.Location = new System.Drawing.Point(3, 24);
       this.toolStrip1.Name = "toolStrip1";
-      this.toolStrip1.Size = new System.Drawing.Size(208, 25);
+      this.toolStrip1.Size = new System.Drawing.Size(271, 25);
       this.toolStrip1.TabIndex = 1;
       // 
       // newToolStripButton
@@ -893,6 +913,21 @@
       this.pasteToolStripButton.Text = "&Paste";
       this.pasteToolStripButton.Click += new System.EventHandler(this.OnPaste);
       // 
+      // toolStripSeparator8
+      // 
+      this.toolStripSeparator8.Name = "toolStripSeparator8";
+      this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+      // 
+      // cmdAkira
+      // 
+      this.cmdAkira.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdAkira.Image = ((System.Drawing.Image)(resources.GetObject("cmdAkira.Image")));
+      this.cmdAkira.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdAkira.Name = "cmdAkira";
+      this.cmdAkira.Size = new System.Drawing.Size(57, 22);
+      this.cmdAkira.Text = "&Simulate";
+      this.cmdAkira.Click += new System.EventHandler(this.OnSimulateWithAkiraClick);
+      // 
       // toolStripSeparator7
       // 
       this.toolStripSeparator7.Name = "toolStripSeparator7";
@@ -908,17 +943,19 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // toolStripMenuItem3
+      // contextMenuStripSpatial
       // 
-      this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-      this.toolStripMenuItem3.Size = new System.Drawing.Size(302, 6);
+      this.contextMenuStripSpatial.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem4});
+      this.contextMenuStripSpatial.Name = "contextMenuStrip1";
+      this.contextMenuStripSpatial.Size = new System.Drawing.Size(108, 26);
       // 
-      // editSpatialAnnotationToolStripMenuItem
+      // toolStripMenuItem4
       // 
-      this.editSpatialAnnotationToolStripMenuItem.Name = "editSpatialAnnotationToolStripMenuItem";
-      this.editSpatialAnnotationToolStripMenuItem.Size = new System.Drawing.Size(305, 22);
-      this.editSpatialAnnotationToolStripMenuItem.Text = "Edit Spatial Annotation";
-      this.editSpatialAnnotationToolStripMenuItem.Click += new System.EventHandler(this.OnEditSpatialAnnotationClick);
+      this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+      this.toolStripMenuItem4.Size = new System.Drawing.Size(107, 22);
+      this.toolStripMenuItem4.Text = "&Delete";
+      this.toolStripMenuItem4.Click += new System.EventHandler(this.OnSpatialItemDeleteClick);
       // 
       // MainForm
       // 
@@ -954,7 +991,7 @@
       this.splitInitial.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitInitial)).EndInit();
       this.splitInitial.ResumeLayout(false);
-      this.contextMenuStrip1.ResumeLayout(false);
+      this.contextMenuStripCore.ResumeLayout(false);
       this.tabPage3.ResumeLayout(false);
       this.tableLayoutPanel1.ResumeLayout(false);
       this.tableLayoutPanel1.PerformLayout();
@@ -965,6 +1002,7 @@
       this.menuStrip1.PerformLayout();
       this.toolStrip1.ResumeLayout(false);
       this.toolStrip1.PerformLayout();
+      this.contextMenuStripSpatial.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -1011,11 +1049,11 @@
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     private System.Windows.Forms.ToolStripButton helpToolStripButton;
     private System.Windows.Forms.SplitContainer splitGeometry;
-    private System.Windows.Forms.TreeView treeView1;
+    private System.Windows.Forms.TreeView treeSpatial;
     private Controls.ControlDisplayNode controlDisplayNode1;
     private Controls.ControlText txtSBML;
     private System.Windows.Forms.SplitContainer splitInitial;
-    private System.Windows.Forms.TreeView treeView2;
+    private System.Windows.Forms.TreeView treeCore;
     private Controls.ControlDisplayNode controlDisplayNode2;
     private Controls.ControlText txtJarnac;
     private Controls.ControlCoordinateComponents controlCoordinateComponents1;
@@ -1034,7 +1072,7 @@
     private Controls.ControlInitialAssignments controlInitialAssignments1;
     private System.Windows.Forms.ToolStripMenuItem spatialWizardToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem toolExportDune;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStripCore;
     private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
@@ -1045,6 +1083,10 @@
     private Controls.ControlCompartment controlCompartment1;
     private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
     private System.Windows.Forms.ToolStripMenuItem editSpatialAnnotationToolStripMenuItem;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+    private System.Windows.Forms.ToolStripButton cmdAkira;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStripSpatial;
+    private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
   }
 }
 

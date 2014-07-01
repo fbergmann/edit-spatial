@@ -228,23 +228,23 @@ namespace EditSpatial
 
       Text = string.Format("Edit Spatial: [ {0} ]", Path.GetFileName(Model.FileName));
 
-      treeView2.SelectedNode =
-        treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
+      treeCore.SelectedNode =
+        treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
 
-      treeView1.SelectedNode =
-        treeView1.Nodes[NODE_GEOMS].Nodes.Count > 0
-          ? treeView1.Nodes[NODE_GEOMS].FirstNode
-          : treeView1.Nodes[NODE_GEOMS];
+      treeSpatial.SelectedNode =
+        treeSpatial.Nodes[NODE_GEOMS].Nodes.Count > 0
+          ? treeSpatial.Nodes[NODE_GEOMS].FirstNode
+          : treeSpatial.Nodes[NODE_GEOMS];
     }
 
     private void ClearCoreTree()
     {
-      treeView2.Nodes[NODE_COMPARTMENTS].Nodes.Clear();
-      treeView2.Nodes[NODE_SPECIES].Nodes.Clear();
-      treeView2.Nodes[NODE_PARAMETERS].Nodes.Clear();
-      treeView2.Nodes[NODE_REACTIONS].Nodes.Clear();
-      treeView2.Nodes[NODE_RULES].Nodes.Clear();
-      treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS].Nodes.Clear();
+      treeCore.Nodes[NODE_COMPARTMENTS].Nodes.Clear();
+      treeCore.Nodes[NODE_SPECIES].Nodes.Clear();
+      treeCore.Nodes[NODE_PARAMETERS].Nodes.Clear();
+      treeCore.Nodes[NODE_REACTIONS].Nodes.Clear();
+      treeCore.Nodes[NODE_RULES].Nodes.Clear();
+      treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS].Nodes.Clear();
     }
     private void FillCoreTreeFromModel(SpatialModel spatialModel)
     {
@@ -271,7 +271,7 @@ namespace EditSpatial
 
     private void UpdateTreeWithInitialAssignments(libsbmlcs.Model model)
     {
-      TreeNode root = treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
+      TreeNode root = treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
       foreach (TreeNode item in root.Nodes)
       {
         InitialAssignment current = model.getInitialAssignment(item.Text);
@@ -282,7 +282,7 @@ namespace EditSpatial
 
     private void FillTreeWithInitialAssignments(libsbmlcs.Model model)
     {
-      TreeNode root = treeView2.Nodes[NODE_INITIAL_ASSIGNMENTS];
+      TreeNode root = treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumInitialAssignments(); ++i)
       {
@@ -294,7 +294,7 @@ namespace EditSpatial
 
     private void FillTreeWithRules(libsbmlcs.Model model)
     {
-      TreeNode root = treeView2.Nodes[NODE_RULES];
+      TreeNode root = treeCore.Nodes[NODE_RULES];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumRules(); ++i)
       {
@@ -306,7 +306,7 @@ namespace EditSpatial
 
     private void FillTreeWithReactions(libsbmlcs.Model model)
     {
-      TreeNode root = treeView2.Nodes[NODE_REACTIONS];
+      TreeNode root = treeCore.Nodes[NODE_REACTIONS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumReactions(); ++i)
       {
@@ -318,7 +318,7 @@ namespace EditSpatial
 
     private void FillTreeWithParameters(libsbmlcs.Model model)
     {
-      TreeNode root = treeView2.Nodes[NODE_PARAMETERS];
+      TreeNode root = treeCore.Nodes[NODE_PARAMETERS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumParameters(); ++i)
       {
@@ -330,7 +330,7 @@ namespace EditSpatial
 
     private void FillTreeWithSpecies(libsbmlcs.Model model)
     {
-      TreeNode root = treeView2.Nodes[NODE_SPECIES];
+      TreeNode root = treeCore.Nodes[NODE_SPECIES];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumSpecies(); ++i)
       {
@@ -342,7 +342,7 @@ namespace EditSpatial
 
     private void FillTreeWithCompartments(libsbmlcs.Model model)
     {
-      TreeNode root = treeView2.Nodes[NODE_COMPARTMENTS];
+      TreeNode root = treeCore.Nodes[NODE_COMPARTMENTS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumCompartments(); ++i)
       {
@@ -357,15 +357,15 @@ namespace EditSpatial
       Geometry geom = model.Geometry;
       if (geom == null)
       {
-        treeView1.Nodes[NODE_COORDINATES].Nodes.Clear();
-        treeView1.Nodes[NODE_DOMAINTYPES].Nodes.Clear();
-        treeView1.Nodes[NODE_DOMAINS].Nodes.Clear();
-        treeView1.Nodes[NODE_ADJACENTDOMAINS].Nodes.Clear();
-        treeView1.Nodes[NODE_GEOMS].Nodes.Clear();
+        treeSpatial.Nodes[NODE_COORDINATES].Nodes.Clear();
+        treeSpatial.Nodes[NODE_DOMAINTYPES].Nodes.Clear();
+        treeSpatial.Nodes[NODE_DOMAINS].Nodes.Clear();
+        treeSpatial.Nodes[NODE_ADJACENTDOMAINS].Nodes.Clear();
+        treeSpatial.Nodes[NODE_GEOMS].Nodes.Clear();
         return;
       }
 
-      TreeNode root = treeView1.Nodes[NODE_COORDINATES];
+      TreeNode root = treeSpatial.Nodes[NODE_COORDINATES];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumCoordinateComponents(); ++i)
       {
@@ -374,7 +374,7 @@ namespace EditSpatial
         root.Nodes.Add(node);
       }
 
-      root = treeView1.Nodes[NODE_DOMAINTYPES];
+      root = treeSpatial.Nodes[NODE_DOMAINTYPES];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumDomainTypes(); ++i)
       {
@@ -384,7 +384,7 @@ namespace EditSpatial
       }
 
 
-      root = treeView1.Nodes[NODE_DOMAINS];
+      root = treeSpatial.Nodes[NODE_DOMAINS];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumDomains(); ++i)
       {
@@ -393,7 +393,7 @@ namespace EditSpatial
         root.Nodes.Add(node);
       }
 
-      root = treeView1.Nodes[NODE_ADJACENTDOMAINS];
+      root = treeSpatial.Nodes[NODE_ADJACENTDOMAINS];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumAdjacentDomains(); ++i)
       {
@@ -402,7 +402,7 @@ namespace EditSpatial
         root.Nodes.Add(node);
       }
 
-      root = treeView1.Nodes[NODE_GEOMS];
+      root = treeSpatial.Nodes[NODE_GEOMS];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumGeometryDefinitions(); ++i)
       {
@@ -629,15 +629,26 @@ namespace EditSpatial
       }
     }
 
+
+    private bool haveAkira;
+
     private void OnLoad(object sender, EventArgs e)
     {
       ReadSettings();
 
       bool remove = false;
+      haveAkira = false;
       try
       {
         favs.Update();
         menu.UpdateSBWMenu();
+
+
+        foreach (ToolStripItem item in mnuSBW.DropDownItems)
+        {
+          haveAkira |= haveAkira || item.Text == "Spatial SBML";
+
+        }
       }
       catch
       {
@@ -649,6 +660,9 @@ namespace EditSpatial
         favs.RemoveFromToolStrip();
         mnuSBW.Visible = false;
       }
+
+      cmdAkira.Visible = haveAkira;
+
     }
 
     public void ReadSettings()
@@ -833,9 +847,82 @@ namespace EditSpatial
 
     #endregion
 
-    private void OnItemDeleteClick(object sender, EventArgs e)
+
+
+    private void OnSpatialItemDeleteClick(object sender, EventArgs e)
     {
-      var selected = treeView2.SelectedNode;
+      var selected = treeSpatial.SelectedNode;
+      if (selected == null || selected.Level == 0) return;
+
+      var selectedId = selected.Text;
+      TreeNode parent = selected.Parent;
+      if (Model.Geometry == null) return;
+
+      if (selected.Level == 1)
+      switch (parent.Name)
+      {
+        case NODE_DOMAINS:
+          {
+            Model.Geometry.removeDomain(selectedId);
+            UpdateUI();
+            break;
+          }
+        case NODE_DOMAINTYPES:
+          {
+            Model.Geometry.removeDomainType(selectedId);
+            UpdateUI();
+            break;
+          }
+        case NODE_GEOMS:
+          {
+            Model.Geometry.removeGeometryDefinition(selectedId);
+            UpdateUI();
+            break;
+          }
+        case NODE_ADJACENTDOMAINS:
+          {
+            Model.Geometry.removeAdjacentDomains(selectedId);
+            UpdateUI();
+            break;
+          }
+        case NODE_COORDINATES:
+          {
+            Model.Geometry.removeCoordinateComponent(selectedId);
+            UpdateUI();
+            break;
+          }
+      }
+
+      if (selected.Level == 2)
+      {
+        switch (parent.Parent.Name)
+        {
+          case NODE_GEOMS:
+            {
+              var geom = Model.Geometry.getGeometryDefinition(parent.Text);
+              if (geom is AnalyticGeometry)
+              {
+                var ageom = geom as AnalyticGeometry;
+                ageom.removeAnalyticVolume(selectedId);
+                UpdateUI();
+              }
+              else if (geom is SampledFieldGeometry)
+              {
+                var sgeom = geom as SampledFieldGeometry;
+                sgeom.removeSampledVolume(selectedId);
+                UpdateUI();
+              }
+              break;
+            }
+        }
+      }
+
+      treeSpatial.SelectedNode = parent;
+    }
+
+    private void OnCoreItemDeleteClick(object sender, EventArgs e)
+    {
+      var selected = treeCore.SelectedNode;
       if (selected == null || selected.Level == 0) return;
 
       var selectedId = selected.Text;
@@ -879,7 +966,7 @@ namespace EditSpatial
           break;
         }
       }
-      treeView2.SelectedNode = parent;
+      treeCore.SelectedNode = parent;
       
 
     }
@@ -904,6 +991,20 @@ namespace EditSpatial
       }
 
     }
+
+    private void OnSimulateWithAkiraClick(object sender, EventArgs e)
+    {
+      if (!haveAkira) return;
+      try
+      {
+        SBW.HighLevel.Send("Spatial SBML", "Spatial SBML", "void doAnalysis(string)", Model.ToSBML());
+      }
+      catch
+      {
+
+      }
+    }
+
 
     
   }

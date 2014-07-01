@@ -143,6 +143,7 @@ namespace EditSpatial.Controls
       for (int i = 0; i < grid.Rows.Count && i < Current.getNumAnalyticVolumes(); ++i)
       {
         var row = grid.Rows[i];
+        if (row.IsNewRow) continue;
         var current = Current.getAnalyticVolume(i);
         current.setSpatialId((string)row.Cells[0].Value);
         current.setFunctionType((string)row.Cells[1].Value);
