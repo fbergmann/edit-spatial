@@ -125,13 +125,20 @@ namespace EditSpatial.Forms
 
       var diffusionX = species.getDiffusionX();
       var diffusionY = species.getDiffusionY();
+
+      // assignments do not need to diffuse by themselves automatically
+      var defaultDiff = 
+        species.getModel().
+        getAssignmentRuleByVariable(species.getId()) == null 
+        ?  0.001 : 0.0;
+
       var spatialSpecies = new SpatialSpecies
       {
         Id = species.getId(),
         DiffusionX = diffusionX.HasValue ? diffusionX.Value :
-          diffusionY.HasValue ? diffusionY.Value : 0.01,
+          diffusionY.HasValue ? diffusionY.Value : defaultDiff,
         DiffusionY = diffusionY.HasValue ? diffusionY.Value :
-          diffusionX.HasValue ? diffusionX.Value : 0.01,
+          diffusionX.HasValue ? diffusionX.Value : defaultDiff,
 
         InitialCondition = species.getInitialExpession()
       };

@@ -29,55 +29,43 @@
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("List of Coordinate Components");
-      System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("List of Domain Types");
-      System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("List of Domains");
-      System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("List Of Adjacent Domains");
-      System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("List of Geometry Definitions");
+      System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("List of Coordinate Components");
+      System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("List of Domain Types");
+      System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("List of Domains");
+      System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("List Of Adjacent Domains");
+      System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("List of Geometry Definitions");
+      System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Compartments");
+      System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Species");
+      System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Parameters");
+      System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Reactions");
+      System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Rules");
+      System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Initial Assignments");
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-      System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Compartments");
-      System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Species");
-      System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Parameters");
-      System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Reactions");
-      System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Rules");
-      System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Initial Assignments");
       this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.splitGeometry = new System.Windows.Forms.SplitContainer();
       this.treeSpatial = new System.Windows.Forms.TreeView();
-      this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
-      this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
-      this.controlAdjacentDomains1 = new EditSpatial.Controls.ControlAdjacentDomains();
-      this.controlDomains1 = new EditSpatial.Controls.ControlDomains();
-      this.controlDomainTypes1 = new EditSpatial.Controls.ControlDomainTypes();
-      this.controlCoordinateComponents1 = new EditSpatial.Controls.ControlCoordinateComponents();
-      this.controlDisplayNode1 = new EditSpatial.Controls.ControlDisplayNode();
+      this.contextMenuStripSpatial = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
       this.tabPage2 = new System.Windows.Forms.TabPage();
       this.splitInitial = new System.Windows.Forms.SplitContainer();
       this.treeCore = new System.Windows.Forms.TreeView();
       this.contextMenuStripCore = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.controlCompartment1 = new EditSpatial.Controls.ControlCompartment();
-      this.controlSpecies1 = new EditSpatial.Controls.ControlSpecies();
-      this.controlParameters1 = new EditSpatial.Controls.ControlParameters();
-      this.controlInitialAssignments1 = new EditSpatial.Controls.ControlInitialAssignments();
-      this.controlDisplayNode2 = new EditSpatial.Controls.ControlDisplayNode();
       this.tabPage3 = new System.Windows.Forms.TabPage();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-      this.txtJarnac = new EditSpatial.Controls.ControlText();
       this.panel1 = new System.Windows.Forms.Panel();
       this.cmdApplyJarnac = new System.Windows.Forms.Button();
       this.tabPage4 = new System.Windows.Forms.TabPage();
-      this.txtSBML = new EditSpatial.Controls.ControlText();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
       this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolExportDune = new System.Windows.Forms.ToolStripMenuItem();
+      this.mnuExportDune = new System.Windows.Forms.ToolStripMenuItem();
       this.toolExportMorpheus = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -117,8 +105,21 @@
       this.cmdAkira = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.contextMenuStripSpatial = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+      this.mnuImport = new System.Windows.Forms.ToolStripMenuItem();
+      this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
+      this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
+      this.controlAdjacentDomains1 = new EditSpatial.Controls.ControlAdjacentDomains();
+      this.controlDomains1 = new EditSpatial.Controls.ControlDomains();
+      this.controlDomainTypes1 = new EditSpatial.Controls.ControlDomainTypes();
+      this.controlCoordinateComponents1 = new EditSpatial.Controls.ControlCoordinateComponents();
+      this.controlDisplayNode1 = new EditSpatial.Controls.ControlDisplayNode();
+      this.controlCompartment1 = new EditSpatial.Controls.ControlCompartment();
+      this.controlSpecies1 = new EditSpatial.Controls.ControlSpecies();
+      this.controlParameters1 = new EditSpatial.Controls.ControlParameters();
+      this.controlInitialAssignments1 = new EditSpatial.Controls.ControlInitialAssignments();
+      this.controlDisplayNode2 = new EditSpatial.Controls.ControlDisplayNode();
+      this.txtJarnac = new EditSpatial.Controls.ControlText();
+      this.txtSBML = new EditSpatial.Controls.ControlText();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -129,6 +130,7 @@
       this.splitGeometry.Panel1.SuspendLayout();
       this.splitGeometry.Panel2.SuspendLayout();
       this.splitGeometry.SuspendLayout();
+      this.contextMenuStripSpatial.SuspendLayout();
       this.tabPage2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitInitial)).BeginInit();
       this.splitInitial.Panel1.SuspendLayout();
@@ -141,7 +143,6 @@
       this.tabPage4.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.toolStrip1.SuspendLayout();
-      this.contextMenuStripSpatial.SuspendLayout();
       this.SuspendLayout();
       // 
       // toolStripContainer1
@@ -230,110 +231,39 @@
       this.treeSpatial.Dock = System.Windows.Forms.DockStyle.Fill;
       this.treeSpatial.Location = new System.Drawing.Point(0, 0);
       this.treeSpatial.Name = "treeSpatial";
-      treeNode1.Name = "nodeCoordinateComponents";
-      treeNode1.Text = "List of Coordinate Components";
-      treeNode2.Name = "nodeOfDomainTypes";
-      treeNode2.Text = "List of Domain Types";
-      treeNode3.Name = "nodeOfDomains";
-      treeNode3.Text = "List of Domains";
-      treeNode4.Name = "nodeOfAdjacentDomains";
-      treeNode4.Text = "List Of Adjacent Domains";
-      treeNode5.Name = "nodeOfGeometryDefinitions";
-      treeNode5.Text = "List of Geometry Definitions";
+      treeNode12.Name = "nodeCoordinateComponents";
+      treeNode12.Text = "List of Coordinate Components";
+      treeNode13.Name = "nodeOfDomainTypes";
+      treeNode13.Text = "List of Domain Types";
+      treeNode14.Name = "nodeOfDomains";
+      treeNode14.Text = "List of Domains";
+      treeNode15.Name = "nodeOfAdjacentDomains";
+      treeNode15.Text = "List Of Adjacent Domains";
+      treeNode16.Name = "nodeOfGeometryDefinitions";
+      treeNode16.Text = "List of Geometry Definitions";
       this.treeSpatial.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5});
+            treeNode12,
+            treeNode13,
+            treeNode14,
+            treeNode15,
+            treeNode16});
       this.treeSpatial.Size = new System.Drawing.Size(253, 450);
       this.treeSpatial.TabIndex = 0;
       this.treeSpatial.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnGeometrySelect);
       // 
-      // controlSampleFieldGeometry1
+      // contextMenuStripSpatial
       // 
-      this.controlSampleFieldGeometry1.Current = null;
-      this.controlSampleFieldGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlSampleFieldGeometry1.IsInitializing = false;
-      this.controlSampleFieldGeometry1.Location = new System.Drawing.Point(0, 0);
-      this.controlSampleFieldGeometry1.Name = "controlSampleFieldGeometry1";
-      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(505, 450);
-      this.controlSampleFieldGeometry1.SpatialGeometry = null;
-      this.controlSampleFieldGeometry1.TabIndex = 6;
-      this.controlSampleFieldGeometry1.UpdateAction = null;
-      this.controlSampleFieldGeometry1.Visible = false;
+      this.contextMenuStripSpatial.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem4});
+      this.contextMenuStripSpatial.Name = "contextMenuStrip1";
+      this.contextMenuStripSpatial.Size = new System.Drawing.Size(108, 26);
       // 
-      // controlAnalyticGeometry1
+      // toolStripMenuItem4
       // 
-      this.controlAnalyticGeometry1.Current = null;
-      this.controlAnalyticGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlAnalyticGeometry1.IsInitializing = false;
-      this.controlAnalyticGeometry1.Location = new System.Drawing.Point(0, 0);
-      this.controlAnalyticGeometry1.Name = "controlAnalyticGeometry1";
-      this.controlAnalyticGeometry1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlAnalyticGeometry1.RowsAdded")));
-      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(505, 450);
-      this.controlAnalyticGeometry1.SpatialGeometry = null;
-      this.controlAnalyticGeometry1.TabIndex = 5;
-      this.controlAnalyticGeometry1.UpdateAction = null;
-      this.controlAnalyticGeometry1.Visible = false;
-      // 
-      // controlAdjacentDomains1
-      // 
-      this.controlAdjacentDomains1.Current = null;
-      this.controlAdjacentDomains1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlAdjacentDomains1.IsInitializing = false;
-      this.controlAdjacentDomains1.Location = new System.Drawing.Point(0, 0);
-      this.controlAdjacentDomains1.Name = "controlAdjacentDomains1";
-      this.controlAdjacentDomains1.Size = new System.Drawing.Size(505, 450);
-      this.controlAdjacentDomains1.TabIndex = 4;
-      this.controlAdjacentDomains1.UpdateAction = null;
-      this.controlAdjacentDomains1.Visible = false;
-      // 
-      // controlDomains1
-      // 
-      this.controlDomains1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlDomains1.IsInitializing = false;
-      this.controlDomains1.Location = new System.Drawing.Point(0, 0);
-      this.controlDomains1.Name = "controlDomains1";
-      this.controlDomains1.Size = new System.Drawing.Size(505, 450);
-      this.controlDomains1.TabIndex = 3;
-      this.controlDomains1.UpdateAction = null;
-      this.controlDomains1.Visible = false;
-      // 
-      // controlDomainTypes1
-      // 
-      this.controlDomainTypes1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlDomainTypes1.IsInitializing = false;
-      this.controlDomainTypes1.Location = new System.Drawing.Point(0, 0);
-      this.controlDomainTypes1.Name = "controlDomainTypes1";
-      this.controlDomainTypes1.Size = new System.Drawing.Size(505, 450);
-      this.controlDomainTypes1.TabIndex = 2;
-      this.controlDomainTypes1.UpdateAction = null;
-      this.controlDomainTypes1.Visible = false;
-      // 
-      // controlCoordinateComponents1
-      // 
-      this.controlCoordinateComponents1.AutoScroll = true;
-      this.controlCoordinateComponents1.Current = null;
-      this.controlCoordinateComponents1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlCoordinateComponents1.IsInitializing = false;
-      this.controlCoordinateComponents1.Location = new System.Drawing.Point(0, 0);
-      this.controlCoordinateComponents1.Name = "controlCoordinateComponents1";
-      this.controlCoordinateComponents1.Size = new System.Drawing.Size(505, 450);
-      this.controlCoordinateComponents1.TabIndex = 1;
-      this.controlCoordinateComponents1.UpdateAction = null;
-      this.controlCoordinateComponents1.Visible = false;
-      // 
-      // controlDisplayNode1
-      // 
-      this.controlDisplayNode1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlDisplayNode1.IsInitializing = false;
-      this.controlDisplayNode1.Location = new System.Drawing.Point(0, 0);
-      this.controlDisplayNode1.Name = "controlDisplayNode1";
-      this.controlDisplayNode1.Padding = new System.Windows.Forms.Padding(4);
-      this.controlDisplayNode1.Size = new System.Drawing.Size(505, 450);
-      this.controlDisplayNode1.TabIndex = 0;
-      this.controlDisplayNode1.UpdateAction = null;
+      this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+      this.toolStripMenuItem4.Size = new System.Drawing.Size(107, 22);
+      this.toolStripMenuItem4.Text = "&Delete";
+      this.toolStripMenuItem4.Click += new System.EventHandler(this.OnSpatialItemDeleteClick);
       // 
       // tabPage2
       // 
@@ -373,25 +303,25 @@
       this.treeCore.Dock = System.Windows.Forms.DockStyle.Fill;
       this.treeCore.Location = new System.Drawing.Point(0, 0);
       this.treeCore.Name = "treeCore";
-      treeNode6.Name = "nodeCompartments";
-      treeNode6.Text = "Compartments";
-      treeNode7.Name = "nodeSpecies";
-      treeNode7.Text = "Species";
-      treeNode8.Name = "nodeParameters";
-      treeNode8.Text = "Parameters";
-      treeNode9.Name = "nodeReactions";
-      treeNode9.Text = "Reactions";
-      treeNode10.Name = "nodeRules";
-      treeNode10.Text = "Rules";
-      treeNode11.Name = "nodeInitialAssignments";
-      treeNode11.Text = "Initial Assignments";
+      treeNode1.Name = "nodeCompartments";
+      treeNode1.Text = "Compartments";
+      treeNode2.Name = "nodeSpecies";
+      treeNode2.Text = "Species";
+      treeNode3.Name = "nodeParameters";
+      treeNode3.Text = "Parameters";
+      treeNode4.Name = "nodeReactions";
+      treeNode4.Text = "Reactions";
+      treeNode5.Name = "nodeRules";
+      treeNode5.Text = "Rules";
+      treeNode17.Name = "nodeInitialAssignments";
+      treeNode17.Text = "Initial Assignments";
       this.treeCore.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5,
+            treeNode17});
       this.treeCore.Size = new System.Drawing.Size(253, 450);
       this.treeCore.TabIndex = 0;
       this.treeCore.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
@@ -409,63 +339,6 @@
       this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.deleteToolStripMenuItem.Text = "&Delete";
       this.deleteToolStripMenuItem.Click += new System.EventHandler(this.OnCoreItemDeleteClick);
-      // 
-      // controlCompartment1
-      // 
-      this.controlCompartment1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlCompartment1.IsInitializing = false;
-      this.controlCompartment1.Location = new System.Drawing.Point(0, 0);
-      this.controlCompartment1.Name = "controlCompartment1";
-      this.controlCompartment1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlCompartment1.RowsAdded")));
-      this.controlCompartment1.Size = new System.Drawing.Size(505, 450);
-      this.controlCompartment1.TabIndex = 4;
-      this.controlCompartment1.UpdateAction = null;
-      this.controlCompartment1.Visible = false;
-      // 
-      // controlSpecies1
-      // 
-      this.controlSpecies1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlSpecies1.IsInitializing = false;
-      this.controlSpecies1.Location = new System.Drawing.Point(0, 0);
-      this.controlSpecies1.Name = "controlSpecies1";
-      this.controlSpecies1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlSpecies1.RowsAdded")));
-      this.controlSpecies1.Size = new System.Drawing.Size(505, 450);
-      this.controlSpecies1.TabIndex = 3;
-      this.controlSpecies1.UpdateAction = null;
-      this.controlSpecies1.Visible = false;
-      // 
-      // controlParameters1
-      // 
-      this.controlParameters1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlParameters1.IsInitializing = false;
-      this.controlParameters1.Location = new System.Drawing.Point(0, 0);
-      this.controlParameters1.Name = "controlParameters1";
-      this.controlParameters1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlParameters1.RowsAdded")));
-      this.controlParameters1.Size = new System.Drawing.Size(505, 450);
-      this.controlParameters1.TabIndex = 2;
-      this.controlParameters1.UpdateAction = null;
-      // 
-      // controlInitialAssignments1
-      // 
-      this.controlInitialAssignments1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlInitialAssignments1.IsInitializing = false;
-      this.controlInitialAssignments1.Location = new System.Drawing.Point(0, 0);
-      this.controlInitialAssignments1.Name = "controlInitialAssignments1";
-      this.controlInitialAssignments1.Size = new System.Drawing.Size(505, 450);
-      this.controlInitialAssignments1.TabIndex = 1;
-      this.controlInitialAssignments1.UpdateAction = null;
-      this.controlInitialAssignments1.Visible = false;
-      // 
-      // controlDisplayNode2
-      // 
-      this.controlDisplayNode2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlDisplayNode2.IsInitializing = false;
-      this.controlDisplayNode2.Location = new System.Drawing.Point(0, 0);
-      this.controlDisplayNode2.Name = "controlDisplayNode2";
-      this.controlDisplayNode2.Padding = new System.Windows.Forms.Padding(4);
-      this.controlDisplayNode2.Size = new System.Drawing.Size(505, 450);
-      this.controlDisplayNode2.TabIndex = 0;
-      this.controlDisplayNode2.UpdateAction = null;
       // 
       // tabPage3
       // 
@@ -492,19 +365,6 @@
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
       this.tableLayoutPanel1.Size = new System.Drawing.Size(762, 450);
       this.tableLayoutPanel1.TabIndex = 1;
-      // 
-      // txtJarnac
-      // 
-      this.txtJarnac.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.txtJarnac.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.txtJarnac.Location = new System.Drawing.Point(3, 3);
-      this.txtJarnac.MaxLength = 0;
-      this.txtJarnac.Multiline = true;
-      this.txtJarnac.Name = "txtJarnac";
-      this.txtJarnac.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.txtJarnac.Size = new System.Drawing.Size(756, 415);
-      this.txtJarnac.TabIndex = 0;
-      this.txtJarnac.WordWrap = false;
       // 
       // panel1
       // 
@@ -536,19 +396,6 @@
       this.tabPage4.Text = "SBML";
       this.tabPage4.UseVisualStyleBackColor = true;
       // 
-      // txtSBML
-      // 
-      this.txtSBML.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.txtSBML.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.txtSBML.Location = new System.Drawing.Point(3, 3);
-      this.txtSBML.MaxLength = 0;
-      this.txtSBML.Multiline = true;
-      this.txtSBML.Name = "txtSBML";
-      this.txtSBML.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.txtSBML.Size = new System.Drawing.Size(762, 450);
-      this.txtSBML.TabIndex = 0;
-      this.txtSBML.WordWrap = false;
-      // 
       // menuStrip1
       // 
       this.menuStrip1.Dock = System.Windows.Forms.DockStyle.None;
@@ -571,7 +418,8 @@
             this.openToolStripMenuItem,
             this.toolStripSeparator,
             this.saveToolStripMenuItem,
-            this.toolExportDune,
+            this.mnuImport,
+            this.mnuExportDune,
             this.toolExportMorpheus,
             this.toolStripSeparator5,
             this.toolStripMenuItem1,
@@ -618,12 +466,12 @@
       this.saveToolStripMenuItem.Text = "&Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFile);
       // 
-      // toolExportDune
+      // mnuExportDune
       // 
-      this.toolExportDune.Name = "toolExportDune";
-      this.toolExportDune.Size = new System.Drawing.Size(204, 22);
-      this.toolExportDune.Text = "&Export Dune";
-      this.toolExportDune.Click += new System.EventHandler(this.OnExportDuneClick);
+      this.mnuExportDune.Name = "mnuExportDune";
+      this.mnuExportDune.Size = new System.Drawing.Size(204, 22);
+      this.mnuExportDune.Text = "&Export Dune";
+      this.mnuExportDune.Click += new System.EventHandler(this.OnExportDuneClick);
       // 
       // toolExportMorpheus
       // 
@@ -943,19 +791,179 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // contextMenuStripSpatial
+      // mnuImport
       // 
-      this.contextMenuStripSpatial.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem4});
-      this.contextMenuStripSpatial.Name = "contextMenuStrip1";
-      this.contextMenuStripSpatial.Size = new System.Drawing.Size(108, 26);
+      this.mnuImport.Name = "mnuImport";
+      this.mnuImport.Size = new System.Drawing.Size(204, 22);
+      this.mnuImport.Text = "&Import";
       // 
-      // toolStripMenuItem4
+      // controlSampleFieldGeometry1
       // 
-      this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-      this.toolStripMenuItem4.Size = new System.Drawing.Size(107, 22);
-      this.toolStripMenuItem4.Text = "&Delete";
-      this.toolStripMenuItem4.Click += new System.EventHandler(this.OnSpatialItemDeleteClick);
+      this.controlSampleFieldGeometry1.Current = null;
+      this.controlSampleFieldGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlSampleFieldGeometry1.IsInitializing = false;
+      this.controlSampleFieldGeometry1.Location = new System.Drawing.Point(0, 0);
+      this.controlSampleFieldGeometry1.Name = "controlSampleFieldGeometry1";
+      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(505, 450);
+      this.controlSampleFieldGeometry1.SpatialGeometry = null;
+      this.controlSampleFieldGeometry1.TabIndex = 6;
+      this.controlSampleFieldGeometry1.UpdateAction = null;
+      this.controlSampleFieldGeometry1.Visible = false;
+      // 
+      // controlAnalyticGeometry1
+      // 
+      this.controlAnalyticGeometry1.Current = null;
+      this.controlAnalyticGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlAnalyticGeometry1.IsInitializing = false;
+      this.controlAnalyticGeometry1.Location = new System.Drawing.Point(0, 0);
+      this.controlAnalyticGeometry1.Name = "controlAnalyticGeometry1";
+      this.controlAnalyticGeometry1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlAnalyticGeometry1.RowsAdded")));
+      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(505, 450);
+      this.controlAnalyticGeometry1.SpatialGeometry = null;
+      this.controlAnalyticGeometry1.TabIndex = 5;
+      this.controlAnalyticGeometry1.UpdateAction = null;
+      this.controlAnalyticGeometry1.Visible = false;
+      // 
+      // controlAdjacentDomains1
+      // 
+      this.controlAdjacentDomains1.Current = null;
+      this.controlAdjacentDomains1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlAdjacentDomains1.IsInitializing = false;
+      this.controlAdjacentDomains1.Location = new System.Drawing.Point(0, 0);
+      this.controlAdjacentDomains1.Name = "controlAdjacentDomains1";
+      this.controlAdjacentDomains1.Size = new System.Drawing.Size(505, 450);
+      this.controlAdjacentDomains1.TabIndex = 4;
+      this.controlAdjacentDomains1.UpdateAction = null;
+      this.controlAdjacentDomains1.Visible = false;
+      // 
+      // controlDomains1
+      // 
+      this.controlDomains1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlDomains1.IsInitializing = false;
+      this.controlDomains1.Location = new System.Drawing.Point(0, 0);
+      this.controlDomains1.Name = "controlDomains1";
+      this.controlDomains1.Size = new System.Drawing.Size(505, 450);
+      this.controlDomains1.TabIndex = 3;
+      this.controlDomains1.UpdateAction = null;
+      this.controlDomains1.Visible = false;
+      // 
+      // controlDomainTypes1
+      // 
+      this.controlDomainTypes1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlDomainTypes1.IsInitializing = false;
+      this.controlDomainTypes1.Location = new System.Drawing.Point(0, 0);
+      this.controlDomainTypes1.Name = "controlDomainTypes1";
+      this.controlDomainTypes1.Size = new System.Drawing.Size(505, 450);
+      this.controlDomainTypes1.TabIndex = 2;
+      this.controlDomainTypes1.UpdateAction = null;
+      this.controlDomainTypes1.Visible = false;
+      // 
+      // controlCoordinateComponents1
+      // 
+      this.controlCoordinateComponents1.AutoScroll = true;
+      this.controlCoordinateComponents1.Current = null;
+      this.controlCoordinateComponents1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlCoordinateComponents1.IsInitializing = false;
+      this.controlCoordinateComponents1.Location = new System.Drawing.Point(0, 0);
+      this.controlCoordinateComponents1.Name = "controlCoordinateComponents1";
+      this.controlCoordinateComponents1.Size = new System.Drawing.Size(505, 450);
+      this.controlCoordinateComponents1.TabIndex = 1;
+      this.controlCoordinateComponents1.UpdateAction = null;
+      this.controlCoordinateComponents1.Visible = false;
+      // 
+      // controlDisplayNode1
+      // 
+      this.controlDisplayNode1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlDisplayNode1.IsInitializing = false;
+      this.controlDisplayNode1.Location = new System.Drawing.Point(0, 0);
+      this.controlDisplayNode1.Name = "controlDisplayNode1";
+      this.controlDisplayNode1.Padding = new System.Windows.Forms.Padding(4);
+      this.controlDisplayNode1.Size = new System.Drawing.Size(505, 450);
+      this.controlDisplayNode1.TabIndex = 0;
+      this.controlDisplayNode1.UpdateAction = null;
+      // 
+      // controlCompartment1
+      // 
+      this.controlCompartment1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlCompartment1.IsInitializing = false;
+      this.controlCompartment1.Location = new System.Drawing.Point(0, 0);
+      this.controlCompartment1.Name = "controlCompartment1";
+      this.controlCompartment1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlCompartment1.RowsAdded")));
+      this.controlCompartment1.Size = new System.Drawing.Size(505, 450);
+      this.controlCompartment1.TabIndex = 4;
+      this.controlCompartment1.UpdateAction = null;
+      this.controlCompartment1.Visible = false;
+      // 
+      // controlSpecies1
+      // 
+      this.controlSpecies1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlSpecies1.IsInitializing = false;
+      this.controlSpecies1.Location = new System.Drawing.Point(0, 0);
+      this.controlSpecies1.Name = "controlSpecies1";
+      this.controlSpecies1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlSpecies1.RowsAdded")));
+      this.controlSpecies1.Size = new System.Drawing.Size(505, 450);
+      this.controlSpecies1.TabIndex = 3;
+      this.controlSpecies1.UpdateAction = null;
+      this.controlSpecies1.Visible = false;
+      // 
+      // controlParameters1
+      // 
+      this.controlParameters1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlParameters1.IsInitializing = false;
+      this.controlParameters1.Location = new System.Drawing.Point(0, 0);
+      this.controlParameters1.Name = "controlParameters1";
+      this.controlParameters1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlParameters1.RowsAdded")));
+      this.controlParameters1.Size = new System.Drawing.Size(505, 450);
+      this.controlParameters1.TabIndex = 2;
+      this.controlParameters1.UpdateAction = null;
+      // 
+      // controlInitialAssignments1
+      // 
+      this.controlInitialAssignments1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlInitialAssignments1.IsInitializing = false;
+      this.controlInitialAssignments1.Location = new System.Drawing.Point(0, 0);
+      this.controlInitialAssignments1.Name = "controlInitialAssignments1";
+      this.controlInitialAssignments1.Size = new System.Drawing.Size(505, 450);
+      this.controlInitialAssignments1.TabIndex = 1;
+      this.controlInitialAssignments1.UpdateAction = null;
+      this.controlInitialAssignments1.Visible = false;
+      // 
+      // controlDisplayNode2
+      // 
+      this.controlDisplayNode2.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlDisplayNode2.IsInitializing = false;
+      this.controlDisplayNode2.Location = new System.Drawing.Point(0, 0);
+      this.controlDisplayNode2.Name = "controlDisplayNode2";
+      this.controlDisplayNode2.Padding = new System.Windows.Forms.Padding(4);
+      this.controlDisplayNode2.Size = new System.Drawing.Size(505, 450);
+      this.controlDisplayNode2.TabIndex = 0;
+      this.controlDisplayNode2.UpdateAction = null;
+      // 
+      // txtJarnac
+      // 
+      this.txtJarnac.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.txtJarnac.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.txtJarnac.Location = new System.Drawing.Point(3, 3);
+      this.txtJarnac.MaxLength = 0;
+      this.txtJarnac.Multiline = true;
+      this.txtJarnac.Name = "txtJarnac";
+      this.txtJarnac.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+      this.txtJarnac.Size = new System.Drawing.Size(756, 415);
+      this.txtJarnac.TabIndex = 0;
+      this.txtJarnac.WordWrap = false;
+      // 
+      // txtSBML
+      // 
+      this.txtSBML.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.txtSBML.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.txtSBML.Location = new System.Drawing.Point(3, 3);
+      this.txtSBML.MaxLength = 0;
+      this.txtSBML.Multiline = true;
+      this.txtSBML.Name = "txtSBML";
+      this.txtSBML.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+      this.txtSBML.Size = new System.Drawing.Size(762, 450);
+      this.txtSBML.TabIndex = 0;
+      this.txtSBML.WordWrap = false;
       // 
       // MainForm
       // 
@@ -986,6 +994,7 @@
       this.splitGeometry.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitGeometry)).EndInit();
       this.splitGeometry.ResumeLayout(false);
+      this.contextMenuStripSpatial.ResumeLayout(false);
       this.tabPage2.ResumeLayout(false);
       this.splitInitial.Panel1.ResumeLayout(false);
       this.splitInitial.Panel2.ResumeLayout(false);
@@ -1002,7 +1011,6 @@
       this.menuStrip1.PerformLayout();
       this.toolStrip1.ResumeLayout(false);
       this.toolStrip1.PerformLayout();
-      this.contextMenuStripSpatial.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }
@@ -1071,7 +1079,7 @@
     private System.Windows.Forms.ToolStripMenuItem toolExportMorpheus;
     private Controls.ControlInitialAssignments controlInitialAssignments1;
     private System.Windows.Forms.ToolStripMenuItem spatialWizardToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem toolExportDune;
+    private System.Windows.Forms.ToolStripMenuItem mnuExportDune;
     private System.Windows.Forms.ContextMenuStrip contextMenuStripCore;
     private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
@@ -1087,6 +1095,7 @@
     private System.Windows.Forms.ToolStripButton cmdAkira;
     private System.Windows.Forms.ContextMenuStrip contextMenuStripSpatial;
     private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+    private System.Windows.Forms.ToolStripMenuItem mnuImport;
   }
 }
 

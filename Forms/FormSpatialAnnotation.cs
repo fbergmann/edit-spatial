@@ -186,14 +186,26 @@ namespace EditSpatial.Forms
         node.addChild(items);
       }
 
+      if (model.isSetAnnotation())
+      {
+        XMLNode annot = model.getAnnotation();
+        var num = (int) annot.getNumChildren();
+        for (int i = num - 1; i >= 0; i--)
+        {
+          var child = annot.getChild(i);
+          if (child.getName() == "spatialInfo" && child.getNamespaceURI() == SPATIAL_ANNOTATION_URL)
+            annot.removeChild(i);
+        }
+      }
       model.removeTopLevelAnnotationElement("spatialInfo", SPATIAL_ANNOTATION_URL, false);
       model.appendAnnotation(node);
     }
 
     public void InitFrom(EditSpatial.Model.SpatialModel spatialModel)
     {
-      Status = System.Windows.Forms.DialogResult.Cancel;
+      Status = DialogResult.Cancel;
       colId.Items.Clear();
+      grid.Rows.Clear();
 
       if (spatialModel == null || spatialModel.Document == null || spatialModel.Document.getModel() == null)
         return;
@@ -231,6 +243,56 @@ namespace EditSpatial.Forms
     private void cmdOK_Click(object sender, EventArgs e)
     {
       Status = DialogResult.OK;
+    }
+
+    private void cmdCombine_Click(object sender, EventArgs e)
+    {
+      var selected = grid.SelectedRows;
+      if (selected == null || selected.Count < 2) return;
+
+      // get common properties
+      var palette = selected[0].Cells[1].Value as string;
+      var max = selected[0].Cells[2].Value as string;
+
+      // remove rows 
+      var ids = new List<string>();
+      for (int i = selected.Count - 1; i >= 0; i--)
+      {
+        ids.Insert(0, selected[i].Cells[0].Value as string);
+        grid.Rows.Remove(selected[i]);
+      }
+
+      // add species with assignment rule 
+      var species = Model.createSpecies();
+      species.initDefaults();
+
+      var name = "combined_" + ids[0];
+      var formula = ids[0];
+      colId.Items.Remove(ids[0]);
+      for (int i = 1; i < ids.Count; i++)
+      {
+        name = name + "_" + ids[i];
+        formula  = formula + " + " + ids[i];
+        colId.Items.Remove(ids[i]);
+      }
+
+      species.setId(name);
+      species.setCompartment(Model.getSpecies(ids[0]).getCompartment());
+      var plug = species.getPlugin("spatial") as SpatialSpeciesRxnPlugin;
+      if (plug != null)
+      plug.setIsSpatial(true);
+
+      var assignment = Model.createAssignmentRule();
+      assignment.setVariable(species.getId());
+      assignment.setFormula(formula);
+
+      colId.Items.Add(species.getId());
+
+      // add new row
+      var index = grid.Rows.Add(species.getId(), palette, max);
+
+      // select row
+      grid.Rows[index].Selected = true;
     }
 
 

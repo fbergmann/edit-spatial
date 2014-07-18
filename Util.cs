@@ -52,8 +52,6 @@ namespace EditSpatial
             fd.Dispose();
           }
         }
-
-
       }
 
     }
@@ -129,6 +127,7 @@ namespace EditSpatial
 
       return result;
     }
+
     public static void MoveRuleToAssignment(this libsbmlcs.Model model, string id)
     {
       if (model == null) return;
@@ -246,6 +245,46 @@ namespace EditSpatial
       return plug.isSpatialParameter();
     }
 
+    public static Parameter setSpatialParameter(this libsbmlcs.Species species, string id, int typeCode, double value, object box = null)
+    {
+      if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
+        return null;
+
+      var model = species.getSBMLDocument().getModel();
+      var param = species.getSpatialParameter(typeCode, box);
+      if (param == null)
+      {
+        param = model.createParameter();
+        param.initDefaults();
+        var plugin = param.getPlugin("spatial") as SpatialParameterPlugin;
+        if (plugin != null && box != null)
+        {
+          switch(typeCode)
+          {
+            case libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT:
+            {
+              var diff = plugin.getDiffusionCoefficient();
+              diff.setCoordinateIndex((int) box);
+              diff.setVariable(species.getId());
+              break;
+            }
+            case libsbml.SBML_SPATIAL_BOUNDARYCONDITION:
+            {
+              var bc = plugin.getBoundaryCondition();
+              bc.setVariable(species.getId());
+              bc.setCoordinateBoundary((string)box);
+              break;
+            }
+          }
+        }
+      }
+
+      param.setId(id);
+      param.setValue(value);   
+
+      return param;
+    }
+
     public static Parameter getSpatialParameter(this libsbmlcs.Species species, int typeCode, object box = null)
     {
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
@@ -297,7 +336,6 @@ namespace EditSpatial
       return species.getSpatialParameter(libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT, 1);
     }
 
-
     public static double? getDiffusionX(this libsbmlcs.Species species)
     {
       var param = species.getParameterDiffusionX();
@@ -314,6 +352,7 @@ namespace EditSpatial
       }
       return result;
     }
+
     private static int[] ToInt(byte[] array)
     {
       var result = new int[array.Length];

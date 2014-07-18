@@ -35,6 +35,9 @@
       this.cmdFromNotes = new System.Windows.Forms.ToolStripButton();
       this.cmdClear = new System.Windows.Forms.ToolStripButton();
       this.grid = new System.Windows.Forms.DataGridView();
+      this.colId = new System.Windows.Forms.DataGridViewComboBoxColumn();
+      this.colPalette = new System.Windows.Forms.DataGridViewComboBoxColumn();
+      this.colMax = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.panel1 = new System.Windows.Forms.Panel();
       this.txtUpdate = new System.Windows.Forms.TextBox();
       this.label3 = new System.Windows.Forms.Label();
@@ -43,9 +46,7 @@
       this.cmdOK = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.label1 = new System.Windows.Forms.Label();
-      this.colId = new System.Windows.Forms.DataGridViewComboBoxColumn();
-      this.colPalette = new System.Windows.Forms.DataGridViewComboBoxColumn();
-      this.colMax = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.cmdCombine = new System.Windows.Forms.ToolStripButton();
       this.tableLayoutPanel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -96,7 +97,8 @@
       this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
       this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdFromNotes,
-            this.cmdClear});
+            this.cmdClear,
+            this.cmdCombine});
       this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
@@ -138,6 +140,32 @@
       this.grid.Name = "grid";
       this.grid.Size = new System.Drawing.Size(564, 402);
       this.grid.TabIndex = 0;
+      // 
+      // colId
+      // 
+      this.colId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+      this.colId.HeaderText = "SBML ID";
+      this.colId.Items.AddRange(new object[] {
+            "A"});
+      this.colId.Name = "colId";
+      this.colId.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.colId.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      // 
+      // colPalette
+      // 
+      this.colPalette.HeaderText = "Palette";
+      this.colPalette.Items.AddRange(new object[] {
+            "black-blue",
+            "black-green",
+            "black-red"});
+      this.colPalette.Name = "colPalette";
+      this.colPalette.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.colPalette.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      // 
+      // colMax
+      // 
+      this.colMax.HeaderText = "Max";
+      this.colMax.Name = "colMax";
       // 
       // panel1
       // 
@@ -223,31 +251,15 @@
       this.label1.Text = "Here you can specify the initial display for  Akira\'s simulator";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
-      // colId
+      // cmdCombine
       // 
-      this.colId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-      this.colId.HeaderText = "SBML ID";
-      this.colId.Items.AddRange(new object[] {
-            "A"});
-      this.colId.Name = "colId";
-      this.colId.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-      this.colId.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-      // 
-      // colPalette
-      // 
-      this.colPalette.HeaderText = "Palette";
-      this.colPalette.Items.AddRange(new object[] {
-            "black-blue",
-            "black-green",
-            "black-red"});
-      this.colPalette.Name = "colPalette";
-      this.colPalette.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-      this.colPalette.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-      // 
-      // colMax
-      // 
-      this.colMax.HeaderText = "Max";
-      this.colMax.Name = "colMax";
+      this.cmdCombine.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdCombine.Image = ((System.Drawing.Image)(resources.GetObject("cmdCombine.Image")));
+      this.cmdCombine.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdCombine.Name = "cmdCombine";
+      this.cmdCombine.Size = new System.Drawing.Size(40, 60);
+      this.cmdCombine.Text = "&Combine";
+      this.cmdCombine.Click += new System.EventHandler(this.cmdCombine_Click);
       // 
       // FormSpatialAnnotation
       // 
@@ -296,5 +308,6 @@
     private System.Windows.Forms.DataGridViewComboBoxColumn colId;
     private System.Windows.Forms.DataGridViewComboBoxColumn colPalette;
     private System.Windows.Forms.DataGridViewTextBoxColumn colMax;
+    private System.Windows.Forms.ToolStripButton cmdCombine;
   }
 }

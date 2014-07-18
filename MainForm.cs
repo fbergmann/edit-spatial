@@ -487,38 +487,46 @@ namespace EditSpatial
 
     private void OpenModel(SpatialModel model)
     {
-      Model = model;
-      Model.ModelChanged += (o, args) => UpdateUI();
-
-      UpdateUI();
-
-      if (Model != null && Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
+      try
       {
-        ShowErrors();
-      }
-      else
-      {
-        ErrorForm.Hide();
-      }
+        Model = model;
+        Model.ModelChanged += (o, args) => UpdateUI();
 
-      if (Model != null && !Model.IsSpatial)
-      {
-        Model.ConvertToL3();
+        UpdateUI();
 
-        var dialog = new FormInitSpatial {SpatialModel = Model};
-        if (dialog.ShowDialog() == DialogResult.OK)
+        if (Model != null && Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
         {
-          CreateModel selection = dialog.CreateModel;
+          ShowErrors();
+        }
+        else
+        {
+          ErrorForm.Hide();
+        }
 
-          if (!Model.ConvertToSpatial(selection))
+        if (Model != null && !Model.IsSpatial)
+        {
+          Model.ConvertToL3();
+
+          var dialog = new FormInitSpatial { SpatialModel = Model };
+          if (dialog.ShowDialog() == DialogResult.OK)
           {
-            ShowErrors();
-          }
-          else
-          {
-            UpdateUI();
+            CreateModel selection = dialog.CreateModel;
+
+            if (!Model.ConvertToSpatial(selection))
+            {
+              ShowErrors();
+            }
+            else
+            {
+              UpdateUI();
+            }
           }
         }
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show("Could not load the given model", "Model could not be loaded", MessageBoxButtons.OK,
+          MessageBoxIcon.Error);
       }
     }
 
@@ -643,6 +651,8 @@ namespace EditSpatial
         favs.Update();
         menu.UpdateSBWMenu();
 
+        SBWExporter.SetupImport(
+                mnuImport, doAnalysis);
 
         foreach (ToolStripItem item in mnuSBW.DropDownItems)
         {
@@ -659,6 +669,7 @@ namespace EditSpatial
       {
         favs.RemoveFromToolStrip();
         mnuSBW.Visible = false;
+        mnuExportDune.Visible = false;
       }
 
       cmdAkira.Visible = haveAkira;
