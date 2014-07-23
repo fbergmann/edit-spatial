@@ -21,11 +21,23 @@ namespace EditSpatial
         "CIRCLE(x,y,25,25,10)",
         "True, if inside circle with given center and radius"
       },
+        new [] {
+        "ELLIPSE", 
+        "lambda(x,y,centerX,centerY,rx,ry,piecewise(1, lt(pow(x-centerX, 2)/pow(rx,2) + pow(y-centerY, 2)/pow(ry,2), 1), 0))",
+        "ELLIPSE(x,y,25,25,10, 10)",
+        "True, if inside ellipse with given center and radii"
+      },
       new [] {
         "RECTANGLE", 
         "lambda(x,y,startX, startY, w,h,and(geq(x, startX), leq(x, startX+w), geq(y, startY), leq(y, startY+h)))",
         "RECT(x,y,10,10,10, 10)",
         "Generates a rectangle with given start position and width and height"
+      },
+      new [] {
+        "FISH", 
+        "lambda(x,y,width,height,piecewise(1, ((x - width * 0.42)^2 / (width * 0.37)^2 + (y - height / 2)^2 / (width * 0.25)^2 < 1 || (y < -(width * 0.1) + x && y > width * 1.1 + -x && x < width * 0.9)) && !((x - width * 0.25)^2 / (0.08 * width)^2 + (y - height * 0.45)^2 / (0.08 * height)^2 < 1), 0))",
+        "FISH(x,y,width,height)",
+        "Generates a fish in the given bounds"
       },
     };
 
@@ -47,7 +59,7 @@ namespace EditSpatial
           {
             var fd = new FunctionDefinition(3, 1);
             fd.setId(InbuiltFunctions[k][0]);
-            fd.setMath(libsbml.parseFormula(InbuiltFunctions[k][1]));
+            fd.setMath(libsbml.parseL3Formula(InbuiltFunctions[k][1]));
             SBMLTransforms.replaceFD(current.getMath(), fd);
             fd.Dispose();
           }
