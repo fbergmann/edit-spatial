@@ -26,24 +26,33 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-      var model = document.getModel();
+        var model = document.getModel();
 
-      CommitAddedRows(Current);
-      for (long i = 0; i < model.getNumSpecies(); ++i)
-      {
-        var current = model.getSpecies(i);
-          grid.Rows.Add(current.getId(), 
-          current.getName(), 
-          current.isSetInitialConcentration() ?  current.getInitialConcentration().ToString() :
-           current.getInitialAmount().ToString(), 
-           current.getCompartment(), 
-           current.getBoundaryCondition().ToString()
+        CommitAddedRows(Current);
+        for (long i = 0; i < model.getNumSpecies(); ++i)
+        {
+          var current = model.getSpecies(i);
+
+          var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+          string isSpatial = "NA";
+          if (plug!=null && plug.isSetIsSpatial())
+          {
+            isSpatial = plug.getIsSpatial().ToString();
+          }
+
+          grid.Rows.Add(current.getId(),
+          current.getName(),
+          current.isSetInitialConcentration() ? current.getInitialConcentration().ToString() :
+           current.getInitialAmount().ToString(),
+           current.getCompartment(),
+           current.getBoundaryCondition().ToString(), 
+           isSpatial
           );
-      }
+        }
       }
       finally
       {
-        IsInitializing = false;       
+        IsInitializing = false;
       }
     }
 
@@ -69,16 +78,27 @@ namespace EditSpatial.Controls
             double value; if (double.TryParse((string)row.Cells[2].Value, out value))
               species.setInitialConcentration(value);
             species.setCompartment(row.Cells[3].Value as string);
-            bool bvalue; if (bool.TryParse((string)row.Cells[2].Value, out bvalue))
+            bool bvalue; if (bool.TryParse((string)row.Cells[4].Value, out bvalue))
               species.setBoundaryCondition(bvalue);
+
+            if (bool.TryParse((string) row.Cells[5].Value, out bvalue))
+            {
+              var plug = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
+              if (plug != null)
+              {
+                plug.setIsSpatial(bvalue);
+              }
+            }
+
+
             RowsAdded.RemoveAt(i);
           }
-          catch 
+          catch
           {
-            
+
           }
         }
-      }  
+      }
     }
 
 
@@ -98,9 +118,18 @@ namespace EditSpatial.Controls
         double value; if (double.TryParse((string)row.Cells[2].Value, out value))
           current.setInitialConcentration(value);
         current.setCompartment(row.Cells[3].Value as string);
-        bool bvalue; if (bool.TryParse((string)row.Cells[2].Value, out bvalue))
+        bool bvalue; if (bool.TryParse((string)row.Cells[4].Value, out bvalue))
           current.setBoundaryCondition(bvalue);
-      
+
+        if (bool.TryParse((string)row.Cells[5].Value, out bvalue))
+        {
+          var plug = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
+          if (plug != null)
+          {
+            plug.setIsSpatial(bvalue);
+          }
+        }
+
       }
     }
 

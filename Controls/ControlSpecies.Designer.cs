@@ -34,6 +34,7 @@
       this.colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colComp = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colBoundary = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colIsSpatial = new System.Windows.Forms.DataGridViewTextBoxColumn();
       ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
       this.SuspendLayout();
       // 
@@ -45,11 +46,12 @@
             this.colName,
             this.colValue,
             this.colComp,
-            this.colBoundary});
+            this.colBoundary,
+            this.colIsSpatial});
       this.grid.Dock = System.Windows.Forms.DockStyle.Fill;
       this.grid.Location = new System.Drawing.Point(0, 0);
       this.grid.Name = "grid";
-      this.grid.Size = new System.Drawing.Size(484, 370);
+      this.grid.Size = new System.Drawing.Size(675, 371);
       this.grid.TabIndex = 0;
       this.grid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.OnRowsAdded);
       this.grid.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.OnUserDeletedRow);
@@ -79,13 +81,18 @@
       this.colBoundary.HeaderText = "Boundary";
       this.colBoundary.Name = "colBoundary";
       // 
+      // colIsSpatial
+      // 
+      this.colIsSpatial.HeaderText = "IsSpatial";
+      this.colIsSpatial.Name = "colIsSpatial";
+      // 
       // ControlSpecies
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.grid);
       this.Name = "ControlSpecies";
-      this.Size = new System.Drawing.Size(484, 370);
+      this.Size = new System.Drawing.Size(675, 371);
       ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
       this.ResumeLayout(false);
 
@@ -99,5 +106,6 @@
     private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
     private System.Windows.Forms.DataGridViewTextBoxColumn colComp;
     private System.Windows.Forms.DataGridViewTextBoxColumn colBoundary;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colIsSpatial;
   }
 }

@@ -193,7 +193,7 @@ namespace EditSpatial.Forms
         for (int i = num - 1; i >= 0; i--)
         {
           var child = annot.getChild(i);
-          if (child.getName() == "spatialInfo" && child.getNamespaceURI() == SPATIAL_ANNOTATION_URL)
+          if (child.getName() == "spatialInfo" && (child.getNamespaceURI() == SPATIAL_ANNOTATION_URL || child.getNamespaceURI() == ""))
             annot.removeChild(i);
         }
       }

@@ -97,6 +97,8 @@ namespace EditSpatial.Model
         Document = libsbml.readSBMLFromFile(fileName),
         FileName = fileName
       };
+      model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
+      model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
       model.Document.validateSBML();
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);

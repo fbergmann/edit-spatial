@@ -26,22 +26,22 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-      var model = document.getModel();
+        var model = document.getModel();
 
-      CommitAddedRows(Current);
-      for (long i = 0; i < model.getNumCompartments(); ++i)
-      {
-        var current = model.getCompartment(i);
-          grid.Rows.Add(current.getId(), 
-          current.getName(), 
-          current.getSize().ToString(), 
+        CommitAddedRows(Current);
+        for (long i = 0; i < model.getNumCompartments(); ++i)
+        {
+          var current = model.getCompartment(i);
+          grid.Rows.Add(current.getId(),
+          current.getName(),
+          current.getSize().ToString(),
            current.getSpatialDimensionsAsDouble().ToString()
           );
-      }
+        }
       }
       finally
       {
-        IsInitializing = false;       
+        IsInitializing = false;
       }
     }
 
@@ -66,16 +66,16 @@ namespace EditSpatial.Controls
             comp.setName(row.Cells[1].Value as string);
             double value; if (double.TryParse((string)row.Cells[2].Value, out value))
               comp.setSize(value);
-            if (double.TryParse((string)row.Cells[2].Value, out value))
+            if (double.TryParse((string)row.Cells[3].Value, out value))
               comp.setSpatialDimensions(value);
             RowsAdded.RemoveAt(i);
           }
-          catch 
+          catch
           {
-            
+
           }
         }
-      }  
+      }
     }
 
 
@@ -94,9 +94,9 @@ namespace EditSpatial.Controls
         current.setName(row.Cells[1].Value as string);
         double value; if (double.TryParse((string)row.Cells[2].Value, out value))
           current.setSize(value);
-        if (double.TryParse((string)row.Cells[2].Value, out value))
+        if (double.TryParse((string)row.Cells[3].Value, out value))
           current.setSpatialDimensions(value);
-      
+
       }
     }
 

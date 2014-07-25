@@ -26,20 +26,20 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-      var model = document.getModel();
+        var model = document.getModel();
 
-      CommitAddedRows(Current);
-      for (long i = 0; i < model.getNumParameters(); ++i)
-      {
-        var current = model.getParameter(i);
-          grid.Rows.Add(current.getId(), 
-          current.getName(), 
+        CommitAddedRows(Current);
+        for (long i = 0; i < model.getNumParameters(); ++i)
+        {
+          var current = model.getParameter(i);
+          grid.Rows.Add(current.getId(),
+          current.getName(),
           current.getValue().ToString());
-      }
+        }
       }
       finally
       {
-        IsInitializing = false;       
+        IsInitializing = false;
       }
     }
 
@@ -70,7 +70,7 @@ namespace EditSpatial.Controls
           }
           catch
           {
-            
+
           }
         }
       }
@@ -90,10 +90,10 @@ namespace EditSpatial.Controls
         var current = Current.getModel().getParameter((string)row.Cells[0].Value);
         if (current == null) continue;
 
-        current.setName((string) row.Cells[1].Value);
+        current.setName((string)row.Cells[1].Value);
         double value; if (double.TryParse((string)row.Cells[2].Value, out value))
-        current.setValue(value);
-      
+          current.setValue(value);
+
       }
     }
 
@@ -121,7 +121,7 @@ namespace EditSpatial.Controls
       }
 
       foreach (var id in ids)
-      Current.getModel().removeParameter(id);
+        Current.getModel().removeParameter(id);
 
       InitializeFrom(Current);
     }
