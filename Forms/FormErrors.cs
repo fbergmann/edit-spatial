@@ -28,6 +28,8 @@ namespace EditSpatial.Forms
     private void ReValidate()
     {
       if (Model == null || Model.Document == null) return;
+      Model.Document.clearValidators();
+      Model.Document.addValidator(SpatialModel.CustomSpatialValidator);
       Model.Document.validateSBML();
       InitializeFrom(Model);
     }

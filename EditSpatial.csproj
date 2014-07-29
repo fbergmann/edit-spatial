@@ -187,6 +187,7 @@
     </Compile>
     <Compile Include="Model\AnalyticSettings.cs" />
     <Compile Include="Model\CreateModel.cs" />
+    <Compile Include="Model\CustomSpatialValidator.cs" />
     <Compile Include="Model\GeometrySettings.cs" />
     <Compile Include="Converter\MorpheusConverter.cs" />
     <Compile Include="Model\SpatialModel.cs" />

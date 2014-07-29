@@ -13,6 +13,8 @@ namespace EditSpatial.Model
 {
   public class SpatialModel
   {
+    internal static CustomSpatialValidator CustomSpatialValidator = new CustomSpatialValidator();
+
     public double DefaultWidth { get; set; }
     public double DefaultHeight { get; set; }
 
@@ -99,12 +101,14 @@ namespace EditSpatial.Model
       };
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
+      model.Document.addValidator(CustomSpatialValidator);
       model.Document.validateSBML();
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
       return model;
     }
 
+    
     public static SpatialModel FromJarnac(string content)
     {
       NOM.Namespaces = new List<string>();
@@ -121,6 +125,9 @@ namespace EditSpatial.Model
         Document = libsbml.readSBMLFromString(content),
         FileName = "fromstring.xml"
       };
+      model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
+      model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
+      model.Document.addValidator(CustomSpatialValidator);
       model.Document.validateSBML();
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
