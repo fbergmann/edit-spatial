@@ -34,6 +34,7 @@
       this.toolStrip1 = new System.Windows.Forms.ToolStrip();
       this.cmdFromNotes = new System.Windows.Forms.ToolStripButton();
       this.cmdClear = new System.Windows.Forms.ToolStripButton();
+      this.cmdCombine = new System.Windows.Forms.ToolStripButton();
       this.grid = new System.Windows.Forms.DataGridView();
       this.colId = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.colPalette = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -46,7 +47,7 @@
       this.cmdOK = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.label1 = new System.Windows.Forms.Label();
-      this.cmdCombine = new System.Windows.Forms.ToolStripButton();
+      this.cmdAddAll = new System.Windows.Forms.ToolStripButton();
       this.tableLayoutPanel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -98,7 +99,8 @@
       this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmdFromNotes,
             this.cmdClear,
-            this.cmdCombine});
+            this.cmdCombine,
+            this.cmdAddAll});
       this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
@@ -127,6 +129,16 @@
       this.cmdClear.Size = new System.Drawing.Size(40, 38);
       this.cmdClear.Text = "Clear";
       this.cmdClear.Click += new System.EventHandler(this.OnClearClick);
+      // 
+      // cmdCombine
+      // 
+      this.cmdCombine.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdCombine.Image = ((System.Drawing.Image)(resources.GetObject("cmdCombine.Image")));
+      this.cmdCombine.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdCombine.Name = "cmdCombine";
+      this.cmdCombine.Size = new System.Drawing.Size(40, 60);
+      this.cmdCombine.Text = "&Combine";
+      this.cmdCombine.Click += new System.EventHandler(this.cmdCombine_Click);
       // 
       // grid
       // 
@@ -251,15 +263,15 @@
       this.label1.Text = "Here you can specify the initial display for  Akira\'s simulator";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
-      // cmdCombine
+      // cmdAddAll
       // 
-      this.cmdCombine.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.cmdCombine.Image = ((System.Drawing.Image)(resources.GetObject("cmdCombine.Image")));
-      this.cmdCombine.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.cmdCombine.Name = "cmdCombine";
-      this.cmdCombine.Size = new System.Drawing.Size(40, 60);
-      this.cmdCombine.Text = "&Combine";
-      this.cmdCombine.Click += new System.EventHandler(this.cmdCombine_Click);
+      this.cmdAddAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdAddAll.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddAll.Image")));
+      this.cmdAddAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdAddAll.Name = "cmdAddAll";
+      this.cmdAddAll.Size = new System.Drawing.Size(40, 50);
+      this.cmdAddAll.Text = "Add All";
+      this.cmdAddAll.Click += new System.EventHandler(this.OnAddAllClick);
       // 
       // FormSpatialAnnotation
       // 
@@ -309,5 +321,6 @@
     private System.Windows.Forms.DataGridViewComboBoxColumn colPalette;
     private System.Windows.Forms.DataGridViewTextBoxColumn colMax;
     private System.Windows.Forms.ToolStripButton cmdCombine;
+    private System.Windows.Forms.ToolStripButton cmdAddAll;
   }
 }

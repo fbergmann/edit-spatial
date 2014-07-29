@@ -18,9 +18,12 @@ namespace EditSpatial.Forms
 
     public const string SPATIAL_ANNOTATION_URL = "http://fbergmann.github.io/spatial-sbml/settings";
 
+    private Random rand; 
+
     public FormSpatialAnnotation()
     {
       InitializeComponent();
+      rand = new Random();
     }
 
     public libsbmlcs.Model Model { get; set; }
@@ -107,7 +110,7 @@ namespace EditSpatial.Forms
       grid.Rows.Clear();
 
       if (model == null) return;
-
+      Model = model;
       for (int i =0 ; i< model.getNumSpecies(); ++i)
       {
         var current = model.getSpecies(i);
@@ -293,6 +296,39 @@ namespace EditSpatial.Forms
 
       // select row
       grid.Rows[index].Selected = true;
+    }
+
+    private string getRandomPalette()
+    {
+      switch(rand.Next(3))
+      {
+        default:
+          return "black-green";
+        case 2:
+          return "black-red";
+        case 1:
+          return "black-blue";
+      }
+    }
+
+    private void OnAddAllClick(object sender, EventArgs e)
+    {
+      OnClearClick(sender, e);
+
+      for (int i = 0; i < Model.getNumSpecies(); i++)
+      {
+       
+        Species species = Model.getSpecies(i);
+              double max = 6;
+      double scale = 10;
+      if (species.isSetInitialConcentration() && species.getInitialConcentration() > 0)
+        max = scale * species.getInitialConcentration();
+      else if (species.isSetInitialAmount() && species.getInitialAmount() > 0)
+        max = scale * species.getInitialAmount();
+
+        grid.Rows.Add(species.getId(), getRandomPalette(),max );
+      }
+
     }
 
 
