@@ -328,7 +328,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
 }
 
 
-bool isInside(const Dune::FieldVector<double,2>& point)
+bool isInside(const Dune::FieldVector<double, 2>& point, const Dune::FieldVector<double, 2>& dimension)
 {
 
 %GEOMETRY%
@@ -402,7 +402,7 @@ int main(int argc, char** argv)
                 // region, and if so add it like so:
 
                 const auto& center = it->geometry().center();
-                if (isInside(center))
+                if (isInside(center, L))
                 {
                     mdgrid.addToSubDomain(subdomain,*it);
                 }

@@ -169,6 +169,13 @@ namespace EditSpatial.Converter
             builder.AppendFormat(" >= {0}", TranslateExpression(math.getChild(1), map));
             return builder.ToString();
           }
+        case libsbml.AST_POWER:
+          {
+            var builder = new StringBuilder();
+            builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
+            return builder.ToString();
+          }
         case libsbml.AST_LOGICAL_AND:
           {
             var builder = new StringBuilder();
@@ -178,6 +185,12 @@ namespace EditSpatial.Converter
               builder.AppendFormat(" && {0}", TranslateExpression(math.getChild(i), map));
             }
             builder.AppendFormat(")");
+            return builder.ToString();
+          }
+        case libsbml.AST_LOGICAL_NOT:
+          {
+            var builder = new StringBuilder();
+            builder.AppendFormat("!({0})", TranslateExpression(math.getChild(0), map));
             return builder.ToString();
           }
         case libsbml.AST_LOGICAL_OR:
@@ -449,11 +462,34 @@ namespace EditSpatial.Converter
         builder.ToString());
     }
 
-    private static string GenerateGeometryExpression()
+    private string GenerateGeometryExpression()
     {
+      // by default return the full area
+      string result = "return true;";
+      // string result = GenerateFish();   // or the fish
 
-      return GenerateFish();
-      //return "return true;";
+      var mplug = (SpatialModelPlugin) Model.getPlugin("spatial");
+      if (mplug == null) return result;
+
+      var geom = mplug.getGeometry();
+      if (geom == null || geom.getNumGeometryDefinitions() == 0) return result;
+
+      var vol = geom.GetFirstAnalyticGeometry();
+      if (vol == null || vol.getNumAnalyticVolumes() == 0) return result;
+
+      var volume = vol.getAnalyticVolume(0);
+      var builder = new StringBuilder();
+      builder.Append("    const auto& x = point[0];\n");
+      builder.Append("    const auto& y = point[1];\n");
+      builder.Append("    const auto& width = dimension[0];\n");
+      builder.Append("    const auto& height = dimension[1];\n");
+      builder.Append("\n");
+      builder.AppendFormat("    bool inside={0};\n", 
+        TranslateExpression(volume.getMath()));
+      builder.Append("    return inside;\n");
+      return builder.ToString();
+
+
 
       //map["%GEOMETRY%"] = TranslateExpression(initial.getMath(),
       //new Dictionary<string, string>
@@ -464,7 +500,7 @@ namespace EditSpatial.Converter
       //}
       //)
 
-//          const auto& x = point[0];
+//    const auto& x = point[0];
 //    const auto& y = point[1];
 //
 //    bool inside= %GEOMETRY%;

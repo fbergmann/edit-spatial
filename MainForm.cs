@@ -211,6 +211,10 @@ namespace EditSpatial
       }
     }
 
+    private void SetFilename(string filename)
+    {
+      Text = string.Format("Edit Spatial: [ {0} ]", Path.GetFileName(filename));
+    }
     public void UpdateUI()
     {
       if (Model == null) return;
@@ -226,7 +230,7 @@ namespace EditSpatial
       txtSBML.Text = Model.ToSBML();
       txtJarnac.Text = Model.HaveModel ? Model.ToJarnac() : "";
 
-      Text = string.Format("Edit Spatial: [ {0} ]", Path.GetFileName(Model.FileName));
+      SetFilename(Model.FileName);
 
       treeCore.SelectedNode =
         treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
@@ -576,6 +580,8 @@ namespace EditSpatial
 
     private void OnExit(object sender, EventArgs e)
     {
+      ErrorForm.Dispose();
+      ErrorForm = null;
       Application.Exit();
     }
 
@@ -598,6 +604,7 @@ namespace EditSpatial
         controlParameters1.Visible = false;
         controlSpecies1.Visible = false;
         controlCompartment1.Visible = false;
+        controlRules1.Visible = false;
       }
       else if (node.Name == NODE_PARAMETERS)
       {
@@ -606,6 +613,7 @@ namespace EditSpatial
         controlParameters1.Visible = true;
         controlSpecies1.Visible = false;
         controlCompartment1.Visible = false;
+        controlRules1.Visible = false;
         controlParameters1.InitializeFrom(Model.Document);
       }
       else if (node.Name == NODE_SPECIES)
@@ -616,6 +624,7 @@ namespace EditSpatial
         controlSpecies1.Visible = true;
         controlCompartment1.Visible = false;
         controlSpecies1.InitializeFrom(Model.Document);
+        controlRules1.Visible = false;
       }
       else if (node.Name == NODE_COMPARTMENTS)
       {
@@ -625,6 +634,17 @@ namespace EditSpatial
         controlSpecies1.Visible = false;
         controlCompartment1.Visible = true;
         controlCompartment1.InitializeFrom(Model.Document);
+        controlRules1.Visible = false;
+      }
+      else if (node.Name == NODE_RULES)
+      {
+        controlDisplayNode2.Visible = false;
+        controlInitialAssignments1.Visible = false;
+        controlParameters1.Visible = false;
+        controlSpecies1.Visible = false;
+        controlCompartment1.Visible = false;
+        controlRules1.Visible = true;
+        controlRules1.InitializeFrom(Model.Document);
       }
       else
       {
@@ -633,6 +653,7 @@ namespace EditSpatial
         controlParameters1.Visible = false;
         controlSpecies1.Visible = false;
         controlCompartment1.Visible = false;
+        controlRules1.Visible = false;
         controlDisplayNode2.DisplayNode(node);
       }
     }
@@ -652,7 +673,7 @@ namespace EditSpatial
         menu.UpdateSBWMenu();
 
         SBWExporter.SetupImport(
-                mnuImport, doAnalysis);
+                mnuImport, doAnalysis, (s) => SetFilename(s));
 
         foreach (ToolStripItem item in mnuSBW.DropDownItems)
         {
@@ -715,6 +736,8 @@ namespace EditSpatial
     {
       if (Model == null || Model.Document == null)
         return;
+      Model.Document.clearValidators();
+      Model.Document.addValidator(SpatialModel.CustomSpatialValidator); 
       Model.Document.checkConsistency();
       if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {
@@ -768,6 +791,8 @@ namespace EditSpatial
     {
       if (Model == null || Model.Document == null)
         return;
+      Model.Document.clearValidators();
+      Model.Document.addValidator(SpatialModel.CustomSpatialValidator); 
       Model.Document.checkConsistency();
       if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {
@@ -797,6 +822,8 @@ namespace EditSpatial
     {
       if (Model == null || Model.Document == null)
         return;
+      Model.Document.clearValidators();
+      Model.Document.addValidator(SpatialModel.CustomSpatialValidator);
       Model.Document.checkConsistency();
       if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {

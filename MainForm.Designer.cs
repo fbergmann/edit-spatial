@@ -29,17 +29,17 @@
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("List of Coordinate Components");
-      System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("List of Domain Types");
-      System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("List of Domains");
-      System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("List Of Adjacent Domains");
-      System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("List of Geometry Definitions");
-      System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Compartments");
-      System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Species");
-      System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Parameters");
-      System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Reactions");
-      System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Rules");
-      System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Initial Assignments");
+      System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("List of Coordinate Components");
+      System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("List of Domain Types");
+      System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("List of Domains");
+      System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("List Of Adjacent Domains");
+      System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("List of Geometry Definitions");
+      System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Compartments");
+      System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Species");
+      System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Parameters");
+      System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Reactions");
+      System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Rules");
+      System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Initial Assignments");
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -65,6 +65,7 @@
       this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
       this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.mnuImport = new System.Windows.Forms.ToolStripMenuItem();
       this.mnuExportDune = new System.Windows.Forms.ToolStripMenuItem();
       this.toolExportMorpheus = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -105,7 +106,6 @@
       this.cmdAkira = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.mnuImport = new System.Windows.Forms.ToolStripMenuItem();
       this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
       this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
       this.controlAdjacentDomains1 = new EditSpatial.Controls.ControlAdjacentDomains();
@@ -120,6 +120,7 @@
       this.controlDisplayNode2 = new EditSpatial.Controls.ControlDisplayNode();
       this.txtJarnac = new EditSpatial.Controls.ControlText();
       this.txtSBML = new EditSpatial.Controls.ControlText();
+      this.controlRules1 = new EditSpatial.Controls.ControlRules();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -231,22 +232,22 @@
       this.treeSpatial.Dock = System.Windows.Forms.DockStyle.Fill;
       this.treeSpatial.Location = new System.Drawing.Point(0, 0);
       this.treeSpatial.Name = "treeSpatial";
-      treeNode12.Name = "nodeCoordinateComponents";
-      treeNode12.Text = "List of Coordinate Components";
-      treeNode13.Name = "nodeOfDomainTypes";
-      treeNode13.Text = "List of Domain Types";
-      treeNode14.Name = "nodeOfDomains";
-      treeNode14.Text = "List of Domains";
-      treeNode15.Name = "nodeOfAdjacentDomains";
-      treeNode15.Text = "List Of Adjacent Domains";
-      treeNode16.Name = "nodeOfGeometryDefinitions";
-      treeNode16.Text = "List of Geometry Definitions";
+      treeNode1.Name = "nodeCoordinateComponents";
+      treeNode1.Text = "List of Coordinate Components";
+      treeNode2.Name = "nodeOfDomainTypes";
+      treeNode2.Text = "List of Domain Types";
+      treeNode3.Name = "nodeOfDomains";
+      treeNode3.Text = "List of Domains";
+      treeNode4.Name = "nodeOfAdjacentDomains";
+      treeNode4.Text = "List Of Adjacent Domains";
+      treeNode5.Name = "nodeOfGeometryDefinitions";
+      treeNode5.Text = "List of Geometry Definitions";
       this.treeSpatial.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode12,
-            treeNode13,
-            treeNode14,
-            treeNode15,
-            treeNode16});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5});
       this.treeSpatial.Size = new System.Drawing.Size(253, 450);
       this.treeSpatial.TabIndex = 0;
       this.treeSpatial.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnGeometrySelect);
@@ -288,6 +289,7 @@
       // 
       // splitInitial.Panel2
       // 
+      this.splitInitial.Panel2.Controls.Add(this.controlRules1);
       this.splitInitial.Panel2.Controls.Add(this.controlCompartment1);
       this.splitInitial.Panel2.Controls.Add(this.controlSpecies1);
       this.splitInitial.Panel2.Controls.Add(this.controlParameters1);
@@ -303,25 +305,25 @@
       this.treeCore.Dock = System.Windows.Forms.DockStyle.Fill;
       this.treeCore.Location = new System.Drawing.Point(0, 0);
       this.treeCore.Name = "treeCore";
-      treeNode1.Name = "nodeCompartments";
-      treeNode1.Text = "Compartments";
-      treeNode2.Name = "nodeSpecies";
-      treeNode2.Text = "Species";
-      treeNode3.Name = "nodeParameters";
-      treeNode3.Text = "Parameters";
-      treeNode4.Name = "nodeReactions";
-      treeNode4.Text = "Reactions";
-      treeNode5.Name = "nodeRules";
-      treeNode5.Text = "Rules";
-      treeNode17.Name = "nodeInitialAssignments";
-      treeNode17.Text = "Initial Assignments";
+      treeNode6.Name = "nodeCompartments";
+      treeNode6.Text = "Compartments";
+      treeNode7.Name = "nodeSpecies";
+      treeNode7.Text = "Species";
+      treeNode8.Name = "nodeParameters";
+      treeNode8.Text = "Parameters";
+      treeNode9.Name = "nodeReactions";
+      treeNode9.Text = "Reactions";
+      treeNode10.Name = "nodeRules";
+      treeNode10.Text = "Rules";
+      treeNode11.Name = "nodeInitialAssignments";
+      treeNode11.Text = "Initial Assignments";
       this.treeCore.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode3,
-            treeNode4,
-            treeNode5,
-            treeNode17});
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11});
       this.treeCore.Size = new System.Drawing.Size(253, 450);
       this.treeCore.TabIndex = 0;
       this.treeCore.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
@@ -465,6 +467,12 @@
       this.saveToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
       this.saveToolStripMenuItem.Text = "&Save";
       this.saveToolStripMenuItem.Click += new System.EventHandler(this.OnSaveFile);
+      // 
+      // mnuImport
+      // 
+      this.mnuImport.Name = "mnuImport";
+      this.mnuImport.Size = new System.Drawing.Size(204, 22);
+      this.mnuImport.Text = "&Import";
       // 
       // mnuExportDune
       // 
@@ -791,12 +799,6 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // mnuImport
-      // 
-      this.mnuImport.Name = "mnuImport";
-      this.mnuImport.Size = new System.Drawing.Size(204, 22);
-      this.mnuImport.Text = "&Import";
-      // 
       // controlSampleFieldGeometry1
       // 
       this.controlSampleFieldGeometry1.Current = null;
@@ -965,6 +967,17 @@
       this.txtSBML.TabIndex = 0;
       this.txtSBML.WordWrap = false;
       // 
+      // controlRules1
+      // 
+      this.controlRules1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlRules1.IsInitializing = false;
+      this.controlRules1.Location = new System.Drawing.Point(0, 0);
+      this.controlRules1.Name = "controlRules1";
+      this.controlRules1.Size = new System.Drawing.Size(505, 450);
+      this.controlRules1.TabIndex = 5;
+      this.controlRules1.UpdateAction = null;
+      this.controlRules1.Visible = false;
+      // 
       // MainForm
       // 
       this.AllowDrop = true;
@@ -1096,6 +1109,7 @@
     private System.Windows.Forms.ContextMenuStrip contextMenuStripSpatial;
     private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
     private System.Windows.Forms.ToolStripMenuItem mnuImport;
+    private Controls.ControlRules controlRules1;
   }
 }
 
