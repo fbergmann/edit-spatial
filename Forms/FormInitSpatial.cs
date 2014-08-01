@@ -459,6 +459,22 @@ namespace EditSpatial.Forms
       controlSampleFieldGeometry1.Visible = false;
     }
 
+    private void OnApplyDiffClick(object sender, EventArgs e)
+    {
+      double defaultDiff;
+      if (!double.TryParse(txtDiffDefault.Text, out defaultDiff))
+        return;
+
+      for (int i = 0; i < grid.Rows.Count; ++i)
+      {
+        var current = grid.Rows[i];
+        if (current.IsNewRow) break;
+        current.Cells[1].Value = defaultDiff;
+        current.Cells[2].Value = defaultDiff;
+      }
+
+    }
+
 
   }
 }

@@ -136,6 +136,7 @@ namespace EditSpatial.Converter
       return TranslateExpression(libsbml.parseFormula(expression), null);
     }
 
+ 
     public static string TranslateExpression(ASTNode math, Dictionary<string,string> map)
     {
       if (math == null) return "";
@@ -148,8 +149,8 @@ namespace EditSpatial.Converter
         case libsbml.AST_DIVIDE:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-            builder.AppendFormat(" / {0}", TranslateExpression(math.getChild(1), map));
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            builder.AppendMorpheusNode(" / {0}", math.getChild(1), map);
             return builder.ToString();
           }
         case libsbml.AST_MINUS:
@@ -157,32 +158,32 @@ namespace EditSpatial.Converter
             var builder = new StringBuilder();
             if (math.getNumChildren() == 1)
             {
-              builder.AppendFormat(" - {0}", TranslateExpression(math.getChild(0), map));
+              builder.AppendMorpheusNode(" - {0}", math.getChild(0), map);
             }
             else
             {
-              builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-              builder.AppendFormat(" - {0}", TranslateExpression(math.getChild(1), map));
+              builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+              builder.AppendMorpheusNode(" - {0}", math.getChild(1), map);
             }
             return builder.ToString();
           }
         case libsbml.AST_PLUS:
           {
           var builder = new StringBuilder();
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+          builder.AppendMorpheusNode("{0}", math.getChild(0), map); 
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendFormat(" + {0}", TranslateExpression(math.getChild(i), map));
+            builder.AppendMorpheusNode(" + {0}", math.getChild(i), map); 
           }
           return builder.ToString();
           }
         case libsbml.AST_TIMES:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map); 
             for (int i = 1; i < math.getNumChildren(); ++i)
             {
-              builder.AppendFormat(" * {0}", TranslateExpression(math.getChild(i), map));
+              builder.AppendMorpheusNode(" * {0}", math.getChild(i), map); 
             }
             return builder.ToString();
           }
@@ -190,48 +191,48 @@ namespace EditSpatial.Converter
         case libsbml.AST_RELATIONAL_LEQ:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-            builder.AppendFormat(" <= {0}", TranslateExpression(math.getChild(1), map));
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            builder.AppendMorpheusNode(" <= {0}", math.getChild(1), map); 
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_LT:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-          builder.AppendFormat(" < {0}", TranslateExpression(math.getChild(1), map));
+          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+          builder.AppendMorpheusNode(" < {0}", math.getChild(1), map);
           return builder.ToString();
         }
         case libsbml.AST_RELATIONAL_GT:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-          builder.AppendFormat(" > {0}", TranslateExpression(math.getChild(1), map));
+          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+          builder.AppendMorpheusNode(" > {0}", math.getChild(1), map);
           return builder.ToString();
         }
         case libsbml.AST_RELATIONAL_GEQ:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-          builder.AppendFormat(" >= {0}", TranslateExpression(math.getChild(1), map));
+          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+          builder.AppendMorpheusNode(" >= {0}", math.getChild(1), map);
           return builder.ToString();
         }
         case libsbml.AST_LOGICAL_AND:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendFormat(" and {0}", TranslateExpression(math.getChild(i), map));
+            builder.AppendMorpheusNode(" and {0}", math.getChild(i), map);
           }
           return builder.ToString();
         }
         case libsbml.AST_LOGICAL_OR:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendFormat(" or {0}", TranslateExpression(math.getChild(i), map));
+            builder.AppendMorpheusNode(" or {0}", math.getChild(i), map);
           }
           return builder.ToString();
         }
@@ -241,10 +242,10 @@ namespace EditSpatial.Converter
           builder.AppendFormat("if(");
           for (int i = 0; i < math.getNumChildren()-1; i+=2)
           {
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(i + 1), map));
-            builder.AppendFormat(", {0}", TranslateExpression(math.getChild(i), map));
+            builder.AppendMorpheusNode("{0}", math.getChild(i + 1), map);
+            builder.AppendMorpheusNode(", {0}", math.getChild(i), map);
           }
-          builder.AppendFormat(", {0}", TranslateExpression(math.getChild(math.getNumChildren() - 1), map));
+          builder.AppendMorpheusNode(", {0}", math.getChild(math.getNumChildren() -1 ), map);
           builder.AppendFormat(")");
           return builder.ToString();
         }
@@ -258,6 +259,14 @@ namespace EditSpatial.Converter
             builder.AppendFormat(", {0}", TranslateExpression(math.getChild(i), map));
           }
           builder.AppendFormat(")");
+          return builder.ToString();
+        }
+        case libsbml.AST_FUNCTION_POWER:
+        case libsbml.AST_POWER:
+        {
+          var builder = new StringBuilder();
+          builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map));
+          builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
           return builder.ToString();
         }
         case libsbml.AST_NAME:           
@@ -403,6 +412,16 @@ namespace EditSpatial.Converter
       writer.WriteEndElement(); // PDE
     }
 
+    private string SimplifyExpression(string expression)
+    {
+      var result = expression.Replace("+ ( - 1) *", "-");
+      result = result.Replace(" +  - ", " - ");
+      result = result.Replace(" 1 * ", " ");
+      result = result.Replace(" * 1 ", " ");
+      if (result.StartsWith("1 * "))
+        result = result.Substring("1 * ".Length);
+      return result;
+    }
     private void WriteSystem(XmlWriter writer)
     {
       writer.WriteStartElement("System");
@@ -439,7 +458,7 @@ namespace EditSpatial.Converter
           writer.WriteStartElement("DiffEqn");
           writer.WriteAttributeString("symbol-ref", current.getVariable());
           writer.WriteStartElement("Expression");
-          writer.WriteString(TranslateExpression(current.getMath(), coordinates));
+          writer.WriteString(SimplifyExpression(TranslateExpression(current.getMath(), coordinates)));          
           writer.WriteEndElement(); // Expression
           writer.WriteEndElement(); // DiffEqn
           

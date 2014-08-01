@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using EditSpatial.Converter;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using libsbmlcs;
@@ -206,6 +207,30 @@ namespace EditSpatial
       initial.setMath(node);
 
     }
+
+    public static bool IsBasic(this ASTNode node)
+    {
+      return node.isName() || node.isFunction() || 
+        node.isNumber() || node.isConstant() || 
+        node.isBoolean() || node.getType() == libsbml.AST_TIMES || 
+        node.getType() == libsbml.AST_DIVIDE;
+
+    }
+
+    public static void AppendMorpheusNode(this StringBuilder builder, string format, ASTNode node, Dictionary<string, string> map)
+    {
+      if (!node.IsBasic())
+        format = format.Replace("{0}", "({0})");
+      builder.AppendFormat(format, MorpheusConverter.TranslateExpression(node, map));
+    }
+
+    public static void AppendDuneNode(this StringBuilder builder, string format, ASTNode node, Dictionary<string, string> map)
+    {
+      if (!node.IsBasic())
+        format = format.Replace("{0}", "({0})");
+      builder.AppendFormat(format, DuneConverter.TranslateExpression(node, map));
+    }
+    
 
     private static double GetRealValue(ASTNode node)
     {

@@ -79,6 +79,9 @@
       this.cmdCancel = new System.Windows.Forms.Button();
       this.cmdNext = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.label7 = new System.Windows.Forms.Label();
+      this.txtDiffDefault = new System.Windows.Forms.TextBox();
+      this.cmdApplyDiff = new System.Windows.Forms.Button();
       this.tableLayoutPanel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabSpecies.SuspendLayout();
@@ -265,6 +268,9 @@
       // 
       // panel3
       // 
+      this.panel3.Controls.Add(this.cmdApplyDiff);
+      this.panel3.Controls.Add(this.txtDiffDefault);
+      this.panel3.Controls.Add(this.label7);
       this.panel3.Controls.Add(this.label2);
       this.panel3.Controls.Add(this.txtDimY);
       this.panel3.Controls.Add(this.txtDimX);
@@ -637,6 +643,36 @@
       this.cmdNext.UseVisualStyleBackColor = true;
       this.cmdNext.Click += new System.EventHandler(this.OnNextClick);
       // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(320, 9);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(88, 13);
+      this.label7.TabIndex = 4;
+      this.label7.Text = "Default Diffusion:";
+      // 
+      // txtDiffDefault
+      // 
+      this.txtDiffDefault.Location = new System.Drawing.Point(414, 6);
+      this.txtDiffDefault.Name = "txtDiffDefault";
+      this.txtDiffDefault.Size = new System.Drawing.Size(100, 20);
+      this.txtDiffDefault.TabIndex = 5;
+      this.txtDiffDefault.Text = "0.001";
+      this.txtDiffDefault.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.toolTip1.SetToolTip(this.txtDiffDefault, "Default Diffusion Coefficient, hit apply to set for all selected species.");
+      // 
+      // cmdApplyDiff
+      // 
+      this.cmdApplyDiff.Location = new System.Drawing.Point(520, 4);
+      this.cmdApplyDiff.Name = "cmdApplyDiff";
+      this.cmdApplyDiff.Size = new System.Drawing.Size(75, 23);
+      this.cmdApplyDiff.TabIndex = 6;
+      this.cmdApplyDiff.Text = "Apply Diff";
+      this.toolTip1.SetToolTip(this.cmdApplyDiff, "Sets the given default diffusion coefficient to all species. ");
+      this.cmdApplyDiff.UseVisualStyleBackColor = true;
+      this.cmdApplyDiff.Click += new System.EventHandler(this.OnApplyDiffClick);
+      // 
       // FormInitSpatial
       // 
       this.AcceptButton = this.cmdFinish;
@@ -727,5 +763,8 @@
     private System.Windows.Forms.Panel panel6;
     private Controls.ControlSampleFieldGeometry controlSampleFieldGeometry1;
     private Controls.ControlAnalyticGeometry controlAnalyticGeometry1;
+    private System.Windows.Forms.Button cmdApplyDiff;
+    private System.Windows.Forms.TextBox txtDiffDefault;
+    private System.Windows.Forms.Label label7;
   }
 }

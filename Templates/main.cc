@@ -255,11 +255,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
             {
                 std::cout << "======= solve reaction problem ======= from " << timemanager.getTime() << "\n";
                 std::cout << "time " << timemanager.getTime() << " dt " << timemanager.getTimeStepSize() << std::endl;
-            }
-            else
-            {
-                std::cout << "." << std::flush;
-            }
+            }           
         }
 
         watch.reset();
@@ -286,6 +282,10 @@ void run (const GV& gv, Dune::ParameterTree & param)
                 std::cout << "Newton Linesearch Error" << std::endl;
             timemanager.notifyFailure();
             unew = uold;
+            if (!verbosity)
+            {
+              std::cout << "x" << std::flush;
+            }
             continue;
         }
         catch (Dune::PDELab::NewtonNotConverged) {
@@ -293,6 +293,10 @@ void run (const GV& gv, Dune::ParameterTree & param)
                 std::cout << "Newton Convergence Error" << std::endl;
             timemanager.notifyFailure();
             unew = uold;
+            if (!verbosity)
+            {
+              std::cout << "x" << std::flush;
+            }
             continue;
         }
         catch (Dune::PDELab::NewtonLinearSolverError) {
@@ -300,6 +304,10 @@ void run (const GV& gv, Dune::ParameterTree & param)
                 std::cout << "Newton Linear Solver Error" << std::endl;
             timemanager.notifyFailure();
             unew = uold;
+            if (!verbosity)
+            {
+              std::cout << "x" << std::flush;
+            }
             continue;
         }
         catch (Dune::ISTLError) {
@@ -307,6 +315,10 @@ void run (const GV& gv, Dune::ParameterTree & param)
                 std::cout << "ISTL Error" << std::endl;
             timemanager.notifyFailure();
             unew = uold;
+            if (!verbosity)
+            {
+              std::cout << "x" << std::flush;
+            }
             continue;
         }
 
@@ -317,7 +329,15 @@ void run (const GV& gv, Dune::ParameterTree & param)
         timemanager.notifySuccess(5);
 
         if (graphics && timemanager.isTimeForOutput())
-            pvdwriter.write(timemanager.getTime());
+        {
+          pvdwriter.write(timemanager.getTime());
+          if (!verbosity)
+            std::cout << "o" << std::flush;
+        }
+        else if (!verbosity)
+        {
+          std::cout << "." << std::flush;
+        }
     }
 
 
@@ -355,7 +375,7 @@ int main(int argc, char** argv)
             if (std::string(argv[i]) == "--help" || std::string(argv[i]) == "-h")
             {
                 if(helper.rank()==0)
-                    std::cout << "usage: ./turing <configfile> [OPTIONS]" << std::endl;
+                    std::cout << "usage: ./%NAME% <configfile> [OPTIONS]" << std::endl;
                 return 0;
             }
         }

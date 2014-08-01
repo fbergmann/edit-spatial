@@ -10,8 +10,13 @@ namespace EditSpatial.Converter
   {
     private readonly SBMLDocument document;
     private readonly StringBuilder errorBuilder;
+    
     private readonly libsbmlcs.Model Model;
+    private readonly SpatialModelPlugin SpatialModelPlugin;
+    private readonly Geometry Geometry;
+    
     private List<string> OdeVariables { get; set; }
+    
     public void Dispose()
     {
       if (document != null)
@@ -63,7 +68,6 @@ namespace EditSpatial.Converter
         errorBuilder.AppendFormat("rename of ids failed: {0}{1}", status, Environment.NewLine);
       }
 
-
       Model = document.getModel();
 
       for (int i = 0; i < Model.getNumRules(); ++i)
@@ -72,6 +76,12 @@ namespace EditSpatial.Converter
         if (current == null || current.getTypeCode() != libsbml.SBML_RATE_RULE) continue;
         OdeVariables.Add(current.getVariable());
       }
+
+      SpatialModelPlugin = (SpatialModelPlugin)Model.getPlugin("spatial");
+
+      if (SpatialModelPlugin == null) return;
+      
+      Geometry = SpatialModelPlugin.getGeometry();
 
     }
 
@@ -94,16 +104,16 @@ namespace EditSpatial.Converter
           {
             {
               var builder = new StringBuilder();
-              builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map));
-              builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
+              builder.AppendDuneNode("pow({0}", math.getChild(0), map);
+              builder.AppendDuneNode(", {0})", math.getChild(1), map);
               return builder.ToString();
             }
           }
         case libsbml.AST_DIVIDE:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-            builder.AppendFormat(" / {0}", TranslateExpression(math.getChild(1), map));
+            builder.AppendDuneNode("{0}", math.getChild(0), map);
+            builder.AppendDuneNode(" / {0}", math.getChild(1), map);
             return builder.ToString();
           }
         case libsbml.AST_MINUS:
@@ -111,32 +121,32 @@ namespace EditSpatial.Converter
             var builder = new StringBuilder();
             if (math.getNumChildren() == 1)
             {
-              builder.AppendFormat(" - {0}", TranslateExpression(math.getChild(0), map));
+              builder.AppendDuneNode(" - {0}", math.getChild(0), map); 
             }
             else
             {
-              builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-              builder.AppendFormat(" - {0}", TranslateExpression(math.getChild(1), map));
+              builder.AppendDuneNode("{0}", math.getChild(0), map); 
+              builder.AppendDuneNode(" - {0}", math.getChild(1), map); 
             }
             return builder.ToString();
           }
         case libsbml.AST_PLUS:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendDuneNode("{0}", math.getChild(0), map);
             for (int i = 1; i < math.getNumChildren(); ++i)
             {
-              builder.AppendFormat(" + {0}", TranslateExpression(math.getChild(i), map));
+              builder.AppendDuneNode(" + {0}", math.getChild(i), map); 
             }
             return builder.ToString();
           }
         case libsbml.AST_TIMES:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendDuneNode("{0}", math.getChild(0), map);
             for (int i = 1; i < math.getNumChildren(); ++i)
             {
-              builder.AppendFormat(" * {0}", TranslateExpression(math.getChild(i), map));
+              builder.AppendDuneNode(" * {0}", math.getChild(i), map);
             }
             return builder.ToString();
           }
@@ -144,29 +154,29 @@ namespace EditSpatial.Converter
         case libsbml.AST_RELATIONAL_LEQ:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
-            builder.AppendFormat(" <= {0}", TranslateExpression(math.getChild(1), map));
+            builder.AppendDuneNode("{0}", math.getChild(0), map);
+            builder.AppendDuneNode(" <= {0}", math.getChild(1), map);
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_LT:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
-            builder.AppendFormat(" < {0}", TranslateExpression(math.getChild(1), map));
+            builder.AppendDuneNode("{0}", math.getChild(0), map);
+            builder.AppendDuneNode(" < {0}", math.getChild(1), map);
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_GT:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
-            builder.AppendFormat(" > {0}", TranslateExpression(math.getChild(1), map));
+            builder.AppendDuneNode("{0}", math.getChild(0), map);
+            builder.AppendDuneNode(" > {0}", math.getChild(1), map);
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_GEQ:
           {
             var builder = new StringBuilder();
-            builder.AppendFormat("({0})", TranslateExpression(math.getChild(0), map));
-            builder.AppendFormat(" >= {0}", TranslateExpression(math.getChild(1), map));
+            builder.AppendDuneNode("{0}", math.getChild(0), map);
+            builder.AppendDuneNode(" >= {0}", math.getChild(1), map);
             return builder.ToString();
           }
         case libsbml.AST_POWER:
@@ -331,7 +341,21 @@ namespace EditSpatial.Converter
     private void WriteConfigFile(string path, string name)
     {
       var builder = new StringBuilder();
-      builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.config));
+      var map = new Dictionary<string, string>();
+      
+      map["%NAME%"] = name;
+      
+      map["%TIME_TEND%"] = "500";
+      map["%TIME_DTMAX%"] = "1";
+      map["%TIME_DTPLOT%"] = "1";      
+      
+      map["%WORLD_WIDTH%"] = Geometry.getCoordinateComponent(0).getBoundaryMax().getValue().ToString();
+      map["%WORLD_HEIGHT%"] = Geometry.getCoordinateComponent(1).getBoundaryMax().getValue().ToString();
+      
+      map["%GRID_X%"] = "64";
+      map["%GRID_Y%"] = "64";
+
+      builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.config, map));
 
       // add reaction section
       builder.AppendLine("[Reaction]");
@@ -387,8 +411,6 @@ namespace EditSpatial.Converter
         ++count;
 
       }
-
-
 
       File.WriteAllText(Path.Combine(path, name + ".conf"),
         builder.ToString());
@@ -447,7 +469,6 @@ namespace EditSpatial.Converter
 
       }
 
-
       map["%DPCREATION%"] = dpCreation.ToString();
       map["%SUBCREATION%"] = subCreation.ToString();
       map["%DPINITIALIZATION%"] = dpInitialization.ToString();
@@ -455,6 +476,7 @@ namespace EditSpatial.Converter
       map["%INITIALTYPES%"] = initialTypes.ToString();
       map["%INITIALARGS%"] = initialArgs.ToString();
       map["%CREATEGRIDFUNCTIONS%"] = gridFunctions.ToString();
+      map["%NAME%"] = name;
 
       builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.main, map));
 
@@ -468,13 +490,11 @@ namespace EditSpatial.Converter
       string result = "return true;";
       // string result = GenerateFish();   // or the fish
 
-      var mplug = (SpatialModelPlugin) Model.getPlugin("spatial");
-      if (mplug == null) return result;
+      if (SpatialModelPlugin == null) return result;
 
-      var geom = mplug.getGeometry();
-      if (geom == null || geom.getNumGeometryDefinitions() == 0) return result;
+      if (Geometry == null || Geometry.getNumGeometryDefinitions() == 0) return result;
 
-      var vol = geom.GetFirstAnalyticGeometry();
+      var vol = Geometry.GetFirstAnalyticGeometry();
       if (vol == null || vol.getNumAnalyticVolumes() == 0) return result;
 
       var volume = vol.getAnalyticVolume(0);
@@ -488,25 +508,6 @@ namespace EditSpatial.Converter
         TranslateExpression(volume.getMath()));
       builder.Append("    return inside;\n");
       return builder.ToString();
-
-
-
-      //map["%GEOMETRY%"] = TranslateExpression(initial.getMath(),
-      //new Dictionary<string, string>
-      //{
-      //  {"x", "x[0]"},
-      //  {"y", "x[1]"},
-      //  {"z", "x[2]"}
-      //}
-      //)
-
-//    const auto& x = point[0];
-//    const auto& y = point[1];
-//
-//    bool inside= %GEOMETRY%;
-//
-//    return inside;
-
 
     }
 
