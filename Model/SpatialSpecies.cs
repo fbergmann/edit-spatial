@@ -29,6 +29,8 @@ namespace EditSpatial.Model
     public double DiffusionX { get; set; }
     public double DiffusionY { get; set; }
 
+    public string BCType { get; set; }
+
     public string InitialCondition { get; set; }
 
     public override string ToString()

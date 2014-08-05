@@ -45,7 +45,11 @@
       this.colBoundaryY = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colBoundaryXm = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colBoundaryYm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colType = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.panel3 = new System.Windows.Forms.Panel();
+      this.cmdApplyDiff = new System.Windows.Forms.Button();
+      this.txtDiffDefault = new System.Windows.Forms.TextBox();
+      this.label7 = new System.Windows.Forms.Label();
       this.label2 = new System.Windows.Forms.Label();
       this.txtDimY = new System.Windows.Forms.TextBox();
       this.txtDimX = new System.Windows.Forms.TextBox();
@@ -79,9 +83,6 @@
       this.cmdCancel = new System.Windows.Forms.Button();
       this.cmdNext = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-      this.label7 = new System.Windows.Forms.Label();
-      this.txtDiffDefault = new System.Windows.Forms.TextBox();
-      this.cmdApplyDiff = new System.Windows.Forms.Button();
       this.tableLayoutPanel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabSpecies.SuspendLayout();
@@ -114,7 +115,7 @@
       this.tableLayoutPanel1.RowCount = 2;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(784, 561);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(905, 562);
       this.tableLayoutPanel1.TabIndex = 0;
       // 
       // tabControl1
@@ -125,7 +126,7 @@
       this.tabControl1.Location = new System.Drawing.Point(5, 5);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(774, 514);
+      this.tabControl1.Size = new System.Drawing.Size(895, 515);
       this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
       this.tabControl1.TabIndex = 2;
       this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.OnSelectedTabChanged);
@@ -136,7 +137,7 @@
       this.tabSpecies.Location = new System.Drawing.Point(4, 22);
       this.tabSpecies.Name = "tabSpecies";
       this.tabSpecies.Padding = new System.Windows.Forms.Padding(3);
-      this.tabSpecies.Size = new System.Drawing.Size(766, 488);
+      this.tabSpecies.Size = new System.Drawing.Size(887, 489);
       this.tabSpecies.TabIndex = 0;
       this.tabSpecies.Text = "Step 1 - Species";
       this.tabSpecies.UseVisualStyleBackColor = true;
@@ -147,7 +148,7 @@
       this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel2.Location = new System.Drawing.Point(3, 3);
       this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(760, 482);
+      this.panel2.Size = new System.Drawing.Size(881, 483);
       this.panel2.TabIndex = 1;
       // 
       // tableLayoutPanel2
@@ -168,7 +169,7 @@
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
       this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-      this.tableLayoutPanel2.Size = new System.Drawing.Size(760, 482);
+      this.tableLayoutPanel2.Size = new System.Drawing.Size(881, 483);
       this.tableLayoutPanel2.TabIndex = 4;
       // 
       // lblIntro
@@ -178,7 +179,7 @@
       this.tableLayoutPanel2.SetColumnSpan(this.lblIntro, 2);
       this.lblIntro.Location = new System.Drawing.Point(3, 0);
       this.lblIntro.Name = "lblIntro";
-      this.lblIntro.Size = new System.Drawing.Size(754, 34);
+      this.lblIntro.Size = new System.Drawing.Size(875, 34);
       this.lblIntro.TabIndex = 1;
       this.lblIntro.Text = "The model you loaded is not a spatial model. This wizard aims to guide you throug" +
     "h the process of creating a simple spatial model.  Double click on a spatial spe" +
@@ -198,13 +199,14 @@
             this.colBoundaryX,
             this.colBoundaryY,
             this.colBoundaryXm,
-            this.colBoundaryYm});
+            this.colBoundaryYm,
+            this.colType});
       this.grid.Dock = System.Windows.Forms.DockStyle.Fill;
       this.grid.GridColor = System.Drawing.SystemColors.ControlLight;
       this.grid.Location = new System.Drawing.Point(133, 37);
       this.grid.Name = "grid";
       this.tableLayoutPanel2.SetRowSpan(this.grid, 2);
-      this.grid.Size = new System.Drawing.Size(624, 406);
+      this.grid.Size = new System.Drawing.Size(745, 408);
       this.grid.TabIndex = 4;
       this.grid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellEndEdit);
       this.grid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.OnUserDeletingRow);
@@ -266,6 +268,14 @@
       this.colBoundaryYm.Name = "colBoundaryYm";
       this.colBoundaryYm.Width = 81;
       // 
+      // colType
+      // 
+      this.colType.HeaderText = "BC Type";
+      this.colType.Items.AddRange(new object[] {
+            "Neumann",
+            "Dirichlet"});
+      this.colType.Name = "colType";
+      // 
       // panel3
       // 
       this.panel3.Controls.Add(this.cmdApplyDiff);
@@ -276,10 +286,43 @@
       this.panel3.Controls.Add(this.txtDimX);
       this.panel3.Controls.Add(this.label1);
       this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panel3.Location = new System.Drawing.Point(133, 449);
+      this.panel3.Location = new System.Drawing.Point(133, 451);
       this.panel3.Name = "panel3";
-      this.panel3.Size = new System.Drawing.Size(624, 30);
+      this.panel3.Size = new System.Drawing.Size(745, 29);
       this.panel3.TabIndex = 6;
+      // 
+      // cmdApplyDiff
+      // 
+      this.cmdApplyDiff.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdApplyDiff.Location = new System.Drawing.Point(667, 4);
+      this.cmdApplyDiff.Name = "cmdApplyDiff";
+      this.cmdApplyDiff.Size = new System.Drawing.Size(75, 23);
+      this.cmdApplyDiff.TabIndex = 6;
+      this.cmdApplyDiff.Text = "Apply Diff";
+      this.toolTip1.SetToolTip(this.cmdApplyDiff, "Sets the given default diffusion coefficient to all species. ");
+      this.cmdApplyDiff.UseVisualStyleBackColor = true;
+      this.cmdApplyDiff.Click += new System.EventHandler(this.OnApplyDiffClick);
+      // 
+      // txtDiffDefault
+      // 
+      this.txtDiffDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtDiffDefault.Location = new System.Drawing.Point(561, 6);
+      this.txtDiffDefault.Name = "txtDiffDefault";
+      this.txtDiffDefault.Size = new System.Drawing.Size(100, 20);
+      this.txtDiffDefault.TabIndex = 5;
+      this.txtDiffDefault.Text = "0.001";
+      this.txtDiffDefault.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.toolTip1.SetToolTip(this.txtDiffDefault, "Default Diffusion Coefficient, hit apply to set for all selected species.");
+      // 
+      // label7
+      // 
+      this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(467, 9);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(88, 13);
+      this.label7.TabIndex = 4;
+      this.label7.Text = "Default Diffusion:";
       // 
       // label2
       // 
@@ -323,7 +366,7 @@
       this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox1.Location = new System.Drawing.Point(3, 37);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(124, 200);
+      this.groupBox1.Size = new System.Drawing.Size(124, 201);
       this.groupBox1.TabIndex = 7;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = " All Species: ";
@@ -335,7 +378,7 @@
       this.lstAllSpecies.FormattingEnabled = true;
       this.lstAllSpecies.Location = new System.Drawing.Point(3, 16);
       this.lstAllSpecies.Name = "lstAllSpecies";
-      this.lstAllSpecies.Size = new System.Drawing.Size(118, 181);
+      this.lstAllSpecies.Size = new System.Drawing.Size(118, 182);
       this.lstAllSpecies.TabIndex = 2;
       this.toolTip1.SetToolTip(this.lstAllSpecies, "Double click species, to add it to the list of spatial species. ");
       this.lstAllSpecies.SelectedIndexChanged += new System.EventHandler(this.OnAllSpeciesDoubleClick);
@@ -344,9 +387,9 @@
       // 
       this.groupBox2.Controls.Add(this.lstSpatialSpecies);
       this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.groupBox2.Location = new System.Drawing.Point(3, 243);
+      this.groupBox2.Location = new System.Drawing.Point(3, 244);
       this.groupBox2.Name = "groupBox2";
-      this.groupBox2.Size = new System.Drawing.Size(124, 200);
+      this.groupBox2.Size = new System.Drawing.Size(124, 201);
       this.groupBox2.TabIndex = 8;
       this.groupBox2.TabStop = false;
       this.groupBox2.Text = " Spatial Species: ";
@@ -358,7 +401,7 @@
       this.lstSpatialSpecies.FormattingEnabled = true;
       this.lstSpatialSpecies.Location = new System.Drawing.Point(3, 16);
       this.lstSpatialSpecies.Name = "lstSpatialSpecies";
-      this.lstSpatialSpecies.Size = new System.Drawing.Size(118, 181);
+      this.lstSpatialSpecies.Size = new System.Drawing.Size(118, 182);
       this.lstSpatialSpecies.TabIndex = 5;
       this.toolTip1.SetToolTip(this.lstSpatialSpecies, "Double click to remove species from the list of spatial species. ");
       this.lstSpatialSpecies.SelectedIndexChanged += new System.EventHandler(this.OnSpatialSpeciesDoubleClick);
@@ -369,7 +412,7 @@
       this.tabGeometry.Location = new System.Drawing.Point(4, 22);
       this.tabGeometry.Name = "tabGeometry";
       this.tabGeometry.Padding = new System.Windows.Forms.Padding(3);
-      this.tabGeometry.Size = new System.Drawing.Size(766, 488);
+      this.tabGeometry.Size = new System.Drawing.Size(887, 489);
       this.tabGeometry.TabIndex = 1;
       this.tabGeometry.Text = "Step 2 - Geometry";
       this.tabGeometry.UseVisualStyleBackColor = true;
@@ -392,7 +435,7 @@
       this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
       this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-      this.tableLayoutPanel3.Size = new System.Drawing.Size(760, 482);
+      this.tableLayoutPanel3.Size = new System.Drawing.Size(881, 483);
       this.tableLayoutPanel3.TabIndex = 0;
       // 
       // label3
@@ -401,7 +444,7 @@
       this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
       this.label3.Location = new System.Drawing.Point(3, 0);
       this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(374, 43);
+      this.label3.Size = new System.Drawing.Size(434, 43);
       this.label3.TabIndex = 0;
       this.label3.Text = "Please define the Geometry here,";
       this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -413,7 +456,7 @@
       this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel4.Location = new System.Drawing.Point(3, 46);
       this.panel4.Name = "panel4";
-      this.panel4.Size = new System.Drawing.Size(754, 49);
+      this.panel4.Size = new System.Drawing.Size(875, 49);
       this.panel4.TabIndex = 1;
       // 
       // groupBox3
@@ -427,7 +470,7 @@
       this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox3.Location = new System.Drawing.Point(0, 0);
       this.groupBox3.Name = "groupBox3";
-      this.groupBox3.Size = new System.Drawing.Size(754, 49);
+      this.groupBox3.Size = new System.Drawing.Size(875, 49);
       this.groupBox3.TabIndex = 8;
       this.groupBox3.TabStop = false;
       this.groupBox3.Text = " Dimensions: ";
@@ -490,9 +533,9 @@
       // 
       this.panel5.Controls.Add(this.groupBox4);
       this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panel5.Location = new System.Drawing.Point(383, 3);
+      this.panel5.Location = new System.Drawing.Point(443, 3);
       this.panel5.Name = "panel5";
-      this.panel5.Size = new System.Drawing.Size(374, 37);
+      this.panel5.Size = new System.Drawing.Size(435, 37);
       this.panel5.TabIndex = 2;
       // 
       // groupBox4
@@ -503,7 +546,7 @@
       this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
       this.groupBox4.Location = new System.Drawing.Point(0, 0);
       this.groupBox4.Name = "groupBox4";
-      this.groupBox4.Size = new System.Drawing.Size(374, 37);
+      this.groupBox4.Size = new System.Drawing.Size(435, 37);
       this.groupBox4.TabIndex = 0;
       this.groupBox4.TabStop = false;
       this.groupBox4.Text = " Mode: ";
@@ -554,7 +597,7 @@
       this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel6.Location = new System.Drawing.Point(3, 101);
       this.panel6.Name = "panel6";
-      this.panel6.Size = new System.Drawing.Size(754, 378);
+      this.panel6.Size = new System.Drawing.Size(875, 379);
       this.panel6.TabIndex = 3;
       // 
       // controlSampleFieldGeometry1
@@ -564,7 +607,7 @@
       this.controlSampleFieldGeometry1.IsInitializing = false;
       this.controlSampleFieldGeometry1.Location = new System.Drawing.Point(0, 0);
       this.controlSampleFieldGeometry1.Name = "controlSampleFieldGeometry1";
-      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(754, 378);
+      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(875, 379);
       this.controlSampleFieldGeometry1.SpatialGeometry = null;
       this.controlSampleFieldGeometry1.TabIndex = 1;
       this.controlSampleFieldGeometry1.UpdateAction = null;
@@ -578,7 +621,7 @@
       this.controlAnalyticGeometry1.Location = new System.Drawing.Point(0, 0);
       this.controlAnalyticGeometry1.Name = "controlAnalyticGeometry1";
       this.controlAnalyticGeometry1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlAnalyticGeometry1.RowsAdded")));
-      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(754, 378);
+      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(875, 379);
       this.controlAnalyticGeometry1.SpatialGeometry = null;
       this.controlAnalyticGeometry1.TabIndex = 0;
       this.controlAnalyticGeometry1.UpdateAction = null;
@@ -591,16 +634,16 @@
       this.panel1.Controls.Add(this.cmdCancel);
       this.panel1.Controls.Add(this.cmdNext);
       this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panel1.Location = new System.Drawing.Point(5, 525);
+      this.panel1.Location = new System.Drawing.Point(5, 526);
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(774, 31);
+      this.panel1.Size = new System.Drawing.Size(895, 31);
       this.panel1.TabIndex = 0;
       // 
       // cmdPrev
       // 
       this.cmdPrev.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cmdPrev.Enabled = false;
-      this.cmdPrev.Location = new System.Drawing.Point(424, 5);
+      this.cmdPrev.Location = new System.Drawing.Point(545, 5);
       this.cmdPrev.Name = "cmdPrev";
       this.cmdPrev.Size = new System.Drawing.Size(75, 23);
       this.cmdPrev.TabIndex = 0;
@@ -612,7 +655,7 @@
       // 
       this.cmdFinish.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cmdFinish.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.cmdFinish.Location = new System.Drawing.Point(613, 5);
+      this.cmdFinish.Location = new System.Drawing.Point(734, 5);
       this.cmdFinish.Name = "cmdFinish";
       this.cmdFinish.Size = new System.Drawing.Size(75, 23);
       this.cmdFinish.TabIndex = 2;
@@ -624,7 +667,7 @@
       // 
       this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cmdCancel.Location = new System.Drawing.Point(694, 5);
+      this.cmdCancel.Location = new System.Drawing.Point(815, 5);
       this.cmdCancel.Name = "cmdCancel";
       this.cmdCancel.Size = new System.Drawing.Size(75, 23);
       this.cmdCancel.TabIndex = 3;
@@ -635,7 +678,7 @@
       // cmdNext
       // 
       this.cmdNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdNext.Location = new System.Drawing.Point(505, 5);
+      this.cmdNext.Location = new System.Drawing.Point(626, 5);
       this.cmdNext.Name = "cmdNext";
       this.cmdNext.Size = new System.Drawing.Size(75, 23);
       this.cmdNext.TabIndex = 1;
@@ -643,46 +686,16 @@
       this.cmdNext.UseVisualStyleBackColor = true;
       this.cmdNext.Click += new System.EventHandler(this.OnNextClick);
       // 
-      // label7
-      // 
-      this.label7.AutoSize = true;
-      this.label7.Location = new System.Drawing.Point(320, 9);
-      this.label7.Name = "label7";
-      this.label7.Size = new System.Drawing.Size(88, 13);
-      this.label7.TabIndex = 4;
-      this.label7.Text = "Default Diffusion:";
-      // 
-      // txtDiffDefault
-      // 
-      this.txtDiffDefault.Location = new System.Drawing.Point(414, 6);
-      this.txtDiffDefault.Name = "txtDiffDefault";
-      this.txtDiffDefault.Size = new System.Drawing.Size(100, 20);
-      this.txtDiffDefault.TabIndex = 5;
-      this.txtDiffDefault.Text = "0.001";
-      this.txtDiffDefault.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-      this.toolTip1.SetToolTip(this.txtDiffDefault, "Default Diffusion Coefficient, hit apply to set for all selected species.");
-      // 
-      // cmdApplyDiff
-      // 
-      this.cmdApplyDiff.Location = new System.Drawing.Point(520, 4);
-      this.cmdApplyDiff.Name = "cmdApplyDiff";
-      this.cmdApplyDiff.Size = new System.Drawing.Size(75, 23);
-      this.cmdApplyDiff.TabIndex = 6;
-      this.cmdApplyDiff.Text = "Apply Diff";
-      this.toolTip1.SetToolTip(this.cmdApplyDiff, "Sets the given default diffusion coefficient to all species. ");
-      this.cmdApplyDiff.UseVisualStyleBackColor = true;
-      this.cmdApplyDiff.Click += new System.EventHandler(this.OnApplyDiffClick);
-      // 
       // FormInitSpatial
       // 
       this.AcceptButton = this.cmdFinish;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cmdCancel;
-      this.ClientSize = new System.Drawing.Size(784, 561);
+      this.ClientSize = new System.Drawing.Size(905, 562);
       this.Controls.Add(this.tableLayoutPanel1);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-      this.MinimumSize = new System.Drawing.Size(800, 600);
+      this.MinimumSize = new System.Drawing.Size(921, 601);
       this.Name = "FormInitSpatial";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Spatial Wizard";
@@ -729,14 +742,6 @@
     private System.Windows.Forms.ListBox lstAllSpecies;
     private System.Windows.Forms.Label lblIntro;
     private System.Windows.Forms.DataGridView grid;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colSpeciesId;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusionX;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusionY;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colInitialExpression;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryX;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryY;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryXm;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryYm;
     private System.Windows.Forms.Panel panel3;
     private System.Windows.Forms.TextBox txtDimY;
     private System.Windows.Forms.TextBox txtDimX;
@@ -766,5 +771,14 @@
     private System.Windows.Forms.Button cmdApplyDiff;
     private System.Windows.Forms.TextBox txtDiffDefault;
     private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colSpeciesId;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusionX;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusionY;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colInitialExpression;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryX;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryY;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryXm;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryYm;
+    private System.Windows.Forms.DataGridViewComboBoxColumn colType;
   }
 }

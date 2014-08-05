@@ -125,6 +125,12 @@ namespace EditSpatial.Forms
 
       var diffusionX = species.getDiffusionX();
       var diffusionY = species.getDiffusionY();
+      var Xmax = species.getXMaxBC();
+      var Xmin = species.getXMinBC();
+      var Ymax = species.getYMaxBC();
+      var Ymin = species.getYMinBC();
+      var bcType = species.getBcType();
+
 
       // assignments do not need to diffuse by themselves automatically
       var defaultDiff = 
@@ -139,7 +145,11 @@ namespace EditSpatial.Forms
           diffusionY.HasValue ? diffusionY.Value : defaultDiff,
         DiffusionY = diffusionY.HasValue ? diffusionY.Value :
           diffusionX.HasValue ? diffusionX.Value : defaultDiff,
-
+        MinBoundaryX = Xmin.HasValue ? Xmin.Value : 0, 
+        MaxBoundaryX = Xmax.HasValue ? Xmax.Value : 0, 
+        MinBoundaryY = Ymin.HasValue ? Ymin.Value : 0, 
+        MaxBoundaryY = Ymax.HasValue ? Ymax.Value : 0, 
+        BCType = bcType,
         InitialCondition = species.getInitialExpession()
       };
 
@@ -150,7 +160,8 @@ namespace EditSpatial.Forms
         spatialSpecies.DiffusionY,
         spatialSpecies.InitialCondition,
         spatialSpecies.MaxBoundaryX, spatialSpecies.MaxBoundaryY,
-        spatialSpecies.MinBoundaryX, spatialSpecies.MinBoundaryY);
+        spatialSpecies.MinBoundaryX, spatialSpecies.MinBoundaryY, 
+        spatialSpecies.BCType);
 
     }
 
@@ -327,6 +338,11 @@ namespace EditSpatial.Forms
         case 7:
           {
             species.MinBoundaryY = Util.SaveDouble((string)row.Cells[7].Value, species.MinBoundaryY);
+            break;
+          }
+        case 8:
+          {
+            species.BCType = (string)row.Cells[8].Value;
             break;
           }
         default:

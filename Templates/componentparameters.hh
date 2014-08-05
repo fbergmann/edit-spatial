@@ -20,6 +20,13 @@ public:
     DiffusionParameter(const Dune::ParameterTree & param, const std::string cname)
         : time(0.)
         , Dt(param.sub(cname).template get<RF>("D"))
+        , Xmin(param.sub(cname).template get<RF>("Xmin", 0))
+        , Xmax(param.sub(cname).template get<RF>("Xmax", 0))
+        , Ymin(param.sub(cname).template get<RF>("Ymin", 0))
+        , Ymax(param.sub(cname).template get<RF>("Ymax", 0))
+        , BCType(param.sub(cname).template get<int>("BCType", 0))
+        , width(param.sub("Domain").template get<int>("width", 0))
+        , height(param.sub("Domain").template get<int>("height", 0))
     {}
 
 
@@ -44,21 +51,43 @@ public:
     int
     bc (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
     {
-        return 0; // only neumann
+      return BCType; // only neumann
     }
 
     //! Dirichlet boundary condition value
     typename Traits::RangeFieldType
-    g (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
+    g (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
     {
+      if (!is.boundary() || BCType == 0)
         return 0; // Dirichlet is zero
+      typename Traits::DomainType x = is.geometry().global(x_);
+      if (x[0] < 1e-6)
+        return Xmin;
+      if (x[0] > width - 1e-6)
+        return Xmax;
+      if (x[1] < 1e-6)
+        return Ymin;
+      if (x[1] > height - 1e-6)
+        return Ymax;
+      return 0.0;
     }
 
     //! Neumann boundary condition
     typename Traits::RangeFieldType
-    j (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
+    j (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
     {
+      if (!is.boundary() || BCType == 1)
         return 0.0;
+      typename Traits::DomainType x = is.geometry().global(x_);
+      if (x[0] < 1e-6)
+        return Xmin;
+      if (x[0] > width - 1e-6)
+        return Xmax;
+      if (x[1] < 1e-6)
+        return Ymin;
+      if (x[1] > height - 1e-6)
+        return Ymax;
+      return 0.0;
     }
 
     //! set time for subsequent evaluation
@@ -82,6 +111,13 @@ public:
 private:
     RF time, tend, dt;
     const RF Dt;
+    const RF Xmin;
+    const RF Xmax;
+    const RF Ymin;
+    const RF Ymax;
+    const int BCType;
+    const RF width;
+    const RF height;
 };
 
 

@@ -338,6 +338,24 @@ namespace EditSpatial.Converter
 
     List<string> ParameterIds { get; set; }
 
+    private int GetBoundaryType(Parameter param)
+    {
+      var plug = (SpatialParameterPlugin) param.getPlugin("spatial");
+      if (plug == null) return 0;
+      var bc = plug.getBoundaryCondition();
+      if (bc == null) return 0;
+      if (bc.getType() == "Flux") return 1; // Dirichlet
+      return 0; // Neumann
+    }
+
+    private int GetBoundaryType(Parameter xmin, Parameter xmax, Parameter ymin, Parameter ymax)
+    {
+      if (xmin != null) return GetBoundaryType(xmin);
+      if (xmax != null) return GetBoundaryType(xmax);
+      if (ymin != null) return GetBoundaryType(ymin);
+      if (ymax != null) return GetBoundaryType(ymax);
+      return 0;
+    }
     private void WriteConfigFile(string path, string name)
     {
       var builder = new StringBuilder();
@@ -405,8 +423,27 @@ namespace EditSpatial.Converter
 
         if (!diff.HasValue) diff = 0;
 
+
+        var Xmin = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmin");
+        var Xmax = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmax");
+        if (Xmin == null) Xmin = Xmax;
+        if (Xmax == null) Xmax = Xmin;
+        var Ymin = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymin");
+        var Ymax = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymax");
+        if (Ymin == null) Ymin = Ymax;
+        if (Ymax == null) Ymax = Ymin;
+
+        var type = GetBoundaryType(Xmin, Xmax, Ymin, Ymax);
+
         builder.AppendFormat("[Component{0}]{1}", count, Environment.NewLine);
+        builder.AppendFormat("# {0}{1}", species.getId(), Environment.NewLine);
         builder.AppendFormat("D = {0}{1}", diff.Value, Environment.NewLine);
+        builder.AppendFormat("Xmin = {0}{1}", Xmin == null ? 0 : Xmin.getValue(), Environment.NewLine);
+        builder.AppendFormat("Xmax = {0}{1}", Xmax == null ? 0 : Xmax.getValue(), Environment.NewLine);
+        builder.AppendFormat("Ymin = {0}{1}", Ymin == null ? 0 : Ymin.getValue(), Environment.NewLine);
+        builder.AppendFormat("Ymax = {0}{1}", Ymax == null ? 0 : Ymax.getValue(), Environment.NewLine);
+        builder.AppendFormat("BCType = {0}{1}",type, Environment.NewLine);
+        
         builder.AppendLine();
         ++count;
 

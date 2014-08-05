@@ -275,6 +275,60 @@ namespace EditSpatial
       return param.getValue();
     }
 
+    public static double? getXMaxBC(this libsbmlcs.Species species)
+    {
+      var param = species.getBoundaryCondition("Xmax");
+      if (param == null) return null;
+      return param.getValue();
+    }
+
+    public static double? getYMaxBC(this libsbmlcs.Species species)
+    {
+      var param = species.getBoundaryCondition("Ymax");
+      if (param == null) return null;
+      return param.getValue();
+    }
+
+    public static double? getXMinBC(this libsbmlcs.Species species)
+    {
+      var param = species.getBoundaryCondition("Xmin");
+      if (param == null) return null;
+      return param.getValue();
+    }
+
+    public static double? getYMinBC(this libsbmlcs.Species species)
+    {
+      var param = species.getBoundaryCondition("Ymin");
+      if (param == null) return null;
+      return param.getValue();
+    }
+
+    public static string getBcType(this libsbmlcs.Species species)
+    {
+      var param = species.getBoundaryCondition("Xmax");
+      if (param != null) 
+        return ((SpatialParameterPlugin)param.getPlugin("spatial"))
+          .getBoundaryCondition().getType() == "Flux" ? 
+          "Dirichlet" : "Neumann";
+      param = species.getBoundaryCondition("Xmin");
+      if (param != null) 
+        return ((SpatialParameterPlugin)param.getPlugin("spatial"))
+          .getBoundaryCondition().getType() == "Flux" ? 
+          "Dirichlet" : "Neumann";
+      param = species.getBoundaryCondition("Ymax");
+      if (param != null) 
+        return ((SpatialParameterPlugin)param.getPlugin("spatial"))
+          .getBoundaryCondition().getType() == "Flux" ? 
+          "Dirichlet" : "Neumann";
+      param = species.getBoundaryCondition("Ymin");
+      if (param != null) 
+        return ((SpatialParameterPlugin)param.getPlugin("spatial"))
+          .getBoundaryCondition().getType() == "Flux" ? 
+          "Dirichlet" : "Neumann";
+      return "Neumann";
+    }
+
+
     public static bool IsSpatial(this libsbmlcs.Parameter parameter)
     {
       var plug = (SpatialParameterPlugin)parameter.getPlugin("spatial");
@@ -371,6 +425,11 @@ namespace EditSpatial
     public static Parameter getParameterDiffusionY(this libsbmlcs.Species species)
     {
       return species.getSpatialParameter(libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT, 1);
+    }
+
+    public static Parameter getBoundaryCondition(this libsbmlcs.Species species, string dir)
+    {
+      return species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, dir);
     }
 
     public static double? getDiffusionX(this libsbmlcs.Species species)
