@@ -471,6 +471,16 @@ namespace EditSpatial.Forms
         if (current.IsNewRow) break;
         current.Cells[1].Value = defaultDiff;
         current.Cells[2].Value = defaultDiff;
+
+        var id = current.Cells[0].Value as string;
+        var species = GetSpecies(id);
+        if (species == null)
+          continue;
+
+        species.DiffusionX = defaultDiff;
+        species.DiffusionY = defaultDiff;
+
+
       }
 
     }
