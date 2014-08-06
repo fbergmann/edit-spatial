@@ -13,6 +13,7 @@ namespace EditSpatial.Converter
     private readonly libsbmlcs.Model Model;
 
     private readonly Dictionary<string, string> boundaryConditions;
+    private readonly Dictionary<string, Dictionary<string, string> > boundaryValue;
     private readonly Dictionary<string, string> diffusion;
     private readonly Dictionary<string, string> initial;
     private readonly Dictionary<string, string> coordinates;
@@ -112,12 +113,27 @@ namespace EditSpatial.Converter
       }
 
 
+      boundaryValue = new Dictionary<string, Dictionary<string, string>>();
       initial = new Dictionary<string, string>();
       for (int i = 0; i < Model.getNumSpecies(); ++i)
       {
         var current = Model.getSpecies(i);
         var plugin = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
         if (plugin == null || !plugin.getIsSpatial()) continue;
+
+        boundaryValue[current.getId()] = new Dictionary<string, string>();
+        var bcValue = current.getXMinBC();
+        if (bcValue.HasValue && bcValue.Value != 0)
+          boundaryValue[current.getId()]["-x"] = bcValue.Value.ToString();
+        bcValue = current.getXMaxBC();
+        if (bcValue.HasValue && bcValue.Value != 0)
+          boundaryValue[current.getId()]["x"] = bcValue.Value.ToString();
+        bcValue = current.getYMinBC();
+        if (bcValue.HasValue && bcValue.Value != 0)
+          boundaryValue[current.getId()]["-y"] = bcValue.Value.ToString();
+        bcValue = current.getYMaxBC();
+        if (bcValue.HasValue && bcValue.Value != 0)
+          boundaryValue[current.getId()]["y"] = bcValue.Value.ToString();
 
         if (current.isSetInitialConcentration())
           initial[current.getId()] = current.getInitialConcentration().ToString();
@@ -127,6 +143,8 @@ namespace EditSpatial.Converter
         var assignment = Model.getInitialAssignment(current.getId());
         if (assignment == null) continue;
         initial[current.getId()] = TranslateExpression(assignment.getMath(), coordinates);
+
+
       }
 
     }
@@ -287,9 +305,9 @@ namespace EditSpatial.Converter
       {
         default:
         case "flux":
-          return "noflux";
+          return "constant";
         case "value":
-          return "constant";          
+          return "noflux";          
       }
     }
 
@@ -399,8 +417,17 @@ namespace EditSpatial.Converter
         writer.WriteEndElement(); // InitPDEExpression
         writer.WriteEndElement(); // Initial
 
-        //TODO: BOundary value
-
+        if (boundaryValue.ContainsKey(current.getId()))
+        { 
+          var bounds = boundaryValue[current.getId()];
+          foreach (var item in bounds)
+          {
+            writer.WriteStartElement("BoundaryValue");
+            writer.WriteAttributeString("boundary", item.Key);
+            writer.WriteAttributeString("value", item.Value);
+            writer.WriteEndElement(); // BoundaryValue
+          }
+        }
 
         writer.WriteEndElement(); // Layer
       }
@@ -532,13 +559,18 @@ namespace EditSpatial.Converter
     {
       writer.WriteStartElement("Description");
       writer.WriteStartElement("Title");
-      writer.WriteString(Model.getName());
+      if (Model.isSetName())
+        writer.WriteString(Model.getName());
+      else
+        writer.WriteString(Model.getId());
       writer.WriteEndElement(); // Title
       writer.WriteStartElement("Details");
-      writer.WriteString("Conversion messages: " + errorBuilder.ToString());
+      string errorString = errorBuilder.ToString();
+      if (!string.IsNullOrWhiteSpace(errorString))
+        writer.WriteString("Conversion messages: " + errorString);
       writer.WriteEndElement(); // Details
       writer.WriteEndElement(); // Description
-     
+
     }
 
     public string ToSBML()
