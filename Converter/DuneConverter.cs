@@ -10,13 +10,13 @@ namespace EditSpatial.Converter
   {
     private readonly SBMLDocument document;
     private readonly StringBuilder errorBuilder;
-    
+
     private readonly libsbmlcs.Model Model;
     private readonly SpatialModelPlugin SpatialModelPlugin;
     private readonly Geometry Geometry;
-    
+
     private List<string> OdeVariables { get; set; }
-    
+
     public void Dispose()
     {
       if (document != null)
@@ -39,8 +39,8 @@ namespace EditSpatial.Converter
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
         errorBuilder.AppendFormat("promoting local to global parameters failed: {0}{1}", status, Environment.NewLine);
-      } 
-      
+      }
+
       prop = new ConversionProperties();
       prop.addOption("expandFunctionDefinitions", true);
       status = document.convert(prop);
@@ -80,7 +80,7 @@ namespace EditSpatial.Converter
       SpatialModelPlugin = (SpatialModelPlugin)Model.getPlugin("spatial");
 
       if (SpatialModelPlugin == null) return;
-      
+
       Geometry = SpatialModelPlugin.getGeometry();
 
     }
@@ -121,12 +121,12 @@ namespace EditSpatial.Converter
             var builder = new StringBuilder();
             if (math.getNumChildren() == 1)
             {
-              builder.AppendDuneNode(" - {0}", math.getChild(0), map); 
+              builder.AppendDuneNode(" - {0}", math.getChild(0), map);
             }
             else
             {
-              builder.AppendDuneNode("{0}", math.getChild(0), map); 
-              builder.AppendDuneNode(" - {0}", math.getChild(1), map); 
+              builder.AppendDuneNode("{0}", math.getChild(0), map);
+              builder.AppendDuneNode(" - {0}", math.getChild(1), map);
             }
             return builder.ToString();
           }
@@ -136,7 +136,7 @@ namespace EditSpatial.Converter
             builder.AppendDuneNode("{0}", math.getChild(0), map);
             for (int i = 1; i < math.getNumChildren(); ++i)
             {
-              builder.AppendDuneNode(" + {0}", math.getChild(i), map); 
+              builder.AppendDuneNode(" + {0}", math.getChild(i), map);
             }
             return builder.ToString();
           }
@@ -242,14 +242,14 @@ namespace EditSpatial.Converter
           }
         case libsbml.AST_NAME:
         default:
-        {
-          string name = math.getName();
-          if (map != null && map.ContainsKey(name))
           {
-            return map[name];
+            string name = math.getName();
+            if (map != null && map.ContainsKey(name))
+            {
+              return map[name];
+            }
+            return name;
           }
-          return name;
-        }
 
 
       }
@@ -298,13 +298,13 @@ namespace EditSpatial.Converter
       }
       int count = 0;
       var varMap = new Dictionary<string, string>();
-      foreach (var item in OdeVariables) 
+      foreach (var item in OdeVariables)
       {
         varMap[item] = string.Format("x(lfsu,{0})", count);
         ++count;
       }
 
-    count = 1;
+      count = 1;
       foreach (var item in OdeVariables)
       {
         var rule = Model.getRateRule(item);
@@ -340,7 +340,7 @@ namespace EditSpatial.Converter
 
     private int GetBoundaryType(Parameter param)
     {
-      var plug = (SpatialParameterPlugin) param.getPlugin("spatial");
+      var plug = (SpatialParameterPlugin)param.getPlugin("spatial");
       if (plug == null) return 0;
       var bc = plug.getBoundaryCondition();
       if (bc == null) return 0;
@@ -356,20 +356,21 @@ namespace EditSpatial.Converter
       if (ymax != null) return GetBoundaryType(ymax);
       return 0;
     }
+
     private void WriteConfigFile(string path, string name)
     {
       var builder = new StringBuilder();
       var map = new Dictionary<string, string>();
-      
+
       map["%NAME%"] = name;
-      
+
       map["%TIME_TEND%"] = "500";
       map["%TIME_DTMAX%"] = "1";
-      map["%TIME_DTPLOT%"] = "1";      
-      
+      map["%TIME_DTPLOT%"] = "1";
+
       map["%WORLD_WIDTH%"] = Geometry.getCoordinateComponent(0).getBoundaryMax().getValue().ToString();
       map["%WORLD_HEIGHT%"] = Geometry.getCoordinateComponent(1).getBoundaryMax().getValue().ToString();
-      
+
       map["%GRID_X%"] = "64";
       map["%GRID_Y%"] = "64";
 
@@ -393,7 +394,7 @@ namespace EditSpatial.Converter
 
         ParameterIds.Add(current.getId());
         builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getSize(), Environment.NewLine);
-        
+
       }
 
       for (int i = 0; i < Model.getNumSpecies(); ++i)
@@ -442,8 +443,8 @@ namespace EditSpatial.Converter
         builder.AppendFormat("Xmax = {0}{1}", Xmax == null ? 0 : Xmax.getValue(), Environment.NewLine);
         builder.AppendFormat("Ymin = {0}{1}", Ymin == null ? 0 : Ymin.getValue(), Environment.NewLine);
         builder.AppendFormat("Ymax = {0}{1}", Ymax == null ? 0 : Ymax.getValue(), Environment.NewLine);
-        builder.AppendFormat("BCType = {0}{1}",type, Environment.NewLine);
-        
+        builder.AppendFormat("BCType = {0}{1}", type, Environment.NewLine);
+
         builder.AppendLine();
         ++count;
 
@@ -472,7 +473,7 @@ namespace EditSpatial.Converter
       for (int index = 0; index < OdeVariables.Count; index++)
       {
         dpCreation.AppendFormat("    DP dp{0}(param, \"Component{0}\");{1}"
-          , index+1
+          , index + 1
           , Environment.NewLine);
 
         dpInitialization.AppendFormat("dp{0}", index + 1);
@@ -541,7 +542,7 @@ namespace EditSpatial.Converter
       builder.Append("    const auto& width = dimension[0];\n");
       builder.Append("    const auto& height = dimension[1];\n");
       builder.Append("\n");
-      builder.AppendFormat("    bool inside={0};\n", 
+      builder.AppendFormat("    bool inside={0};\n",
         TranslateExpression(volume.getMath()));
       builder.Append("    return inside;\n");
       return builder.ToString();
@@ -573,7 +574,7 @@ namespace EditSpatial.Converter
       builder.AppendLine("#define INITIAL_CONDITIONS_H");
 
       int count = 0;
-      foreach(var item in OdeVariables)
+      foreach (var item in OdeVariables)
       {
         var map = new Dictionary<string, string>();
         map["%COUNT%"] = count.ToString();
@@ -595,7 +596,7 @@ namespace EditSpatial.Converter
             , pItem
             , Environment.NewLine
             );
-        }        
+        }
 
 
         map["%INITIALIZER%"] = initializer.ToString();
@@ -640,7 +641,7 @@ namespace EditSpatial.Converter
                 , Environment.NewLine);
           }
         }
-        
+
         //map["%INITIALCONDITION%"] =TranslateExpression(rule.getMath(), varMap),;
         builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.initial_conditions, map));
         builder.AppendLine();
@@ -661,24 +662,24 @@ namespace EditSpatial.Converter
 
     private void WriteCMakeLists(string path, string name)
     {
-      File.WriteAllText(Path.Combine(path, "CMakeLists.txt"), 
+      File.WriteAllText(Path.Combine(path, "CMakeLists.txt"),
         ExpandTemplate(EditSpatial.Properties.Resources.CMakeLists,
-        new Dictionary<string,string>{
+        new Dictionary<string, string>{
           {"%NAME%", name}
         }
         ));
     }
 
-    private string ExpandTemplate(string content, 
-      Dictionary<string,string> map = null)
+    private string ExpandTemplate(string content,
+      Dictionary<string, string> map = null)
     {
       var final = content;
 
       if (map != null)
-      foreach (var pair in map)
-      {
-        final = final.Replace(pair.Key, pair.Value);
-      }
+        foreach (var pair in map)
+        {
+          final = final.Replace(pair.Key, pair.Value);
+        }
 
       return final;
     }

@@ -37,15 +37,6 @@
       this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
       this.lblIntro = new System.Windows.Forms.Label();
       this.grid = new System.Windows.Forms.DataGridView();
-      this.colSpeciesId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colDiffusionX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colDiffusionY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colInitialExpression = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryXm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryYm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colType = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.panel3 = new System.Windows.Forms.Panel();
       this.cmdApplyDiff = new System.Windows.Forms.Button();
       this.txtDiffDefault = new System.Windows.Forms.TextBox();
@@ -83,6 +74,15 @@
       this.cmdCancel = new System.Windows.Forms.Button();
       this.cmdNext = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.colSpeciesId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colDiffusionX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colDiffusionY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colInitialExpression = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryXm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryYm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colType = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.tableLayoutPanel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabSpecies.SuspendLayout();
@@ -188,7 +188,7 @@
       // grid
       // 
       this.grid.AllowUserToAddRows = false;
-      this.grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+      this.grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.grid.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
       this.grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -210,71 +210,6 @@
       this.grid.TabIndex = 4;
       this.grid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellEndEdit);
       this.grid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.OnUserDeletingRow);
-      // 
-      // colSpeciesId
-      // 
-      this.colSpeciesId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colSpeciesId.HeaderText = "Id";
-      this.colSpeciesId.Name = "colSpeciesId";
-      this.colSpeciesId.ReadOnly = true;
-      this.colSpeciesId.Width = 39;
-      // 
-      // colDiffusionX
-      // 
-      this.colDiffusionX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colDiffusionX.HeaderText = "Diffusion X";
-      this.colDiffusionX.Name = "colDiffusionX";
-      this.colDiffusionX.Width = 75;
-      // 
-      // colDiffusionY
-      // 
-      this.colDiffusionY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colDiffusionY.HeaderText = "Diffusion Y";
-      this.colDiffusionY.Name = "colDiffusionY";
-      this.colDiffusionY.Width = 75;
-      // 
-      // colInitialExpression
-      // 
-      this.colInitialExpression.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colInitialExpression.HeaderText = "Initial Expression";
-      this.colInitialExpression.Name = "colInitialExpression";
-      this.colInitialExpression.Width = 99;
-      // 
-      // colBoundaryX
-      // 
-      this.colBoundaryX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryX.HeaderText = "Boundary X";
-      this.colBoundaryX.Name = "colBoundaryX";
-      this.colBoundaryX.Width = 78;
-      // 
-      // colBoundaryY
-      // 
-      this.colBoundaryY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryY.HeaderText = "Boundary Y";
-      this.colBoundaryY.Name = "colBoundaryY";
-      this.colBoundaryY.Width = 78;
-      // 
-      // colBoundaryXm
-      // 
-      this.colBoundaryXm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryXm.HeaderText = "Boundary X-";
-      this.colBoundaryXm.Name = "colBoundaryXm";
-      this.colBoundaryXm.Width = 81;
-      // 
-      // colBoundaryYm
-      // 
-      this.colBoundaryYm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryYm.HeaderText = "Boundary Y-";
-      this.colBoundaryYm.Name = "colBoundaryYm";
-      this.colBoundaryYm.Width = 81;
-      // 
-      // colType
-      // 
-      this.colType.HeaderText = "BC Type";
-      this.colType.Items.AddRange(new object[] {
-            "Neumann",
-            "Dirichlet"});
-      this.colType.Name = "colType";
       // 
       // panel3
       // 
@@ -685,6 +620,72 @@
       this.cmdNext.Text = "&Next";
       this.cmdNext.UseVisualStyleBackColor = true;
       this.cmdNext.Click += new System.EventHandler(this.OnNextClick);
+      // 
+      // colSpeciesId
+      // 
+      this.colSpeciesId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colSpeciesId.HeaderText = "Id";
+      this.colSpeciesId.Name = "colSpeciesId";
+      this.colSpeciesId.ReadOnly = true;
+      this.colSpeciesId.Width = 39;
+      // 
+      // colDiffusionX
+      // 
+      this.colDiffusionX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colDiffusionX.HeaderText = "Diffusion X";
+      this.colDiffusionX.Name = "colDiffusionX";
+      this.colDiffusionX.Width = 81;
+      // 
+      // colDiffusionY
+      // 
+      this.colDiffusionY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colDiffusionY.HeaderText = "Diffusion Y";
+      this.colDiffusionY.Name = "colDiffusionY";
+      this.colDiffusionY.Width = 81;
+      // 
+      // colInitialExpression
+      // 
+      this.colInitialExpression.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+      this.colInitialExpression.HeaderText = "Initial Expression";
+      this.colInitialExpression.Name = "colInitialExpression";
+      // 
+      // colBoundaryX
+      // 
+      this.colBoundaryX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colBoundaryX.HeaderText = "Boundary X";
+      this.colBoundaryX.Name = "colBoundaryX";
+      this.colBoundaryX.Width = 85;
+      // 
+      // colBoundaryY
+      // 
+      this.colBoundaryY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colBoundaryY.HeaderText = "Boundary Y";
+      this.colBoundaryY.Name = "colBoundaryY";
+      this.colBoundaryY.Width = 85;
+      // 
+      // colBoundaryXm
+      // 
+      this.colBoundaryXm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colBoundaryXm.HeaderText = "Boundary X-";
+      this.colBoundaryXm.Name = "colBoundaryXm";
+      this.colBoundaryXm.Width = 88;
+      // 
+      // colBoundaryYm
+      // 
+      this.colBoundaryYm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colBoundaryYm.HeaderText = "Boundary Y-";
+      this.colBoundaryYm.Name = "colBoundaryYm";
+      this.colBoundaryYm.Width = 88;
+      // 
+      // colType
+      // 
+      this.colType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colType.HeaderText = "BC Type";
+      this.colType.Items.AddRange(new object[] {
+            "Neumann",
+            "Dirichlet"});
+      this.colType.Name = "colType";
+      this.colType.Width = 52;
       // 
       // FormInitSpatial
       // 

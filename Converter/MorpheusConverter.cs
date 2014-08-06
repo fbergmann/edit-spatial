@@ -11,6 +11,7 @@ namespace EditSpatial.Converter
     private readonly SBMLDocument document;
     private readonly StringBuilder errorBuilder;
     private readonly libsbmlcs.Model Model;
+    private int numVariables;
 
     private readonly Dictionary<string, string> boundaryConditions;
     private readonly Dictionary<string, Dictionary<string, string> > boundaryValue;
@@ -46,6 +47,7 @@ namespace EditSpatial.Converter
     {
       errorBuilder = new StringBuilder();
       this.document = original.clone();
+      numVariables = 0;
 
       document.getErrorLog().setSeverityOverride(libsbml.LIBSBML_OVERRIDE_DONT_LOG);
       var prop = new ConversionProperties();
@@ -120,6 +122,8 @@ namespace EditSpatial.Converter
         var current = Model.getSpecies(i);
         var plugin = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
         if (plugin == null || !plugin.getIsSpatial()) continue;
+
+        ++numVariables;
 
         boundaryValue[current.getId()] = new Dictionary<string, string>();
         var bcValue = current.getXMinBC();
@@ -313,8 +317,7 @@ namespace EditSpatial.Converter
 
 
     public string ToMorpheus()
-    {
-      
+    {      
       var settings = new XmlWriterSettings {Indent = true, Encoding = Encoding.UTF8, OmitXmlDeclaration = true};
       var buffer = new StringBuilder();
       var writer = XmlWriter.Create(buffer, settings);
@@ -340,7 +343,8 @@ namespace EditSpatial.Converter
 
     private void WriteAnalysis(XmlWriter writer)
     {
-      const double scale = 4;
+      int multiplier = Math.Max(1, numVariables/2);
+      double scale = 4;
 
       writer.WriteStartElement("Analysis");
       writer.WriteStartElement("Gnuplotter");
@@ -349,8 +353,8 @@ namespace EditSpatial.Converter
       writer.WriteStartElement("Terminal");
       writer.WriteAttributeString("size", 
         string.Format("{0} {1} {2}",
-          Math.Max(200, scale*dims.getWidth()),
-          Math.Max(200, scale*dims.getHeight()),
+          Math.Max(200 * multiplier, scale * dims.getWidth() * multiplier),
+          Math.Max(200 * multiplier, scale * dims.getHeight() * multiplier),
           scale*dims.getDepth())
         );
       writer.WriteAttributeString("name","png");
