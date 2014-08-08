@@ -436,8 +436,7 @@ namespace EditSpatial.Converter
 
         var type = GetBoundaryType(Xmin, Xmax, Ymin, Ymax);
 
-        builder.AppendFormat("[Component{0}]{1}", count, Environment.NewLine);
-        builder.AppendFormat("# {0}{1}", species.getId(), Environment.NewLine);
+        builder.AppendFormat("[{0}]{1}", species.getId(), Environment.NewLine);
         builder.AppendFormat("D = {0}{1}", diff.Value, Environment.NewLine);
         builder.AppendFormat("Xmin = {0}{1}", Xmin == null ? 0 : Xmin.getValue(), Environment.NewLine);
         builder.AppendFormat("Xmax = {0}{1}", Xmax == null ? 0 : Xmax.getValue(), Environment.NewLine);
@@ -472,8 +471,9 @@ namespace EditSpatial.Converter
 
       for (int index = 0; index < OdeVariables.Count; index++)
       {
-        dpCreation.AppendFormat("    DP dp{0}(param, \"Component{0}\");{1}"
-          , index + 1
+        dpCreation.AppendFormat("    DP dp{0}(param, \"{1}\");{2}"
+          , index+1
+          , OdeVariables[index]
           , Environment.NewLine);
 
         dpInitialization.AppendFormat("dp{0}", index + 1);

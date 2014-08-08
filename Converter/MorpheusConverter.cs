@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using libsbmlcs;
@@ -14,7 +16,7 @@ namespace EditSpatial.Converter
     private int numVariables;
 
     private readonly Dictionary<string, string> boundaryConditions;
-    private readonly Dictionary<string, Dictionary<string, string> > boundaryValue;
+    private readonly Dictionary<string, Dictionary<string, string>> boundaryValue;
     private readonly Dictionary<string, string> diffusion;
     private readonly Dictionary<string, string> initial;
     private readonly Dictionary<string, string> coordinates;
@@ -56,7 +58,7 @@ namespace EditSpatial.Converter
       var status = document.convert(prop);
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
-        errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", status, Environment.NewLine);      
+        errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", status, Environment.NewLine);
       }
 
       prop = new ConversionProperties();
@@ -64,7 +66,7 @@ namespace EditSpatial.Converter
       status = document.convert(prop);
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
-        errorBuilder.AppendFormat("expanding function definitions failed: {0}{1}", status , Environment.NewLine);
+        errorBuilder.AppendFormat("expanding function definitions failed: {0}{1}", status, Environment.NewLine);
       }
 
       Model = document.getModel();
@@ -100,7 +102,7 @@ namespace EditSpatial.Converter
       for (int i = 0; i < Model.getNumParameters(); ++i)
       {
         var current = Model.getParameter(i);
-        var plugin = (SpatialParameterPlugin) current.getPlugin("spatial");
+        var plugin = (SpatialParameterPlugin)current.getPlugin("spatial");
         if (plugin == null) continue;
         if (plugin.getType() == libsbml.SBML_SPATIAL_BOUNDARYCONDITION)
         {
@@ -158,8 +160,8 @@ namespace EditSpatial.Converter
       return TranslateExpression(libsbml.parseFormula(expression), null);
     }
 
- 
-    public static string TranslateExpression(ASTNode math, Dictionary<string,string> map)
+
+    public static string TranslateExpression(ASTNode math, Dictionary<string, string> map)
     {
       if (math == null) return "";
       switch (math.getType())
@@ -191,21 +193,21 @@ namespace EditSpatial.Converter
           }
         case libsbml.AST_PLUS:
           {
-          var builder = new StringBuilder();
-          builder.AppendMorpheusNode("{0}", math.getChild(0), map); 
-          for (int i = 1; i < math.getNumChildren(); ++i)
-          {
-            builder.AppendMorpheusNode(" + {0}", math.getChild(i), map); 
-          }
-          return builder.ToString();
+            var builder = new StringBuilder();
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            for (int i = 1; i < math.getNumChildren(); ++i)
+            {
+              builder.AppendMorpheusNode(" + {0}", math.getChild(i), map);
+            }
+            return builder.ToString();
           }
         case libsbml.AST_TIMES:
           {
             var builder = new StringBuilder();
-            builder.AppendMorpheusNode("{0}", math.getChild(0), map); 
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
             for (int i = 1; i < math.getNumChildren(); ++i)
             {
-              builder.AppendMorpheusNode(" * {0}", math.getChild(i), map); 
+              builder.AppendMorpheusNode(" * {0}", math.getChild(i), map);
             }
             return builder.ToString();
           }
@@ -214,84 +216,84 @@ namespace EditSpatial.Converter
           {
             var builder = new StringBuilder();
             builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-            builder.AppendMorpheusNode(" <= {0}", math.getChild(1), map); 
+            builder.AppendMorpheusNode(" <= {0}", math.getChild(1), map);
             return builder.ToString();
           }
         case libsbml.AST_RELATIONAL_LT:
-        {
-          var builder = new StringBuilder();
-          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          builder.AppendMorpheusNode(" < {0}", math.getChild(1), map);
-          return builder.ToString();
-        }
+          {
+            var builder = new StringBuilder();
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            builder.AppendMorpheusNode(" < {0}", math.getChild(1), map);
+            return builder.ToString();
+          }
         case libsbml.AST_RELATIONAL_GT:
-        {
-          var builder = new StringBuilder();
-          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          builder.AppendMorpheusNode(" > {0}", math.getChild(1), map);
-          return builder.ToString();
-        }
+          {
+            var builder = new StringBuilder();
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            builder.AppendMorpheusNode(" > {0}", math.getChild(1), map);
+            return builder.ToString();
+          }
         case libsbml.AST_RELATIONAL_GEQ:
-        {
-          var builder = new StringBuilder();
-          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          builder.AppendMorpheusNode(" >= {0}", math.getChild(1), map);
-          return builder.ToString();
-        }
+          {
+            var builder = new StringBuilder();
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            builder.AppendMorpheusNode(" >= {0}", math.getChild(1), map);
+            return builder.ToString();
+          }
         case libsbml.AST_LOGICAL_AND:
-        {
-          var builder = new StringBuilder();
-          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendMorpheusNode(" and {0}", math.getChild(i), map);
+            var builder = new StringBuilder();
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            for (int i = 1; i < math.getNumChildren(); ++i)
+            {
+              builder.AppendMorpheusNode(" and {0}", math.getChild(i), map);
+            }
+            return builder.ToString();
           }
-          return builder.ToString();
-        }
         case libsbml.AST_LOGICAL_OR:
-        {
-          var builder = new StringBuilder();
-          builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendMorpheusNode(" or {0}", math.getChild(i), map);
+            var builder = new StringBuilder();
+            builder.AppendMorpheusNode("{0}", math.getChild(0), map);
+            for (int i = 1; i < math.getNumChildren(); ++i)
+            {
+              builder.AppendMorpheusNode(" or {0}", math.getChild(i), map);
+            }
+            return builder.ToString();
           }
-          return builder.ToString();
-        }
         case libsbml.AST_FUNCTION_PIECEWISE:
-        {
-          var builder = new StringBuilder();
-          builder.AppendFormat("if(");
-          for (int i = 0; i < math.getNumChildren()-1; i+=2)
           {
-            builder.AppendMorpheusNode("{0}", math.getChild(i + 1), map);
-            builder.AppendMorpheusNode(", {0}", math.getChild(i), map);
+            var builder = new StringBuilder();
+            builder.AppendFormat("if(");
+            for (int i = 0; i < math.getNumChildren() - 1; i += 2)
+            {
+              builder.AppendMorpheusNode("{0}", math.getChild(i + 1), map);
+              builder.AppendMorpheusNode(", {0}", math.getChild(i), map);
+            }
+            builder.AppendMorpheusNode(", {0}", math.getChild(math.getNumChildren() - 1), map);
+            builder.AppendFormat(")");
+            return builder.ToString();
           }
-          builder.AppendMorpheusNode(", {0}", math.getChild(math.getNumChildren() -1 ), map);
-          builder.AppendFormat(")");
-          return builder.ToString();
-        }
         case libsbml.AST_FUNCTION:
-        {
-          var builder = new StringBuilder();
-          builder.AppendFormat("{0}(", math.getName());
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-          for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendFormat(", {0}", TranslateExpression(math.getChild(i), map));
+            var builder = new StringBuilder();
+            builder.AppendFormat("{0}(", math.getName());
+            builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+            for (int i = 1; i < math.getNumChildren(); ++i)
+            {
+              builder.AppendFormat(", {0}", TranslateExpression(math.getChild(i), map));
+            }
+            builder.AppendFormat(")");
+            return builder.ToString();
           }
-          builder.AppendFormat(")");
-          return builder.ToString();
-        }
         case libsbml.AST_FUNCTION_POWER:
         case libsbml.AST_POWER:
-        {
-          var builder = new StringBuilder();
-          builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map));
-          builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
-          return builder.ToString();
-        }
-        case libsbml.AST_NAME:           
+          {
+            var builder = new StringBuilder();
+            builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map));
+            builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
+            return builder.ToString();
+          }
+        case libsbml.AST_NAME:
         default:
           if (map != null && map.ContainsKey(math.getName()))
           {
@@ -311,30 +313,30 @@ namespace EditSpatial.Converter
         case "flux":
           return "constant";
         case "value":
-          return "noflux";          
+          return "noflux";
       }
     }
 
 
-    public string ToMorpheus()
-    {      
-      var settings = new XmlWriterSettings {Indent = true, Encoding = Encoding.UTF8, OmitXmlDeclaration = true};
+    public string ToMorpheus(string filename = null)
+    {
+      var settings = new XmlWriterSettings { Indent = true, Encoding = Encoding.UTF8, OmitXmlDeclaration = true };
       var buffer = new StringBuilder();
       var writer = XmlWriter.Create(buffer, settings);
-      
+
       writer.WriteStartDocument();
 
       writer.WriteStartElement("MorpheusModel");
       writer.WriteAttributeString("version", "1");
 
       WriteDescription(writer);
-      WriteSpace(writer);
+      WriteSpace(writer, filename);
       WriteTime(writer);
       WritePDE(writer);
       WriteAnalysis(writer);
 
       writer.WriteEndElement(); // MorpheusModel
-      
+
       writer.WriteEndDocument();
       writer.Flush();
       writer.Close();
@@ -343,7 +345,7 @@ namespace EditSpatial.Converter
 
     private void WriteAnalysis(XmlWriter writer)
     {
-      int multiplier = Math.Max(1, numVariables/2);
+      int multiplier = Math.Max(1, numVariables / 2);
       double scale = 4;
 
       writer.WriteStartElement("Analysis");
@@ -351,20 +353,20 @@ namespace EditSpatial.Converter
       writer.WriteAttributeString("interval", "1");
       writer.WriteAttributeString("timename", "false");
       writer.WriteStartElement("Terminal");
-      writer.WriteAttributeString("size", 
+      writer.WriteAttributeString("size",
         string.Format("{0} {1} {2}",
           Math.Max(200 * multiplier, scale * dims.getWidth() * multiplier),
           Math.Max(200 * multiplier, scale * dims.getHeight() * multiplier),
-          scale*dims.getDepth())
+          scale * dims.getDepth())
         );
-      writer.WriteAttributeString("name","png");
+      writer.WriteAttributeString("name", "png");
       writer.WriteEndElement(); // Terminal
 
 
       for (int i = 0; i < Model.getNumSpecies(); i++)
       {
         var current = Model.getSpecies(i);
-        var plugin = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+        var plugin = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
         if (plugin == null) continue;
         if (plugin.getIsSpatial())
         {
@@ -372,10 +374,10 @@ namespace EditSpatial.Converter
           writer.WriteAttributeString("symbol-ref", current.getId());
           writer.WriteAttributeString("min", "0");
           writer.WriteEndElement(); // PDE
-          
+
         }
       }
-      
+
       writer.WriteEndElement(); // Gnuplotter
       writer.WriteEndElement(); // Analysis
     }
@@ -409,7 +411,7 @@ namespace EditSpatial.Converter
         writer.WriteAttributeString("name", current.isSetName() ? current.getName() : current.getId());
 
         writer.WriteStartElement("Diffusion");
-        writer.WriteAttributeString("rate", 
+        writer.WriteAttributeString("rate",
           diffusion.ContainsKey(current.getId()) ? diffusion[current.getId()] : "0");
         writer.WriteEndElement(); // Diffusion
 
@@ -422,7 +424,7 @@ namespace EditSpatial.Converter
         writer.WriteEndElement(); // Initial
 
         if (boundaryValue.ContainsKey(current.getId()))
-        { 
+        {
           var bounds = boundaryValue[current.getId()];
           foreach (var item in bounds)
           {
@@ -438,7 +440,7 @@ namespace EditSpatial.Converter
 
 
       WriteSystem(writer);
-        
+
 
       writer.WriteEndElement(); // PDE
     }
@@ -472,7 +474,7 @@ namespace EditSpatial.Converter
       for (int i = 0; i < Model.getNumParameters(); ++i)
       {
         var current = Model.getParameter(i);
-        var plugin = (SpatialParameterPlugin) current.getPlugin("spatial");
+        var plugin = (SpatialParameterPlugin)current.getPlugin("spatial");
         if (plugin != null && plugin.getType() != -1) continue;
 
         writer.WriteStartElement("Constant");
@@ -489,17 +491,17 @@ namespace EditSpatial.Converter
           writer.WriteStartElement("DiffEqn");
           writer.WriteAttributeString("symbol-ref", current.getVariable());
           writer.WriteStartElement("Expression");
-          writer.WriteString(SimplifyExpression(TranslateExpression(current.getMath(), coordinates)));          
+          writer.WriteString(SimplifyExpression(TranslateExpression(current.getMath(), coordinates)));
           writer.WriteEndElement(); // Expression
           writer.WriteEndElement(); // DiffEqn
-          
+
         }
 
       }
 
       writer.WriteEndElement(); // System
-      
-      
+
+
     }
 
     private void WriteTime(XmlWriter writer)
@@ -511,7 +513,7 @@ namespace EditSpatial.Converter
       writer.WriteEndElement(); // StartTime
       writer.WriteStartElement("StopTime");
       writer.WriteAttributeString("unit", "sec");
-      writer.WriteAttributeString("value", (60*60*24).ToString());
+      writer.WriteAttributeString("value", (60 * 60 * 24).ToString());
       writer.WriteEndElement(); // StopTime
       writer.WriteStartElement("SaveInterval");
       writer.WriteAttributeString("value", "0");
@@ -522,14 +524,14 @@ namespace EditSpatial.Converter
       writer.WriteEndElement(); // Time
     }
 
-    private void WriteSpace(XmlWriter writer)
+    private void WriteSpace(XmlWriter writer, string filename = null)
     {
       writer.WriteStartElement("Space");
       writer.WriteStartElement("Lattice");
       writer.WriteAttributeString("class", "square");
       writer.WriteStartElement("Size");
       writer.WriteAttributeString("symbol", "size");
-      writer.WriteAttributeString("value",         
+      writer.WriteAttributeString("value",
         string.Format("{0} {1} {2}",
           dims.getWidth(),
           dims.getHeight(),
@@ -540,16 +542,35 @@ namespace EditSpatial.Converter
       writer.WriteAttributeString("value", "1");
       writer.WriteEndElement(); // NodeLength
       writer.WriteStartElement("BoundaryConditions");
-      
+
       foreach (var entry in boundaryConditions)
       {
-
         writer.WriteStartElement("Condition");
         writer.WriteAttributeString("boundary", boundaryLables[entry.Key]);
         writer.WriteAttributeString("type", entry.Value);
         writer.WriteEndElement(); // Condition        
       }
       writer.WriteEndElement(); // BoundaryConditions
+
+      // write domain (if analytic)
+      var analyticGeometry = Geometry.GetFirstAnalyticGeometry();
+      if (filename != null && analyticGeometry != null && analyticGeometry.getNumAnalyticVolumes() > 0)
+      {
+        var path = Path.GetDirectoryName(filename);
+        var name = Path.GetFileNameWithoutExtension(filename);
+        if (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(name))
+        {
+          var vol = analyticGeometry.getAnalyticVolume(0);
+          writer.WriteStartElement("Domain");
+          writer.WriteAttributeString("boundary-type", boundaryConditions.Values.First());
+          writer.WriteStartElement("Image");
+          var image = analyticGeometry.GenerateTiffForOrdinal(Geometry, (int)vol.getOrdinal());
+          image.Save(Path.Combine(path, name + ".tif"), System.Drawing.Imaging.ImageFormat.Tiff);
+          writer.WriteAttributeString("path", name + ".tif");
+          writer.WriteEndElement(); // Image
+          writer.WriteEndElement(); // Domain
+        }
+      }
 
       writer.WriteEndElement(); // Lattice
       writer.WriteStartElement("SpaceSymbol");

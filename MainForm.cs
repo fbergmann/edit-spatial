@@ -529,8 +529,12 @@ namespace EditSpatial
       }
       catch (Exception ex)
       {
-        MessageBox.Show("Could not load the given model", "Model could not be loaded", MessageBoxButtons.OK,
-          MessageBoxIcon.Error);
+        MessageBox.Show(
+          string.Format("Could not load the given model.{0}{1}", Environment.NewLine, ex.Message), 
+          "Model could not be loaded", 
+          MessageBoxButtons.OK,
+          MessageBoxIcon.Error
+        );
       }
     }
 
@@ -764,7 +768,7 @@ namespace EditSpatial
 
     public void ExportMorpheusFile(string fileName)
     {
-      File.WriteAllText(fileName, Model.ToMorpheus());
+      File.WriteAllText(fileName, Model.ToMorpheus(fileName));
     }
 
     private void OnShowSpatialWizard(object sender, EventArgs e)

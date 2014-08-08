@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using libsbmlcs;
 using SysBio.MathKGI;
+using Image = libsbmlcs.Image;
 
 namespace EditSpatial
 {
@@ -36,12 +38,88 @@ namespace EditSpatial
       },
       new [] {
         "FISH", 
-        "lambda(x,y,width,height,piecewise(1, ((x - width * 0.42)^2 / (width * 0.37)^2 + (y - height / 2)^2 / (width * 0.25)^2 < 1 || (y < -(width * 0.1) + x && y > width * 1.1 + -x && x < width * 0.9)) && !((x - width * 0.25)^2 / (0.08 * width)^2 + (y - height * 0.45)^2 / (0.08 * height)^2 < 1), 0))",
+        "lambda(x,y,w,h,piecewise(1, ((x - w * 0.42)^2 / (w * 0.37)^2 + (y - h / 2)^2 / (w * 0.25)^2 < 1 || (y < -(w * 0.1) + x && y > w * 1.1 + -x && x < w * 0.9)) && !((x - w * 0.25)^2 / (0.08 * w)^2 + (y - h * 0.45)^2 / (0.08 * h)^2 < 1), 0))",
         "FISH(x,y,width,height)",
         "Generates a fish in the given bounds"
       },
     };
 
+    public static System.Drawing.Image GenerateTiffForOrdinal(this AnalyticGeometry analytic, Geometry geometry, int ordinal = 1, double z = 1)
+    {
+      var range1 = geometry.getCoordinateComponent(0);
+      double r1Max = range1.getBoundaryMax().getValue();
+      var range2 = geometry.getCoordinateComponent(1);
+      double r2Max = range2.getBoundaryMax().getValue();
+
+      return analytic.GenerateTiff(geometry, (int)r1Max, (int)r2Max, ordinal, z);
+    }
+
+    public static System.Drawing.Image GenerateTiff(this AnalyticGeometry analytic, Geometry geometry, int resX = 128, int resY = 128, int ordinal = 1, double z = 1)
+    {
+      if (geometry == null || analytic == null || geometry.getNumCoordinateComponents() < 2)
+        return new Bitmap(1, 1);
+
+      try
+      {
+        var formulas = new List<Tuple<int, ASTNode>>();
+        for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
+        {
+          var current = analytic.getAnalyticVolume(i);
+          if (current.getOrdinal() == ordinal)
+          formulas.Add(new Tuple<int, ASTNode>((int)current.getOrdinal(), current.getMath()));
+        }
+        formulas.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+
+
+        var range1 = geometry.getCoordinateComponent(0);
+        double r1Min = range1.getBoundaryMin().getValue();
+        double r1Max = range1.getBoundaryMax().getValue();
+        var range2 = geometry.getCoordinateComponent(1);
+        double r2Min = range2.getBoundaryMin().getValue();
+        double r2Max = range2.getBoundaryMax().getValue();
+
+        double depth = geometry.getNumCoordinateComponents() == 3
+          ? geometry.getCoordinateComponent(2).getBoundaryMax().getValue()
+          : 0;
+
+        var result = new Bitmap(resX, resY);
+        for (int i = 0; i < resX; ++i)
+        {
+          double x = r1Min
+                     +
+                     (r1Max - r1Min) /
+                     (double)resX * (double)i;
+          for (int j = 0; j < resY; ++j)
+          {
+            double y = r2Min
+                     +
+                     (r2Max - r2Min) /
+                     (double)resY * (double)j;
+
+            for (int index = 0; index < formulas.Count; index++)
+            {
+              var item = formulas[index];
+              var isInside = Util.Evaluate(item.Item2,
+                new List<string> { "x", "y", "z", "width", "height", "depth" },
+                new List<double> { x, y, z, r1Max, r2Max, depth },
+                new List<Tuple<string, double>>()
+                );
+              if (Math.Abs((isInside - 1.0)) < 1E-10)
+              {
+                result.SetPixel(i, j, ordinal == item.Item1 ? Color.White : Color.Black);
+                break;
+              }
+            }
+          }
+        }
+        return result;
+      }
+      catch
+      {
+
+      }
+      return new Bitmap(1, 1);
+    }
 
     public static void ExpandMath(this AnalyticGeometry analytic)
     {

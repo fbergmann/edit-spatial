@@ -1398,10 +1398,10 @@ namespace EditSpatial.Model
       req.setMathOverridden("spatial");
     }
 
-    public string ToMorpheus()
+    public string ToMorpheus(string filename = null)
     {
       var converter = new MorpheusConverter(Document);
-      return converter.ToMorpheus();
+      return converter.ToMorpheus(filename);
     }
 
     public void ExportToDune(string filename)
