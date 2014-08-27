@@ -3,7 +3,7 @@
 #ifndef DUNE_COPASI_DIFFUSIONPARAMETERS_HH
 #define DUNE_COPASI_DIFFUSIONPARAMETERS_HH
 
-#include<dune/copasi/utilities/componentparameters.hh>
+#include <dune/copasi/utilities/componentparameters.hh>
 #include "local_operator.hh"
 
 //! Transport in water phase
@@ -16,6 +16,7 @@ class DiffusionParameter :
 
 public:
     typedef Dune::PDELab::DiffusionParameterTraits<GV,RF> Traits;
+    typedef typename Traits::BCType BCType;
 
     DiffusionParameter(const Dune::ParameterTree & param, const std::string cname)
         : time(0.)
@@ -24,10 +25,26 @@ public:
         , Xmax(param.sub(cname).template get<RF>("Xmax", 0))
         , Ymin(param.sub(cname).template get<RF>("Ymin", 0))
         , Ymax(param.sub(cname).template get<RF>("Ymax", 0))
-        , BCType(param.sub(cname).template get<int>("BCType", 0))
         , width(param.sub("Domain").template get<int>("width", 0))
         , height(param.sub("Domain").template get<int>("height", 0))
-    {}
+        , boundarytype(BCType::Neumann)
+    {
+      int bc = param.sub(cname).template get<int>("BCType");
+      switch (bc) {
+      case 1:
+        boundarytype = BCType::Dirichlet;
+        break;
+      case -1:
+        boundarytype = BCType::Neumann;
+        break;
+      case -2:
+        boundarytype = BCType::Outflow;
+        break;
+      case -3:
+        boundarytype = BCType::None;
+        break;
+      }
+    }
 
 
     //! tensor permeability
@@ -46,19 +63,23 @@ public:
     }
 
     //! boundary condition type function
-    // 0 means Neumann
-    // 1 means Dirichlet
-    int
-    bc (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
+    BCType
+    bctype(const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
     {
-      return BCType; // only neumann
+      return boundarytype;
+    }
+
+    bool
+    isDirichlet(const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
+    {
+      return bctype(is, x) == BCType::Dirichlet;
     }
 
     //! Dirichlet boundary condition value
     typename Traits::RangeFieldType
     g (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
     {
-      if (!is.boundary() || BCType == 0)
+      if (!is.boundary() ||  boundarytype != BCType::Dirichlet)
         return 0; // Dirichlet is zero
       typename Traits::DomainType x = is.geometry().global(x_);
       if (x[0] < 1e-6)
@@ -76,7 +97,7 @@ public:
     typename Traits::RangeFieldType
     j (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
     {
-      if (!is.boundary() || BCType == 1)
+      if (!is.boundary() || boundarytype != BCType::Neumann)
         return 0.0;
       typename Traits::DomainType x = is.geometry().global(x_);
       if (x[0] < 1e-6)
@@ -115,9 +136,9 @@ private:
     const RF Xmax;
     const RF Ymin;
     const RF Ymax;
-    const int BCType;
     const RF width;
     const RF height;
+    BCType boundarytype;
 };
 
 

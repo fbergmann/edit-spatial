@@ -341,11 +341,11 @@ namespace EditSpatial.Converter
     private int GetBoundaryType(Parameter param)
     {
       var plug = (SpatialParameterPlugin)param.getPlugin("spatial");
-      if (plug == null) return 0;
+      if (plug == null) return -1;
       var bc = plug.getBoundaryCondition();
-      if (bc == null) return 0;
-      if (bc.getType() == "Flux") return 1; // Dirichlet
-      return 0; // Neumann
+      if (bc == null) return -1;
+      if (bc.getType() == "Value") return 1; // Dirichlet
+      return -1; // Neumann
     }
 
     private int GetBoundaryType(Parameter xmin, Parameter xmax, Parameter ymin, Parameter ymax)
@@ -354,7 +354,7 @@ namespace EditSpatial.Converter
       if (xmax != null) return GetBoundaryType(xmax);
       if (ymin != null) return GetBoundaryType(ymin);
       if (ymax != null) return GetBoundaryType(ymax);
-      return 0;
+      return -1;
     }
 
     private void WriteConfigFile(string path, string name)
@@ -442,6 +442,7 @@ namespace EditSpatial.Converter
         builder.AppendFormat("Xmax = {0}{1}", Xmax == null ? 0 : Xmax.getValue(), Environment.NewLine);
         builder.AppendFormat("Ymin = {0}{1}", Ymin == null ? 0 : Ymin.getValue(), Environment.NewLine);
         builder.AppendFormat("Ymax = {0}{1}", Ymax == null ? 0 : Ymax.getValue(), Environment.NewLine);
+        builder.AppendFormat("# Dirichlet=1, Neumann=-1, Outflow=-2, None=-3{0}", Environment.NewLine);
         builder.AppendFormat("BCType = {0}{1}", type, Environment.NewLine);
 
         builder.AppendLine();

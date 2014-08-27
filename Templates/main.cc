@@ -118,6 +118,8 @@ void run (const GV& gv, Dune::ParameterTree & param)
     const int dim = GV::dimension;
     Dune::Timer watch;
 
+    std::string timestepping = param.get<std::string>("timestepping");
+
 
     // output to vtk file (true/false)
     const bool graphics = param.get<bool>("writeVTK", false);
@@ -149,12 +151,18 @@ void run (const GV& gv, Dune::ParameterTree & param)
     if (verbosity) std::cout << "=== function space setup " <<  watch.elapsed() << " s" << std::endl;
 
     // some informations
-    gfs.update();
-    if (verbosity) std::cout << "number of DOF =" << gfs.globalSize() << std::endl;
+    tpgfs.update();
+    if (verbosity) std::cout << "number of DOF =" << tpgfs.globalSize() << std::endl;
+
+    watch.reset();
 
 
     // <<<2b>>> make subspaces for visualization
 %SUBCREATION%
+
+
+   if (verbosity) std::cout << "=== grid function subspaces " << watch.elapsed() << " s" << std::endl;
+   watch.reset();
 
     // make constraints map and initialize it from a function (boundary conditions)
     typedef typename TPGFS::template ConstraintsContainer<RF>::Type CC;
@@ -170,7 +178,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
     typedef Dune::PDELab::MulticomponentCCFVTemporalOperator<VCT> TLOP;
     TLOP tlop(vct);
     typedef Dune::PDELab::istl::BCRSMatrixBackend<> MBE;
-    MBE mbe(5); // Maximal number of nonzeroes per row can be cross-checked by patternStatistics().
+    MBE mbe(25); // Maximal number of nonzeroes per row can be cross-checked by patternStatistics().
     // grid operators
     typedef Dune::PDELab::GridOperator<TPGFS,TPGFS,LOP,MBE,RF,RF,RF,CC,CC> CGO0;
     CGO0 cgo0(tpgfs,cg,tpgfs,cg,lop,mbe);
@@ -178,12 +186,16 @@ void run (const GV& gv, Dune::ParameterTree & param)
     CGO1 cgo1(tpgfs,cg,tpgfs,cg,tlop,mbe);
     // one step grid operator for instationary problems
 
-    typedef Dune::PDELab::OneStepGridOperator<CGO0,CGO1,true> IGO;
-    IGO igo(cgo0,cgo1);
+
+    typedef Dune::PDELab::OneStepGridOperator<CGO0, CGO1, false> EIGO;
+    typedef Dune::PDELab::OneStepGridOperator<CGO0, CGO1, true> DIGO;
+
+    DIGO digo(cgo0, cgo1);
+    EIGO eigo(cgo0, cgo1);
 
 
     // <<<7>>> make vector for old time step and initialize
-    typedef typename IGO::Traits::Domain V;
+    typedef typename Dune::PDELab::BackendVectorSelector<TPGFS, RF>::Type V;
     V uold(tpgfs,0.0);
     V unew(tpgfs,0.0);
 
@@ -194,41 +206,58 @@ void run (const GV& gv, Dune::ParameterTree & param)
     UInitialType uinitial(%INITIALARGS%); //new
     Dune::PDELab::interpolate(uinitial,tpgfs,uold);
     unew = uold;
-
+    
+    if (verbosity) std::cout << "=== initial conditions " << watch.elapsed() << " s" << std::endl;
   // <<<5>>> Select a linear solver backend
 #if HAVE_MPI
 #if HAVE_SUPERLU
-  typedef Dune::PDELab::ISTLBackend_BCGS_AMG_SSOR<IGO> LS;
-  LS ls(tpgfs,param.sub("Newton").get<int>("LSMaxIterations", 100),param.sub("Newton").get<int>("LinearVerbosity", 0));
+    typedef Dune::PDELab::ISTLBackend_BCGS_AMG_SSOR<DIGO> DLS;
+    DLS dls(tpgfs, param.sub("Newton").get<int>("LSMaxIterations", 100), param.sub("Newton").get<int>("LinearVerbosity", 0));
 #else
-  typedef Dune::PDELab::ISTLBackend_OVLP_BCGS_SSORk<GFS,CC> LS;
-  LS ls(tpgfs,cc,5000,5,param.sub("Newton").get<int>("LinearVerbosity", 0));
+    typedef Dune::PDELab::ISTLBackend_OVLP_BCGS_SSORk<GFS, CC> DLS;
+    DLS dls(tpgfs, cc, 5000, 5, param.sub("Newton").get<int>("LinearVerbosity", 0));
 #endif
 #else //!parallel
 #if HAVE_SUPERLU
-    typedef Dune::PDELab::ISTLBackend_SEQ_SuperLU LS;
-    LS ls (param.sub("Newton").get<int>("LinearVerbosity", 0));
+    typedef Dune::PDELab::ISTLBackend_SEQ_SuperLU DLS;
+    DLS dls(param.sub("Newton").get<int>("LinearVerbosity", 0));
 #else
-    typedef Dune::PDELab::ISTLBackend_SEQ_BCGS_SSOR LS;
-  LS ls(5000,param.sub("Newton").get<int>("LinearVerbosity", 0));
+    typedef Dune::PDELab::ISTLBackend_SEQ_BCGS_SSOR DLS;
+    DLS dls(5000, param.sub("Newton").get<int>("LinearVerbosity", 0));
 #endif
 #endif
 
+    typedef Dune::PDELab::ISTLBackend_OVLP_ExplicitDiagonal<TPGFS> ELS;
+    ELS els(tpgfs);
+
+    if (verbosity) std::cout << "=== linear solvers " << watch.elapsed() << " s" << std::endl;
     // <<<6>>> Solver for non-linear problem per stage
-    typedef Dune::PDELab::Newton<IGO,LS,V> PDESOLVER;
-    PDESOLVER pdesolver(igo,ls);
-    pdesolver.setLineSearchStrategy(PDESOLVER::hackbuschReuskenAcceptBest); //strategy for linesearch
+    typedef Dune::PDELab::Newton<DIGO, DLS, V> CPDESOLVER;
+    CPDESOLVER pdesolver(digo, dls);
+    pdesolver.setLineSearchStrategy(CPDESOLVER::hackbuschReuskenAcceptBest); //strategy for linesearch
     typedef Dune::PDELab::NewtonParameters NewtonParameters;
     NewtonParameters newtonparameters(param.sub("Newton"));
     newtonparameters.set(pdesolver);
+    typedef Dune::PDELab::OneStepMethod<RF, DIGO, CPDESOLVER, V, V> OSMI;
+    Dune::PDELab::Alexander2Parameter<RF> imethod;
+    OSMI osmi(imethod, digo, pdesolver);
 
     // <<<7>>> time-stepper
-    Dune::PDELab::Alexander2Parameter<RF> method;
-    Dune::PDELab::OneStepMethod<RF,IGO,PDESOLVER,V,V> osm(method,igo,pdesolver);
-    Dune::PDELab::TimeSteppingMethods<RF> tsmethods;
-    tsmethods.setTimestepMethod(osm,param.get<std::string>("timesolver"));
+    typedef Dune::PDELab::SimpleTimeController<RF> TC;
+    TC tc;
 
-    osm.setVerbosityLevel(param.sub("Verbosity").get<int>("Instationary", 0));
+    typedef Dune::PDELab::ExplicitOneStepMethod<RF, EIGO, ELS, V, V, TC> OSME;
+    Dune::PDELab::ExplicitEulerParameter<RF> emethod;
+    OSME osme(emethod, eigo, els, tc);
+
+    if (verbosity) std::cout << "=== osm " << watch.elapsed() << " s" << std::endl;
+
+    Dune::PDELab::TimeSteppingMethods<RF> timesteppingmethods;
+    timesteppingmethods.setTimestepMethod(osme, param.get<std::string>("explicitsolver"));
+    timesteppingmethods.setTimestepMethod(osmi, param.get<std::string>("implicitsolver"));
+
+    osme.setVerbosityLevel(param.sub("Verbosity").get<int>("Instationary", 0));
+    osmi.setVerbosityLevel(param.sub("Verbosity").get<int>("Instationary", 0));
 
     char basename[255];
     sprintf(basename,"%s-%01d",param.get<std::string>("VTKname","").c_str(),param.sub("Domain").get<int>("refine"));
@@ -238,11 +267,14 @@ void run (const GV& gv, Dune::ParameterTree & param)
     // discrete grid functions
 %CREATEGRIDFUNCTIONS%
 
+    if (verbosity) std::cout << "=== output " << watch.elapsed() << " s" << std::endl;
 
     // <<<9>>> time loop
 
     if (graphics)
         pvdwriter.write(0);
+
+    if (verbosity) std::cout << "=== output0 " << watch.elapsed() << " s" << std::endl;
 
 
     double dt = timemanager.getTimeStepSize();
@@ -262,9 +294,12 @@ void run (const GV& gv, Dune::ParameterTree & param)
         try
         {
             // do time step
-            osm.apply(timemanager.getTime(),dt,uold,unew);
+            if (timestepping == "explicit")
+              osme.apply(timemanager.getTime(), dt, uold, unew);
+            else
+              osmi.apply(timemanager.getTime(), dt, uold, unew);
 
-            if (!controlReactionTimeStep(gv, unew))
+            if (!controlReactionTimeStep(unew))
             {
                 timemanager.notifyFailure();
                 unew = uold;
