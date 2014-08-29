@@ -74,6 +74,7 @@
       this.grid.Name = "grid";
       this.grid.Size = new System.Drawing.Size(542, 131);
       this.grid.TabIndex = 0;
+      this.grid.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.OnUserDeletedRow);
       // 
       // colSpatialId
       // 

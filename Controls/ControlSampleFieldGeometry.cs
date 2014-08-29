@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -104,7 +105,6 @@ namespace EditSpatial.Controls
 
     }
 
-
     private List<int> GetUniqueValues(int[] data)
     {
       var result = new List<int>();
@@ -114,6 +114,7 @@ namespace EditSpatial.Controls
       }
       return result;
     }
+
     private Image GenerateImage(SampledFieldGeometry sampledFieldGeometry, Geometry geometry, int resX = 128, int resY = 128)
     {
       if (geometry == null || sampledFieldGeometry == null || geometry.getNumCoordinateComponents() < 2)
@@ -126,11 +127,13 @@ namespace EditSpatial.Controls
 
 
         long uncompressedLength = _Data.getUncompressedLength();
+        if (uncompressedLength == 0)
+          _Data.uncompress();
+        uncompressedLength = _Data.getUncompressedLength();
         var array = new int[uncompressedLength];
         _Data.getUncompressed(array);
 
         var values = GetUniqueValues(array);
-
 
         int z = Util.SaveInt(txtZ.Text, 0);
         if (z >= _Field.getNumSamples3())
@@ -147,7 +150,6 @@ namespace EditSpatial.Controls
             result.SetPixel((int)i, (int)j, GetColorForIndex(index));
           }
         }
-
 
         return result;
       }
@@ -194,6 +196,18 @@ namespace EditSpatial.Controls
           return Color.Blue;
         case 3:
           return Color.Green;
+        case 4:
+          return Color.Yellow;
+        case 5:
+          return Color.Goldenrod;
+        case 6:
+          return Color.Lime;
+        case 7:
+          return Color.LightBlue;
+        case 8:
+          return Color.LightSalmon;
+        case 9:
+          return Color.MediumAquamarine;
       }
     }
 
@@ -266,7 +280,50 @@ namespace EditSpatial.Controls
 
     private void LoadImage(string fileName)
     {
+      var image = Image.FromFile(fileName) as Bitmap;
+      if (Current == null)
+      {
+        Current = SpatialGeometry.createSampledFieldGeometry();
+      }
+      Current.setSpatialId(Path.GetFileNameWithoutExtension(fileName));
+      _Field = Current.createSampledField();
+      _Field.setNumSamples1(image.Width);
+      _Field.setNumSamples2(image.Height);
+      _Field.setNumSamples3(1);
+      var data = new int[image.Width * image.Height];
+      int count = 0;
+      for (int i = 0; i < image.Width; ++i)
+        for (int j = 0; j < image.Height; ++j)
+        {
+          Color currentColor = image.GetPixel(i, j);
+
+          int value = (int) (currentColor.GetBrightness() * 10f);
+          //if (currentColor.B > 10 && currentColor.G > 10 && currentColor.R > 10)
+          //{ 
+          //  value = 1;
+          //}
+          data[count++] = value;
+        }
+
+      var values = GetUniqueValues(data);
+      int col = 0;
+      foreach (var val in values )
+      {
+        var vol = Current.createSampledVolume();
+        vol.setSpatialId(string.Format("vol_{0}",col++));
+        vol.setSampledValue(val);
+        vol.setMinValue(val);
+        vol.setMaxValue(val);
+
+      }
       
+      _Data = _Field.createImageData();
+      _Data.setDataType("uncompressed");
+      _Data.setSamples(data, data.Length);
+      _Data.uncompress();
+
+
+      InitializeFrom(SpatialGeometry, Current.getSpatialId());
     }
 
     private void OnImageSave(object sender, EventArgs e)
@@ -279,5 +336,15 @@ namespace EditSpatial.Controls
         }
       }
     }
+
+    private void OnUserDeletedRow(object sender, DataGridViewRowEventArgs e)
+    {
+
+      if (Current == null) return;
+      var id = e.Row.Cells[0].Value as string;
+      Current.removeSampledVolume(id);
+      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+    }
+
   }
 }
