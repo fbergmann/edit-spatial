@@ -85,7 +85,6 @@ namespace EditSpatial.Converter
 
     }
 
-
     public static string TranslateExpression(string expression)
     {
       return TranslateExpression(libsbml.parseFormula(expression), null);
@@ -150,7 +149,6 @@ namespace EditSpatial.Converter
             }
             return builder.ToString();
           }
-
         case libsbml.AST_RELATIONAL_LEQ:
           {
             var builder = new StringBuilder();
@@ -250,8 +248,6 @@ namespace EditSpatial.Converter
             }
             return name;
           }
-
-
       }
     }
 
@@ -275,7 +271,6 @@ namespace EditSpatial.Converter
 
     private void WriteReactionAdapter(string path)
     {
-
       var map = new Dictionary<string, string>();
 
       var initializer = new StringBuilder();
@@ -394,7 +389,6 @@ namespace EditSpatial.Converter
 
         ParameterIds.Add(current.getId());
         builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getSize(), Environment.NewLine);
-
       }
 
       for (int i = 0; i < Model.getNumSpecies(); ++i)
@@ -405,7 +399,6 @@ namespace EditSpatial.Converter
         builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getInitialConcentration(), Environment.NewLine);
 
       }
-
 
       builder.AppendLine();
 
@@ -423,7 +416,6 @@ namespace EditSpatial.Converter
           diff = species.getDiffusionY();
 
         if (!diff.HasValue) diff = 0;
-
 
         var Xmin = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmin");
         var Xmax = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmax");
@@ -447,7 +439,6 @@ namespace EditSpatial.Converter
 
         builder.AppendLine();
         ++count;
-
       }
 
       File.WriteAllText(Path.Combine(path, name + ".conf"),
@@ -468,7 +459,7 @@ namespace EditSpatial.Converter
       var gridFunctions = new StringBuilder();
 
       map["%NUMCOMPONENTS%"] = OdeVariables.Count.ToString();
-      map["%GEOMETRY%"] = GenerateGeometryExpression();
+      map["%GEOMETRY%"] = GenerateGeometryExpression(path);
 
       for (int index = 0; index < OdeVariables.Count; index++)
       {
@@ -492,9 +483,8 @@ namespace EditSpatial.Converter
         subCreation.AppendFormat("    U{0}SUB u{0}sub(tpgfs);{1}"
           , index, Environment.NewLine);
 
-        initialTypeCreation.AppendFormat("    typedef U{0}Initial<GV,RF> U{0}InitialType;{1}"
-          , index, Environment.NewLine);
-        initialTypeCreation.AppendFormat("    U{0}InitialType u{0}initial(gv,param);{1}"
+
+        initialTypeCreation.AppendFormat("    UGeneralInitialType u{0}initial(gv,param,{0});{1}"
           , index, Environment.NewLine);
 
         gridFunctions.AppendFormat("    typedef Dune::PDELab::DiscreteGridFunction<U{0}SUB,V> U{0}DGF;{1}"
@@ -505,7 +495,6 @@ namespace EditSpatial.Converter
           , index
           , OdeVariables[index]
           , Environment.NewLine);
-
       }
 
       map["%DPCREATION%"] = dpCreation.ToString();
@@ -523,19 +512,8 @@ namespace EditSpatial.Converter
         builder.ToString());
     }
 
-    private string GenerateGeometryExpression()
+    private static string GenerateGeometryExpressionForAnalyticVolume(AnalyticGeometry vol)
     {
-      // by default return the full area
-      string result = "return true;";
-      // string result = GenerateFish();   // or the fish
-
-      if (SpatialModelPlugin == null) return result;
-
-      if (Geometry == null || Geometry.getNumGeometryDefinitions() == 0) return result;
-
-      var vol = Geometry.GetFirstAnalyticGeometry();
-      if (vol == null || vol.getNumAnalyticVolumes() == 0) return result;
-
       var volume = vol.getAnalyticVolume(0);
       var builder = new StringBuilder();
       builder.Append("    const auto& x = point[0];\n");
@@ -547,7 +525,81 @@ namespace EditSpatial.Converter
         TranslateExpression(volume.getMath()));
       builder.Append("    return inside;\n");
       return builder.ToString();
+    }
 
+    private string WriteFieldToFile(string path, ImageData data, int numSamples1, int numSamples2, int z = 0)
+    {
+      var name = Path.Combine(path, "field1.dmp");
+      var length = data.getUncompressedLength();
+      var array = new int[length];
+      data.getUncompressed(array);
+
+      using(var writer = new StreamWriter(name))
+      {
+        writer.WriteLine("{0} {1}", numSamples1, numSamples2);
+        for (int i = 0;i < numSamples1; ++i)
+        { 
+          for (int j = 0; j < numSamples2; ++j)
+          {
+            writer.Write(array[i + numSamples1 * j + numSamples1 * numSamples2 * z]);
+            writer.Write(" ");
+          }
+          writer.WriteLine();
+        }
+      }
+
+      return name;
+    }
+
+    private string GenerateExpressionForSampleFieldGeometry(SampledFieldGeometry sample, string path)
+    {
+      var field = sample.getSampledField();
+      var data = field.getImageData();
+
+      string fileName = WriteFieldToFile(path, 
+                          data, 
+                          field.getNumSamples1(), 
+                          field.getNumSamples2());
+
+      var min = sample.getSampledVolume(0).getMinValue();
+      var max = sample.getSampledVolume(0).getMaxValue();
+
+      var builder = new StringBuilder();
+      builder.Append("    const auto& x = point[0];\n");
+      builder.Append("    const auto& y = point[1];\n");
+      builder.Append("    const auto& width = dimension[0];\n");
+      builder.Append("    const auto& height = dimension[1];\n");
+      builder.Append("\n");
+      builder.Append("    static DataHelper* data = NULL;\n");
+      builder.Append("    if (data == NULL)\n");
+      builder.AppendFormat("      data = new DataHelper(\"{0}\");\n", Path.GetFileName(fileName));
+      builder.Append("\n");
+      builder.Append("    double val =(*data)((double)x, (double)y);\n");
+      builder.AppendFormat("    bool inside=val >= {0} && val <={1};\n",
+        min, max);
+      builder.Append("    return inside;\n");
+      return builder.ToString();
+    }
+
+    private string GenerateGeometryExpression(string path)
+    {
+      // by default return the full area
+      string result = "return true;";
+      // string result = GenerateFish();   // or the fish
+
+      if (SpatialModelPlugin == null) return result;
+
+      if (Geometry == null || Geometry.getNumGeometryDefinitions() == 0) return result;
+
+      var vol = Geometry.GetFirstAnalyticGeometry();      
+      if (vol != null && vol.getNumAnalyticVolumes() > 0)
+        return GenerateGeometryExpressionForAnalyticVolume(vol);
+
+      var sample = Geometry.GetFirstSampledFieldGeometry();
+      if (sample != null && sample.getNumSampledVolumes() > 0)
+        return GenerateExpressionForSampleFieldGeometry(sample, path);
+        
+      return result;     
     }
 
     private static string GenerateFish()
@@ -574,45 +626,49 @@ namespace EditSpatial.Converter
       builder.AppendLine("#ifndef INITIAL_CONDITIONS_H");
       builder.AppendLine("#define INITIAL_CONDITIONS_H");
 
+      var map = new Dictionary<string, string>();
+
+      var initializer = new StringBuilder();
+      var declarations = new StringBuilder();
+
+      foreach (var pItem in ParameterIds)
+      {
+        initializer.AppendFormat(
+          "	   , {0}(param.sub(\"Reaction\").template get<RF>(\"{0}\")){1}"
+          , pItem
+          , Environment.NewLine
+          );
+        declarations.AppendFormat(
+          "    const RF {0};{1}"
+          , pItem
+          , Environment.NewLine
+          );
+      }
+
+      map["%INITIALIZER%"] = initializer.ToString();
+      map["%DECLARATION%"] = declarations.ToString();
+
+      var tempBuilder = new StringBuilder();
+
       int count = 0;
       foreach (var item in OdeVariables)
       {
-        var map = new Dictionary<string, string>();
-        map["%COUNT%"] = count.ToString();
 
-        var initializer = new StringBuilder();
-        var declarations = new StringBuilder();
-        var odes = new StringBuilder();
-        var odes2 = new StringBuilder();
-
-        foreach (var pItem in ParameterIds)
-        {
-          initializer.AppendFormat(
-            "	   , {0}(param.sub(\"Reaction\").template get<RF>(\"{0}\")){1}"
-            , pItem
-            , Environment.NewLine
-            );
-          declarations.AppendFormat(
-            "    const RF {0};{1}"
-            , pItem
-            , Environment.NewLine
-            );
-        }
-
-
-        map["%INITIALIZER%"] = initializer.ToString();
-        map["%DECLARATION%"] = declarations.ToString();
+        tempBuilder.AppendLine();
+        tempBuilder.AppendFormat("        case {0}:{1}", count, Environment.NewLine);
+        tempBuilder.AppendLine  ("        {");
+        tempBuilder.AppendFormat("          // initial conditions for {0}{1}", item, Environment.NewLine);
 
         var initial = Model.getInitialAssignment(item);
         if (initial != null && initial.isSetMath())
         {
-          var tempBuilder = new StringBuilder();
-          tempBuilder.AppendLine("        const int dim = Traits::GridViewType::Grid::dimension;");
-          tempBuilder.AppendLine("        typedef typename Traits::GridViewType::Grid::ctype ctype;");
-          tempBuilder.AppendLine("        Dune::FieldVector<ctype,dim> x = e.geometry().global(xlocal);");
+
+          tempBuilder.AppendLine("          const int dim = Traits::GridViewType::Grid::dimension;");
+          tempBuilder.AppendLine("          typedef typename Traits::GridViewType::Grid::ctype ctype;");
+          tempBuilder.AppendLine("          Dune::FieldVector<ctype,dim> x = e.geometry().global(xlocal);");
           tempBuilder.AppendLine();
           tempBuilder.AppendFormat(
-            "        __initial = {0};{1}",
+            "          __initial = {0};{1}",
             TranslateExpression(initial.getMath(),
               new Dictionary<string, string>
               {
@@ -623,7 +679,7 @@ namespace EditSpatial.Converter
               ),
             Environment.NewLine
             );
-          map["%INITIALCONDITION%"] = tempBuilder.ToString();
+          tempBuilder.AppendLine();
         }
         else
         {
@@ -631,23 +687,28 @@ namespace EditSpatial.Converter
           if (species != null)
           {
             if (species.isSetInitialConcentration())
-              map["%INITIALCONDITION%"] = string.Format(
-                "        __initial = {0};{1}"
+              tempBuilder.AppendFormat(
+                "          __initial = {0};{1}"
                 , species.getInitialConcentration().ToString("E17")
                 , Environment.NewLine);
             else
-              map["%INITIALCONDITION%"] = string.Format(
-                "        __initial = {0};{1}"
+              tempBuilder.AppendFormat(
+                "          __initial = {0};{1}"
                 , species.getInitialAmount().ToString("E17")
                 , Environment.NewLine);
           }
         }
+        tempBuilder.AppendLine("          break;");
+        tempBuilder.AppendLine("        }");
 
-        //map["%INITIALCONDITION%"] =TranslateExpression(rule.getMath(), varMap),;
-        builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.initial_conditions, map));
-        builder.AppendLine();
         ++count;
       }
+
+
+      map["%INITIALCONDITION%"] = tempBuilder.ToString();
+      builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.initial_conditions, map));
+      builder.AppendLine();
+
 
       builder.AppendLine("#endif // INITIAL_CONDITIONS_H");
 

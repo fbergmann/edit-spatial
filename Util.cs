@@ -297,8 +297,8 @@ namespace EditSpatial
 
     public static void AppendMorpheusNode(this StringBuilder builder, string format, ASTNode node, Dictionary<string, string> map)
     {
-      if (!node.IsBasic())
-        format = format.Replace("{0}", "({0})");
+      //if (!node.IsBasic())
+      //  format = format.Replace("{0}", "({0})");
       builder.AppendFormat(format, MorpheusConverter.TranslateExpression(node, map));
     }
 

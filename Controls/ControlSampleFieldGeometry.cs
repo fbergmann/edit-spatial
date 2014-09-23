@@ -162,7 +162,7 @@ namespace EditSpatial.Controls
 
     private int GetIndexFor(int value)
     {
-      if (Current == null) return 0;
+      if (Current == null) return -1;
 
       for (long i = 0; i < Current.getNumSampledVolumes(); ++i)
       {
@@ -178,7 +178,7 @@ namespace EditSpatial.Controls
           return (int)i;
       }
 
-      return 0;
+      return -1;
     }
 
     private Color GetColorForIndex(int index)

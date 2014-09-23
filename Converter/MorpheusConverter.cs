@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace EditSpatial.Converter
     private readonly SBMLDocument document;
     private readonly StringBuilder errorBuilder;
     private readonly libsbmlcs.Model Model;
-    private int numVariables;
+    private readonly int numVariables;
 
     private readonly Dictionary<string, string> boundaryConditions;
     private readonly Dictionary<string, Dictionary<string, string>> boundaryValue;
@@ -48,7 +49,7 @@ namespace EditSpatial.Converter
     public MorpheusConverter(SBMLDocument original)
     {
       errorBuilder = new StringBuilder();
-      this.document = original.clone();
+      document = original.clone();
       numVariables = 0;
 
       document.getErrorLog().setSeverityOverride(libsbml.LIBSBML_OVERRIDE_DONT_LOG);
@@ -112,7 +113,7 @@ namespace EditSpatial.Converter
         if (plugin.getType() == libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT)
         {
           var diff = plugin.getDiffusionCoefficient();
-          diffusion[diff.getVariable()] = current.getValue().ToString();
+          diffusion[diff.getVariable()] = current.getValue().ToString(CultureInfo.InvariantCulture);
         }
       }
 
@@ -346,7 +347,7 @@ namespace EditSpatial.Converter
     private void WriteAnalysis(XmlWriter writer)
     {
       int multiplier = Math.Max(1, numVariables / 2);
-      double scale = 4;
+      const double scale = 4;
 
       writer.WriteStartElement("Analysis");
       writer.WriteStartElement("Gnuplotter");

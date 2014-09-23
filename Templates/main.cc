@@ -11,6 +11,7 @@
 #endif
 
 #include <math.h>
+#include <fstream>
 #include <iostream>
 #include <vector>
 #include <map>
@@ -56,6 +57,7 @@
 #include <dune/copasi/utilities/newton.hh>
 #include <dune/copasi/utilities/newtonutilities.hh>
 #include <dune/copasi/utilities/timemanager.hh>
+#include <dune/copasi/utilities/datahelper.hh>
 #include <dune/copasi/utilities/sbmlhelper.hh>
 #include <dune/copasi/utilities/solutioncontrol.hh>
 
@@ -84,6 +86,16 @@
 #include <dune/pdelab/stationary/linearproblem.hh>
 #include <dune/pdelab/instationary/onestep.hh>
 #include <dune/pdelab/gridfunctionspace/subspace.hh>
+
+#include <dune/pdelab/multidomain/multidomaingridfunctionspace.hh>
+#include <dune/pdelab/multidomain/coupling.hh>
+#include <dune/pdelab/multidomain/subproblemlocalfunctionspace.hh>
+#include <dune/pdelab/multidomain/gridoperator.hh>
+#include <dune/pdelab/multidomain/subproblem.hh>
+#include <dune/pdelab/constraints/conforming.hh>
+#include <dune/pdelab/multidomain/constraints.hh>
+#include <dune/pdelab/multidomain/interpolate.hh>
+#include <dune/pdelab/multidomain/vtk.hh>
 
 #include "componentparameters.hh"
 #include "local_operator.hh"
@@ -140,8 +152,8 @@ void run (const GV& gv, Dune::ParameterTree & param)
     typedef Dune::PDELab::ISTLVectorBackend<> VBE0;
     typedef Dune::PDELab::GridFunctionSpace<GV,FEM,CON,VBE0> GFS;
 
-    typedef Dune::PDELab::ISTLVectorBackend
-            <Dune::PDELab::ISTLParameters::static_blocking,VCT::COMPONENTS> VBE;
+    typedef Dune::PDELab::ISTLVectorBackend<> VBE;
+            //<Dune::PDELab::ISTLParameters::static_blocking,VCT::COMPONENTS> VBE;
     typedef Dune::PDELab::PowerGridFunctionSpace<GFS,VCT::COMPONENTS,VBE,
             Dune::PDELab::EntityBlockedOrderingTag> TPGFS;
     watch.reset();
@@ -178,7 +190,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
     typedef Dune::PDELab::MulticomponentCCFVTemporalOperator<VCT> TLOP;
     TLOP tlop(vct);
     typedef Dune::PDELab::istl::BCRSMatrixBackend<> MBE;
-    MBE mbe(25); // Maximal number of nonzeroes per row can be cross-checked by patternStatistics().
+    MBE mbe(27); // Maximal number of nonzeroes per row can be cross-checked by patternStatistics().
     // grid operators
     typedef Dune::PDELab::GridOperator<TPGFS,TPGFS,LOP,MBE,RF,RF,RF,CC,CC> CGO0;
     CGO0 cgo0(tpgfs,cg,tpgfs,cg,lop,mbe);
@@ -200,10 +212,15 @@ void run (const GV& gv, Dune::ParameterTree & param)
     V unew(tpgfs,0.0);
 
     // initial conditions
+    typedef UGeneralInitial<GV, RF> UGeneralInitialType;
 %INITIALTYPECREATION%
 
-    typedef Dune::PDELab::CompositeGridFunction<%INITIALTYPES%> UInitialType; //new
+
+    typedef Dune::PDELab::PowerGridFunction<UGeneralInitialType, %NUMCOMPONENTS%> UInitialType;
     UInitialType uinitial(%INITIALARGS%); //new
+
+    //typedef Dune::PDELab::CompositeGridFunction<%INITIALTYPES%> UInitialType; //new
+    //UInitialType uinitial(%INITIALARGS%); //new
     Dune::PDELab::interpolate(uinitial,tpgfs,uold);
     unew = uold;
     
