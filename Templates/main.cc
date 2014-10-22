@@ -103,6 +103,15 @@
 #include "reactionadapter.hh"
 
 
+/**
+ * global data helper variable, that can be used to exchange the geometry
+ * via config file
+ */
+
+DataHelper* dh_geometry = NULL;
+double geometry_min = 10;
+double geometry_max = 10;
+
 /** \brief Control time step after reaction.
 
     If some concentration is negative, then it returns false.
@@ -402,6 +411,17 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
 bool isInside(const Dune::FieldVector<double, 2>& point, const Dune::FieldVector<double, 2>& dimension)
 {
+  const auto& x = point[0];
+  const auto& y = point[1];
+  const auto& width = dimension[0];
+  const auto& height = dimension[1];
+
+  if (dh_geometry != NULL)
+  {
+    double val = (*dh_geometry)((double)x, (double)y);
+    bool inside = val >= (geometry_min - 1e-5) && val <= (geometry_max + 1e-5);
+    return inside;
+  }
 
 %GEOMETRY%
 
@@ -438,6 +458,10 @@ int main(int argc, char** argv)
         parser.readINITree(configfile, param);
 
         int dim=param.sub("Domain").get<int>("dim", 2);
+
+        dh_geometry = DataHelper::forFile(param.sub("Domain").template get<std::string>("geometry", ""));
+        geometry_min = param.sub("Domain").template get<double>("geometry_min", 0);
+        geometry_max = param.sub("Domain").template get<double>("geometry_max", 0);
 
         if (dim==2)
         {

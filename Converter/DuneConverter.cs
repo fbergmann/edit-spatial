@@ -15,6 +15,9 @@ namespace EditSpatial.Converter
     private readonly SpatialModelPlugin SpatialModelPlugin;
     private readonly Geometry Geometry;
 
+    public double GeometryMin { get; set; }
+    public double GeometryMax { get; set; }
+
     private List<string> OdeVariables { get; set; }
 
     public void Dispose()
@@ -23,6 +26,10 @@ namespace EditSpatial.Converter
         document.Dispose();
       if (Model != null)
         Model.Dispose();
+      if (SpatialModelPlugin != null)
+        SpatialModelPlugin.Dispose();
+      if (Geometry != null)
+        Geometry.Dispose();
     }
 
     public DuneConverter(SBMLDocument original)
@@ -268,7 +275,7 @@ namespace EditSpatial.Converter
       WriteMainFile(path, name);
       WriteReactionAdapter(path);
     }
-
+    
     private void WriteReactionAdapter(string path)
     {
       var map = new Dictionary<string, string>();
@@ -352,13 +359,18 @@ namespace EditSpatial.Converter
       return -1;
     }
 
+    public string GeometryFile {get; set; }
+
     private void WriteConfigFile(string path, string name)
     {
       var builder = new StringBuilder();
       var map = new Dictionary<string, string>();
 
-      map["%NAME%"] = name;
+      map["%GEOMETRY_FILE%"] = GeometryFile;
+      map["%GEOMETRY_MIN%"] = GeometryMin.ToString();
+      map["%GEOMETRY_MAX%"] = GeometryMax.ToString();
 
+      map["%NAME%"] = name;
       map["%TIME_TEND%"] = "500";
       map["%TIME_DTMAX%"] = "1";
       map["%TIME_DTPLOT%"] = "1";
@@ -441,6 +453,15 @@ namespace EditSpatial.Converter
         ++count;
       }
 
+      builder.AppendLine();
+      builder.AppendLine("[Data]");
+      builder.AppendLine("# use this section to override initial conditions of any variable");
+      builder.AppendLine("# by simply specifying the variable followed by a filename");
+      builder.AppendLine("# of the dmp file containing the initial values");
+      foreach (var item in OdeVariables)
+        builder.AppendFormat("{0} = {1}", item, Environment.NewLine);
+      builder.AppendLine();
+
       File.WriteAllText(Path.Combine(path, name + ".conf"),
         builder.ToString());
     }
@@ -516,10 +537,6 @@ namespace EditSpatial.Converter
     {
       var volume = vol.getAnalyticVolume(0);
       var builder = new StringBuilder();
-      builder.Append("    const auto& x = point[0];\n");
-      builder.Append("    const auto& y = point[1];\n");
-      builder.Append("    const auto& width = dimension[0];\n");
-      builder.Append("    const auto& height = dimension[1];\n");
       builder.Append("\n");
       builder.AppendFormat("    bool inside={0};\n",
         TranslateExpression(volume.getMath()));
@@ -527,9 +544,9 @@ namespace EditSpatial.Converter
       return builder.ToString();
     }
 
-    private string WriteFieldToFile(string path, ImageData data, int numSamples1, int numSamples2, int z = 0)
+    private string WriteFieldToFile(string path, ImageData data, int numSamples1, int numSamples2, int z = 0, string basename = "geometry1.dmp" )
     {
-      var name = Path.Combine(path, "field1.dmp");
+      var name = Path.Combine(path, basename);
       var length = data.getUncompressedLength();
       var array = new int[length];
       data.getUncompressed(array);
@@ -556,7 +573,7 @@ namespace EditSpatial.Converter
       var field = sample.getSampledField();
       var data = field.getImageData();
 
-      string fileName = WriteFieldToFile(path, 
+      GeometryFile = WriteFieldToFile(path, 
                           data, 
                           field.getNumSamples1(), 
                           field.getNumSamples2());
@@ -564,21 +581,10 @@ namespace EditSpatial.Converter
       var min = sample.getSampledVolume(0).getMinValue();
       var max = sample.getSampledVolume(0).getMaxValue();
 
-      var builder = new StringBuilder();
-      builder.Append("    const auto& x = point[0];\n");
-      builder.Append("    const auto& y = point[1];\n");
-      builder.Append("    const auto& width = dimension[0];\n");
-      builder.Append("    const auto& height = dimension[1];\n");
-      builder.Append("\n");
-      builder.Append("    static DataHelper* data = NULL;\n");
-      builder.Append("    if (data == NULL)\n");
-      builder.AppendFormat("      data = new DataHelper(\"{0}\");\n", Path.GetFileName(fileName));
-      builder.Append("\n");
-      builder.Append("    double val =(*data)((double)x, (double)y);\n");
-      builder.AppendFormat("    bool inside=val >= {0} && val <={1};\n",
-        min, max);
-      builder.Append("    return inside;\n");
-      return builder.ToString();
+      GeometryMin = min;
+      GeometryMax = max;
+      
+      return "";
     }
 
     private string GenerateGeometryExpression(string path)
@@ -625,7 +631,9 @@ namespace EditSpatial.Converter
       var builder = new StringBuilder();
       builder.AppendLine("#ifndef INITIAL_CONDITIONS_H");
       builder.AppendLine("#define INITIAL_CONDITIONS_H");
-
+      builder.AppendLine();
+      builder.AppendLine("#include <dune/copasi/utilities/datahelper.hh>");
+      builder.AppendLine();
       var map = new Dictionary<string, string>();
 
       var initializer = new StringBuilder();
@@ -645,30 +653,44 @@ namespace EditSpatial.Converter
           );
       }
 
-      map["%INITIALIZER%"] = initializer.ToString();
-      map["%DECLARATION%"] = declarations.ToString();
-
       var tempBuilder = new StringBuilder();
 
       int count = 0;
       foreach (var item in OdeVariables)
       {
+        initializer.AppendFormat(
+          "	   , dh_{0}(DataHelper::forFile(param.sub(\"Data\").template get<std::string>(\"{0}\"))){1}"
+          , item
+          , Environment.NewLine
+          );
+
+        declarations.AppendFormat(
+          "    const DataHelper* dh_{0};{1}"
+          , item
+          , Environment.NewLine
+          );
 
         tempBuilder.AppendLine();
         tempBuilder.AppendFormat("        case {0}:{1}", count, Environment.NewLine);
         tempBuilder.AppendLine  ("        {");
         tempBuilder.AppendFormat("          // initial conditions for {0}{1}", item, Environment.NewLine);
 
+        tempBuilder.AppendLine  ("          const int dim = Traits::GridViewType::Grid::dimension;");
+        tempBuilder.AppendLine  ("          typedef typename Traits::GridViewType::Grid::ctype ctype;");
+        tempBuilder.AppendLine  ("          Dune::FieldVector<ctype,dim> x = e.geometry().global(xlocal);");
+
+        tempBuilder.AppendFormat("          if(dh_{0} != NULL){1}", item, Environment.NewLine);
+        tempBuilder.AppendFormat("            __initial  = (typename Traits::RangeType)(*dh_{0})((double)(x[0]),(double)x[1] );{1}", item, Environment.NewLine);
+        tempBuilder.AppendLine  ("          else");
+
+
         var initial = Model.getInitialAssignment(item);
         if (initial != null && initial.isSetMath())
         {
 
-          tempBuilder.AppendLine("          const int dim = Traits::GridViewType::Grid::dimension;");
-          tempBuilder.AppendLine("          typedef typename Traits::GridViewType::Grid::ctype ctype;");
-          tempBuilder.AppendLine("          Dune::FieldVector<ctype,dim> x = e.geometry().global(xlocal);");
           tempBuilder.AppendLine();
           tempBuilder.AppendFormat(
-            "          __initial = {0};{1}",
+            "            __initial = {0};{1}",
             TranslateExpression(initial.getMath(),
               new Dictionary<string, string>
               {
@@ -688,12 +710,12 @@ namespace EditSpatial.Converter
           {
             if (species.isSetInitialConcentration())
               tempBuilder.AppendFormat(
-                "          __initial = {0};{1}"
+                "            __initial = {0};{1}"
                 , species.getInitialConcentration().ToString("E17")
                 , Environment.NewLine);
             else
               tempBuilder.AppendFormat(
-                "          __initial = {0};{1}"
+                "            __initial = {0};{1}"
                 , species.getInitialAmount().ToString("E17")
                 , Environment.NewLine);
           }
@@ -705,6 +727,9 @@ namespace EditSpatial.Converter
       }
 
 
+
+      map["%INITIALIZER%"] = initializer.ToString();
+      map["%DECLARATION%"] = declarations.ToString();
       map["%INITIALCONDITION%"] = tempBuilder.ToString();
       builder.AppendLine(ExpandTemplate(EditSpatial.Properties.Resources.initial_conditions, map));
       builder.AppendLine();

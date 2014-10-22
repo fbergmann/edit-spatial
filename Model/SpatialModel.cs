@@ -953,7 +953,7 @@ namespace EditSpatial.Model
         BoundaryCondition bc = pplug.getBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Xmin");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Flux" : "Value");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
         SetRequiredElements(param);
 
         temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmax");
@@ -967,7 +967,7 @@ namespace EditSpatial.Model
         bc = pplug.getBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Xmax");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Flux" : "Value");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
         SetRequiredElements(param);
 
         temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymin");
@@ -982,7 +982,7 @@ namespace EditSpatial.Model
         bc = pplug.getBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Ymin");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Flux" : "Value");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
         SetRequiredElements(param);
 
         temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymax");
@@ -997,7 +997,7 @@ namespace EditSpatial.Model
         bc = pplug.getBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Ymax");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Flux" : "Value");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
         SetRequiredElements(param);
       }
     }
