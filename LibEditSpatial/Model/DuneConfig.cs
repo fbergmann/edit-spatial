@@ -30,7 +30,19 @@ namespace LibEditSpatial.Model
       get
       {
         if (_GlobalConfig == null)
-          _GlobalConfig = GlobalConfig.FromDict(Entries[STR_GLOBAL]);
+        {
+          if (Entries.ContainsKey(STR_GLOBAL))
+            _GlobalConfig = GlobalConfig.FromDict(Entries[STR_GLOBAL]);
+          else
+            _GlobalConfig = new GlobalConfig { WriteVTK = true,
+            ExplicitSolver = "RK4",
+            ImplicitSolver = "Alexander2",
+            IntegrationOrder = 2,
+            SubSampling = 2,
+            Overlap = 1,
+            TimeStepping = "implicit" };
+        }
+       
         return _GlobalConfig;
       }
       set
@@ -46,7 +58,21 @@ namespace LibEditSpatial.Model
       get
       {
         if (_NewtonConfig == null)
-          _NewtonConfig = NewtonConfig.FromDict(Entries["Newton"]);
+        {
+          if (Entries.ContainsKey("Newton"))
+            _NewtonConfig = NewtonConfig.FromDict(Entries["Newton"]);
+          else
+            _NewtonConfig = new NewtonConfig { LinearVerbosity = 0,
+            ReassembleThreshold = 0,
+            LineSearchMaxIterations = 5,
+            MaxIterations = 30,
+            AbsoluteLimit = 1e-8,
+            Reduction = 1e-8,
+            LinearReduction = 1e-4,
+            LineSearchDampingFactor = 0.5,
+            Verbosity = 0 };
+        }
+
         return _NewtonConfig;
       }
       set
@@ -62,7 +88,19 @@ namespace LibEditSpatial.Model
       get
       {
         if (_DomainConfig == null)
-          _DomainConfig = DomainConfig.FromDict(Entries["Domain"]);
+        {
+          if (Entries.ContainsKey("Domain"))
+            _DomainConfig = DomainConfig.FromDict(Entries["Domain"]);
+          else
+            _DomainConfig = new DomainConfig { Width = 100,
+            Height = 100,
+            Depth = 1,
+            GridX = 64,
+            GridY = 64,
+            GridZ = 1,
+            Refinement = 0 };
+        }
+
         return _DomainConfig;
       }
       set
@@ -78,7 +116,13 @@ namespace LibEditSpatial.Model
       get
       {
         if (_TimeConfig == null)
-          _TimeConfig = TimeLoopConfig.FromDict(Entries["Timeloop"]);
+        {
+          if (Entries.ContainsKey("Timeloop"))
+            _TimeConfig = TimeLoopConfig.FromDict(Entries["Timeloop"]);
+          else
+            _TimeConfig = new TimeLoopConfig{ Time = 10, InitialStep = 0.01, MinStep = 1e-6, MaxStep = 0.01, PlotStep = 0.01};
+        }
+
         return _TimeConfig;
       }
       set
@@ -112,26 +156,34 @@ namespace LibEditSpatial.Model
       return result;
     }
 
-    private void WriteSection(StringBuilder builder, string key, Dictionary<string, string> map)
+    private void WriteSection(StringBuilder builder, string key, Dictionary<string, string> map, string basedir = null)
     {
       if (!string.IsNullOrWhiteSpace(key))
         builder.AppendFormat("[{0}]{1}", key, Environment.NewLine);
 
       foreach (var item in map)
-        builder.AppendFormat("{0} = {1}{2}", item.Key, item.Value, Environment.NewLine);
+      {
+        string val = item.Value.Trim();
+        if (!string.IsNullOrWhiteSpace(basedir) && val.StartsWith(basedir))
+          val = val.Replace(basedir, "");
+
+        builder.AppendFormat("{0} = {1}{2}", item.Key, val, Environment.NewLine);
+      }
 
       builder.AppendLine();
     }
 
     public void SaveAs(string fileName)
     {
+      var baseDir = Path.GetDirectoryName(fileName);
+
       var builder = new StringBuilder();
       builder.AppendLine("# Dune Config file");
       builder.AppendLine("# written: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
       builder.AppendLine();
 
-      WriteSection(builder, "", GlobalConfig.ToDict());
-      WriteSection(builder, "Newton", NewtonConfig.ToDict());
+      WriteSection(builder, "", GlobalConfig.ToDict(), baseDir);
+      WriteSection(builder, "Newton", NewtonConfig.ToDict(), baseDir);
       if (!Entries.ContainsKey("Verbosity"))
       {
         var tmp = new Dictionary<string, string>();
@@ -140,16 +192,17 @@ namespace LibEditSpatial.Model
         Entries.Add("Verbosity", tmp);
       }
 
-      WriteSection(builder, "Verbosity", Entries["Verbosity"]);
-      WriteSection(builder, "Timeloop", TimeConfig.ToDict());
-      WriteSection(builder, "Domain", DomainConfig.ToDict());
-      WriteSection(builder, "Reaction", Entries["Reaction"]);
+      WriteSection(builder, "Verbosity", Entries["Verbosity"], baseDir);
+      WriteSection(builder, "Timeloop", TimeConfig.ToDict(), baseDir);
+      WriteSection(builder, "Domain", DomainConfig.ToDict(), baseDir);
+      WriteSection(builder, "Reaction", Entries["Reaction"], baseDir);
       foreach (string item in GetVariableKeys())
-        WriteSection(builder, item, Entries[item]);
+        WriteSection(builder, item, Entries[item], baseDir);
       if (Entries.ContainsKey("Data"))
-        WriteSection(builder, "Data", Entries["Data"]);
+        WriteSection(builder, "Data", Entries["Data"], baseDir);
 
       File.WriteAllText(fileName, builder.ToString());
+
     }
 
 

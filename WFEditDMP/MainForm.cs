@@ -142,7 +142,7 @@ namespace WFEditDMP
     {
       ctrlPalette1.Palette = DmpPalette.Default;
 
-      LoadPalettes(AppDomain.CurrentDomain.BaseDirectory);
+      LoadPalettes(Path.Combine( AppDomain.CurrentDomain.BaseDirectory, "Palettes"));
     }
 
     private void OnPaletteChanged(object sender, EventArgs e)

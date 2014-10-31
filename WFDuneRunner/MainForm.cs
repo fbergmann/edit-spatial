@@ -15,6 +15,19 @@ namespace WFDuneRunner
     public MainForm()
     {
       InitializeComponent();
+
+      ctrlDomain1.OpenDmpFile += (o, e) => OpenDmpFile(e);
+      ctrlDomain1.BrowseDmpFile += (o, e) =>
+      {
+        string result;
+        if (BrowseDmpFile(out result))
+        {
+          ctrlDomain1.Model.Geometry = result;
+          ctrlDomain1.LoadModel(ctrlDomain1.Model);
+        }
+      };
+
+      NewModel();
     }
 
     public DuneConfig Config { get; set; }
@@ -97,14 +110,20 @@ namespace WFDuneRunner
           );
       }
 
+      cmdRun.Enabled = (!string.IsNullOrWhiteSpace(ExecutableFileName));
+
       _isLoading = false;
     }
 
-    private void OnNewFile(object sender, EventArgs e)
+    private void NewModel()
     {
       FileName = null;
       Config = new DuneConfig();
       UpdateUI();
+    }
+    private void OnNewFile(object sender, EventArgs e)
+    {
+      NewModel();
     }
 
     private void OnOpenFile(object sender, EventArgs e)
@@ -149,15 +168,26 @@ namespace WFDuneRunner
       Close();
     }
 
+    public string ExecutableFileName
+    {
+      get
+      {
+        string path = Path.GetDirectoryName(FileName);
+        if (path == null) return null;
+        string[] files = Directory.GetFiles(path, "*.exe");
+        if (files.Length == 0) return null;
+        return files[0];
+      }
+    }
     private void OnRunClick(object sender, EventArgs e)
     {
-      string path = Path.GetDirectoryName(FileName);
-      if (path == null) return;
-      string[] files = Directory.GetFiles(path, "*.exe");
+      var fileName = ExecutableFileName;
+      if (fileName == null) return;
+
       using (var dialog = new DlgRun
       {
         Config = Config,
-        FileName = files.Length > 0 ? files[0] : path
+        FileName = fileName
       })
       {
         dialog.ShowDialog();
@@ -231,13 +261,36 @@ namespace WFDuneRunner
       }
       try
       {
-        Process.Start(file);
+        using (var dlg = new WFEditDMP.MainForm())
+        {
+          dlg.OpenFile(file);
+          dlg.StartPosition = FormStartPosition.CenterParent;
+          dlg.ShowDialog();
+        }
       }
       catch
       {
       }
     }
 
+    private bool BrowseDmpFile(out string result)
+    {
+      result = String.Empty;
+      var assign = false;
+      using (var dlg = new OpenFileDialog { Title = "Open file", Filter = "DMP files|*.dmp|All files|*.*" })
+      {
+        if (dlg.ShowDialog() == DialogResult.OK)
+        {
+          var path = Path.GetDirectoryName(FileName);
+          var filename = dlg.FileName;
+          if (filename.StartsWith(path))
+            filename = filename.Replace(path, "");
+          result = filename;
+          assign = true;
+        }
+      }
+      return assign;
+    }
     private void gridVariables_CellClick(object sender, DataGridViewCellEventArgs e)
     {
       if (_isLoading) return;
@@ -250,17 +303,37 @@ namespace WFDuneRunner
       switch (e.ColumnIndex)
       {
         case 8: // open file
-          OpenDmpFile(row.Cells[7].Value as string);
-          break;
-        case 9: // browse file
-        {
-          using (var dlg = new OpenFileDialog {Title = "Open file", Filter = "DMP files|*.dmp|All files|*.*"})
           {
-            if (dlg.ShowDialog() == DialogResult.OK)
-              row.Cells[7].Value = dlg.FileName;
+            string file = row.Cells[7].Value as string;
+            string id = row.Cells[0].Value as string;
+            if (string.IsNullOrWhiteSpace(file))
+            {
+              int count = 1;
+              string baseName = "ic_" + id;
+              string name = baseName + ".dmp";
+
+              string dir = Path.GetDirectoryName(FileName);
+              while (File.Exists(Path.Combine(dir, name)))
+              {
+                name = string.Format("{0}_{1}.dmp", baseName, count++);
+              }
+
+              row.Cells[7].Value = name;
+              var dmpFile = new DmpModel(Config.DomainConfig.GridX, Config.DomainConfig.GridY);
+              file = Path.Combine(dir, name);
+              dmpFile.SaveAs(file);
+            }
+
+            OpenDmpFile(file);
+            break;
           }
-          break;
-        }
+        case 9: // browse file
+          {
+            string result;
+            if (BrowseDmpFile(out result))
+              row.Cells[7].Value = result;
+            break;
+          }
         default:
           break;
       }

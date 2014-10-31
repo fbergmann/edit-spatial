@@ -9,9 +9,9 @@ namespace LibEditSpatial.Model
 
     public static DebugConfig FromDict(Dictionary<string, string> dict)
     {
-      var result = new DebugConfig();
-      result.Verbosity = dict.Get<int>("verbosity");
-      result.Instationary = dict.Get<int>("Instationary");
+      var result = new DebugConfig() { 
+        Verbosity = dict.Get<int>("verbosity"), 
+        Instationary = dict.Get<int>("Instationary") };
       return result;
     }
 

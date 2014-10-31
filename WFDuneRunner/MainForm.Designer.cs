@@ -36,12 +36,26 @@ namespace WFDuneRunner
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabTime = new System.Windows.Forms.TabPage();
+      this.ctrlTime1 = new LibEditSpatial.Controls.CtrlTime();
       this.tabDomain = new System.Windows.Forms.TabPage();
+      this.ctrlDomain1 = new LibEditSpatial.Controls.CtrlDomain();
       this.tabNewton = new System.Windows.Forms.TabPage();
+      this.ctrlNewton1 = new LibEditSpatial.Controls.CtrlNewton();
       this.tabGlobal = new System.Windows.Forms.TabPage();
+      this.ctrlGlobal1 = new LibEditSpatial.Controls.CtrlGlobal();
       this.tabControl2 = new System.Windows.Forms.TabControl();
       this.tabVariables = new System.Windows.Forms.TabPage();
       this.gridVariables = new System.Windows.Forms.DataGridView();
+      this.colVarname = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colDiffusion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBcType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+      this.colBCMinX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBCmaxX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBCminY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBCmaxY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colData = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
+      this.colBrowse = new System.Windows.Forms.DataGridViewButtonColumn();
       this.tabParameters = new System.Windows.Forms.TabPage();
       this.gridParameters = new System.Windows.Forms.DataGridView();
       this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -65,20 +79,6 @@ namespace WFDuneRunner
       this.cmdRun = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.ctrlTime1 = new CtrlTime();
-      this.ctrlDomain1 = new CtrlDomain();
-      this.ctrlNewton1 = new CtrlNewton();
-      this.ctrlGlobal1 = new CtrlGlobal();
-      this.colVarname = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colDiffusion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBcType = new System.Windows.Forms.DataGridViewComboBoxColumn();
-      this.colBCMinX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBCmaxX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBCminY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBCmaxY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colData = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
-      this.colBrowse = new System.Windows.Forms.DataGridViewButtonColumn();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -111,11 +111,11 @@ namespace WFDuneRunner
       // toolStripContainer1.ContentPanel
       // 
       this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
-      this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1128, 478);
+      this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(984, 490);
       this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
       this.toolStripContainer1.Name = "toolStripContainer1";
-      this.toolStripContainer1.Size = new System.Drawing.Size(1128, 549);
+      this.toolStripContainer1.Size = new System.Drawing.Size(984, 561);
       this.toolStripContainer1.TabIndex = 0;
       this.toolStripContainer1.Text = "toolStripContainer1";
       // 
@@ -129,7 +129,7 @@ namespace WFDuneRunner
       this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
       this.statusStrip1.Location = new System.Drawing.Point(0, 0);
       this.statusStrip1.Name = "statusStrip1";
-      this.statusStrip1.Size = new System.Drawing.Size(1128, 22);
+      this.statusStrip1.Size = new System.Drawing.Size(984, 22);
       this.statusStrip1.TabIndex = 0;
       // 
       // splitContainer1
@@ -145,8 +145,8 @@ namespace WFDuneRunner
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.tabControl2);
-      this.splitContainer1.Size = new System.Drawing.Size(1128, 478);
-      this.splitContainer1.SplitterDistance = 375;
+      this.splitContainer1.Size = new System.Drawing.Size(984, 490);
+      this.splitContainer1.SplitterDistance = 227;
       this.splitContainer1.TabIndex = 0;
       // 
       // tabControl1
@@ -159,7 +159,7 @@ namespace WFDuneRunner
       this.tabControl1.Location = new System.Drawing.Point(0, 0);
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
-      this.tabControl1.Size = new System.Drawing.Size(375, 478);
+      this.tabControl1.Size = new System.Drawing.Size(227, 490);
       this.tabControl1.TabIndex = 0;
       // 
       // tabTime
@@ -168,10 +168,19 @@ namespace WFDuneRunner
       this.tabTime.Location = new System.Drawing.Point(4, 22);
       this.tabTime.Name = "tabTime";
       this.tabTime.Padding = new System.Windows.Forms.Padding(3);
-      this.tabTime.Size = new System.Drawing.Size(367, 452);
+      this.tabTime.Size = new System.Drawing.Size(219, 464);
       this.tabTime.TabIndex = 0;
       this.tabTime.Text = "Time";
       this.tabTime.UseVisualStyleBackColor = true;
+      // 
+      // ctrlTime1
+      // 
+      this.ctrlTime1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ctrlTime1.Location = new System.Drawing.Point(3, 3);
+      this.ctrlTime1.Model = null;
+      this.ctrlTime1.Name = "ctrlTime1";
+      this.ctrlTime1.Size = new System.Drawing.Size(213, 458);
+      this.ctrlTime1.TabIndex = 0;
       // 
       // tabDomain
       // 
@@ -179,20 +188,38 @@ namespace WFDuneRunner
       this.tabDomain.Location = new System.Drawing.Point(4, 22);
       this.tabDomain.Name = "tabDomain";
       this.tabDomain.Padding = new System.Windows.Forms.Padding(3);
-      this.tabDomain.Size = new System.Drawing.Size(367, 452);
+      this.tabDomain.Size = new System.Drawing.Size(252, 464);
       this.tabDomain.TabIndex = 1;
       this.tabDomain.Text = "Domain";
       this.tabDomain.UseVisualStyleBackColor = true;
+      // 
+      // ctrlDomain1
+      // 
+      this.ctrlDomain1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ctrlDomain1.Location = new System.Drawing.Point(3, 3);
+      this.ctrlDomain1.Model = null;
+      this.ctrlDomain1.Name = "ctrlDomain1";
+      this.ctrlDomain1.Size = new System.Drawing.Size(246, 458);
+      this.ctrlDomain1.TabIndex = 0;
       // 
       // tabNewton
       // 
       this.tabNewton.Controls.Add(this.ctrlNewton1);
       this.tabNewton.Location = new System.Drawing.Point(4, 22);
       this.tabNewton.Name = "tabNewton";
-      this.tabNewton.Size = new System.Drawing.Size(367, 452);
+      this.tabNewton.Size = new System.Drawing.Size(252, 464);
       this.tabNewton.TabIndex = 2;
       this.tabNewton.Text = "Newton";
       this.tabNewton.UseVisualStyleBackColor = true;
+      // 
+      // ctrlNewton1
+      // 
+      this.ctrlNewton1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ctrlNewton1.Location = new System.Drawing.Point(0, 0);
+      this.ctrlNewton1.Model = null;
+      this.ctrlNewton1.Name = "ctrlNewton1";
+      this.ctrlNewton1.Size = new System.Drawing.Size(252, 464);
+      this.ctrlNewton1.TabIndex = 0;
       // 
       // tabGlobal
       // 
@@ -200,10 +227,19 @@ namespace WFDuneRunner
       this.tabGlobal.Location = new System.Drawing.Point(4, 22);
       this.tabGlobal.Name = "tabGlobal";
       this.tabGlobal.Padding = new System.Windows.Forms.Padding(3);
-      this.tabGlobal.Size = new System.Drawing.Size(367, 452);
+      this.tabGlobal.Size = new System.Drawing.Size(252, 464);
       this.tabGlobal.TabIndex = 3;
       this.tabGlobal.Text = "Global";
       this.tabGlobal.UseVisualStyleBackColor = true;
+      // 
+      // ctrlGlobal1
+      // 
+      this.ctrlGlobal1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ctrlGlobal1.Location = new System.Drawing.Point(3, 3);
+      this.ctrlGlobal1.Model = null;
+      this.ctrlGlobal1.Name = "ctrlGlobal1";
+      this.ctrlGlobal1.Size = new System.Drawing.Size(246, 458);
+      this.ctrlGlobal1.TabIndex = 0;
       // 
       // tabControl2
       // 
@@ -213,7 +249,7 @@ namespace WFDuneRunner
       this.tabControl2.Location = new System.Drawing.Point(0, 0);
       this.tabControl2.Name = "tabControl2";
       this.tabControl2.SelectedIndex = 0;
-      this.tabControl2.Size = new System.Drawing.Size(749, 478);
+      this.tabControl2.Size = new System.Drawing.Size(753, 490);
       this.tabControl2.TabIndex = 0;
       // 
       // tabVariables
@@ -222,7 +258,7 @@ namespace WFDuneRunner
       this.tabVariables.Location = new System.Drawing.Point(4, 22);
       this.tabVariables.Name = "tabVariables";
       this.tabVariables.Padding = new System.Windows.Forms.Padding(3);
-      this.tabVariables.Size = new System.Drawing.Size(741, 452);
+      this.tabVariables.Size = new System.Drawing.Size(745, 464);
       this.tabVariables.TabIndex = 0;
       this.tabVariables.Text = "Variables";
       this.tabVariables.UseVisualStyleBackColor = true;
@@ -248,10 +284,81 @@ namespace WFDuneRunner
       this.gridVariables.Dock = System.Windows.Forms.DockStyle.Fill;
       this.gridVariables.Location = new System.Drawing.Point(3, 3);
       this.gridVariables.Name = "gridVariables";
-      this.gridVariables.Size = new System.Drawing.Size(735, 446);
+      this.gridVariables.Size = new System.Drawing.Size(739, 458);
       this.gridVariables.TabIndex = 0;
       this.gridVariables.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridVariables_CellClick);
       this.gridVariables.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnVariableChanged);
+      // 
+      // colVarname
+      // 
+      this.colVarname.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+      this.colVarname.HeaderText = "Name";
+      this.colVarname.Name = "colVarname";
+      this.colVarname.ReadOnly = true;
+      // 
+      // colDiffusion
+      // 
+      this.colDiffusion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colDiffusion.HeaderText = "Diffusion";
+      this.colDiffusion.Name = "colDiffusion";
+      this.colDiffusion.Width = 71;
+      // 
+      // colBcType
+      // 
+      this.colBcType.HeaderText = "BC Type";
+      this.colBcType.Items.AddRange(new object[] {
+            "Dirichlet",
+            "Neumann",
+            "Outflow",
+            "None"});
+      this.colBcType.Name = "colBcType";
+      // 
+      // colBCMinX
+      // 
+      this.colBCMinX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBCMinX.HeaderText = "BC minX";
+      this.colBCMinX.Name = "colBCMinX";
+      this.colBCMinX.Width = 70;
+      // 
+      // colBCmaxX
+      // 
+      this.colBCmaxX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBCmaxX.HeaderText = "BC maxX";
+      this.colBCmaxX.Name = "colBCmaxX";
+      this.colBCmaxX.Width = 73;
+      // 
+      // colBCminY
+      // 
+      this.colBCminY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBCminY.HeaderText = "BC minY";
+      this.colBCminY.Name = "colBCminY";
+      this.colBCminY.Width = 70;
+      // 
+      // colBCmaxY
+      // 
+      this.colBCmaxY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBCmaxY.HeaderText = "BC maxY";
+      this.colBCmaxY.Name = "colBCmaxY";
+      this.colBCmaxY.Width = 73;
+      // 
+      // colData
+      // 
+      this.colData.HeaderText = "File";
+      this.colData.Name = "colData";
+      // 
+      // colEdit
+      // 
+      this.colEdit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colEdit.HeaderText = "Edit";
+      this.colEdit.Name = "colEdit";
+      this.colEdit.Width = 29;
+      // 
+      // colBrowse
+      // 
+      this.colBrowse.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBrowse.HeaderText = "...";
+      this.colBrowse.Name = "colBrowse";
+      this.colBrowse.Width = 20;
       // 
       // tabParameters
       // 
@@ -259,7 +366,7 @@ namespace WFDuneRunner
       this.tabParameters.Location = new System.Drawing.Point(4, 22);
       this.tabParameters.Name = "tabParameters";
       this.tabParameters.Padding = new System.Windows.Forms.Padding(3);
-      this.tabParameters.Size = new System.Drawing.Size(741, 452);
+      this.tabParameters.Size = new System.Drawing.Size(512, 464);
       this.tabParameters.TabIndex = 1;
       this.tabParameters.Text = "Parameters";
       this.tabParameters.UseVisualStyleBackColor = true;
@@ -278,7 +385,7 @@ namespace WFDuneRunner
       this.gridParameters.GridColor = System.Drawing.SystemColors.ControlLight;
       this.gridParameters.Location = new System.Drawing.Point(3, 3);
       this.gridParameters.Name = "gridParameters";
-      this.gridParameters.Size = new System.Drawing.Size(735, 446);
+      this.gridParameters.Size = new System.Drawing.Size(506, 458);
       this.gridParameters.TabIndex = 0;
       // 
       // colName
@@ -303,7 +410,7 @@ namespace WFDuneRunner
             this.helpToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
-      this.menuStrip1.Size = new System.Drawing.Size(1128, 24);
+      this.menuStrip1.Size = new System.Drawing.Size(984, 24);
       this.menuStrip1.TabIndex = 0;
       this.menuStrip1.Text = "menuStrip1";
       // 
@@ -465,118 +572,11 @@ namespace WFDuneRunner
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // ctrlTime1
-      // 
-      this.ctrlTime1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ctrlTime1.Location = new System.Drawing.Point(3, 3);
-      this.ctrlTime1.Model = null;
-      this.ctrlTime1.Name = "ctrlTime1";
-      this.ctrlTime1.Size = new System.Drawing.Size(361, 446);
-      this.ctrlTime1.TabIndex = 0;
-      // 
-      // ctrlDomain1
-      // 
-      this.ctrlDomain1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ctrlDomain1.Location = new System.Drawing.Point(3, 3);
-      this.ctrlDomain1.Model = null;
-      this.ctrlDomain1.Name = "ctrlDomain1";
-      this.ctrlDomain1.Size = new System.Drawing.Size(361, 446);
-      this.ctrlDomain1.TabIndex = 0;
-      // 
-      // ctrlNewton1
-      // 
-      this.ctrlNewton1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ctrlNewton1.Location = new System.Drawing.Point(0, 0);
-      this.ctrlNewton1.Model = null;
-      this.ctrlNewton1.Name = "ctrlNewton1";
-      this.ctrlNewton1.Size = new System.Drawing.Size(367, 452);
-      this.ctrlNewton1.TabIndex = 0;
-      // 
-      // ctrlGlobal1
-      // 
-      this.ctrlGlobal1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ctrlGlobal1.Location = new System.Drawing.Point(3, 3);
-      this.ctrlGlobal1.Model = null;
-      this.ctrlGlobal1.Name = "ctrlGlobal1";
-      this.ctrlGlobal1.Size = new System.Drawing.Size(361, 446);
-      this.ctrlGlobal1.TabIndex = 0;
-      // 
-      // colVarname
-      // 
-      this.colVarname.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-      this.colVarname.HeaderText = "Name";
-      this.colVarname.Name = "colVarname";
-      this.colVarname.ReadOnly = true;
-      // 
-      // colDiffusion
-      // 
-      this.colDiffusion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colDiffusion.HeaderText = "Diffusion";
-      this.colDiffusion.Name = "colDiffusion";
-      this.colDiffusion.Width = 71;
-      // 
-      // colBcType
-      // 
-      this.colBcType.HeaderText = "BC Type";
-      this.colBcType.Items.AddRange(new object[] {
-            "Dirichlet",
-            "Neumann",
-            "Outflow",
-            "None"});
-      this.colBcType.Name = "colBcType";
-      // 
-      // colBCMinX
-      // 
-      this.colBCMinX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colBCMinX.HeaderText = "BC minX";
-      this.colBCMinX.Name = "colBCMinX";
-      this.colBCMinX.Width = 70;
-      // 
-      // colBCmaxX
-      // 
-      this.colBCmaxX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colBCmaxX.HeaderText = "BC maxX";
-      this.colBCmaxX.Name = "colBCmaxX";
-      this.colBCmaxX.Width = 73;
-      // 
-      // colBCminY
-      // 
-      this.colBCminY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colBCminY.HeaderText = "BC minY";
-      this.colBCminY.Name = "colBCminY";
-      this.colBCminY.Width = 70;
-      // 
-      // colBCmaxY
-      // 
-      this.colBCmaxY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colBCmaxY.HeaderText = "BC maxY";
-      this.colBCmaxY.Name = "colBCmaxY";
-      this.colBCmaxY.Width = 73;
-      // 
-      // colData
-      // 
-      this.colData.HeaderText = "File";
-      this.colData.Name = "colData";
-      // 
-      // colEdit
-      // 
-      this.colEdit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colEdit.HeaderText = "Edit";
-      this.colEdit.Name = "colEdit";
-      this.colEdit.Width = 29;
-      // 
-      // colBrowse
-      // 
-      this.colBrowse.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colBrowse.HeaderText = "...";
-      this.colBrowse.Name = "colBrowse";
-      this.colBrowse.Width = 20;
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(1128, 549);
+      this.ClientSize = new System.Drawing.Size(984, 561);
       this.Controls.Add(this.toolStripContainer1);
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "MainForm";

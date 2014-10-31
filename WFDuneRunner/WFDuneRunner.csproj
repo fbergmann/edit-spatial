@@ -82,6 +82,13 @@
       <Project>{60ef6528-e2b3-4363-87d9-d06dd6d73f71}</Project>
       <Name>LibEditSpatial</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WFEditDMP\WFEditDMP.csproj">
+      <Project>{8ad574e3-9db5-470f-b787-ea924481deeb}</Project>
+      <Name>WFEditDMP</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dialogs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

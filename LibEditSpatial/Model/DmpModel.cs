@@ -118,24 +118,7 @@ namespace LibEditSpatial.Model
 
     private Color GetColor(double val)
     {
-      return Palette.GetColor((val - Min)/Max);
-
-      //switch ((int)val)
-      //{
-      //  case 0: return Color.Transparent;
-      //  case 1: return Color.Red;
-      //  case 2: return Color.Blue;
-      //  case 3: return Color.Green;
-      //  case 4: return Color.Yellow;
-      //  case 5: return Color.Tomato;
-      //  case 6: return Color.AliceBlue;
-      //  case 7: return Color.YellowGreen;
-      //  case 8: return Color.DarkTurquoise;
-      //  case 9: return Color.Khaki;
-      //  case 10: return Color.MediumSeaGreen;
-      //  case 11: return Color.Purple;
-      //  default: return Color.Black;
-      //}
+      return Palette.GetColor(Max == 0 ? 0 : (val - Min)/Max);
     }
 
 
@@ -177,6 +160,12 @@ namespace LibEditSpatial.Model
           }
         }
       }
+
+      if (model.Min == model.Max)
+      {
+        model.Max = model.Min + 10;
+      }
+
       return model;
     }
   }

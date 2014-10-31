@@ -114,15 +114,24 @@ namespace LibEditSpatial.Controls
     private void OnLoadClicked(object sender, EventArgs e)
     {
       if (Model == null) return;
-      using (var dlg = new OpenFileDialog {Title = "Open Geometry file", Filter = "DMP files|*.dmp|All files|*.*"})
-      {
-        if (dlg.ShowDialog() == DialogResult.OK)
-        {
-          txtFile.Text = dlg.FileName;
-          Model.Geometry = txtFile.Text;
-        }
-      }
+      OnBrowseDmpFile();
     }
+
+    public event EventHandler<string> OpenDmpFile;
+    public event EventHandler BrowseDmpFile;
+
+    protected virtual void OnBrowseDmpFile()
+    {
+      var handler = BrowseDmpFile;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
+
+    protected virtual void OnOpenDmpFile(string filename)
+    {
+      var handler = OpenDmpFile;
+      if (handler != null) handler(this, filename);
+    }
+
 
     private void OnEditClicked(object sender, EventArgs e)
     {
@@ -131,7 +140,7 @@ namespace LibEditSpatial.Controls
       if (!File.Exists(file)) return;
       try
       {
-        Process.Start(file);
+        OnOpenDmpFile(file);
       }
       catch
       {
