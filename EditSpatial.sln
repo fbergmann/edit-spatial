@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditSpatial", "EditSpatial.csproj", "{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditSpatial", "WFEditSpatial/EditSpatial.csproj", "{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
