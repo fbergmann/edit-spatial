@@ -63,10 +63,10 @@ namespace LibEditSpatial.Model
     private static T[,] RotateMatrixCounterClockwise<T>(T[,] oldMatrix)
     {
       var newMatrix = new T[oldMatrix.GetLength(1), oldMatrix.GetLength(0)];
-      int newColumn, newRow = 0;
+      int newRow = 0;
       for (int oldColumn = oldMatrix.GetLength(1) - 1; oldColumn >= 0; oldColumn--)
       {
-        newColumn = 0;
+        int newColumn = 0;
         for (int oldRow = 0; oldRow < oldMatrix.GetLength(0); oldRow++)
         {
           newMatrix[newRow, newColumn] = oldMatrix[oldRow, oldColumn];
@@ -137,7 +137,7 @@ namespace LibEditSpatial.Model
       string[] lines = File.ReadAllLines(filename);
       int rows = 0;
       int cols = 0;
-      if (lines != null && lines.Length > 0)
+      if (lines.Length > 0)
       {
         string[] dims = lines[0].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         if (dims.Length > 1)
@@ -148,12 +148,12 @@ namespace LibEditSpatial.Model
       }
 
       var model = new DmpModel(rows, cols) {Min = double.MaxValue, Max = double.MinValue};
-      double current = 0;
       for (int i = 1; i < Math.Min(rows + 1, lines.Length); i++)
       {
         string[] entries = lines[i].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         for (int j = 0; j < Math.Min(cols, entries.Length); j++)
         {
+          double current;
           if (double.TryParse(entries[j], out current))
           {
             model[i - 1, j] = current;
