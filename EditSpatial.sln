@@ -1,7 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditSpatial", "WFEditSpatial/EditSpatial.csproj", "{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditSpatial", "WFEditSpatial\EditSpatial.csproj", "{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFEditDMP", "WFEditDMP\WFEditDMP.csproj", "{8AD574E3-9DB5-470F-B787-EA924481DEEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFDuneRunner", "WFDuneRunner\WFDuneRunner.csproj", "{92C4FE18-C3E1-4622-8412-9F06F51F61E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibEditSpatial", "LibEditSpatial\LibEditSpatial.csproj", "{60EF6528-E2B3-4363-87D9-D06DD6D73F71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +19,18 @@ Global
 		{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4433F5EF-7604-48DD-B1C4-7CF2677FFAB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AD574E3-9DB5-470F-B787-EA924481DEEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AD574E3-9DB5-470F-B787-EA924481DEEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AD574E3-9DB5-470F-B787-EA924481DEEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AD574E3-9DB5-470F-B787-EA924481DEEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92C4FE18-C3E1-4622-8412-9F06F51F61E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92C4FE18-C3E1-4622-8412-9F06F51F61E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92C4FE18-C3E1-4622-8412-9F06F51F61E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92C4FE18-C3E1-4622-8412-9F06F51F61E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60EF6528-E2B3-4363-87D9-D06DD6D73F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60EF6528-E2B3-4363-87D9-D06DD6D73F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60EF6528-E2B3-4363-87D9-D06DD6D73F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60EF6528-E2B3-4363-87D9-D06DD6D73F71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

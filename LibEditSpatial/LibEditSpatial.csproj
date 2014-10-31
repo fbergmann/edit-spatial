@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{60EF6528-E2B3-4363-87D9-D06DD6D73F71}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LibEditSpatial</RootNamespace>
+    <AssemblyName>LibEditSpatial</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\CtrlDomain.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CtrlDomain.Designer.cs">
+      <DependentUpon>CtrlDomain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CtrlGlobal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CtrlGlobal.Designer.cs">
+      <DependentUpon>CtrlGlobal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CtrlNewton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CtrlNewton.Designer.cs">
+      <DependentUpon>CtrlNewton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CtrlPalette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CtrlPalette.Designer.cs">
+      <DependentUpon>CtrlPalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CtrlTime.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CtrlTime.Designer.cs">
+      <DependentUpon>CtrlTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DmpRenderControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DmpRenderControl.Designer.cs">
+      <DependentUpon>DmpRenderControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PalleteArgs.cs" />
+    <Compile Include="Dialogs\DlgRun.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DlgRun.Designer.cs">
+      <DependentUpon>DlgRun.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\DebugConfig.cs" />
+    <Compile Include="Model\DmpModel.cs" />
+    <Compile Include="Model\DmpPalette.cs" />
+    <Compile Include="Model\DomainConfig.cs" />
+    <Compile Include="Model\DuneConfig.cs" />
+    <Compile Include="Model\GlobalConfig.cs" />
+    <Compile Include="Model\NewtonConfig.cs" />
+    <Compile Include="Model\StaticHelper.cs" />
+    <Compile Include="Model\TimeLoopConfig.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\CtrlDomain.resx">
+      <DependentUpon>CtrlDomain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CtrlGlobal.resx">
+      <DependentUpon>CtrlGlobal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CtrlNewton.resx">
+      <DependentUpon>CtrlNewton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CtrlPalette.resx">
+      <DependentUpon>CtrlPalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CtrlTime.resx">
+      <DependentUpon>CtrlTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DmpRenderControl.resx">
+      <DependentUpon>DmpRenderControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DlgRun.resx">
+      <DependentUpon>DlgRun.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="pvrender.py">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

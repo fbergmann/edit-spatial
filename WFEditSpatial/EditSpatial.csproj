@@ -307,6 +307,12 @@
   <ItemGroup>
     <None Include="Templates\reactionadapter.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibEditSpatial\LibEditSpatial.csproj">
+      <Project>{60ef6528-e2b3-4363-87d9-d06dd6d73f71}</Project>
+      <Name>LibEditSpatial</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
