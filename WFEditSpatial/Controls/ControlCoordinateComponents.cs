@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using libsbmlcs;
 
 namespace EditSpatial.Controls
 {
   public partial class ControlCoordinateComponents : BaseSpatialControl
   {
+    public ControlCoordinateComponents()
+    {
+      InitializeComponent();
+    }
 
     public Geometry Current { get; set; }
 
@@ -35,14 +31,12 @@ namespace EditSpatial.Controls
         {
           SizeType = SizeType.AutoSize
         });
-        
-        var current = geometry.getCoordinateComponent(i);
+
+        CoordinateComponent current = geometry.getCoordinateComponent(i);
         var control = new ControlCoordinateComponent {Dock = DockStyle.Fill};
         control.InitializeFrom(current);
-        this.tblLayout.Controls.Add(control, 0, ((int)i) + 1);
-
+        tblLayout.Controls.Add(control, 0, ((int) i) + 1);
       }
-
     }
 
     public override void SaveChanges()
@@ -50,18 +44,12 @@ namespace EditSpatial.Controls
       if (Current == null) return;
       Current.setCoordinateSystem(txtCoordSystem.Text);
 
-      foreach (var control in tblLayout.Controls)
+      foreach (object control in tblLayout.Controls)
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;
         current.SaveChanges();
       }
-
-    }
-
-    public ControlCoordinateComponents()
-    {
-      InitializeComponent();
     }
 
     public override void InvalidateSelection()

@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Data;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using EditSpatial.Model;
 using libsbmlcs;
 using Image = System.Drawing.Image;
 
@@ -18,6 +15,12 @@ namespace EditSpatial.Controls
   {
     private ImageData _Data;
     private SampledField _Field;
+
+    public ControlSampleFieldGeometry()
+    {
+      InitializeComponent();
+    }
+
     public Geometry SpatialGeometry { get; set; }
     public SampledFieldGeometry Current { get; set; }
 
@@ -46,21 +49,21 @@ namespace EditSpatial.Controls
 
       for (long i = 0; i < sampledFieldGeometry.getNumSampledVolumes(); ++i)
       {
-        var vol = sampledFieldGeometry.getSampledVolume(i);
+        SampledVolume vol = sampledFieldGeometry.getSampledVolume(i);
         string spatialId = vol.getSpatialId();
-        
+
         grid.Rows.Add(
-          spatialId, 
-          vol.getDomainType(), 
+          spatialId,
+          vol.getDomainType(),
           vol.getSampledValue().ToString(),
           vol.getMinValue().ToString(),
           vol.getMaxValue().ToString()
-        );
+          );
       }
 
       _Field = sampledFieldGeometry.getSampledField();
       _Data = _Field == null ? null : _Field.getImageData();
-      int numSamples = _Field == null ? 0 : _Field.getNumSamples3()-1;
+      int numSamples = _Field == null ? 0 : _Field.getNumSamples3() - 1;
 
 
       if (SpatialGeometry.getNumCoordinateComponents() < 3 || numSamples == 0)
@@ -80,7 +83,6 @@ namespace EditSpatial.Controls
 
 
       thumbGeometry.Image = GenerateImage(sampledFieldGeometry, geometry, ThumbSize, ThumbSize);
-
     }
 
     public override void SaveChanges()
@@ -90,19 +92,18 @@ namespace EditSpatial.Controls
       Current.setSpatialId(txtId.Text);
       for (int i = 0; i < grid.Rows.Count && i < Current.getNumSampledVolumes(); ++i)
       {
-        var row = grid.Rows[i];
-        var current = Current.getSampledVolume(i);
+        DataGridViewRow row = grid.Rows[i];
+        SampledVolume current = Current.getSampledVolume(i);
         current.setSpatialId((string) row.Cells[0].Value);
         current.setDomainType((string) row.Cells[1].Value);
-        double value; 
-        if (double.TryParse((string)row.Cells[2].Value, out value))
+        double value;
+        if (double.TryParse((string) row.Cells[2].Value, out value))
           current.setSampledValue(value);
-        if (double.TryParse((string)row.Cells[3].Value, out value))
+        if (double.TryParse((string) row.Cells[3].Value, out value))
           current.setMinValue(value);
-        if (double.TryParse((string)row.Cells[4].Value, out value))
+        if (double.TryParse((string) row.Cells[4].Value, out value))
           current.setMaxValue(value);
       }
-
     }
 
     private List<int> GetUniqueValues(int[] data)
@@ -115,7 +116,8 @@ namespace EditSpatial.Controls
       return result;
     }
 
-    private Image GenerateImage(SampledFieldGeometry sampledFieldGeometry, Geometry geometry, int resX = 128, int resY = 128)
+    private Image GenerateImage(SampledFieldGeometry sampledFieldGeometry, Geometry geometry, int resX = 128,
+      int resY = 128)
     {
       if (geometry == null || sampledFieldGeometry == null || geometry.getNumCoordinateComponents() < 2)
         return new Bitmap(1, 1);
@@ -133,7 +135,7 @@ namespace EditSpatial.Controls
         var array = new int[uncompressedLength];
         _Data.getUncompressed(array);
 
-        var values = GetUniqueValues(array);
+        List<int> values = GetUniqueValues(array);
 
         int z = Util.SaveInt(txtZ.Text, 0);
         if (z >= _Field.getNumSamples3())
@@ -145,9 +147,10 @@ namespace EditSpatial.Controls
         {
           for (long j = 0; j < _Field.getNumSamples2(); ++j)
           {
-            int index = GetIndexFor(array[i + _Field.getNumSamples1() * j + _Field.getNumSamples1() * _Field.getNumSamples2() * z]);
+            int index =
+              GetIndexFor(array[i + _Field.getNumSamples1()*j + _Field.getNumSamples1()*_Field.getNumSamples2()*z]);
 
-            result.SetPixel((int)i, (int)j, GetColorForIndex(index));
+            result.SetPixel((int) i, (int) j, GetColorForIndex(index));
           }
         }
 
@@ -155,7 +158,6 @@ namespace EditSpatial.Controls
       }
       catch
       {
-
       }
       return new Bitmap(1, 1);
     }
@@ -166,16 +168,16 @@ namespace EditSpatial.Controls
 
       for (long i = 0; i < Current.getNumSampledVolumes(); ++i)
       {
-        var current = Current.getSampledVolume(i);
-        var currentValue = current.getSampledValue();
+        SampledVolume current = Current.getSampledVolume(i);
+        double currentValue = current.getSampledValue();
         var currentIntValue = (uint) currentValue;
         if (Math.Abs(currentValue - value) < 1e-10)
-          return (int)i;
-        if (currentIntValue == (byte)value)
-          return (int)i;
+          return (int) i;
+        if (currentIntValue == (byte) value)
+          return (int) i;
         if (current.isSetMinValue() && current.isSetMaxValue() &&
-          (value >= current.getMinValue() && value <= current.getMaxValue()))
-          return (int)i;
+            (value >= current.getMinValue() && value <= current.getMaxValue()))
+          return (int) i;
       }
 
       return -1;
@@ -188,7 +190,7 @@ namespace EditSpatial.Controls
         case -1:
           return Color.Transparent;
         default:
-          case 0:
+        case 0:
           return Color.Black;
         case 1:
           return Color.Red;
@@ -211,16 +213,9 @@ namespace EditSpatial.Controls
       }
     }
 
-    public ControlSampleFieldGeometry()
-    {
-      InitializeComponent();
-    }
-
-
 
     private void OnReorderClick(object sender, EventArgs e)
     {
-
     }
 
     public override void InvalidateSelection()
@@ -256,20 +251,20 @@ namespace EditSpatial.Controls
         return;
 
       var vols = new List<SampledVolume>();
-      for (int i = (int)Current.getNumSampledVolumes() - 1; i >= 0; --i)
+      for (int i = (int) Current.getNumSampledVolumes() - 1; i >= 0; --i)
         vols.Add(Current.removeSampledVolume(i));
       foreach (SampledVolume vol in vols)
       {
         Current.addSampledVolume(vol);
       }
-      
+
 
       InitializeFrom(SpatialGeometry, Current.getSpatialId());
     }
 
     private void OnImageLoad(object sender, EventArgs e)
     {
-      using (var dialog = new OpenFileDialog { Filter = "TIFF files|*.tif|All files|*.*" })
+      using (var dialog = new OpenFileDialog {Filter = "TIFF files|*.tif|All files|*.*"})
       {
         if (dialog.ShowDialog() == DialogResult.OK)
         {
@@ -290,14 +285,14 @@ namespace EditSpatial.Controls
       _Field.setNumSamples1(image.Width);
       _Field.setNumSamples2(image.Height);
       _Field.setNumSamples3(1);
-      var data = new int[image.Width * image.Height];
+      var data = new int[image.Width*image.Height];
       int count = 0;
       for (int i = 0; i < image.Width; ++i)
         for (int j = 0; j < image.Height; ++j)
         {
           Color currentColor = image.GetPixel(i, j);
 
-          int value = (int) (currentColor.GetBrightness() * 10f);
+          var value = (int) (currentColor.GetBrightness()*10f);
           //if (currentColor.B > 10 && currentColor.G > 10 && currentColor.R > 10)
           //{ 
           //  value = 1;
@@ -305,18 +300,17 @@ namespace EditSpatial.Controls
           data[count++] = value;
         }
 
-      var values = GetUniqueValues(data);
+      List<int> values = GetUniqueValues(data);
       int col = 0;
-      foreach (var val in values )
+      foreach (int val in values)
       {
-        var vol = Current.createSampledVolume();
-        vol.setSpatialId(string.Format("vol_{0}",col++));
+        SampledVolume vol = Current.createSampledVolume();
+        vol.setSpatialId(string.Format("vol_{0}", col++));
         vol.setSampledValue(val);
         vol.setMinValue(val);
         vol.setMaxValue(val);
-
       }
-      
+
       _Data = _Field.createImageData();
       _Data.setDataType("uncompressed");
       _Data.setSamples(data, data.Length);
@@ -328,23 +322,21 @@ namespace EditSpatial.Controls
 
     private void OnImageSave(object sender, EventArgs e)
     {
-      using (var dialog = new SaveFileDialog { Filter = "TIFF files|*.tif|All files|*.*" })
+      using (var dialog = new SaveFileDialog {Filter = "TIFF files|*.tif|All files|*.*"})
       {
         if (dialog.ShowDialog() == DialogResult.OK)
         {
-          thumbGeometry.Image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+          thumbGeometry.Image.Save(dialog.FileName, ImageFormat.Tiff);
         }
       }
     }
 
     private void OnUserDeletedRow(object sender, DataGridViewRowEventArgs e)
     {
-
       if (Current == null) return;
       var id = e.Row.Cells[0].Value as string;
       Current.removeSampledVolume(id);
       InitializeFrom(SpatialGeometry, Current.getSpatialId());
     }
-
   }
 }

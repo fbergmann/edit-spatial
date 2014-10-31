@@ -1,4 +1,4 @@
-﻿namespace WFDuneRunner.Dialogs
+﻿namespace LibEditSpatial.Dialogs
 {
   partial class DlgRun
   {

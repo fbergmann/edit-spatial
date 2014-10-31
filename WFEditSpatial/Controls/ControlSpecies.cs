@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using libsbmlcs;
-
-using Model = libsbmlcs.Model;
 
 namespace EditSpatial.Controls
 {
   public partial class ControlSpecies : BaseSpatialControl
   {
+    public ControlSpecies()
+    {
+      InitializeComponent();
+      RowsAdded = new List<int>();
+    }
 
-    libsbmlcs.SBMLDocument Current { get; set; }
+    private SBMLDocument Current { get; set; }
+    public List<int> RowsAdded { get; set; }
 
-    public void InitializeFrom(libsbmlcs.SBMLDocument document)
+    public void InitializeFrom(SBMLDocument document)
     {
       grid.Rows.Clear();
       Current = document;
@@ -26,40 +23,35 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-        var model = document.getModel();
+        libsbmlcs.Model model = document.getModel();
 
         CommitAddedRows(Current);
         for (long i = 0; i < model.getNumSpecies(); ++i)
         {
-          var current = model.getSpecies(i);
+          Species current = model.getSpecies(i);
 
           var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
           string isSpatial = "NA";
-          if (plug!=null && plug.isSetIsSpatial())
+          if (plug != null && plug.isSetIsSpatial())
           {
             isSpatial = plug.getIsSpatial().ToString();
           }
 
           grid.Rows.Add(current.getId(),
-          current.getName(),
-          current.isSetInitialConcentration() ? current.getInitialConcentration().ToString() :
-           current.getInitialAmount().ToString(),
-           current.getCompartment(),
-           current.getBoundaryCondition().ToString(), 
-           isSpatial
-          );
+            current.getName(),
+            current.isSetInitialConcentration()
+              ? current.getInitialConcentration().ToString()
+              : current.getInitialAmount().ToString(),
+            current.getCompartment(),
+            current.getBoundaryCondition().ToString(),
+            isSpatial
+            );
         }
       }
       finally
       {
         IsInitializing = false;
       }
-    }
-
-    public ControlSpecies()
-    {
-      InitializeComponent();
-      RowsAdded = new List<int>();
     }
 
     private void CommitAddedRows(SBMLDocument current)
@@ -70,20 +62,22 @@ namespace EditSpatial.Controls
         {
           try
           {
-            var row = grid.Rows[RowsAdded[i]];
-            var species = current.getModel().createSpecies();
+            DataGridViewRow row = grid.Rows[RowsAdded[i]];
+            Species species = current.getModel().createSpecies();
             species.initDefaults();
             species.setId(row.Cells[0].Value as string);
             species.setName(row.Cells[1].Value as string);
-            double value; if (double.TryParse((string)row.Cells[2].Value, out value))
+            double value;
+            if (double.TryParse((string) row.Cells[2].Value, out value))
               species.setInitialConcentration(value);
             species.setCompartment(row.Cells[3].Value as string);
-            bool bvalue; if (bool.TryParse((string)row.Cells[4].Value, out bvalue))
+            bool bvalue;
+            if (bool.TryParse((string) row.Cells[4].Value, out bvalue))
               species.setBoundaryCondition(bvalue);
 
             if (bool.TryParse((string) row.Cells[5].Value, out bvalue))
             {
-              var plug = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
+              var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
               if (plug != null)
               {
                 plug.setIsSpatial(bvalue);
@@ -95,7 +89,6 @@ namespace EditSpatial.Controls
           }
           catch
           {
-
           }
         }
       }
@@ -110,26 +103,27 @@ namespace EditSpatial.Controls
 
       for (int i = 0; i < grid.Rows.Count; ++i)
       {
-        var row = grid.Rows[i];
-        var current = Current.getModel().getSpecies((string)row.Cells[0].Value);
+        DataGridViewRow row = grid.Rows[i];
+        Species current = Current.getModel().getSpecies((string) row.Cells[0].Value);
         if (current == null) continue;
 
         current.setName(row.Cells[1].Value as string);
-        double value; if (double.TryParse((string)row.Cells[2].Value, out value))
+        double value;
+        if (double.TryParse((string) row.Cells[2].Value, out value))
           current.setInitialConcentration(value);
         current.setCompartment(row.Cells[3].Value as string);
-        bool bvalue; if (bool.TryParse((string)row.Cells[4].Value, out bvalue))
+        bool bvalue;
+        if (bool.TryParse((string) row.Cells[4].Value, out bvalue))
           current.setBoundaryCondition(bvalue);
 
-        if (bool.TryParse((string)row.Cells[5].Value, out bvalue))
+        if (bool.TryParse((string) row.Cells[5].Value, out bvalue))
         {
-          var plug = (SpatialSpeciesRxnPlugin)current.getPlugin("spatial");
+          var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
           if (plug != null)
           {
             plug.setIsSpatial(bvalue);
           }
         }
-
       }
     }
 
@@ -153,8 +147,5 @@ namespace EditSpatial.Controls
 
       RowsAdded.Add(e.RowIndex - 1);
     }
-
-    public List<int> RowsAdded { get; set; }
-
   }
 }

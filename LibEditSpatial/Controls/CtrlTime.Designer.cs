@@ -1,4 +1,4 @@
-﻿namespace WFDuneRunner.Controls
+﻿namespace LibEditSpatial.Controls
 {
   partial class CtrlTime
   {

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using WFEditDMP.Model;
+using LibEditSpatial.Model;
 
-namespace WFEditDMP.Controls
+namespace LibEditSpatial.Controls
 {
   public partial class CtrlPalette : UserControl
   {

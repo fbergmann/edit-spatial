@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WFEditDMP.Model;
+using LibEditSpatial.Model;
 
-namespace WFEditDMP.Controls
+namespace LibEditSpatial.Controls
 {
   public partial class DmpRenderControl : UserControl
   {

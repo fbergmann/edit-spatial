@@ -1,22 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using WFEditDMP.Model;
+using LibEditSpatial.Model;
 
 namespace WFEditDMP
 {
   public partial class MainForm : Form
   {
+    public MainForm()
+    {
+      InitializeComponent();
+      NewModel();
+
+      ctrlPalette1.PalleteValueChanged += (o, args) => { dmpRenderControl1.CurrentValue = args.Value; };
+
+      ctrlPalette1.PalleteChanged += (o, args) =>
+      {
+        if (Model != null)
+        {
+          Model.Palette = args;
+          UpdateUI();
+        }
+        DmpPalette.Default = args;
+      };
+    }
+
     public DmpModel Model { get; set; }
     public string FileName { get; set; }
     public string LastOpenDir { get; set; }
+    public String[] PaletteFiles { get; set; }
+    public string CurrentPalette { get; set; }
 
     private void UpdateUI()
     {
@@ -47,27 +60,6 @@ namespace WFEditDMP
       UpdateUI();
     }
 
-    public MainForm()
-    {
-      InitializeComponent();
-      NewModel();
-
-      ctrlPalette1.PalleteValueChanged += (o, args) =>
-        {
-          dmpRenderControl1.CurrentValue = args.Value;
-        };
-
-      ctrlPalette1.PalleteChanged+= (o, args) =>
-      {
-        if (Model != null)
-        {
-          Model.Palette = args;
-          UpdateUI();
-        }
-        DmpPalette.Default = args;
-      };
-    }
-
     private void NewModel()
     {
       Model = new DmpModel(50, 50);
@@ -75,6 +67,7 @@ namespace WFEditDMP
       Model.Palette = ctrlPalette1.Palette;
       UpdateUI();
     }
+
     private void OnNewClick(object sender, EventArgs e)
     {
       NewModel();
@@ -82,13 +75,14 @@ namespace WFEditDMP
 
     private void OnOpenClick(object sender, EventArgs e)
     {
-      using (var dialog = new OpenFileDialog { 
-        Title = "Open file", 
-        Filter = "DMP files|*.dmp|TIFF files|*.tif;*.tiff|All files|*.*", 
-        AutoUpgradeEnabled = true, 
+      using (var dialog = new OpenFileDialog
+      {
+        Title = "Open file",
+        Filter = "DMP files|*.dmp|TIFF files|*.tif;*.tiff|All files|*.*",
+        AutoUpgradeEnabled = true,
       })
       {
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dialog.ShowDialog() == DialogResult.OK)
           OpenFile(dialog.FileName);
       }
     }
@@ -96,7 +90,7 @@ namespace WFEditDMP
     private void OnSaveClick(object sender, EventArgs e)
     {
       if (string.IsNullOrWhiteSpace(FileName))
-      { 
+      {
         OnSaveAsClick(sender, e);
         return;
       }
@@ -110,7 +104,6 @@ namespace WFEditDMP
 
     private void OnAboutClick(object sender, EventArgs e)
     {
-
     }
 
     private void SaveAs(string fileName)
@@ -129,61 +122,56 @@ namespace WFEditDMP
         AutoUpgradeEnabled = true,
       })
       {
-        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dialog.ShowDialog() == DialogResult.OK)
           SaveAs(dialog.FileName);
       }
     }
-
-    public String[] PaletteFiles { get; set; }
 
     private void LoadPalettes(string baseDirectory)
     {
       PaletteFiles = Directory.GetFiles(baseDirectory, "*.txt", SearchOption.TopDirectoryOnly);
       cmbPalettes.Items.Clear();
       cmbPalettes.Items.Add("Default");
-      foreach (var file in PaletteFiles)
+      foreach (string file in PaletteFiles)
       {
         cmbPalettes.Items.Add(Path.GetFileNameWithoutExtension(file));
       }
     }
+
     private void OnLoad(object sender, EventArgs e)
     {
       ctrlPalette1.Palette = DmpPalette.Default;
 
       LoadPalettes(AppDomain.CurrentDomain.BaseDirectory);
-
     }
-
-    public string CurrentPalette { get; set;  }
 
     private void OnPaletteChanged(object sender, EventArgs e)
     {
-      var index = cmbPalettes.SelectedIndex;
+      int index = cmbPalettes.SelectedIndex;
 
       if (index < 0) return;
 
-      if ((string)cmbPalettes.Items[index] == CurrentPalette)
+      if ((string) cmbPalettes.Items[index] == CurrentPalette)
         return;
 
       if (index == 0)
       {
-        ctrlPalette1.ChangePalette(DmpPalette.Default);        
+        ctrlPalette1.ChangePalette(DmpPalette.Default);
       }
       else
         try
         {
           ctrlPalette1.ChangePalette(PaletteFiles[index - 1]);
         }
-        catch 
+        catch
         {
-
         }
-      CurrentPalette = (string)cmbPalettes.Items[index];
+      CurrentPalette = (string) cmbPalettes.Items[index];
     }
 
     private void OnSizeChanged(object sender, EventArgs e)
     {
-      int val; 
+      int val;
 
       if (int.TryParse(txtSize.Text, out val))
       {

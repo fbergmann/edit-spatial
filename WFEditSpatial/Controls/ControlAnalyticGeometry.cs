@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
+using System.Drawing.Imaging;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using EditSpatial.Model;
 using libsbmlcs;
 using Image = System.Drawing.Image;
 
@@ -14,6 +12,13 @@ namespace EditSpatial.Controls
 {
   public partial class ControlAnalyticGeometry : BaseSpatialControl
   {
+    public ControlAnalyticGeometry()
+    {
+      InitializeComponent();
+      IsInitializing = false;
+      RowsAdded = new List<int>();
+    }
+
     public List<int> RowsAdded { get; set; }
 
     public Geometry SpatialGeometry { get; set; }
@@ -42,15 +47,14 @@ namespace EditSpatial.Controls
     }
 
 
-
     private void CommitAddedRows(AnalyticGeometry analytic)
     {
       if (RowsAdded.Count > 0 && analytic != null)
       {
         for (int i = RowsAdded.Count - 1; i >= 0; i--)
         {
-          var row = grid.Rows[RowsAdded[i]];
-          var vol = analytic.createAnalyticVolume();
+          DataGridViewRow row = grid.Rows[RowsAdded[i]];
+          AnalyticVolume vol = analytic.createAnalyticVolume();
           vol.setSpatialId(row.Cells[0].Value as string);
           vol.setFunctionType(row.Cells[1].Value as string);
           long ordinal = 0;
@@ -89,10 +93,10 @@ namespace EditSpatial.Controls
 
         for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
         {
-          var vol = analytic.getAnalyticVolume(i);
+          AnalyticVolume vol = analytic.getAnalyticVolume(i);
           string spatialId = vol.getSpatialId();
           grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal().ToString(), vol.getDomainType(),
-            libsbml.formulaToL3String(vol.getMath()));          
+            libsbml.formulaToL3String(vol.getMath()));
         }
 
         if (SpatialGeometry.getNumCoordinateComponents() < 3)
@@ -118,7 +122,6 @@ namespace EditSpatial.Controls
 
     public void InitializeFrom(Geometry geometry, string id)
     {
-
       if (geometry == null)
       {
         txtId.Text = id;
@@ -142,19 +145,17 @@ namespace EditSpatial.Controls
 
       for (int i = 0; i < grid.Rows.Count && i < Current.getNumAnalyticVolumes(); ++i)
       {
-        var row = grid.Rows[i];
+        DataGridViewRow row = grid.Rows[i];
         if (row.IsNewRow) continue;
-        var current = Current.getAnalyticVolume(i);
-        current.setSpatialId((string)row.Cells[0].Value);
-        current.setFunctionType((string)row.Cells[1].Value);
-        current.setOrdinal(Util.SaveInt((string)row.Cells[2].Value, 0L));
-        current.setDomainType((string)row.Cells[3].Value);
-        current.setMath(libsbml.parseL3Formula((string)row.Cells[4].Value));
+        AnalyticVolume current = Current.getAnalyticVolume(i);
+        current.setSpatialId((string) row.Cells[0].Value);
+        current.setFunctionType((string) row.Cells[1].Value);
+        current.setOrdinal(Util.SaveInt((string) row.Cells[2].Value, 0L));
+        current.setDomainType((string) row.Cells[3].Value);
+        current.setMath(libsbml.parseL3Formula((string) row.Cells[4].Value));
       }
 
       Current.ExpandMath();
-
-
     }
 
 
@@ -165,30 +166,29 @@ namespace EditSpatial.Controls
 
       try
       {
-
         Current.ExpandMath();
 
         var formulas = new List<Tuple<int, ASTNode>>();
         for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
         {
-          var current = analytic.getAnalyticVolume(i);
-          formulas.Add(new Tuple<int, ASTNode>( (int)current.getOrdinal(), current.getMath()));
+          AnalyticVolume current = analytic.getAnalyticVolume(i);
+          formulas.Add(new Tuple<int, ASTNode>((int) current.getOrdinal(), current.getMath()));
         }
         formulas.Sort((a, b) => b.Item1.CompareTo(a.Item1));
 
-        var range1 = geometry.getCoordinateComponent(0);
+        CoordinateComponent range1 = geometry.getCoordinateComponent(0);
         double r1Min = range1.getBoundaryMin().getValue();
         double r1Max = range1.getBoundaryMax().getValue();
-        var range2 = geometry.getCoordinateComponent(1);
+        CoordinateComponent range2 = geometry.getCoordinateComponent(1);
         double r2Min = range2.getBoundaryMin().getValue();
         double r2Max = range2.getBoundaryMax().getValue();
 
         double r3Max = geometry.getNumCoordinateComponents() == 3
-  ? geometry.getCoordinateComponent(2).getBoundaryMax().getValue()
-  : 0;
+          ? geometry.getCoordinateComponent(2).getBoundaryMax().getValue()
+          : 0;
         double r3Min = geometry.getNumCoordinateComponents() == 3
-  ? geometry.getCoordinateComponent(2).getBoundaryMin().getValue()
-  : 0;
+          ? geometry.getCoordinateComponent(2).getBoundaryMin().getValue()
+          : 0;
 
 
         var result = new Bitmap(resX, resY);
@@ -197,23 +197,37 @@ namespace EditSpatial.Controls
           double x = r1Min
                      +
                      (r1Max - r1Min)/
-                     (double) resX*(double) i;
+                     resX*i;
           for (int j = 0; j < resY; ++j)
           {
             double y = r2Min
-                     +
-                     (r2Max - r2Min) /
-                     (double)resY * (double)j;
+                       +
+                       (r2Max - r2Min)/
+                       resY*j;
 
             for (int index = 0; index < formulas.Count; index++)
             {
-              var item = formulas[index];
-              var isInside = Util.Evaluate(item.Item2,
-                new List<string> { "x", "y", "z", "width", "height", "depth", "Xmin", "Xmax", "Ymin", "Ymax", "Zmin", "Zmax" },
-                new List<double> { x, y, CurrentZ, r1Max, r2Max, r3Max, r1Min, r1Max, r2Min, r2Max, r3Min, r3Max },
+              Tuple<int, ASTNode> item = formulas[index];
+              double isInside = Util.Evaluate(item.Item2,
+                new List<string>
+                {
+                  "x",
+                  "y",
+                  "z",
+                  "width",
+                  "height",
+                  "depth",
+                  "Xmin",
+                  "Xmax",
+                  "Ymin",
+                  "Ymax",
+                  "Zmin",
+                  "Zmax"
+                },
+                new List<double> {x, y, CurrentZ, r1Max, r2Max, r3Max, r1Min, r1Max, r2Min, r2Max, r3Min, r3Max},
                 new List<Tuple<string, double>>()
                 );
-              if ( Math.Abs((isInside - 1.0)) < 1E-10)
+              if (Math.Abs((isInside - 1.0)) < 1E-10)
               {
                 result.SetPixel(i, j, GetColorForIndex(item.Item1));
                 break;
@@ -225,7 +239,6 @@ namespace EditSpatial.Controls
       }
       catch
       {
-        
       }
       return new Bitmap(1, 1);
     }
@@ -235,7 +248,7 @@ namespace EditSpatial.Controls
       switch (index)
       {
         default:
-          case 0:
+        case 0:
           return Color.Black;
         case 1:
           return Color.Red;
@@ -250,13 +263,6 @@ namespace EditSpatial.Controls
       }
     }
 
-    public ControlAnalyticGeometry()
-    {
-      InitializeComponent();
-      IsInitializing = false;
-      RowsAdded = new List<int>();
-    }
-
     private void FlipOrder(AnalyticGeometry geometry)
     {
       if (geometry == null)
@@ -266,17 +272,16 @@ namespace EditSpatial.Controls
       var list = new List<Tuple<int, int>>();
       for (long i = 0; i < geometry.getNumAnalyticVolumes(); ++i)
       {
-        var current = geometry.getAnalyticVolume(i);
-        list.Add(new Tuple<int, int>((int)i, (int)current.getOrdinal()));
+        AnalyticVolume current = geometry.getAnalyticVolume(i);
+        list.Add(new Tuple<int, int>((int) i, (int) current.getOrdinal()));
       }
 
-      var ordered = list.OrderByDescending(item => item.Item2);
+      IOrderedEnumerable<Tuple<int, int>> ordered = list.OrderByDescending(item => item.Item2);
       foreach (var item in ordered)
       {
-        var current = geometry.getAnalyticVolume(item.Item1);
-        current.setOrdinal((geometry.getNumAnalyticVolumes()-1)- item.Item2);
+        AnalyticVolume current = geometry.getAnalyticVolume(item.Item1);
+        current.setOrdinal((geometry.getNumAnalyticVolumes() - 1) - item.Item2);
       }
-
     }
 
     private void SortedOrder(AnalyticGeometry geometry)
@@ -288,18 +293,17 @@ namespace EditSpatial.Controls
       var list = new List<Tuple<int, int, string>>();
       for (long i = 0; i < geometry.getNumAnalyticVolumes(); ++i)
       {
-        var current = geometry.getAnalyticVolume(i);
-        list.Add(new Tuple<int, int, string>((int)i, (int)current.getOrdinal(), current.getSpatialId()));
+        AnalyticVolume current = geometry.getAnalyticVolume(i);
+        list.Add(new Tuple<int, int, string>((int) i, (int) current.getOrdinal(), current.getSpatialId()));
       }
 
-      var ordered = list.OrderByDescending(item => item.Item2);
-      var volList = geometry.getListOfAnalyticVolumes();
+      IOrderedEnumerable<Tuple<int, int, string>> ordered = list.OrderByDescending(item => item.Item2);
+      ListOfAnalyticVolumes volList = geometry.getListOfAnalyticVolumes();
       foreach (var item in ordered)
       {
-        var vol = volList.remove(item.Item3);
+        AnalyticVolume vol = volList.remove(item.Item3);
         volList.insert(item.Item2, vol);
       }
-
     }
 
 
@@ -310,7 +314,6 @@ namespace EditSpatial.Controls
 
       FlipOrder(Current);
       InitializeFrom(SpatialGeometry, Current.getSpatialId());
-
     }
 
     private void OnSortClick(object sender, EventArgs e)
@@ -325,7 +328,7 @@ namespace EditSpatial.Controls
 
     private void OnUpdateImage(object sender, EventArgs e)
     {
-      if (Current == null)        
+      if (Current == null)
         return;
 
       IsInitializing = true;
@@ -341,13 +344,13 @@ namespace EditSpatial.Controls
       if (SpatialGeometry.getNumCoordinateComponents() < 3)
         return;
 
-      var range1 = SpatialGeometry.getCoordinateComponent(2);
+      CoordinateComponent range1 = SpatialGeometry.getCoordinateComponent(2);
       double r1Min = range1.getBoundaryMin().getValue();
       double r1Max = range1.getBoundaryMax().getValue();
       double x = r1Min
-              +
-              (r1Max - r1Min) /
-              (double)trackBar1.Maximum * (double)trackBar1.Value;
+                 +
+                 (r1Max - r1Min)/
+                 trackBar1.Maximum*trackBar1.Value;
       txtZ.Text = x.ToString();
       if (Current == null)
         return;
@@ -361,38 +364,36 @@ namespace EditSpatial.Controls
       SpatialGeometry = null;
       InitializeFrom(null, string.Empty);
     }
-    
+
     private void OnExportTiffClick(object sender, EventArgs e)
     {
       if (grid.SelectedRows.Count == 0) return;
       long ordinal = 0;
       long.TryParse(grid.SelectedRows[0].Cells[2].Value as string, out ordinal);
-      
-      var range1 = SpatialGeometry.getCoordinateComponent(0);
+
+      CoordinateComponent range1 = SpatialGeometry.getCoordinateComponent(0);
       double r1Min = range1.getBoundaryMin().getValue();
       double r1Max = range1.getBoundaryMax().getValue();
-      var range2 = SpatialGeometry.getCoordinateComponent(1);
+      CoordinateComponent range2 = SpatialGeometry.getCoordinateComponent(1);
       double r2Min = range2.getBoundaryMin().getValue();
       double r2Max = range2.getBoundaryMax().getValue();
 
-      var image = Current.GenerateTiff(SpatialGeometry, (int)r1Max, (int)r2Max, (int)ordinal, CurrentZ);
+      Image image = Current.GenerateTiff(SpatialGeometry, (int) r1Max, (int) r2Max, (int) ordinal, CurrentZ);
 
-      using (var dialog = new SaveFileDialog { Filter = "TIFF files|*.tif|All files|*.*" })
+      using (var dialog = new SaveFileDialog {Filter = "TIFF files|*.tif|All files|*.*"})
       {
         if (dialog.ShowDialog() == DialogResult.OK)
         {
-          image.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);
+          image.Save(dialog.FileName, ImageFormat.Tiff);
         }
       }
-
     }
 
     private void OnRowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
     {
       if (Current == null || IsInitializing || e.RowIndex - 1 < 0) return;
 
-      RowsAdded.Add(e.RowIndex-1);
-
+      RowsAdded.Add(e.RowIndex - 1);
     }
 
     private void OnMakeFirstClick(object sender, EventArgs e)
@@ -402,7 +403,7 @@ namespace EditSpatial.Controls
       var selected = grid.SelectedRows[0].Cells[0].Value as string;
       for (int i = 0; i < Current.getNumAnalyticVolumes(); ++i)
       {
-        var current = Current.getAnalyticVolume(i);
+        AnalyticVolume current = Current.getAnalyticVolume(i);
         if (current == null) continue;
         if (current.getSpatialId() != selected) continue;
 
@@ -411,9 +412,6 @@ namespace EditSpatial.Controls
         InitializeFrom(SpatialGeometry, Current.getSpatialId());
         break;
       }
-
     }
-
-   
   }
 }

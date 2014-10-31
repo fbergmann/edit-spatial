@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WFDuneRunner.Model
+namespace LibEditSpatial.Model
 {
   public static class StaticHelper
   {

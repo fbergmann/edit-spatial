@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using libsbmlcs;
@@ -24,37 +25,36 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+        object[] attributes = Assembly.GetExecutingAssembly()
+          .GetCustomAttributes(typeof (AssemblyTitleAttribute), false);
         if (attributes.Length > 0)
         {
-          var titleAttribute = (AssemblyTitleAttribute)attributes[0];
+          var titleAttribute = (AssemblyTitleAttribute) attributes[0];
           if (titleAttribute.Title != "")
           {
             return titleAttribute.Title;
           }
         }
-        return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+        return Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
       }
     }
 
     public string AssemblyVersion
     {
-      get
-      {
-        return Assembly.GetExecutingAssembly().GetName().Version.ToString();
-      }
+      get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
     }
 
     public string AssemblyDescription
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+        object[] attributes = Assembly.GetExecutingAssembly()
+          .GetCustomAttributes(typeof (AssemblyDescriptionAttribute), false);
         if (attributes.Length == 0)
         {
           return "";
         }
-        return ((AssemblyDescriptionAttribute)attributes[0]).Description;
+        return ((AssemblyDescriptionAttribute) attributes[0]).Description;
       }
     }
 
@@ -62,12 +62,13 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+        object[] attributes = Assembly.GetExecutingAssembly()
+          .GetCustomAttributes(typeof (AssemblyProductAttribute), false);
         if (attributes.Length == 0)
         {
           return "";
         }
-        return ((AssemblyProductAttribute)attributes[0]).Product;
+        return ((AssemblyProductAttribute) attributes[0]).Product;
       }
     }
 
@@ -75,12 +76,13 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+        object[] attributes = Assembly.GetExecutingAssembly()
+          .GetCustomAttributes(typeof (AssemblyCopyrightAttribute), false);
         if (attributes.Length == 0)
         {
           return "";
         }
-        return ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+        return ((AssemblyCopyrightAttribute) attributes[0]).Copyright;
       }
     }
 
@@ -88,14 +90,16 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+        object[] attributes = Assembly.GetExecutingAssembly()
+          .GetCustomAttributes(typeof (AssemblyCompanyAttribute), false);
         if (attributes.Length == 0)
         {
           return "";
         }
-        return ((AssemblyCompanyAttribute)attributes[0]).Company;
+        return ((AssemblyCompanyAttribute) attributes[0]).Company;
       }
     }
+
     #endregion
   }
 }

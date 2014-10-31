@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SBW;
 
 namespace EditSpatial
 {
-  static class Program
+  internal static class Program
   {
     private static object module;
+
     /// <summary>
-    /// The main entry point for the application.
+    ///   The main entry point for the application.
     /// </summary>
     [STAThread]
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
@@ -31,15 +29,14 @@ namespace EditSpatial
           "analysis", // service name
           "Create/Edit Spatial Description", // service display name
           "/Analysis", // category
-          "Creates / Edits spatial models",  //
+          "Creates / Edits spatial models", //
           args
           );
-
       }
       catch
-      {        
+      {
       }
-      
+
       if (args.Length == 1 && File.Exists(args[0]))
         mainForm.OpenFile(args[0]);
 

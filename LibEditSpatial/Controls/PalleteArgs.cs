@@ -1,4 +1,4 @@
-namespace WFEditDMP.Controls
+namespace LibEditSpatial.Controls
 {
   public class PalleteArgs
   {

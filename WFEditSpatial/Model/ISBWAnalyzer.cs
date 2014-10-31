@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SBW;
+﻿using SBW;
 
-namespace EditSpatial
+namespace EditSpatial.Model
 {
-  delegate void doAnalysisDelegate(string model);
-  interface ISBWAnalyzer
+  internal delegate void doAnalysisDelegate(string model);
+
+  internal interface ISBWAnalyzer
   {
     [Help("Loads a SBML string into EditSpatial")]
     void doAnalysis(string model);

@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using libsbmlcs;
-
-using Model = libsbmlcs.Model;
 
 namespace EditSpatial.Controls
 {
   public partial class ControlCompartment : BaseSpatialControl
   {
+    public ControlCompartment()
+    {
+      InitializeComponent();
+      RowsAdded = new List<int>();
+    }
 
-    libsbmlcs.SBMLDocument Current { get; set; }
+    private SBMLDocument Current { get; set; }
+    public List<int> RowsAdded { get; set; }
 
-    public void InitializeFrom(libsbmlcs.SBMLDocument document)
+    public void InitializeFrom(SBMLDocument document)
     {
       grid.Rows.Clear();
       Current = document;
@@ -26,29 +23,23 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-        var model = document.getModel();
+        libsbmlcs.Model model = document.getModel();
 
         CommitAddedRows(Current);
         for (long i = 0; i < model.getNumCompartments(); ++i)
         {
-          var current = model.getCompartment(i);
+          Compartment current = model.getCompartment(i);
           grid.Rows.Add(current.getId(),
-          current.getName(),
-          current.getSize().ToString(),
-           current.getSpatialDimensionsAsDouble().ToString()
-          );
+            current.getName(),
+            current.getSize().ToString(),
+            current.getSpatialDimensionsAsDouble().ToString()
+            );
         }
       }
       finally
       {
         IsInitializing = false;
       }
-    }
-
-    public ControlCompartment()
-    {
-      InitializeComponent();
-      RowsAdded = new List<int>();
     }
 
     private void CommitAddedRows(SBMLDocument current)
@@ -59,20 +50,20 @@ namespace EditSpatial.Controls
         {
           try
           {
-            var row = grid.Rows[RowsAdded[i]];
-            var comp = current.getModel().createCompartment();
+            DataGridViewRow row = grid.Rows[RowsAdded[i]];
+            Compartment comp = current.getModel().createCompartment();
             comp.initDefaults();
             comp.setId(row.Cells[0].Value as string);
             comp.setName(row.Cells[1].Value as string);
-            double value; if (double.TryParse((string)row.Cells[2].Value, out value))
+            double value;
+            if (double.TryParse((string) row.Cells[2].Value, out value))
               comp.setSize(value);
-            if (double.TryParse((string)row.Cells[3].Value, out value))
+            if (double.TryParse((string) row.Cells[3].Value, out value))
               comp.setSpatialDimensions(value);
             RowsAdded.RemoveAt(i);
           }
           catch
           {
-
           }
         }
       }
@@ -87,16 +78,16 @@ namespace EditSpatial.Controls
 
       for (int i = 0; i < grid.Rows.Count; ++i)
       {
-        var row = grid.Rows[i];
-        var current = Current.getModel().getCompartment((string)row.Cells[0].Value);
+        DataGridViewRow row = grid.Rows[i];
+        Compartment current = Current.getModel().getCompartment((string) row.Cells[0].Value);
         if (current == null) continue;
 
         current.setName(row.Cells[1].Value as string);
-        double value; if (double.TryParse((string)row.Cells[2].Value, out value))
+        double value;
+        if (double.TryParse((string) row.Cells[2].Value, out value))
           current.setSize(value);
-        if (double.TryParse((string)row.Cells[3].Value, out value))
+        if (double.TryParse((string) row.Cells[3].Value, out value))
           current.setSpatialDimensions(value);
-
       }
     }
 
@@ -120,8 +111,5 @@ namespace EditSpatial.Controls
 
       RowsAdded.Add(e.RowIndex - 1);
     }
-
-    public List<int> RowsAdded { get; set; }
-
   }
 }

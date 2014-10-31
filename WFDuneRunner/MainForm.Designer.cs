@@ -1,4 +1,6 @@
-﻿namespace WFDuneRunner
+﻿using LibEditSpatial.Controls;
+
+namespace WFDuneRunner
 {
   partial class MainForm
   {
@@ -63,10 +65,10 @@
       this.cmdRun = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.ctrlTime1 = new WFDuneRunner.Controls.CtrlTime();
-      this.ctrlDomain1 = new WFDuneRunner.Controls.CtrlDomain();
-      this.ctrlNewton1 = new WFDuneRunner.Controls.CtrlNewton();
-      this.ctrlGlobal1 = new WFDuneRunner.Controls.CtrlGlobal();
+      this.ctrlTime1 = new CtrlTime();
+      this.ctrlDomain1 = new CtrlDomain();
+      this.ctrlNewton1 = new CtrlNewton();
+      this.ctrlGlobal1 = new CtrlGlobal();
       this.colVarname = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colDiffusion = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colBcType = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -640,14 +642,14 @@
     private System.Windows.Forms.DataGridView gridParameters;
     private System.Windows.Forms.DataGridViewTextBoxColumn colName;
     private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
-    private Controls.CtrlTime ctrlTime1;
-    private Controls.CtrlDomain ctrlDomain1;
+    private CtrlTime ctrlTime1;
+    private CtrlDomain ctrlDomain1;
     private System.Windows.Forms.DataGridView gridVariables;
-    private Controls.CtrlNewton ctrlNewton1;
+    private CtrlNewton ctrlNewton1;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     private System.Windows.Forms.ToolStripButton cmdRun;
     private System.Windows.Forms.TabPage tabGlobal;
-    private Controls.CtrlGlobal ctrlGlobal1;
+    private CtrlGlobal ctrlGlobal1;
     private System.Windows.Forms.DataGridViewTextBoxColumn colVarname;
     private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusion;
     private System.Windows.Forms.DataGridViewComboBoxColumn colBcType;

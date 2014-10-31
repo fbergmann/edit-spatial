@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EditSpatial.Controls
@@ -20,8 +13,8 @@ namespace EditSpatial.Controls
     }
 
     public void DisplayNode(TreeNode node)
-    {      
-      var sbml = node == null ? null :  (string)node.Tag;
+    {
+      string sbml = node == null ? null : (string) node.Tag;
       if (string.IsNullOrWhiteSpace(sbml))
         sbml = "<none>";
       sbml = sbml.Replace("\n", Environment.NewLine);

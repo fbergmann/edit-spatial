@@ -5,9 +5,9 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WFDuneRunner.Model;
+using LibEditSpatial.Model;
 
-namespace WFDuneRunner.Dialogs
+namespace LibEditSpatial.Dialogs
 {
   public partial class DlgRun : Form
   {

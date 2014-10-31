@@ -1,24 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using EditSpatial.Model;
 using libsbmlcs;
 
 namespace EditSpatial.Forms
 {
   public partial class FormSpatialAnnotation : Form
   {
-
     public const string SPATIAL_ANNOTATION_URL = "http://fbergmann.github.io/spatial-sbml/settings";
 
-    private Random rand; 
+    private readonly Random rand;
 
     public FormSpatialAnnotation()
     {
@@ -38,17 +31,17 @@ namespace EditSpatial.Forms
       }
     }
 
-    
-    XMLNode getAnnotationNode(libsbmlcs.Model model, string ns)
+
+    private XMLNode getAnnotationNode(libsbmlcs.Model model, string ns)
     {
       if (model == null || !model.isSetAnnotation()) return null;
 
       XMLNode parent = model.getAnnotation();
       bool again = true;
-      while(again)
+      while (again)
       {
         again = false;
-        for (int i = 0;i < parent.getNumChildren(); ++i)
+        for (int i = 0; i < parent.getNumChildren(); ++i)
         {
           XMLNode current = parent.getChild(i);
           if (current.getName() == "annotation")
@@ -68,7 +61,7 @@ namespace EditSpatial.Forms
 
     private string Clean(string original)
     {
-      var result = original.Replace("<notes>", "");
+      string result = original.Replace("<notes>", "");
       result = result.Replace("</notes>", "");
       result = result.Replace("</body>", "");
       result = result.Replace("<pre>", "");
@@ -87,7 +80,7 @@ namespace EditSpatial.Forms
       if (!text.Contains("spatial")) return;
 
 
-      var palette = "black-blue";
+      string palette = "black-blue";
       if (text.Contains("GFP"))
         palette = "black-green";
       if (text.Contains("RFP"))
@@ -96,13 +89,12 @@ namespace EditSpatial.Forms
       double max = 6;
       double scale = 10;
       if (species.isSetInitialConcentration() && species.getInitialConcentration() > 0)
-        max = scale * species.getInitialConcentration();
+        max = scale*species.getInitialConcentration();
       else if (species.isSetInitialAmount() && species.getInitialAmount() > 0)
-        max = scale * species.getInitialAmount();
+        max = scale*species.getInitialAmount();
 
 
       grid.Rows.Add(species.getId(), palette, max.ToString(CultureInfo.InvariantCulture));
-
     }
 
     private void InitializeFromNotes(libsbmlcs.Model model)
@@ -111,21 +103,19 @@ namespace EditSpatial.Forms
 
       if (model == null) return;
       Model = model;
-      for (int i =0 ; i< model.getNumSpecies(); ++i)
+      for (int i = 0; i < model.getNumSpecies(); ++i)
       {
-        var current = model.getSpecies(i);
+        Species current = model.getSpecies(i);
         if (current == null || !current.isSetNotes()) continue;
 
 
         AddRowForNote(current.getNotesString(), current);
-        
       }
-
     }
 
     private void InitializeFromAnnotation(libsbmlcs.Model model)
     {
-      var node = getAnnotationNode(model, SPATIAL_ANNOTATION_URL);
+      XMLNode node = getAnnotationNode(model, SPATIAL_ANNOTATION_URL);
       if (node == null) return;
 
       XMLNode update = node.getChild("update");
@@ -149,10 +139,8 @@ namespace EditSpatial.Forms
           string max = item.getAttrValue("max");
 
           grid.Rows.Add(id, palette, max);
-
         }
       }
-
     }
 
 
@@ -164,7 +152,7 @@ namespace EditSpatial.Forms
       node.addAttr("xmlns", SPATIAL_ANNOTATION_URL);
 
       // save stepsize
-      XMLNode update = new XMLNode(new XMLTriple("update", SPATIAL_ANNOTATION_URL, ""), new XMLAttributes());
+      var update = new XMLNode(new XMLTriple("update", SPATIAL_ANNOTATION_URL, ""), new XMLAttributes());
       update.addAttr("step", txtStep.Text);
       update.addAttr("freq", txtUpdate.Text);
 
@@ -173,13 +161,13 @@ namespace EditSpatial.Forms
       // save assignments
       if (grid.Rows.Count > 0)
       {
-        XMLNode items = new XMLNode(new XMLTriple("items", SPATIAL_ANNOTATION_URL, ""), new XMLAttributes());
+        var items = new XMLNode(new XMLTriple("items", SPATIAL_ANNOTATION_URL, ""), new XMLAttributes());
 
         for (int i = 0; i < grid.Rows.Count; ++i)
         {
-          var current = grid.Rows[i];
-          XMLNode item = new XMLNode(new XMLTriple("item", SPATIAL_ANNOTATION_URL, ""), new XMLAttributes());
-          string id = current.Cells[0].Value as string;
+          DataGridViewRow current = grid.Rows[i];
+          var item = new XMLNode(new XMLTriple("item", SPATIAL_ANNOTATION_URL, ""), new XMLAttributes());
+          var id = current.Cells[0].Value as string;
           if (string.IsNullOrWhiteSpace(id)) continue;
           item.addAttr("sbmlId", id);
           item.addAttr("palette", current.Cells[1].Value as string);
@@ -195,8 +183,9 @@ namespace EditSpatial.Forms
         var num = (int) annot.getNumChildren();
         for (int i = num - 1; i >= 0; i--)
         {
-          var child = annot.getChild(i);
-          if (child.getName() == "spatialInfo" && (child.getNamespaceURI() == SPATIAL_ANNOTATION_URL || child.getNamespaceURI() == ""))
+          XMLNode child = annot.getChild(i);
+          if (child.getName() == "spatialInfo" &&
+              (child.getNamespaceURI() == SPATIAL_ANNOTATION_URL || child.getNamespaceURI() == ""))
             annot.removeChild(i);
         }
       }
@@ -204,7 +193,7 @@ namespace EditSpatial.Forms
       model.appendAnnotation(node);
     }
 
-    public void InitFrom(EditSpatial.Model.SpatialModel spatialModel)
+    public void InitFrom(SpatialModel spatialModel)
     {
       Status = DialogResult.Cancel;
       colId.Items.Clear();
@@ -223,7 +212,6 @@ namespace EditSpatial.Forms
 
       if (grid.Rows.Count < 2)
         InitializeFromNotes(Model);
-
     }
 
 
@@ -250,7 +238,7 @@ namespace EditSpatial.Forms
 
     private void cmdCombine_Click(object sender, EventArgs e)
     {
-      var selected = grid.SelectedRows;
+      DataGridViewSelectedRowCollection selected = grid.SelectedRows;
       if (selected == null || selected.Count < 2) return;
 
       // get common properties
@@ -266,16 +254,16 @@ namespace EditSpatial.Forms
       }
 
       // add species with assignment rule 
-      var species = Model.createSpecies();
+      Species species = Model.createSpecies();
       species.initDefaults();
 
-      var name = "combined_" + ids[0];
-      var formula = ids[0];
+      string name = "combined_" + ids[0];
+      string formula = ids[0];
       colId.Items.Remove(ids[0]);
       for (int i = 1; i < ids.Count; i++)
       {
         name = name + "_" + ids[i];
-        formula  = formula + " + " + ids[i];
+        formula = formula + " + " + ids[i];
         colId.Items.Remove(ids[i]);
       }
 
@@ -283,16 +271,16 @@ namespace EditSpatial.Forms
       species.setCompartment(Model.getSpecies(ids[0]).getCompartment());
       var plug = species.getPlugin("spatial") as SpatialSpeciesRxnPlugin;
       if (plug != null)
-      plug.setIsSpatial(true);
+        plug.setIsSpatial(true);
 
-      var assignment = Model.createAssignmentRule();
+      AssignmentRule assignment = Model.createAssignmentRule();
       assignment.setVariable(species.getId());
       assignment.setFormula(formula);
 
       colId.Items.Add(species.getId());
 
       // add new row
-      var index = grid.Rows.Add(species.getId(), palette, max);
+      int index = grid.Rows.Add(species.getId(), palette, max);
 
       // select row
       grid.Rows[index].Selected = true;
@@ -300,7 +288,7 @@ namespace EditSpatial.Forms
 
     private string getRandomPalette()
     {
-      switch(rand.Next(3))
+      switch (rand.Next(3))
       {
         default:
           return "black-green";
@@ -317,21 +305,16 @@ namespace EditSpatial.Forms
 
       for (int i = 0; i < Model.getNumSpecies(); i++)
       {
-       
         Species species = Model.getSpecies(i);
-              double max = 6;
-      double scale = 10;
-      if (species.isSetInitialConcentration() && species.getInitialConcentration() > 0)
-        max = scale * species.getInitialConcentration();
-      else if (species.isSetInitialAmount() && species.getInitialAmount() > 0)
-        max = scale * species.getInitialAmount();
+        double max = 6;
+        double scale = 10;
+        if (species.isSetInitialConcentration() && species.getInitialConcentration() > 0)
+          max = scale*species.getInitialConcentration();
+        else if (species.isSetInitialAmount() && species.getInitialAmount() > 0)
+          max = scale*species.getInitialAmount();
 
-        grid.Rows.Add(species.getId(), getRandomPalette(),max );
+        grid.Rows.Add(species.getId(), getRandomPalette(), max);
       }
-
     }
-
-
-  
   }
 }

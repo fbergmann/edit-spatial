@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 
-namespace WFEditDMP.Model
+namespace LibEditSpatial.Model
 {
   public class DmpPalette
   {

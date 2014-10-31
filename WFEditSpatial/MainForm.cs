@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using EditSpatial.Controls;
 using EditSpatial.Converter;
@@ -9,6 +8,7 @@ using EditSpatial.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
 using Microsoft.Win32;
+using SBW;
 using SBW.Utils;
 
 namespace EditSpatial
@@ -29,6 +29,7 @@ namespace EditSpatial
 
     private readonly SBWFavorites favs;
     private readonly SBWMenu menu;
+    private bool haveAkira;
 
     public MainForm()
     {
@@ -112,7 +113,7 @@ namespace EditSpatial
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;
-        current.SaveChanges();        
+        current.SaveChanges();
         if (current.UpdateAction != null)
           current.UpdateAction();
       }
@@ -215,6 +216,7 @@ namespace EditSpatial
     {
       Text = string.Format("Edit Spatial: [ {0} ]", Path.GetFileName(filename));
     }
+
     public void UpdateUI()
     {
       if (Model == null) return;
@@ -250,6 +252,7 @@ namespace EditSpatial
       treeCore.Nodes[NODE_RULES].Nodes.Clear();
       treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS].Nodes.Clear();
     }
+
     private void FillCoreTreeFromModel(SpatialModel spatialModel)
     {
       if (spatialModel.Document == null)
@@ -260,7 +263,7 @@ namespace EditSpatial
       libsbmlcs.Model model = spatialModel.Document.getModel();
       if (model == null)
       {
-        ClearCoreTree();        
+        ClearCoreTree();
         return;
       }
 
@@ -430,13 +433,13 @@ namespace EditSpatial
           SampledField field = sample.getSampledField();
           if (field != null)
           {
-            var fieldNode = new TreeNode(field.getSpatialId()) { Tag = field.toSBML() };
+            var fieldNode = new TreeNode(field.getSpatialId()) {Tag = field.toSBML()};
             node.Nodes.Add(fieldNode);
 
             for (long j = 0; j < sample.getNumSampledVolumes(); ++j)
             {
               SampledVolume vol = sample.getSampledVolume(j);
-              var volNode = new TreeNode(vol.getSpatialId()) { Tag = vol.toSBML() };
+              var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
               node.Nodes.Add(volNode);
             }
           }
@@ -511,7 +514,7 @@ namespace EditSpatial
         {
           Model.ConvertToL3();
 
-          var dialog = new FormInitSpatial { SpatialModel = Model };
+          var dialog = new FormInitSpatial {SpatialModel = Model};
           if (dialog.ShowDialog() == DialogResult.OK)
           {
             CreateModel selection = dialog.CreateModel;
@@ -530,11 +533,11 @@ namespace EditSpatial
       catch (Exception ex)
       {
         MessageBox.Show(
-          string.Format("Could not load the given model.{0}{1}", Environment.NewLine, ex.Message), 
-          "Model could not be loaded", 
+          string.Format("Could not load the given model.{0}{1}", Environment.NewLine, ex.Message),
+          "Model could not be loaded",
           MessageBoxButtons.OK,
           MessageBoxIcon.Error
-        );
+          );
       }
     }
 
@@ -663,8 +666,6 @@ namespace EditSpatial
     }
 
 
-    private bool haveAkira;
-
     private void OnLoad(object sender, EventArgs e)
     {
       ReadSettings();
@@ -677,12 +678,11 @@ namespace EditSpatial
         menu.UpdateSBWMenu();
 
         SBWExporter.SetupImport(
-                mnuImport, doAnalysis, (s) => SetFilename(s));
+          mnuImport, doAnalysis, s => SetFilename(s));
 
         foreach (ToolStripItem item in mnuSBW.DropDownItems)
         {
           haveAkira |= haveAkira || item.Text == "Spatial SBML";
-
         }
       }
       catch
@@ -698,7 +698,6 @@ namespace EditSpatial
       }
 
       cmdAkira.Visible = haveAkira;
-
     }
 
     public void ReadSettings()
@@ -741,7 +740,7 @@ namespace EditSpatial
       if (Model == null || Model.Document == null)
         return;
       Model.Document.clearValidators();
-      Model.Document.addValidator(SpatialModel.CustomSpatialValidator); 
+      Model.Document.addValidator(SpatialModel.CustomSpatialValidator);
       Model.Document.checkConsistency();
       if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {
@@ -762,8 +761,7 @@ namespace EditSpatial
       if (dialog.ShowDialog() != DialogResult.OK)
         return;
 
-        ExportMorpheusFile(dialog.FileName);        
-  
+      ExportMorpheusFile(dialog.FileName);
     }
 
     public void ExportMorpheusFile(string fileName)
@@ -773,10 +771,9 @@ namespace EditSpatial
 
     private void OnShowSpatialWizard(object sender, EventArgs e)
     {
-      var dialog = new FormInitSpatial { SpatialModel = Model };
+      var dialog = new FormInitSpatial {SpatialModel = Model};
       if (dialog.ShowDialog() == DialogResult.OK)
       {
-
         CreateModel selection = dialog.CreateModel;
 
         if (!Model.ConvertToSpatial(selection))
@@ -796,7 +793,7 @@ namespace EditSpatial
       if (Model == null || Model.Document == null)
         return;
       Model.Document.clearValidators();
-      Model.Document.addValidator(SpatialModel.CustomSpatialValidator); 
+      Model.Document.addValidator(SpatialModel.CustomSpatialValidator);
       Model.Document.checkConsistency();
       if (Model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
       {
@@ -819,7 +816,6 @@ namespace EditSpatial
 
       var converter = new DuneConverter(Model.Document);
       File.WriteAllText(dialog.FileName, converter.ToSBML());
-
     }
 
     private void OnExportDuneClick(object sender, EventArgs e)
@@ -849,113 +845,73 @@ namespace EditSpatial
         return;
 
       Model.ExportToDune(dialog.FileName);
-  
     }
-
-
-
-    #region Drag / Drop
-
-    private void MainForm_DragDrop(object sender, DragEventArgs e)
-    {
-      try
-      {
-        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
-        var oInfo = new FileInfo(sFilenames[0]);
-        if (oInfo.Extension.ToLower() == ".xml" || oInfo.Extension.ToLower() == ".sbml")
-        {
-          OpenFile(sFilenames[0]);
-        }
-      }
-      catch (Exception)
-      {
-      }
-    }
-
-    private void MainForm_DragEnter(object sender, DragEventArgs e)
-    {
-      if (e.Data.GetDataPresent(DataFormats.FileDrop))
-      {
-        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
-        var oInfo = new FileInfo(sFilenames[0]);
-        if (oInfo.Extension.ToLower() == ".xml" || oInfo.Extension.ToLower() == ".sbml")
-        {
-          e.Effect = DragDropEffects.Copy;
-          return;
-        }
-      }
-      e.Effect = DragDropEffects.None;
-    }
-
-    #endregion
-
-
 
     private void OnSpatialItemDeleteClick(object sender, EventArgs e)
     {
-      var selected = treeSpatial.SelectedNode;
+      TreeNode selected = treeSpatial.SelectedNode;
       if (selected == null || selected.Level == 0) return;
 
-      var selectedId = selected.Text;
+      string selectedId = selected.Text;
       TreeNode parent = selected.Parent;
       if (Model.Geometry == null) return;
 
       if (selected.Level == 1)
-      switch (parent.Name)
-      {
-        case NODE_DOMAINS:
+        switch (parent.Name)
+        {
+          case NODE_DOMAINS:
           {
             Model.Geometry.removeDomain(selectedId);
             UpdateUI();
             break;
           }
-        case NODE_DOMAINTYPES:
+          case NODE_DOMAINTYPES:
           {
             Model.Geometry.removeDomainType(selectedId);
             UpdateUI();
             break;
           }
-        case NODE_GEOMS:
+          case NODE_GEOMS:
           {
             Model.Geometry.removeGeometryDefinition(selectedId);
             UpdateUI();
             break;
           }
-        case NODE_ADJACENTDOMAINS:
+          case NODE_ADJACENTDOMAINS:
           {
             Model.Geometry.removeAdjacentDomains(selectedId);
             UpdateUI();
             break;
           }
-        case NODE_COORDINATES:
+          case NODE_COORDINATES:
           {
             Model.Geometry.removeCoordinateComponent(selectedId);
             UpdateUI();
             break;
           }
-      }
+        }
 
       if (selected.Level == 2)
       {
         switch (parent.Parent.Name)
         {
           case NODE_GEOMS:
+          {
+            GeometryDefinition geom = Model.Geometry.getGeometryDefinition(parent.Text);
+            if (geom is AnalyticGeometry)
             {
-              var geom = Model.Geometry.getGeometryDefinition(parent.Text);
-              if (geom is AnalyticGeometry)
-              {
-                var ageom = geom as AnalyticGeometry;
-                ageom.removeAnalyticVolume(selectedId);
-                UpdateUI();
-              }
-              else if (geom is SampledFieldGeometry)
-              {
-                var sgeom = geom as SampledFieldGeometry;
-                sgeom.removeSampledVolume(selectedId);
-                UpdateUI();
-              }
-              break;
+              var ageom = geom as AnalyticGeometry;
+              ageom.removeAnalyticVolume(selectedId);
+              UpdateUI();
             }
+            else if (geom is SampledFieldGeometry)
+            {
+              var sgeom = geom as SampledFieldGeometry;
+              sgeom.removeSampledVolume(selectedId);
+              UpdateUI();
+            }
+            break;
+          }
         }
       }
 
@@ -964,19 +920,19 @@ namespace EditSpatial
 
     private void OnCoreItemDeleteClick(object sender, EventArgs e)
     {
-      var selected = treeCore.SelectedNode;
+      TreeNode selected = treeCore.SelectedNode;
       if (selected == null || selected.Level == 0) return;
 
-      var selectedId = selected.Text;
+      string selectedId = selected.Text;
       TreeNode parent = selected.Parent;
       switch (parent.Name)
       {
         case NODE_PARAMETERS:
-          {
-            Model.Document.getModel().removeParameter(selectedId);
-            UpdateUI();
-            break;
-          }
+        {
+          Model.Document.getModel().removeParameter(selectedId);
+          UpdateUI();
+          break;
+        }
         case NODE_COMPARTMENTS:
         {
           Model.Document.getModel().removeCompartment(selectedId);
@@ -1009,8 +965,6 @@ namespace EditSpatial
         }
       }
       treeCore.SelectedNode = parent;
-      
-
     }
 
     private void OnMoveARtoIAClick(object sender, EventArgs e)
@@ -1031,7 +985,6 @@ namespace EditSpatial
       {
         Annotation.SaveToModel(Model.Document.getModel());
       }
-
     }
 
     private void OnSimulateWithAkiraClick(object sender, EventArgs e)
@@ -1039,15 +992,46 @@ namespace EditSpatial
       if (!haveAkira) return;
       try
       {
-        SBW.HighLevel.Send("Spatial SBML", "Spatial SBML", "void doAnalysis(string)", Model.ToSBML());
+        HighLevel.Send("Spatial SBML", "Spatial SBML", "void doAnalysis(string)", Model.ToSBML());
       }
       catch
       {
-
       }
     }
 
+    #region Drag / Drop
 
-    
+    private void MainForm_DragDrop(object sender, DragEventArgs e)
+    {
+      try
+      {
+        var sFilenames = (string[]) e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".xml" || oInfo.Extension.ToLower() == ".sbml")
+        {
+          OpenFile(sFilenames[0]);
+        }
+      }
+      catch (Exception)
+      {
+      }
+    }
+
+    private void MainForm_DragEnter(object sender, DragEventArgs e)
+    {
+      if (e.Data.GetDataPresent(DataFormats.FileDrop))
+      {
+        var sFilenames = (string[]) e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".xml" || oInfo.Extension.ToLower() == ".sbml")
+        {
+          e.Effect = DragDropEffects.Copy;
+          return;
+        }
+      }
+      e.Effect = DragDropEffects.None;
+    }
+
+    #endregion
   }
 }

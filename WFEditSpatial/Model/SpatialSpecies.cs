@@ -1,23 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EditSpatial.Model
 {
   public class SpatialSpecies
   {
-    protected bool Equals(SpatialSpecies other)
-    {
-      return string.Equals(Id, other.Id);
-    }
-
-    public override int GetHashCode()
-    {
-      return (Id != null ? Id.GetHashCode() : 0);
-    }
-
     public string Id { get; set; }
 
     public double MinBoundaryX { get; set; }
@@ -33,6 +17,16 @@ namespace EditSpatial.Model
 
     public string InitialCondition { get; set; }
 
+    protected bool Equals(SpatialSpecies other)
+    {
+      return string.Equals(Id, other.Id);
+    }
+
+    public override int GetHashCode()
+    {
+      return (Id != null ? Id.GetHashCode() : 0);
+    }
+
     public override string ToString()
     {
       return Id;
@@ -43,11 +37,9 @@ namespace EditSpatial.Model
     {
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
-      if (obj is string) return Id == (string)obj;
-      if (obj.GetType() != this.GetType()) return false;
-      return Equals((SpatialSpecies)obj);
+      if (obj is string) return Id == (string) obj;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((SpatialSpecies) obj);
     }
-
-
   }
 }

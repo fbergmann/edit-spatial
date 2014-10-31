@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using WFDuneRunner.Model;
+using LibEditSpatial.Model;
 
-namespace WFDuneRunner.Controls
+namespace LibEditSpatial.Controls
 {
   public partial class CtrlTime : UserControl
   {

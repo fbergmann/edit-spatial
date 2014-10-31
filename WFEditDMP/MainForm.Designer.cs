@@ -1,4 +1,7 @@
-﻿namespace WFEditDMP
+﻿using LibEditSpatial.Controls;
+using LibEditSpatial.Model;
+
+namespace WFEditDMP
 {
   partial class MainForm
   {
@@ -28,16 +31,16 @@
     /// </summary>
     private void InitializeComponent()
     {
-      WFEditDMP.Controls.PalleteArgs palleteArgs1 = new WFEditDMP.Controls.PalleteArgs();
-      WFEditDMP.Model.DmpPalette dmpPalette1 = new WFEditDMP.Model.DmpPalette();
+      PalleteArgs palleteArgs1 = new PalleteArgs();
+      DmpPalette dmpPalette1 = new DmpPalette();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
       this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
       this.lblSize = new System.Windows.Forms.ToolStripStatusLabel();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-      this.ctrlPalette1 = new WFEditDMP.Controls.CtrlPalette();
-      this.dmpRenderControl1 = new WFEditDMP.Controls.DmpRenderControl();
+      this.ctrlPalette1 = new CtrlPalette();
+      this.dmpRenderControl1 = new DmpRenderControl();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -481,9 +484,9 @@
     private System.Windows.Forms.StatusStrip statusStrip1;
     private System.Windows.Forms.ToolStripStatusLabel lblStatus;
     private System.Windows.Forms.ToolStripStatusLabel lblSize;
-    private Controls.DmpRenderControl dmpRenderControl1;
+    private DmpRenderControl dmpRenderControl1;
     private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private Controls.CtrlPalette ctrlPalette1;
+    private CtrlPalette ctrlPalette1;
     private System.Windows.Forms.ToolStripComboBox cmbPalettes;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     private System.Windows.Forms.ToolStripTextBox txtSize;

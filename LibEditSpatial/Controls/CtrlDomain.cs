@@ -2,9 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using WFDuneRunner.Model;
+using LibEditSpatial.Model;
 
-namespace WFDuneRunner.Controls
+namespace LibEditSpatial.Controls
 {
   public partial class CtrlDomain : UserControl
   {

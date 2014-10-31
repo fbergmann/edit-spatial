@@ -5,11 +5,12 @@ using libsbmlcs;
 
 namespace EditSpatial.Forms
 {
-
   public partial class FormInitSpatial : Form
   {
-
+    private AnalyticGeometry _analyticGeometry;
+    private Geometry _geometry;
     private libsbmlcs.Model _model;
+    private SampledFieldGeometry _sampleGeometry;
 
     public FormInitSpatial()
     {
@@ -25,7 +26,7 @@ namespace EditSpatial.Forms
         {
           Geometry = GeometryModel
         };
-        foreach (var item in lstSpatialSpecies.Items)
+        foreach (object item in lstSpatialSpecies.Items)
           result.Species.Add(item as SpatialSpecies);
         return result;
       }
@@ -51,10 +52,10 @@ namespace EditSpatial.Forms
           {
             _analyticGeometry.ExpandMath();
 
-            for (int i = 0;i < _analyticGeometry.getNumAnalyticVolumes();++i)
+            for (int i = 0; i < _analyticGeometry.getNumAnalyticVolumes(); ++i)
             {
-              var current = _analyticGeometry.getAnalyticVolume(i);
-              var math = libsbml.formulaToString(current.getMath());
+              AnalyticVolume current = _analyticGeometry.getAnalyticVolume(i);
+              string math = libsbml.formulaToString(current.getMath());
               if (math.Contains(" width "))
                 geom.UsedSymbols.Add("width");
               if (math.Contains(" height "))
@@ -69,17 +70,16 @@ namespace EditSpatial.Forms
                 geom.UsedSymbols.Add("Ymin");
             }
           }
-
-        } 
+        }
 
         if (radSample.Checked)
         {
           geom.Type = GeometryType.Sample;
         }
-      
 
-      return
-      geom;
+
+        return
+          geom;
       }
     }
 
@@ -103,7 +103,6 @@ namespace EditSpatial.Forms
     private void OnAllSpeciesDoubleClick(object sender, EventArgs e)
     {
       AddSelected();
-
     }
 
     private void OnSpatialSpeciesDoubleClick(object sender, EventArgs e)
@@ -113,7 +112,7 @@ namespace EditSpatial.Forms
 
     private void AddSelected()
     {
-      var selected = lstAllSpecies.SelectedItem;
+      object selected = lstAllSpecies.SelectedItem;
       if (selected == null) return;
       AddSelected(selected as string);
     }
@@ -123,32 +122,35 @@ namespace EditSpatial.Forms
       if (species == null || _model == null) return;
 
 
-      var diffusionX = species.getDiffusionX();
-      var diffusionY = species.getDiffusionY();
-      var Xmax = species.getXMaxBC();
-      var Xmin = species.getXMinBC();
-      var Ymax = species.getYMaxBC();
-      var Ymin = species.getYMinBC();
-      var bcType = species.getBcType();
+      double? diffusionX = species.getDiffusionX();
+      double? diffusionY = species.getDiffusionY();
+      double? Xmax = species.getXMaxBC();
+      double? Xmin = species.getXMinBC();
+      double? Ymax = species.getYMaxBC();
+      double? Ymin = species.getYMinBC();
+      string bcType = species.getBcType();
 
 
       // assignments do not need to diffuse by themselves automatically
-      var defaultDiff = 
+      double defaultDiff =
         species.getModel().
-        getAssignmentRuleByVariable(species.getId()) == null 
-        ?  0.001 : 0.0;
+          getAssignmentRuleByVariable(species.getId()) == null
+          ? 0.001
+          : 0.0;
 
       var spatialSpecies = new SpatialSpecies
       {
         Id = species.getId(),
-        DiffusionX = diffusionX.HasValue ? diffusionX.Value :
-          diffusionY.HasValue ? diffusionY.Value : defaultDiff,
-        DiffusionY = diffusionY.HasValue ? diffusionY.Value :
-          diffusionX.HasValue ? diffusionX.Value : defaultDiff,
-        MinBoundaryX = Xmin.HasValue ? Xmin.Value : 0, 
-        MaxBoundaryX = Xmax.HasValue ? Xmax.Value : 0, 
-        MinBoundaryY = Ymin.HasValue ? Ymin.Value : 0, 
-        MaxBoundaryY = Ymax.HasValue ? Ymax.Value : 0, 
+        DiffusionX = diffusionX.HasValue
+          ? diffusionX.Value
+          : diffusionY.HasValue ? diffusionY.Value : defaultDiff,
+        DiffusionY = diffusionY.HasValue
+          ? diffusionY.Value
+          : diffusionX.HasValue ? diffusionX.Value : defaultDiff,
+        MinBoundaryX = Xmin.HasValue ? Xmin.Value : 0,
+        MaxBoundaryX = Xmax.HasValue ? Xmax.Value : 0,
+        MinBoundaryY = Ymin.HasValue ? Ymin.Value : 0,
+        MaxBoundaryY = Ymax.HasValue ? Ymax.Value : 0,
         BCType = bcType,
         InitialCondition = species.getInitialExpession()
       };
@@ -160,9 +162,8 @@ namespace EditSpatial.Forms
         spatialSpecies.DiffusionY,
         spatialSpecies.InitialCondition,
         spatialSpecies.MaxBoundaryX, spatialSpecies.MaxBoundaryY,
-        spatialSpecies.MinBoundaryX, spatialSpecies.MinBoundaryY, 
+        spatialSpecies.MinBoundaryX, spatialSpecies.MinBoundaryY,
         spatialSpecies.BCType);
-
     }
 
     private void AddSelected(string id)
@@ -171,19 +172,18 @@ namespace EditSpatial.Forms
       if (lstSpatialSpecies.Items.Contains(id)) return;
 
       AddSelected(_model.getSpecies(id));
-
     }
 
     private void RemoveSelected()
     {
-      var selected = lstSpatialSpecies.SelectedItem;
+      object selected = lstSpatialSpecies.SelectedItem;
       if (selected == null) return;
       RemoveSelected(selected as SpatialSpecies);
     }
 
     private void RemoveSelected(string id)
     {
-      var species = GetSpecies(id);
+      SpatialSpecies species = GetSpecies(id);
 
       RemoveSelected(species);
     }
@@ -194,7 +194,7 @@ namespace EditSpatial.Forms
       for (int i = lstSpatialSpecies.Items.Count - 1; i >= 0; i--)
       {
         var current = lstSpatialSpecies.Items[i] as SpatialSpecies;
-        if (current != null &&  current.Id == id)
+        if (current != null && current.Id == id)
         {
           species = current;
           break;
@@ -206,12 +206,12 @@ namespace EditSpatial.Forms
     private void RemoveSelected(SpatialSpecies o)
     {
       if (o == null) return;
-      var current = o;
+      SpatialSpecies current = o;
       lstSpatialSpecies.Items.Remove(o);
 
       for (int i = grid.Rows.Count - 1; i >= 0; i--)
       {
-        if (current.Id == (string)grid.Rows[i].Cells[0].Value)
+        if (current.Id == (string) grid.Rows[i].Cells[0].Value)
           grid.Rows.RemoveAt(i);
       }
     }
@@ -224,8 +224,8 @@ namespace EditSpatial.Forms
     private void UpdateUI()
     {
       if (SpatialModel == null ||
-        SpatialModel.Document == null ||
-        SpatialModel.Document.getModel() == null) return;
+          SpatialModel.Document == null ||
+          SpatialModel.Document.getModel() == null) return;
       _model = SpatialModel.Document.getModel();
 
       // Correct compartments & Transport
@@ -233,13 +233,13 @@ namespace EditSpatial.Forms
 
       txtDimX.Text = SpatialModel.Width.ToString();
       txtDimY.Text = SpatialModel.Height.ToString();
-      
+
       lstSpatialSpecies.Items.Clear();
       grid.Rows.Clear();
-      
+
       for (int i = 0; i < _model.getNumSpecies(); ++i)
       {
-        var current = _model.getSpecies(i);
+        Species current = _model.getSpecies(i);
         if (current == null) continue;
         lstAllSpecies.Items.Add(current.getId());
         if (current.getConstant() || current.getBoundaryCondition())
@@ -248,14 +248,14 @@ namespace EditSpatial.Forms
         AddSelected(current);
       }
 
-      var geom = SpatialModel.Geometry;
+      Geometry geom = SpatialModel.Geometry;
       if (geom == null) return;
 
       _analyticGeometry = geom.GetFirstAnalyticGeometry();
       if (_analyticGeometry != null)
       {
         if (_analyticGeometry.getNumAnalyticVolumes() == 1 && _analyticGeometry.getAnalyticVolume(0).isSetMath()
-          && (libsbml.formulaToString(_analyticGeometry.getAnalyticVolume(0).getMath()) == "1"))
+            && (libsbml.formulaToString(_analyticGeometry.getAnalyticVolume(0).getMath()) == "1"))
           radDefault.Checked = true;
         else
           radAnalytic.Checked = true;
@@ -266,19 +266,17 @@ namespace EditSpatial.Forms
       {
         radSample.Checked = true;
       }
-
     }
 
     private void ShowPage(int index)
     {
       if (index < 0) index = 0;
       if (index >= tabControl1.TabCount) index = tabControl1.TabCount - 1;
-      
-      var oldIndex = tabControl1.SelectedIndex;
+
+      int oldIndex = tabControl1.SelectedIndex;
       if (oldIndex == index) return;
 
       tabControl1.SelectedIndex = index;
-
     }
 
     private void OnPrevClick(object sender, EventArgs e)
@@ -293,69 +291,68 @@ namespace EditSpatial.Forms
 
     private void OnCellEndEdit(object sender, DataGridViewCellEventArgs e)
     {
-      var row = grid.Rows[e.RowIndex];
-      var current = (string)row.Cells[0].Value;
-      var species = GetSpecies(current);
+      DataGridViewRow row = grid.Rows[e.RowIndex];
+      var current = (string) row.Cells[0].Value;
+      SpatialSpecies species = GetSpecies(current);
 
       switch (e.ColumnIndex)
       {
         case 1:
-          {
-            species.DiffusionX = Util.SaveDouble((string)row.Cells[1].Value, species.DiffusionX);
-            break;
-          }
+        {
+          species.DiffusionX = Util.SaveDouble((string) row.Cells[1].Value, species.DiffusionX);
+          break;
+        }
         case 2:
-          {
-            species.DiffusionY = Util.SaveDouble((string)row.Cells[2].Value, species.DiffusionY);
-            break;
-          }
+        {
+          species.DiffusionY = Util.SaveDouble((string) row.Cells[2].Value, species.DiffusionY);
+          break;
+        }
         case 3:
+        {
+          ASTNode node = libsbml.parseFormula((string) row.Cells[3].Value);
+          if (node != null)
           {
-            var node = libsbml.parseFormula((string)row.Cells[3].Value);
-            if (node != null)
-            {
-              var formula = libsbml.formulaToString(node);
-              species.InitialCondition = formula;
-              row.Cells[3].Value = formula;
-            }
-            break;
+            string formula = libsbml.formulaToString(node);
+            species.InitialCondition = formula;
+            row.Cells[3].Value = formula;
           }
+          break;
+        }
         case 4:
-          {
-            species.MaxBoundaryX = Util.SaveDouble((string)row.Cells[4].Value, species.MaxBoundaryX);
-            break;
-          }
+        {
+          species.MaxBoundaryX = Util.SaveDouble((string) row.Cells[4].Value, species.MaxBoundaryX);
+          break;
+        }
         case 5:
-          {
-            species.MaxBoundaryY = Util.SaveDouble((string)row.Cells[5].Value, species.MaxBoundaryY);
-            break;
-          }
+        {
+          species.MaxBoundaryY = Util.SaveDouble((string) row.Cells[5].Value, species.MaxBoundaryY);
+          break;
+        }
         case 6:
-          {
-            species.MinBoundaryX = Util.SaveDouble((string)row.Cells[6].Value, species.MinBoundaryX);
-            break;
-          }
+        {
+          species.MinBoundaryX = Util.SaveDouble((string) row.Cells[6].Value, species.MinBoundaryX);
+          break;
+        }
         case 7:
-          {
-            species.MinBoundaryY = Util.SaveDouble((string)row.Cells[7].Value, species.MinBoundaryY);
-            break;
-          }
+        {
+          species.MinBoundaryY = Util.SaveDouble((string) row.Cells[7].Value, species.MinBoundaryY);
+          break;
+        }
         case 8:
-          {
-            species.BCType = (string)row.Cells[8].Value;
-            break;
-          }
+        {
+          species.BCType = (string) row.Cells[8].Value;
+          break;
+        }
         default:
           break;
       }
-
     }
 
 
     private void OnUserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
     {
       e.Cancel = true;
-      var id = (string)e.Row.Cells[0].Value;
+      var id = (string) e.Row.Cells[0].Value;
       RemoveSelected(id);
     }
 
@@ -375,12 +372,7 @@ namespace EditSpatial.Forms
         cmdNext.Enabled = false;
         cmdPrev.Enabled = true;
       }
-
     }
-
-    private AnalyticGeometry _analyticGeometry; 
-    private SampledFieldGeometry _sampleGeometry;
-    private Geometry _geometry;
 
     private void radAnalytic_CheckedChanged(object sender, EventArgs e)
     {
@@ -399,21 +391,21 @@ namespace EditSpatial.Forms
         _geometry = new Geometry(3, 1);
       }
 
-      SpatialModel.CreateCoordinateSystem(_geometry, 
-        SpatialModel.Document.getModel(), 
+      SpatialModel.CreateCoordinateSystem(_geometry,
+        SpatialModel.Document.getModel(),
         new GeometrySettings
         {
           Xmax = Util.SaveDouble(txtDimX.Text, 50),
           Ymax = Util.SaveDouble(txtDimY.Text, 50),
         }
-      );
+        );
 
       _analyticGeometry = _geometry.GetFirstAnalyticGeometry();
 
       if (_analyticGeometry == null)
       {
         _analyticGeometry = _geometry.createAnalyticGeometry();
-        var vol = _analyticGeometry.createAnalyticVolume();
+        AnalyticVolume vol = _analyticGeometry.createAnalyticVolume();
         vol.setSpatialId("vol0");
         vol.setDomainType("");
         vol.setFunctionType("layered");
@@ -424,8 +416,6 @@ namespace EditSpatial.Forms
         _analyticGeometry.setSpatialId("ana1");
 
       controlAnalyticGeometry1.InitializeFrom(_geometry, _analyticGeometry);
-
-
     }
 
     private void radSample_CheckedChanged(object sender, EventArgs e)
@@ -451,7 +441,7 @@ namespace EditSpatial.Forms
           Xmax = Util.SaveDouble(txtDimX.Text, 50),
           Ymax = Util.SaveDouble(txtDimY.Text, 50),
         }
-      );
+        );
 
       _sampleGeometry = _geometry.GetFirstSampledFieldGeometry();
 
@@ -464,9 +454,6 @@ namespace EditSpatial.Forms
         _sampleGeometry.setSpatialId("sample1");
 
       controlSampleFieldGeometry1.InitializeFrom(_geometry, _sampleGeometry.getSpatialId());
-
-
-
     }
 
     private void radDefault_CheckedChanged(object sender, EventArgs e)
@@ -483,24 +470,19 @@ namespace EditSpatial.Forms
 
       for (int i = 0; i < grid.Rows.Count; ++i)
       {
-        var current = grid.Rows[i];
+        DataGridViewRow current = grid.Rows[i];
         if (current.IsNewRow) break;
         current.Cells[1].Value = defaultDiff;
         current.Cells[2].Value = defaultDiff;
 
         var id = current.Cells[0].Value as string;
-        var species = GetSpecies(id);
+        SpatialSpecies species = GetSpecies(id);
         if (species == null)
           continue;
 
         species.DiffusionX = defaultDiff;
         species.DiffusionY = defaultDiff;
-
-
       }
-
     }
-
-
   }
 }

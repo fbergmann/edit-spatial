@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using libsbmlcs;
-
-using Model = libsbmlcs.Model;
 
 namespace EditSpatial.Controls
 {
   public partial class ControlParameters : BaseSpatialControl
   {
+    public ControlParameters()
+    {
+      InitializeComponent();
+      RowsAdded = new List<int>();
+    }
 
-    libsbmlcs.SBMLDocument Current { get; set; }
+    private SBMLDocument Current { get; set; }
+    public List<int> RowsAdded { get; set; }
 
-    public void InitializeFrom(libsbmlcs.SBMLDocument document)
+    public void InitializeFrom(SBMLDocument document)
     {
       grid.Rows.Clear();
       Current = document;
@@ -26,27 +23,21 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-        var model = document.getModel();
+        libsbmlcs.Model model = document.getModel();
 
         CommitAddedRows(Current);
         for (long i = 0; i < model.getNumParameters(); ++i)
         {
-          var current = model.getParameter(i);
+          Parameter current = model.getParameter(i);
           grid.Rows.Add(current.getId(),
-          current.getName(),
-          current.getValue().ToString());
+            current.getName(),
+            current.getValue().ToString());
         }
       }
       finally
       {
         IsInitializing = false;
       }
-    }
-
-    public ControlParameters()
-    {
-      InitializeComponent();
-      RowsAdded = new List<int>();
     }
 
     private void CommitAddedRows(SBMLDocument current)
@@ -59,22 +50,21 @@ namespace EditSpatial.Controls
           {
             int index = RowsAdded[i];
             if (index < 0) continue;
-            var row = grid.Rows[index];
-            var param = current.getModel().createParameter();
+            DataGridViewRow row = grid.Rows[index];
+            Parameter param = current.getModel().createParameter();
             param.initDefaults();
             param.setId(row.Cells[0].Value as string);
             param.setName(row.Cells[1].Value as string);
-            double value; if (double.TryParse((string)row.Cells[2].Value, out value))
+            double value;
+            if (double.TryParse((string) row.Cells[2].Value, out value))
               param.setValue(value);
             RowsAdded.RemoveAt(i);
           }
           catch
           {
-
           }
         }
       }
-
     }
 
 
@@ -86,14 +76,14 @@ namespace EditSpatial.Controls
 
       for (int i = 0; i < grid.Rows.Count; ++i)
       {
-        var row = grid.Rows[i];
-        var current = Current.getModel().getParameter((string)row.Cells[0].Value);
+        DataGridViewRow row = grid.Rows[i];
+        Parameter current = Current.getModel().getParameter((string) row.Cells[0].Value);
         if (current == null) continue;
 
-        current.setName((string)row.Cells[1].Value);
-        double value; if (double.TryParse((string)row.Cells[2].Value, out value))
+        current.setName((string) row.Cells[1].Value);
+        double value;
+        if (double.TryParse((string) row.Cells[2].Value, out value))
           current.setValue(value);
-
       }
     }
 
@@ -120,7 +110,7 @@ namespace EditSpatial.Controls
         ids.Add(e.Row.Cells[0].Value as string);
       }
 
-      foreach (var id in ids)
+      foreach (string id in ids)
         Current.getModel().removeParameter(id);
 
       InitializeFrom(Current);
@@ -132,8 +122,5 @@ namespace EditSpatial.Controls
 
       RowsAdded.Add(e.RowIndex - 1);
     }
-
-    public List<int> RowsAdded { get; set; }
-
   }
 }

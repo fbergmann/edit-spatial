@@ -1,4 +1,4 @@
-﻿namespace WFEditDMP.Controls
+﻿namespace LibEditSpatial.Controls
 {
   partial class CtrlPalette
   {
