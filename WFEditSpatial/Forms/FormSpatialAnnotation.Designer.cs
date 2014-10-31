@@ -35,6 +35,7 @@
       this.cmdFromNotes = new System.Windows.Forms.ToolStripButton();
       this.cmdClear = new System.Windows.Forms.ToolStripButton();
       this.cmdCombine = new System.Windows.Forms.ToolStripButton();
+      this.cmdAddAll = new System.Windows.Forms.ToolStripButton();
       this.grid = new System.Windows.Forms.DataGridView();
       this.colId = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.colPalette = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -47,7 +48,6 @@
       this.cmdOK = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.label1 = new System.Windows.Forms.Label();
-      this.cmdAddAll = new System.Windows.Forms.ToolStripButton();
       this.tableLayoutPanel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -139,6 +139,16 @@
       this.cmdCombine.Size = new System.Drawing.Size(40, 60);
       this.cmdCombine.Text = "&Combine";
       this.cmdCombine.Click += new System.EventHandler(this.cmdCombine_Click);
+      // 
+      // cmdAddAll
+      // 
+      this.cmdAddAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdAddAll.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddAll.Image")));
+      this.cmdAddAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdAddAll.Name = "cmdAddAll";
+      this.cmdAddAll.Size = new System.Drawing.Size(40, 50);
+      this.cmdAddAll.Text = "Add All";
+      this.cmdAddAll.Click += new System.EventHandler(this.OnAddAllClick);
       // 
       // grid
       // 
@@ -263,16 +273,6 @@
       this.label1.Text = "Here you can specify the initial display for  Akira\'s simulator";
       this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
-      // cmdAddAll
-      // 
-      this.cmdAddAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.cmdAddAll.Image = ((System.Drawing.Image)(resources.GetObject("cmdAddAll.Image")));
-      this.cmdAddAll.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.cmdAddAll.Name = "cmdAddAll";
-      this.cmdAddAll.Size = new System.Drawing.Size(40, 50);
-      this.cmdAddAll.Text = "Add All";
-      this.cmdAddAll.Click += new System.EventHandler(this.OnAddAllClick);
-      // 
       // FormSpatialAnnotation
       // 
       this.AcceptButton = this.cmdOK;
@@ -283,6 +283,7 @@
       this.Controls.Add(this.tableLayoutPanel1);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "FormSpatialAnnotation";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Annotation";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormSpatialAnnotation_FormClosing);
       this.tableLayoutPanel1.ResumeLayout(false);

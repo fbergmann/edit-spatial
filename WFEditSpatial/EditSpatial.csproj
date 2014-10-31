@@ -183,7 +183,7 @@
     <Compile Include="Forms\FormSpatialAnnotation.Designer.cs">
       <DependentUpon>FormSpatialAnnotation.cs</DependentUpon>
     </Compile>
-    <Compile Include="ISBWAnalyzer.cs" />
+    <Compile Include="Model\ISBWAnalyzer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,9 +199,9 @@
     <Compile Include="Model\SpatialSpecies.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReactionInfo.cs" />
-    <Compile Include="SpeciesReferenceInfo.cs" />
-    <Compile Include="Util.cs" />
+    <Compile Include="Model\ReactionInfo.cs" />
+    <Compile Include="Model\SpeciesReferenceInfo.cs" />
+    <Compile Include="Model\Util.cs" />
     <EmbeddedResource Include="Controls\ControlCoordinateComponent.resx">
       <DependentUpon>ControlCoordinateComponent.cs</DependentUpon>
     </EmbeddedResource>
