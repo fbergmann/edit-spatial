@@ -47,6 +47,9 @@
     <Reference Include="mathLibrary">
       <HintPath>..\3rdParty\mathLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="Ookii.Dialogs">
+      <HintPath>..\3rdParty\Ookii.Dialogs.dll</HintPath>
+    </Reference>
     <Reference Include="SBMLSupport">
       <HintPath>..\3rdParty\SBMLSupport.dll</HintPath>
     </Reference>
@@ -177,12 +180,25 @@
     <Compile Include="Forms\FormInitSpatial.Designer.cs">
       <DependentUpon>FormInitSpatial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormPrepareDune.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormPrepareDune.Designer.cs">
+      <DependentUpon>FormPrepareDune.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSettings.Designer.cs">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormSpatialAnnotation.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormSpatialAnnotation.Designer.cs">
       <DependentUpon>FormSpatialAnnotation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\EditSpatialSettings.cs" />
     <Compile Include="Model\ISBWAnalyzer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -253,6 +269,12 @@
     <EmbeddedResource Include="Forms\FormInitSpatial.resx">
       <DependentUpon>FormInitSpatial.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormPrepareDune.resx">
+      <DependentUpon>FormPrepareDune.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSettings.resx">
+      <DependentUpon>FormSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSpatialAnnotation.resx">
       <DependentUpon>FormSpatialAnnotation.cs</DependentUpon>
     </EmbeddedResource>
@@ -269,6 +291,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="host.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

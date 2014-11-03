@@ -338,7 +338,7 @@ namespace EditSpatial.Model
                 }
                 default:
                 {
-                  Debug.WriteLine("Need to fix type '" + type + "' und id '" + elementId + "'");
+                  Debug.WriteLine("Need to fix type '{0}' und id '{1}'", type, elementId);
                   break;
                 }
               }
@@ -603,7 +603,7 @@ namespace EditSpatial.Model
     /// <summary>
     ///   This method first goes ahead, and looks through reactions,
     ///   whether a transport reaction can be found. If so, it tests
-    ///   whether the comparments differ in spatialDimensions (i.e
+    ///   whether the compartments differ in spatialDimensions (i.e
     ///   checks that the transport goes via a membrane), if it does
     ///   not, it will create a membrane compartment, and split the
     ///   reaction such that it will go from the compartment -&gt; to
@@ -627,7 +627,7 @@ namespace EditSpatial.Model
       CreateModel createModel)
     {
       long numCompartments = model.getNumCompartments();
-      if (numCompartments == 1)
+      if (numCompartments == 1 || MainForm.Settings.IgnoreMultiCompartments)
         return SetupUnicompartmentalGeometry(model, geometry, createModel);
 
       int num3DComps = 0;

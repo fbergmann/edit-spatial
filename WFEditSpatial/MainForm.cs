@@ -15,6 +15,8 @@ namespace EditSpatial
 {
   public partial class MainForm : Form, ISBWAnalyzer
   {
+    public static EditSpatialSettings Settings { get; set; }
+    
     private const string NODE_COORDINATES = "nodeCoordinateComponents";
     private const string NODE_DOMAINTYPES = "nodeOfDomainTypes";
     private const string NODE_DOMAINS = "nodeOfDomains";
@@ -702,14 +704,14 @@ namespace EditSpatial
 
     public void ReadSettings()
     {
-      RegistryKey reg = Application.UserAppDataRegistry;
-      if (reg == null) return;
+      Settings = EditSpatialSettings.GetDefault(Size);
 
-      var width = (int) reg.GetValue("width", Size.Width);
-      var height = (int) reg.GetValue("height", Size.Height);
+      if (Settings.Width < Screen.FromControl(this).WorkingArea.Width && Settings.Height < Screen.FromControl(this).WorkingArea.Height)
+        Size = new Size(Settings.Width, Settings.Height);
 
-      if (width < Screen.FromControl(this).WorkingArea.Width && height < Screen.FromControl(this).WorkingArea.Height)
-        Size = new Size(width, height);
+      chkMultipleCompartments.Checked = Settings.IgnoreMultiCompartments;
+
+
     }
 
     private void OnFormClosed(object sender, FormClosedEventArgs e)
@@ -719,10 +721,7 @@ namespace EditSpatial
 
     private void WriteSettings()
     {
-      RegistryKey reg = Application.UserAppDataRegistry;
-      if (reg == null) return;
-      reg.SetValue("width", Size.Width);
-      reg.SetValue("height", Size.Height);
+      Settings.Save();
     }
 
     private void OnShowWarnings(object sender, EventArgs e)
@@ -1032,6 +1031,39 @@ namespace EditSpatial
       e.Effect = DragDropEffects.None;
     }
 
+    
     #endregion
+
+    private void chkMultipleCompartments_Click(object sender, EventArgs e)
+    {
+      Settings.IgnoreMultiCompartments = chkMultipleCompartments.Checked;
+      Settings.Save();
+    }
+
+    private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      using (var dlg = new FormSettings {Settings = Settings})
+      {
+        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+          dlg.Settings.Save();
+          ReadSettings();
+        }
+      }
+    }
+
+    private void cmdPrepareDune_Click(object sender, EventArgs e)
+    {
+      using (var dlg = new FormPrepareDune { 
+        Settings = Settings, 
+        Model = Model, 
+        TargetDir = Settings.DefaultDir, 
+        ModuleName = Path.GetFileNameWithoutExtension(Model.FileName),
+
+      })
+      {
+        dlg.ShowDialog();
+      }
+    }
   }
 }

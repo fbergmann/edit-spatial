@@ -226,9 +226,11 @@ namespace EditSpatial.Forms
       if (SpatialModel == null ||
           SpatialModel.Document == null ||
           SpatialModel.Document.getModel() == null) return;
+
       _model = SpatialModel.Document.getModel();
 
-      // Correct compartments & Transport
+      // Correct compartments & Transport      
+      if (!MainForm.Settings.IgnoreMultiCompartments)
       SpatialModel.CorrectCompartmentsAndTransport(_model);
 
       txtDimX.Text = SpatialModel.Width.ToString();

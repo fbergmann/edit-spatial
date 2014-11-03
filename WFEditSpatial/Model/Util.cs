@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using EditSpatial.Converter;
 using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using libsbmlcs;
 using SysBio.MathKGI;
@@ -572,6 +574,59 @@ namespace EditSpatial.Model
       }
     }
 
+    public const int CHUNK_SIZE = 2048;
+
+    /// <summary>
+    /// Returns the path of the unpacked archive (temp+filename)
+    /// </summary>
+    /// <param name="archiveFilename">name of the archive file</param>
+    /// <param name="deleteIfExists"></param>
+    /// <returns>base directory with all the unzipped files</returns>
+    public static string UnzipArchive(string archiveFilename, string targetDir, bool deleteIfExists = true)
+    {
+      using (var inputStream = new FileStream(archiveFilename, FileMode.Open))
+      {
+        // zipped archive ...
+        var stream = new ZipInputStream(inputStream);
+        var destination = targetDir;
+        if (Directory.Exists(destination) && deleteIfExists)
+          try
+          {
+            Directory.Delete(destination, true);
+          }
+          catch
+          {
+          }
+        Directory.CreateDirectory(destination);
+        ZipEntry entry;
+        while ((entry = stream.GetNextEntry()) != null)
+        {
+          var sName = Path.Combine(destination, entry.Name);
+          var dir = Path.GetDirectoryName(sName);
+          if (!string.IsNullOrWhiteSpace(dir) && !Directory.Exists(dir))
+            Directory.CreateDirectory(dir);
+          if (entry.IsDirectory) continue;
+          var streamWriter = File.Create(sName);
+          var data = new byte[CHUNK_SIZE];
+          while (true)
+          {
+            var size = stream.Read(data, 0, data.Length);
+            if (size > 0)
+            {
+              streamWriter.Write(data, 0, size);
+            }
+            else
+            {
+              break;
+            }
+          }
+          streamWriter.Close();
+        }
+        return destination;
+      }
+    }
+
+
 
     internal static double ComputeValueForFormula(string formula, List<string> variableIds, List<double> variableData)
     {
@@ -938,6 +993,16 @@ namespace EditSpatial.Model
       if (int.TryParse(value, out val))
         return val;
       return defaultValue;
+    }
+
+    public static string GetDir(string baseDir)
+    {
+      using (var dlg = new Ookii.Dialogs.VistaFolderBrowserDialog { SelectedPath = baseDir, Description = "Open Directory" })
+      {
+        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+          return dlg.SelectedPath;
+      }
+      return baseDir;
     }
   }
 }
