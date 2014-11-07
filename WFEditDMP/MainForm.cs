@@ -202,5 +202,11 @@ namespace WFEditDMP
       Model.RotateRight();
       UpdateUI();
     }
+
+    private void OnCenterClick(object sender, EventArgs e)
+    {
+      Model.Center();
+      UpdateUI();
+    }
   }
 }

@@ -517,7 +517,7 @@ namespace EditSpatial
           Model.ConvertToL3();
 
           var dialog = new FormInitSpatial {SpatialModel = Model};
-          if (dialog.ShowDialog() == DialogResult.OK)
+          if (dialog.ShowDialog(this) == DialogResult.OK)
           {
             CreateModel selection = dialog.CreateModel;
 
@@ -584,7 +584,7 @@ namespace EditSpatial
 
     private void OnAbout(object sender, EventArgs e)
     {
-      new FormAbout().ShowDialog();
+      new FormAbout().ShowDialog(this);
     }
 
     private void OnExit(object sender, EventArgs e)
@@ -771,7 +771,7 @@ namespace EditSpatial
     private void OnShowSpatialWizard(object sender, EventArgs e)
     {
       var dialog = new FormInitSpatial {SpatialModel = Model};
-      if (dialog.ShowDialog() == DialogResult.OK)
+      if (dialog.ShowDialog(this) == DialogResult.OK)
       {
         CreateModel selection = dialog.CreateModel;
 
@@ -813,8 +813,7 @@ namespace EditSpatial
       if (dialog.ShowDialog() != DialogResult.OK)
         return;
 
-      var converter = new DuneConverter(Model.Document);
-      File.WriteAllText(dialog.FileName, converter.ToSBML());
+      Model.ExportDuneSBML(dialog.FileName);
     }
 
     private void OnExportDuneClick(object sender, EventArgs e)
@@ -979,7 +978,7 @@ namespace EditSpatial
 
       Annotation.InitFrom(Model);
 
-      Annotation.ShowDialog();
+      Annotation.ShowDialog(this);
       if (Annotation.Status == DialogResult.OK)
       {
         Annotation.SaveToModel(Model.Document.getModel());
@@ -1044,7 +1043,7 @@ namespace EditSpatial
     {
       using (var dlg = new FormSettings {Settings = Settings})
       {
-        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dlg.ShowDialog(this) == DialogResult.OK)
         {
           dlg.Settings.Save();
           ReadSettings();
@@ -1062,7 +1061,7 @@ namespace EditSpatial
 
       })
       {
-        dlg.ShowDialog();
+        dlg.ShowDialog(this);
       }
     }
   }

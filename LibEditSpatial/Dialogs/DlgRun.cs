@@ -138,7 +138,7 @@ namespace LibEditSpatial.Dialogs
       var info = new ProcessStartInfo
       {
         FileName = FileName,
-        Arguments = config,
+        Arguments = Util.ToCygwin(config),
         WorkingDirectory = dir,
         RedirectStandardError = true,
         RedirectStandardOutput = true,
@@ -366,10 +366,5 @@ namespace LibEditSpatial.Dialogs
       }
     }
 
-    private delegate void VoidByteStringDelegate(byte[] data, string species);
-
-    private delegate void VoidDelegate();
-
-    private delegate void VoidStringDelegate(string data);
   }
 }

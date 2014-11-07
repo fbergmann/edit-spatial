@@ -337,6 +337,10 @@
       <Project>{60ef6528-e2b3-4363-87d9-d06dd6d73f71}</Project>
       <Name>LibEditSpatial</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WFDuneRunner\WFDuneRunner.csproj">
+      <Project>{92c4fe18-c3e1-4622-8412-9f06f51f61e9}</Project>
+      <Name>WFDuneRunner</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

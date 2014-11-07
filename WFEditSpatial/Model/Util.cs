@@ -9,6 +9,7 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using libsbmlcs;
+using Ookii.Dialogs;
 using SysBio.MathKGI;
 using Image = System.Drawing.Image;
 
@@ -997,9 +998,9 @@ namespace EditSpatial.Model
 
     public static string GetDir(string baseDir)
     {
-      using (var dlg = new Ookii.Dialogs.VistaFolderBrowserDialog { SelectedPath = baseDir, Description = "Open Directory" })
+      using (var dlg = new VistaFolderBrowserDialog { SelectedPath = baseDir, Description = "Open Directory" })
       {
-        if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        if (dlg.ShowDialog() == DialogResult.OK)
           return dlg.SelectedPath;
       }
       return baseDir;

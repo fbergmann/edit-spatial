@@ -190,7 +190,7 @@ namespace WFDuneRunner
         FileName = fileName
       })
       {
-        dialog.ShowDialog();
+        dialog.ShowDialog(this);
       }
     }
 
@@ -265,7 +265,7 @@ namespace WFDuneRunner
         {
           dlg.OpenFile(file);
           dlg.StartPosition = FormStartPosition.CenterParent;
-          dlg.ShowDialog();
+          dlg.ShowDialog(this);
         }
       }
       catch

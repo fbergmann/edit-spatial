@@ -11,6 +11,7 @@ The project is a .NET project simply open and compile `EditSpatial.sln` with eit
 This project requires the following libraries: 
 
 - [libSBML](http://sbml.org/Software/libSBML) along with a supported xml library (xml2, expat, xerces-c)
+- [Ookii.Dialogs](http://www.ookii.org/) used for browsing folders, easily
 
 ## License
 This project is licensed under the BSD license: 

@@ -2,24 +2,44 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EditSpatial.Model;
+using LibEditSpatial.Dialogs;
+using LibEditSpatial.Model;
 
 namespace EditSpatial.Forms
 {
   public partial class FormPrepareDune : Form
   {
+    
     public FormPrepareDune()
     {
       InitializeComponent();
     }
 
-    public string TargetDir {
+    public string BuildDir {
+      get {
+        return Path.Combine(Target, "build");
+      }
+    }
+
+    public string Target
+    {
+      get
+      {
+        return Path.Combine(TargetDir, ModuleName); ;
+      }
+    }
+
+    public string TargetDir
+    {
       get { return txtTargetDir.Text; }
       set { txtTargetDir.Text = value; }
     }
@@ -39,47 +59,238 @@ namespace EditSpatial.Forms
       txtTargetDir.Text = Util.GetDir(txtTargetDir.Text);
     }
 
+    private void DoCreateHost()
+    {
+      Util.UnzipArchive(
+              Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "host.zip"), Target);
+    }
     private void OnCreateHostClick(object sender, EventArgs e)
     {
-      var target = Path.Combine(TargetDir, ModuleName);
-      if (Directory.Exists(target))
+      
+      if (Directory.Exists(Target))
       {
         var result = MessageBox.Show(
           string.Format(
             "The target directory '{0}' already consists if you continue, do you want to delete the directory before continuing?",
-            target),
-          "Target dir exists", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-        if (result == System.Windows.Forms.DialogResult.Yes)
-          try
-          {
-            Directory.Delete(target, true);
-          }
-          catch 
-          {
-          }
-        //if (result == System.Windows.Forms.DialogResult.Cancel)
-        else
-          return;
-      }
+            Target),
+          "Target dir exists", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-      Util.UnzipArchive(
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "host.zip"), target);
-      
+        if (result != DialogResult.Yes)
+          return;
+
+        try
+        {
+          Directory.Delete(Target, true);
+        }
+        catch
+        {
+        }
+
+      }
+      DoCreateHost();
+
 
     }
 
-    private void OnCompileModel(object sender, EventArgs e)
+    private Process process;
+
+    
+
+    private async Task RunCMake(string buildDir)
+    {
+      if (process != null) return;
+
+      var info = new ProcessStartInfo
+      {
+        FileName = Path.Combine(Settings.CygwinDir, "bash"),
+        Arguments = string.Format(
+        "-c \"cmake -DCMAKE_BU-DCMAKE_INSTALL_PREFIX={0} {1}\"", 
+        LibEditSpatial.Util.ToCygwin(Settings.DuneDir),
+        LibEditSpatial.Util.ToCygwin(Target)
+        ),
+        WorkingDirectory = buildDir,
+        RedirectStandardError = true,
+        RedirectStandardOutput = true,
+        UseShellExecute = false,
+        CreateNoWindow = true
+      };
+
+#pragma warning disable 4014
+      await StartProcess(info);
+#pragma warning restore 4014
+    }
+
+    private async Task RunMake(string buildDir)
+    {
+      if (process != null) return;
+
+      var info = new ProcessStartInfo
+      {
+        FileName = Path.Combine(Settings.CygwinDir, "bash"),
+        Arguments = 
+        "-c make",
+        
+        WorkingDirectory = buildDir,
+        RedirectStandardError = true,
+        RedirectStandardOutput = true,
+        UseShellExecute = false,
+        CreateNoWindow = true
+      };
+
+#pragma warning disable 4014
+      await StartProcess(info);
+#pragma warning restore 4014
+    }
+
+    private void ReEnableUI()
+    {
+      process = null;
+    }
+
+    private bool closing;
+
+    private void OnAddString(string data)
+    {
+      if (closing) return;
+      if (string.IsNullOrEmpty(data)) return;
+
+      if (InvokeRequired)
+      {
+        Invoke(new VoidStringDelegate(OnAddString), data);
+        return;
+      }
+      textBox1.AppendText(data.Replace("\n", Environment.NewLine) + Environment.NewLine);
+    }
+
+    public async Task StartProcess(ProcessStartInfo info)
+    {
+      if (!string.IsNullOrEmpty(Settings.CygwinDir))
+        info.EnvironmentVariables["PATH"] = Settings.CygwinDir + ";" + info.EnvironmentVariables["PATH"];
+
+      process = new Process { StartInfo = info, EnableRaisingEvents = true };
+      process.Exited += (o, e1) => ReEnableUI();
+      process.OutputDataReceived += (o, e2) => OnAddString(e2.Data);
+      process.ErrorDataReceived += (o, e3) => OnAddString(e3.Data);
+      process.Start();
+      Thread.Sleep(100);
+      process.BeginOutputReadLine();
+      process.BeginErrorReadLine();
+
+      await Task.Run(() => process.WaitForExit());
+    }
+
+    private void DoCompile()
     {
       // create build dir
+      if (!Directory.Exists(BuildDir))
+        Directory.CreateDirectory(BuildDir);
       // run cmake
-      // compile
 
+      Task.Factory.StartNew(() => RunCMake(BuildDir)
+        .ContinueWith((prevTask) => RunMake(BuildDir)));
+    }
+    private void OnCompileModel(object sender, EventArgs e)
+    {
+      if (!Directory.Exists(Target))
+      {
+        MessageBox.Show("Please create hosting application first", "Hosting application not present.",
+          MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+
+      DoCompile();
+           
+    }
+
+    private void DoExport()
+    {
+      // export model into host/src
+      Model.ExportToDune(Path.Combine(Path.Combine(Target, "src"), "host.cc"));
     }
 
     private void OnExportModel(object sender, EventArgs e)
     {
-      // export model into host/src
-      // adapt config files
+      if (!Directory.Exists(Target))
+      {
+        MessageBox.Show("Please create hosting application first", "Hosting application not present.",
+          MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      DoExport();
+      
+    }
+
+    private void OnFormClosing(object sender, FormClosingEventArgs e)
+    {
+      closing = true;
+    }
+
+    private DuneConfig GetConfigFromDir(string directory)
+    {
+      var files = Directory.GetFiles(directory, "*.conf", SearchOption.TopDirectoryOnly);
+      if (files.Length > 0)
+      {
+        var file = files.FirstOrDefault(f => f.Contains("temp.conf"));
+        if (string.IsNullOrEmpty(file))
+          file = files[0];
+        return DuneConfig.FromFile(file);
+      }
+      return null;
+    }
+    private void OnRunClick(object sender, EventArgs e)
+    {
+      if (!Directory.Exists(Target))
+      {
+        MessageBox.Show("Please create hosting application first", "Hosting application not present.",
+         MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      if (!Directory.Exists(BuildDir))
+      {
+        MessageBox.Show("Please compile application first", "Application not compiled.",
+         MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      
+      string runDir = Path.Combine(BuildDir, "src");
+      var config = GetConfigFromDir(runDir);
+      if (config != null)
+        using (var dlg = new DlgRun
+        {
+          CygwinDir = Settings.CygwinDir,
+          ParaViewDir = Settings.ParaViewDir,
+          Config = config,
+          FileName = Directory.GetFiles(runDir, "*.exe", SearchOption.TopDirectoryOnly).FirstOrDefault()
+        })
+        {
+          dlg.ShowDialog(this);
+        }
+    }
+
+    private void OnEditConfig(object sender, EventArgs e)
+    {
+      if (!Directory.Exists(Target))
+      {
+        MessageBox.Show("Please create hosting application first", "Hosting application not present.",
+         MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      if (!Directory.Exists(Path.Combine(Target, "build")))
+      {
+        MessageBox.Show("Please compile application first", "Application not compiled.",
+         MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return;
+      }
+      string runDir = Path.Combine(BuildDir, "src");
+      var config = GetConfigFromDir(runDir);
+      if (config != null)
+      using (var dlg = new WFDuneRunner.MainForm())
+      {
+      
+        dlg.LoadFile(config.FileName);
+        dlg.ShowDialog(this);
+      }
+
     }
   }
 }

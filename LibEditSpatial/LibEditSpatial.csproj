@@ -84,6 +84,9 @@
     <Compile Include="Dialogs\DlgRun.Designer.cs">
       <DependentUpon>DlgRun.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\VoidByteStringDelegate.cs" />
+    <Compile Include="Model\VoidDelegate.cs" />
+    <Compile Include="Model\VoidStringDelegate.cs" />
     <Compile Include="Model\DebugConfig.cs" />
     <Compile Include="Model\DmpModel.cs" />
     <Compile Include="Model\DmpPalette.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Model\StaticHelper.cs" />
     <Compile Include="Model\TimeLoopConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\CtrlDomain.resx">

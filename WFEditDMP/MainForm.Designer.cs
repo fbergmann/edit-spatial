@@ -71,6 +71,7 @@ namespace WFEditDMP
       this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.cmdCenter = new System.Windows.Forms.ToolStripButton();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -288,11 +289,12 @@ namespace WFEditDMP
             this.toolStripSeparator4,
             this.toolStripButton2,
             this.toolStripButton3,
+            this.cmdCenter,
             this.toolStripSeparator7,
             this.helpToolStripButton});
       this.toolStrip2.Location = new System.Drawing.Point(3, 24);
       this.toolStrip2.Name = "toolStrip2";
-      this.toolStrip2.Size = new System.Drawing.Size(625, 25);
+      this.toolStrip2.Size = new System.Drawing.Size(702, 25);
       this.toolStrip2.TabIndex = 1;
       // 
       // newToolStripButton
@@ -351,7 +353,7 @@ namespace WFEditDMP
       // 
       this.txtSize.Name = "txtSize";
       this.txtSize.Size = new System.Drawing.Size(100, 25);
-      this.txtSize.Text = "1";
+      this.txtSize.Text = "3";
       this.txtSize.ToolTipText = "Width of Pen";
       this.txtSize.TextChanged += new System.EventHandler(this.OnSizeChanged);
       // 
@@ -432,6 +434,17 @@ namespace WFEditDMP
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAboutClick);
       // 
+      // cmdCenter
+      // 
+      this.cmdCenter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdCenter.Image = ((System.Drawing.Image)(resources.GetObject("cmdCenter.Image")));
+      this.cmdCenter.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdCenter.Name = "cmdCenter";
+      this.cmdCenter.Size = new System.Drawing.Size(46, 22);
+      this.cmdCenter.Text = "Center";
+      this.cmdCenter.ToolTipText = "Center scene in the middle of the grid";
+      this.cmdCenter.Click += new System.EventHandler(this.OnCenterClick);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -499,6 +512,7 @@ namespace WFEditDMP
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     private System.Windows.Forms.ToolStripButton toolStripButton2;
     private System.Windows.Forms.ToolStripButton toolStripButton3;
+    private System.Windows.Forms.ToolStripButton cmdCenter;
   }
 }
 

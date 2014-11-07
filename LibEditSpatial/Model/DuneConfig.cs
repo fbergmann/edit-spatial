@@ -7,6 +7,8 @@ namespace LibEditSpatial.Model
 {
   public class DuneConfig
   {
+    public string FileName { get; set; }
+
     internal const string STR_GLOBAL = "Global";
     internal DomainConfig _DomainConfig;
 
@@ -202,7 +204,8 @@ namespace LibEditSpatial.Model
         WriteSection(builder, "Data", Entries["Data"], baseDir);
 
       File.WriteAllText(fileName, builder.ToString());
-
+      
+      FileName = fileName;
     }
 
 
@@ -210,7 +213,7 @@ namespace LibEditSpatial.Model
     {
       string[] lines = File.ReadAllLines(filename);
 
-      var result = new DuneConfig();
+      var result = new DuneConfig{FileName = filename};
 
       string current = STR_GLOBAL;
       var entries = new Dictionary<string, string>();

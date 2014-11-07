@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,6 +15,19 @@ namespace EditSpatial.Model
   public class SpatialModel
   {
     internal static CustomSpatialValidator CustomSpatialValidator = new CustomSpatialValidator();
+
+    public void ExportDuneSBML(string filename)
+    {
+      try
+      {
+        var converter = new DuneConverter(Document);
+        File.WriteAllText(filename, converter.ToSBML());
+      }
+      catch 
+      {
+        
+      }
+    }
 
     public SpatialModel()
     {

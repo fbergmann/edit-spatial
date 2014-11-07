@@ -168,5 +168,53 @@ namespace LibEditSpatial.Model
 
       return model;
     }
+
+    private Rectangle FindDimensions()
+    {
+      int minX = Columns;
+      int maxX = 0;
+      int minY = Rows;
+      int maxY = 0;
+
+      for(int i = 0; i < Rows; ++i)
+        for (int j = 0; j < Columns; ++j)
+        { 
+          var current = Data[i, j];
+          if (current != 0)
+          {
+            if (j < minX)
+              minX = j;
+            if (j > maxX)
+              maxX = j;
+            if (i < minY)
+              minY = i;
+            if (i > maxY)
+              maxY = i;
+          }
+        }
+
+      return new Rectangle(minX, minY, maxX, maxY);
+
+    }
+    public void Center()
+    {
+      // find dimensions of non-zero entries
+      var used = FindDimensions();
+      //Data[used.Y, used.X] = 3;
+      //Data[used.Height, used.Width] = 5;
+      var total = new Rectangle(0, 0, Columns, Rows);
+      var endDiff = new Size(total.Width - used.Width, total.Height- used.Height);
+      var newStart = new Size(
+        (int)Math.Floor(((double)(endDiff.Width + used.X))/2.0),
+        (int)Math.Floor(((double)(endDiff.Height + used.Y)) / 2.0));
+      //Data[newStart.Height, newStart.Width] = 7;
+      var difference = new Size(newStart.Width - used.X, newStart.Height - used.Y);
+     // Data[difference.Width, difference.Height] = 7;
+      var data = new double[Columns, Rows];
+      for (int i = used.Y; i <= used.Height; i++)
+        for (int j = used.X; j <= used.Width; j++)
+          data[i + difference.Height, j + difference.Width] = Data[i, j];
+      Data = data;
+    }
   }
 }

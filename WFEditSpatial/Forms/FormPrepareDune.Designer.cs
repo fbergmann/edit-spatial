@@ -34,6 +34,10 @@
       this.panel2 = new System.Windows.Forms.Panel();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.panel3 = new System.Windows.Forms.Panel();
+      this.cmdEditConfig = new System.Windows.Forms.Button();
+      this.cmdRun = new System.Windows.Forms.Button();
+      this.cmdCompile = new System.Windows.Forms.Button();
+      this.cmdExportDune = new System.Windows.Forms.Button();
       this.txtName = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
       this.cmdBrowseTarget = new System.Windows.Forms.Button();
@@ -41,8 +45,6 @@
       this.label1 = new System.Windows.Forms.Label();
       this.cmdCreateHost = new System.Windows.Forms.Button();
       this.textBox1 = new System.Windows.Forms.TextBox();
-      this.cmdExportDune = new System.Windows.Forms.Button();
-      this.cmdCompile = new System.Windows.Forms.Button();
       this.tableLayoutPanel1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.panel2.SuspendLayout();
@@ -100,6 +102,7 @@
       // splitContainer1
       // 
       this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
       this.splitContainer1.Location = new System.Drawing.Point(0, 0);
       this.splitContainer1.Name = "splitContainer1";
       this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -112,11 +115,13 @@
       // 
       this.splitContainer1.Panel2.Controls.Add(this.textBox1);
       this.splitContainer1.Size = new System.Drawing.Size(618, 399);
-      this.splitContainer1.SplitterDistance = 206;
+      this.splitContainer1.SplitterDistance = 107;
       this.splitContainer1.TabIndex = 0;
       // 
       // panel3
       // 
+      this.panel3.Controls.Add(this.cmdEditConfig);
+      this.panel3.Controls.Add(this.cmdRun);
       this.panel3.Controls.Add(this.cmdCompile);
       this.panel3.Controls.Add(this.cmdExportDune);
       this.panel3.Controls.Add(this.txtName);
@@ -128,8 +133,50 @@
       this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel3.Location = new System.Drawing.Point(0, 0);
       this.panel3.Name = "panel3";
-      this.panel3.Size = new System.Drawing.Size(618, 206);
+      this.panel3.Size = new System.Drawing.Size(618, 107);
       this.panel3.TabIndex = 0;
+      // 
+      // cmdEditConfig
+      // 
+      this.cmdEditConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdEditConfig.Location = new System.Drawing.Point(459, 75);
+      this.cmdEditConfig.Name = "cmdEditConfig";
+      this.cmdEditConfig.Size = new System.Drawing.Size(75, 23);
+      this.cmdEditConfig.TabIndex = 9;
+      this.cmdEditConfig.Text = "&Edit";
+      this.cmdEditConfig.UseVisualStyleBackColor = true;
+      this.cmdEditConfig.Click += new System.EventHandler(this.OnEditConfig);
+      // 
+      // cmdRun
+      // 
+      this.cmdRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdRun.Location = new System.Drawing.Point(540, 75);
+      this.cmdRun.Name = "cmdRun";
+      this.cmdRun.Size = new System.Drawing.Size(75, 23);
+      this.cmdRun.TabIndex = 8;
+      this.cmdRun.Text = "&Run";
+      this.cmdRun.UseVisualStyleBackColor = true;
+      this.cmdRun.Click += new System.EventHandler(this.OnRunClick);
+      // 
+      // cmdCompile
+      // 
+      this.cmdCompile.Location = new System.Drawing.Point(283, 75);
+      this.cmdCompile.Name = "cmdCompile";
+      this.cmdCompile.Size = new System.Drawing.Size(98, 23);
+      this.cmdCompile.TabIndex = 7;
+      this.cmdCompile.Text = "Compile Module";
+      this.cmdCompile.UseVisualStyleBackColor = true;
+      this.cmdCompile.Click += new System.EventHandler(this.OnCompileModel);
+      // 
+      // cmdExportDune
+      // 
+      this.cmdExportDune.Location = new System.Drawing.Point(182, 75);
+      this.cmdExportDune.Name = "cmdExportDune";
+      this.cmdExportDune.Size = new System.Drawing.Size(95, 23);
+      this.cmdExportDune.TabIndex = 6;
+      this.cmdExportDune.Text = "Export to Dune";
+      this.cmdExportDune.UseVisualStyleBackColor = true;
+      this.cmdExportDune.Click += new System.EventHandler(this.OnExportModel);
       // 
       // txtName
       // 
@@ -184,7 +231,7 @@
       // 
       this.cmdCreateHost.Location = new System.Drawing.Point(102, 75);
       this.cmdCreateHost.Name = "cmdCreateHost";
-      this.cmdCreateHost.Size = new System.Drawing.Size(138, 23);
+      this.cmdCreateHost.Size = new System.Drawing.Size(74, 23);
       this.cmdCreateHost.TabIndex = 0;
       this.cmdCreateHost.Text = "Create Host";
       this.cmdCreateHost.UseVisualStyleBackColor = true;
@@ -193,33 +240,14 @@
       // textBox1
       // 
       this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.textBox1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.textBox1.Location = new System.Drawing.Point(0, 0);
       this.textBox1.MaxLength = 0;
       this.textBox1.Multiline = true;
       this.textBox1.Name = "textBox1";
       this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.textBox1.Size = new System.Drawing.Size(618, 189);
+      this.textBox1.Size = new System.Drawing.Size(618, 288);
       this.textBox1.TabIndex = 0;
-      // 
-      // cmdExportDune
-      // 
-      this.cmdExportDune.Location = new System.Drawing.Point(102, 104);
-      this.cmdExportDune.Name = "cmdExportDune";
-      this.cmdExportDune.Size = new System.Drawing.Size(138, 23);
-      this.cmdExportDune.TabIndex = 6;
-      this.cmdExportDune.Text = "Export to Dune";
-      this.cmdExportDune.UseVisualStyleBackColor = true;
-      this.cmdExportDune.Click += new System.EventHandler(this.OnExportModel);
-      // 
-      // cmdCompile
-      // 
-      this.cmdCompile.Location = new System.Drawing.Point(102, 133);
-      this.cmdCompile.Name = "cmdCompile";
-      this.cmdCompile.Size = new System.Drawing.Size(138, 23);
-      this.cmdCompile.TabIndex = 7;
-      this.cmdCompile.Text = "Compile Module";
-      this.cmdCompile.UseVisualStyleBackColor = true;
-      this.cmdCompile.Click += new System.EventHandler(this.OnCompileModel);
       // 
       // FormPrepareDune
       // 
@@ -231,7 +259,9 @@
       this.Controls.Add(this.tableLayoutPanel1);
       this.MinimumSize = new System.Drawing.Size(640, 480);
       this.Name = "FormPrepareDune";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
       this.Text = "Prepare Model for DUNE";
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
       this.tableLayoutPanel1.ResumeLayout(false);
       this.panel1.ResumeLayout(false);
       this.panel2.ResumeLayout(false);
@@ -263,5 +293,7 @@
     private System.Windows.Forms.Button cmdCreateHost;
     private System.Windows.Forms.Button cmdCompile;
     private System.Windows.Forms.Button cmdExportDune;
+    private System.Windows.Forms.Button cmdRun;
+    private System.Windows.Forms.Button cmdEditConfig;
   }
 }
