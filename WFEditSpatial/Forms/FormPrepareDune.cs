@@ -104,7 +104,7 @@ namespace EditSpatial.Forms
       {
         FileName = Path.Combine(Settings.CygwinDir, "bash"),
         Arguments = string.Format(
-        "-c \"cmake -DCMAKE_BU-DCMAKE_INSTALL_PREFIX={0} {1}\"", 
+        "-c \"cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX={0} {1}\"", 
         LibEditSpatial.Util.ToCygwin(Settings.DuneDir),
         LibEditSpatial.Util.ToCygwin(Target)
         ),
