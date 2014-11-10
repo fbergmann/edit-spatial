@@ -1005,5 +1005,28 @@ namespace EditSpatial.Model
       }
       return baseDir;
     }
+
+    public static double GetDouble(this DataGridViewCell cell, double defaultValue = 0)
+    {
+      var value = cell.Value;
+      if (value.GetType() == typeof(string))
+      {
+        return SaveDouble((string) value, defaultValue);
+      }
+      
+      if (value.GetType() == typeof (double) || value.GetType() == typeof(int))
+        return (double) value;
+
+      return defaultValue;
+    }
+
+    public static CompartmentMapping getCompartmentMapping(this Compartment comp)
+    {
+      if (comp == null) return null;
+      var cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+      if (cplug == null) return null;
+      return cplug.getCompartmentMapping();
+    }
+
   }
 }

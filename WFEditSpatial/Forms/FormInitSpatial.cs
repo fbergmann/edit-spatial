@@ -294,57 +294,57 @@ namespace EditSpatial.Forms
     private void OnCellEndEdit(object sender, DataGridViewCellEventArgs e)
     {
       DataGridViewRow row = grid.Rows[e.RowIndex];
-      var current = (string) row.Cells[0].Value;
+      var current = (string)row.Cells[0].Value;
       SpatialSpecies species = GetSpecies(current);
 
       switch (e.ColumnIndex)
       {
         case 1:
-        {
-          species.DiffusionX = Util.SaveDouble((string) row.Cells[1].Value, species.DiffusionX);
-          break;
-        }
-        case 2:
-        {
-          species.DiffusionY = Util.SaveDouble((string) row.Cells[2].Value, species.DiffusionY);
-          break;
-        }
-        case 3:
-        {
-          ASTNode node = libsbml.parseFormula((string) row.Cells[3].Value);
-          if (node != null)
           {
-            string formula = libsbml.formulaToString(node);
-            species.InitialCondition = formula;
-            row.Cells[3].Value = formula;
+            species.DiffusionX = row.Cells[1].GetDouble();
+            break;
           }
-          break;
-        }
+        case 2:
+          {
+            species.DiffusionY = row.Cells[2].GetDouble();
+            break;
+          }
+        case 3:
+          {
+            ASTNode node = libsbml.parseFormula((string)row.Cells[3].Value);
+            if (node != null)
+            {
+              string formula = libsbml.formulaToString(node);
+              species.InitialCondition = formula;
+              row.Cells[3].Value = formula;
+            }
+            break;
+          }
         case 4:
-        {
-          species.MaxBoundaryX = Util.SaveDouble((string) row.Cells[4].Value, species.MaxBoundaryX);
-          break;
-        }
+          {
+            species.MaxBoundaryX = row.Cells[4].GetDouble();
+            break;
+          }
         case 5:
-        {
-          species.MaxBoundaryY = Util.SaveDouble((string) row.Cells[5].Value, species.MaxBoundaryY);
-          break;
-        }
+          {
+            species.MaxBoundaryY = row.Cells[5].GetDouble();
+            break;
+          }
         case 6:
-        {
-          species.MinBoundaryX = Util.SaveDouble((string) row.Cells[6].Value, species.MinBoundaryX);
-          break;
-        }
+          {
+            species.MinBoundaryX = row.Cells[6].GetDouble();
+            break;
+          }
         case 7:
-        {
-          species.MinBoundaryY = Util.SaveDouble((string) row.Cells[7].Value, species.MinBoundaryY);
-          break;
-        }
+          {
+            species.MinBoundaryY = row.Cells[7].GetDouble();
+            break;
+          }
         case 8:
-        {
-          species.BCType = (string) row.Cells[8].Value;
-          break;
-        }
+          {
+            species.BCType = (string)row.Cells[8].Value;
+            break;
+          }
         default:
           break;
       }
@@ -484,6 +484,23 @@ namespace EditSpatial.Forms
 
         species.DiffusionX = defaultDiff;
         species.DiffusionY = defaultDiff;
+      }
+    }
+
+    private void OnMakeIsotropic(object sender, EventArgs e)
+    {
+      for (int i = 0; i < grid.Rows.Count; ++i)
+      {
+        DataGridViewRow current = grid.Rows[i];
+        if (current.IsNewRow) break;
+        current.Cells[2].Value = current.Cells[1].Value;
+
+        var id = current.Cells[0].Value as string;
+        SpatialSpecies species = GetSpecies(id);
+        if (species == null)
+          continue;
+
+        species.DiffusionY = species.DiffusionX;
       }
     }
   }

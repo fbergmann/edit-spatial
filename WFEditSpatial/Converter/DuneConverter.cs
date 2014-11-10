@@ -94,9 +94,9 @@ namespace EditSpatial.Converter
         Geometry.Dispose();
     }
 
-    public static string TranslateExpression(string expression)
+    public static string TranslateExpression(string expression, Dictionary<string, string> map = null)
     {
-      return TranslateExpression(libsbml.parseFormula(expression), null);
+      return TranslateExpression(libsbml.parseFormula(expression), map);
     }
 
     public static string TranslateExpression(ASTNode math, Dictionary<string, string> map = null)
@@ -301,19 +301,39 @@ namespace EditSpatial.Converter
           );
       }
       int count = 0;
+      odes.AppendLine("        //// variable map: variable -> x(lsfu,...)");
       var varMap = new Dictionary<string, string>();
       foreach (string item in OdeVariables)
       {
         varMap[item] = string.Format("x(lfsu,{0})", count);
+        odes.AppendFormat("        // {0} -> {1}{2}", item, varMap[item], Environment.NewLine);
         ++count;
       }
 
+      odes.AppendLine();
+      odes.AppendLine();
+      odes.AppendLine("        //// calculate assignment rules");
+      for (int i = 0;i < Model.getNumRules(); ++i )
+      {
+        var rule = Model.getRule(i) as AssignmentRule;
+        if (rule == null || rule.getTypeCode() != libsbml.SBML_ASSIGNMENT_RULE) continue;
+        odes.AppendFormat("        {0} = {1};{2}",
+         TranslateExpression(rule.getVariable(), varMap),
+         TranslateExpression(rule.getMath(), varMap),
+         Environment.NewLine
+        );
+      }
+      odes.AppendLine();
+      odes.AppendLine();
+
       count = 1;
+      odes.AppendLine("        //// calculate rate rules");
       foreach (string item in OdeVariables)
       {
         RateRule rule = Model.getRateRule(item);
         if (rule == null || !rule.isSetMath()) continue;
 
+        odes.AppendFormat("        // {0} {1}", item, Environment.NewLine);
         odes.AppendFormat("        RF r{0} = {1};{2}",
           count,
           TranslateExpression(rule.getMath(), varMap),
@@ -325,6 +345,7 @@ namespace EditSpatial.Converter
           count,
           Environment.NewLine
           );
+        odes.AppendLine();
         ++count;
       }
 
@@ -647,7 +668,7 @@ namespace EditSpatial.Converter
           , Environment.NewLine
           );
         declarations.AppendFormat(
-          "    const RF {0};{1}"
+          "    RF {0};{1}"
           , pItem
           , Environment.NewLine
           );

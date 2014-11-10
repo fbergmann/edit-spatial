@@ -14,6 +14,25 @@ namespace LibEditSpatial.Model
     public double LineSearchDampingFactor { get; set; }
     public int Verbosity { get; set; }
 
+    public static NewtonConfig Default
+    {
+      get
+      {
+        return new NewtonConfig
+        {
+          LinearVerbosity = 0,
+          ReassembleThreshold = 0,
+          LineSearchMaxIterations = 5,
+          MaxIterations = 30,
+          AbsoluteLimit = 1e-18,
+          Reduction = 1e-8,
+          LinearReduction = 1e-4,
+          LineSearchDampingFactor = 0.5,
+          Verbosity = 0
+        };
+      }
+    }
+
     public static NewtonConfig FromDict(Dictionary<string, string> dict)
     {
       var result = new NewtonConfig

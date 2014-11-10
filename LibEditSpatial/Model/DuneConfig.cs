@@ -10,10 +10,9 @@ namespace LibEditSpatial.Model
     public string FileName { get; set; }
 
     internal const string STR_GLOBAL = "Global";
+
     internal DomainConfig _DomainConfig;
-
     internal GlobalConfig _GlobalConfig;
-
     internal NewtonConfig _NewtonConfig;
     internal TimeLoopConfig _TimeConfig;
 
@@ -27,6 +26,7 @@ namespace LibEditSpatial.Model
 
     public Dictionary<string, Dictionary<string, string>> Entries { get; set; }
 
+    
     public GlobalConfig GlobalConfig
     {
       get
@@ -36,13 +36,7 @@ namespace LibEditSpatial.Model
           if (Entries.ContainsKey(STR_GLOBAL))
             _GlobalConfig = GlobalConfig.FromDict(Entries[STR_GLOBAL]);
           else
-            _GlobalConfig = new GlobalConfig { WriteVTK = true,
-            ExplicitSolver = "RK4",
-            ImplicitSolver = "Alexander2",
-            IntegrationOrder = 2,
-            SubSampling = 2,
-            Overlap = 1,
-            TimeStepping = "implicit" };
+            _GlobalConfig = GlobalConfig.Default;
         }
        
         return _GlobalConfig;
@@ -55,6 +49,7 @@ namespace LibEditSpatial.Model
       }
     }
 
+    
     public NewtonConfig NewtonConfig
     {
       get
@@ -64,15 +59,7 @@ namespace LibEditSpatial.Model
           if (Entries.ContainsKey("Newton"))
             _NewtonConfig = NewtonConfig.FromDict(Entries["Newton"]);
           else
-            _NewtonConfig = new NewtonConfig { LinearVerbosity = 0,
-            ReassembleThreshold = 0,
-            LineSearchMaxIterations = 5,
-            MaxIterations = 30,
-            AbsoluteLimit = 1e-8,
-            Reduction = 1e-8,
-            LinearReduction = 1e-4,
-            LineSearchDampingFactor = 0.5,
-            Verbosity = 0 };
+            _NewtonConfig = NewtonConfig.Default;
         }
 
         return _NewtonConfig;
@@ -85,6 +72,7 @@ namespace LibEditSpatial.Model
       }
     }
 
+    
     public DomainConfig DomainConfig
     {
       get
@@ -94,13 +82,7 @@ namespace LibEditSpatial.Model
           if (Entries.ContainsKey("Domain"))
             _DomainConfig = DomainConfig.FromDict(Entries["Domain"]);
           else
-            _DomainConfig = new DomainConfig { Width = 100,
-            Height = 100,
-            Depth = 1,
-            GridX = 64,
-            GridY = 64,
-            GridZ = 1,
-            Refinement = 0 };
+            _DomainConfig = DomainConfig.Default;
         }
 
         return _DomainConfig;
@@ -113,6 +95,7 @@ namespace LibEditSpatial.Model
       }
     }
 
+    
     public TimeLoopConfig TimeConfig
     {
       get
@@ -122,7 +105,7 @@ namespace LibEditSpatial.Model
           if (Entries.ContainsKey("Timeloop"))
             _TimeConfig = TimeLoopConfig.FromDict(Entries["Timeloop"]);
           else
-            _TimeConfig = new TimeLoopConfig{ Time = 10, InitialStep = 0.01, MinStep = 1e-6, MaxStep = 0.01, PlotStep = 0.01};
+            _TimeConfig = TimeLoopConfig.Default;
         }
 
         return _TimeConfig;

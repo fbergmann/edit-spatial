@@ -281,7 +281,7 @@ namespace LibEditSpatial.Dialogs
 
       var info = new ProcessStartInfo
       {
-        FileName = "bash",
+        FileName = Path.Combine(CygwinDir, "bash"),
         Arguments = "-c make",
         WorkingDirectory = dir,
         RedirectStandardError = true,

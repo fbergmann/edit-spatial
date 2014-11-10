@@ -11,6 +11,21 @@ namespace LibEditSpatial.Model
     public double PlotStep { get; set; }
     public int IncreaseRate { get; set; }
 
+    public static TimeLoopConfig Default
+    {
+      get
+      {
+        return new TimeLoopConfig
+        {
+          Time = 10,
+          InitialStep = 0.01,
+          MinStep = 1e-18,
+          MaxStep = 0.01,
+          PlotStep = 0.01
+        };
+      }
+    }
+
     public static TimeLoopConfig FromDict(Dictionary<string, string> dict)
     {
       var result = new TimeLoopConfig

@@ -16,6 +16,22 @@ namespace LibEditSpatial.Model
     public int GridZ { get; set; }
     public int Refinement { get; set; }
 
+    public static DomainConfig Default
+    {
+      get
+      {
+        return new DomainConfig
+        {
+          Width = 100,
+          Height = 100,
+          Depth = 1,
+          GridX = 64,
+          GridY = 64,
+          GridZ = 1,
+          Refinement = 0
+        };
+      }
+    }
 
     public static DomainConfig FromDict(Dictionary<string, string> dict)
     {

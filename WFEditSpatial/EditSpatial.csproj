@@ -89,6 +89,12 @@
     <Compile Include="Controls\ControlCoordinateComponents.Designer.cs">
       <DependentUpon>ControlCoordinateComponents.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ControlMapCompartments.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlMapCompartments.Designer.cs">
+      <DependentUpon>ControlMapCompartments.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ControlDomainTypes.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -223,6 +229,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ControlCoordinateComponents.resx">
       <DependentUpon>ControlCoordinateComponents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ControlMapCompartments.resx">
+      <DependentUpon>ControlMapCompartments.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ControlDomainTypes.resx">
       <DependentUpon>ControlDomainTypes.cs</DependentUpon>

@@ -34,13 +34,14 @@
       System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("List of Domains");
       System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("List Of Adjacent Domains");
       System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("List of Geometry Definitions");
+      System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Compartment Mappings");
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-      System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Compartments");
-      System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Species");
-      System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Parameters");
-      System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Reactions");
-      System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Rules");
-      System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Initial Assignments");
+      System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Compartments");
+      System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Species");
+      System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Parameters");
+      System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Reactions");
+      System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("Rules");
+      System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Initial Assignments");
       this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
       this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -121,10 +122,11 @@
       this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.pasteToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+      this.cmdPrepareDune = new System.Windows.Forms.ToolStripButton();
       this.cmdAkira = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.cmdPrepareDune = new System.Windows.Forms.ToolStripButton();
+      this.controlMapCompartments1 = new EditSpatial.Controls.ControlMapCompartments();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -219,6 +221,7 @@
       // splitGeometry.Panel2
       // 
       this.splitGeometry.Panel2.AutoScroll = true;
+      this.splitGeometry.Panel2.Controls.Add(this.controlMapCompartments1);
       this.splitGeometry.Panel2.Controls.Add(this.controlSampleFieldGeometry1);
       this.splitGeometry.Panel2.Controls.Add(this.controlAnalyticGeometry1);
       this.splitGeometry.Panel2.Controls.Add(this.controlAdjacentDomains1);
@@ -246,12 +249,15 @@
       treeNode4.Text = "List Of Adjacent Domains";
       treeNode5.Name = "nodeOfGeometryDefinitions";
       treeNode5.Text = "List of Geometry Definitions";
+      treeNode6.Name = "nodeCompartmentMappings";
+      treeNode6.Text = "Compartment Mappings";
       this.treeSpatial.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode1,
             treeNode2,
             treeNode3,
             treeNode4,
-            treeNode5});
+            treeNode5,
+            treeNode6});
       this.treeSpatial.Size = new System.Drawing.Size(319, 450);
       this.treeSpatial.TabIndex = 0;
       this.treeSpatial.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnGeometrySelect);
@@ -394,25 +400,25 @@
       this.treeCore.Dock = System.Windows.Forms.DockStyle.Fill;
       this.treeCore.Location = new System.Drawing.Point(0, 0);
       this.treeCore.Name = "treeCore";
-      treeNode6.Name = "nodeCompartments";
-      treeNode6.Text = "Compartments";
-      treeNode7.Name = "nodeSpecies";
-      treeNode7.Text = "Species";
-      treeNode8.Name = "nodeParameters";
-      treeNode8.Text = "Parameters";
-      treeNode9.Name = "nodeReactions";
-      treeNode9.Text = "Reactions";
-      treeNode10.Name = "nodeRules";
-      treeNode10.Text = "Rules";
-      treeNode11.Name = "nodeInitialAssignments";
-      treeNode11.Text = "Initial Assignments";
+      treeNode7.Name = "nodeCompartments";
+      treeNode7.Text = "Compartments";
+      treeNode8.Name = "nodeSpecies";
+      treeNode8.Text = "Species";
+      treeNode9.Name = "nodeParameters";
+      treeNode9.Text = "Parameters";
+      treeNode10.Name = "nodeReactions";
+      treeNode10.Text = "Reactions";
+      treeNode11.Name = "nodeRules";
+      treeNode11.Text = "Rules";
+      treeNode12.Name = "nodeInitialAssignments";
+      treeNode12.Text = "Initial Assignments";
       this.treeCore.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6,
             treeNode7,
             treeNode8,
             treeNode9,
             treeNode10,
-            treeNode11});
+            treeNode11,
+            treeNode12});
       this.treeCore.Size = new System.Drawing.Size(319, 450);
       this.treeCore.TabIndex = 0;
       this.treeCore.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OnCoreSelect);
@@ -733,20 +739,20 @@
       // 
       this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
       this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-      this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.undoToolStripMenuItem.Text = "&Undo";
       // 
       // redoToolStripMenuItem
       // 
       this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
       this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-      this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.redoToolStripMenuItem.Text = "&Redo";
       // 
       // toolStripSeparator3
       // 
       this.toolStripSeparator3.Name = "toolStripSeparator3";
-      this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator3.Size = new System.Drawing.Size(141, 6);
       // 
       // cutToolStripMenuItem
       // 
@@ -754,7 +760,7 @@
       this.cutToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
       this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-      this.cutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.cutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.cutToolStripMenuItem.Text = "Cu&t";
       // 
       // copyToolStripMenuItem
@@ -763,7 +769,7 @@
       this.copyToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
       this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-      this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.copyToolStripMenuItem.Text = "&Copy";
       // 
       // pasteToolStripMenuItem
@@ -772,29 +778,29 @@
       this.pasteToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
       this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-      this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.pasteToolStripMenuItem.Text = "&Paste";
       // 
       // toolStripSeparator4
       // 
       this.toolStripSeparator4.Name = "toolStripSeparator4";
-      this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+      this.toolStripSeparator4.Size = new System.Drawing.Size(141, 6);
       // 
       // selectAllToolStripMenuItem
       // 
       this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
-      this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.selectAllToolStripMenuItem.Text = "Select &All";
       // 
       // toolStripMenuItem5
       // 
       this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-      this.toolStripMenuItem5.Size = new System.Drawing.Size(149, 6);
+      this.toolStripMenuItem5.Size = new System.Drawing.Size(141, 6);
       // 
       // preferencesToolStripMenuItem
       // 
       this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-      this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.preferencesToolStripMenuItem.Text = "Preferences";
       this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
       // 
@@ -898,7 +904,7 @@
             this.helpToolStripButton});
       this.toolStrip1.Location = new System.Drawing.Point(3, 24);
       this.toolStrip1.Name = "toolStrip1";
-      this.toolStrip1.Size = new System.Drawing.Size(458, 25);
+      this.toolStrip1.Size = new System.Drawing.Size(427, 25);
       this.toolStrip1.TabIndex = 1;
       // 
       // newToolStripButton
@@ -981,6 +987,16 @@
       this.toolStripSeparator8.Name = "toolStripSeparator8";
       this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
       // 
+      // cmdPrepareDune
+      // 
+      this.cmdPrepareDune.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdPrepareDune.Image = ((System.Drawing.Image)(resources.GetObject("cmdPrepareDune.Image")));
+      this.cmdPrepareDune.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdPrepareDune.Name = "cmdPrepareDune";
+      this.cmdPrepareDune.Size = new System.Drawing.Size(126, 22);
+      this.cmdPrepareDune.Text = "Prepare Dune Module";
+      this.cmdPrepareDune.Click += new System.EventHandler(this.cmdPrepareDune_Click);
+      // 
       // cmdAkira
       // 
       this.cmdAkira.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -1007,15 +1023,16 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // cmdPrepareDune
+      // controlMapCompartments1
       // 
-      this.cmdPrepareDune.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.cmdPrepareDune.Image = ((System.Drawing.Image)(resources.GetObject("cmdPrepareDune.Image")));
-      this.cmdPrepareDune.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.cmdPrepareDune.Name = "cmdPrepareDune";
-      this.cmdPrepareDune.Size = new System.Drawing.Size(126, 22);
-      this.cmdPrepareDune.Text = "Prepare Dune Module";
-      this.cmdPrepareDune.Click += new System.EventHandler(this.cmdPrepareDune_Click);
+      this.controlMapCompartments1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlMapCompartments1.IsInitializing = false;
+      this.controlMapCompartments1.Location = new System.Drawing.Point(0, 0);
+      this.controlMapCompartments1.Name = "controlMapCompartments1";
+      this.controlMapCompartments1.Size = new System.Drawing.Size(639, 450);
+      this.controlMapCompartments1.TabIndex = 7;
+      this.controlMapCompartments1.UpdateAction = null;
+      this.controlMapCompartments1.Visible = false;
       // 
       // MainForm
       // 
@@ -1153,6 +1170,7 @@
     private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
     private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
     private System.Windows.Forms.ToolStripButton cmdPrepareDune;
+    private Controls.ControlMapCompartments controlMapCompartments1;
   }
 }
 

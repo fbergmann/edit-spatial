@@ -13,6 +13,23 @@ namespace LibEditSpatial.Model
     public string ExplicitSolver { get; set; }
     public string ImplicitSolver { get; set; }
 
+    public static GlobalConfig Default
+    {
+      get
+      {
+        return new GlobalConfig
+        {
+          WriteVTK = true,
+          ExplicitSolver = "RK4",
+          ImplicitSolver = "Alexander2",
+          IntegrationOrder = 2,
+          SubSampling = 2,
+          Overlap = 1,
+          TimeStepping = "implicit"
+        };
+      }
+    }
+
     public static GlobalConfig FromDict(Dictionary<string, string> dict)
     {
       var result = new GlobalConfig

@@ -28,6 +28,7 @@ namespace EditSpatial
     private const string NODE_REACTIONS = "nodeReactions";
     private const string NODE_RULES = "nodeRules";
     private const string NODE_INITIAL_ASSIGNMENTS = "nodeInitialAssignments";
+    private const string NODE_COMPARTMENT_MAPPINGS = "nodeCompartmentMappings";
 
     private readonly SBWFavorites favs;
     private readonly SBWMenu menu;
@@ -140,6 +141,7 @@ namespace EditSpatial
         controlDisplayNode1.Visible = false;
         controlSampleFieldGeometry1.Visible = false;
         controlCoordinateComponents1.Visible = true;
+        controlMapCompartments1.Visible = false;
         controlCoordinateComponents1.InitializeFrom(Model.Geometry);
       }
       else if (node.Name == NODE_DOMAINTYPES)
@@ -151,6 +153,7 @@ namespace EditSpatial
         controlDisplayNode1.Visible = false;
         controlSampleFieldGeometry1.Visible = false;
         controlCoordinateComponents1.Visible = false;
+        controlMapCompartments1.Visible = false;
         controlDomainTypes1.InitializeFrom(Model.Geometry);
       }
       else if (node.Name == NODE_DOMAINS)
@@ -162,6 +165,7 @@ namespace EditSpatial
         controlDisplayNode1.Visible = false;
         controlSampleFieldGeometry1.Visible = false;
         controlCoordinateComponents1.Visible = false;
+        controlMapCompartments1.Visible = false;
         controlDomains1.InitializeFrom(Model.Geometry);
       }
       else if (node.Name == NODE_ADJACENTDOMAINS)
@@ -173,7 +177,20 @@ namespace EditSpatial
         controlDisplayNode1.Visible = false;
         controlSampleFieldGeometry1.Visible = false;
         controlCoordinateComponents1.Visible = false;
+        controlMapCompartments1.Visible = false;
         controlAdjacentDomains1.InitializeFrom(Model.Geometry);
+      }
+      else if (node.Name == NODE_COMPARTMENT_MAPPINGS)
+      {
+        controlAnalyticGeometry1.Visible = false;
+        controlAdjacentDomains1.Visible = false;
+        controlDomainTypes1.Visible = false;
+        controlDomains1.Visible = false;
+        controlDisplayNode1.Visible = false;
+        controlSampleFieldGeometry1.Visible = false;
+        controlCoordinateComponents1.Visible = false;
+        controlMapCompartments1.Visible = true;
+        controlMapCompartments1.InitializeFrom(Model.Document.getModel());
       }
       else if (node.Parent != null && node.Parent.Name == NODE_GEOMS &&
                Model.Geometry != null &&
@@ -186,6 +203,7 @@ namespace EditSpatial
         controlDisplayNode1.Visible = false;
         controlSampleFieldGeometry1.Visible = false;
         controlCoordinateComponents1.Visible = false;
+        controlMapCompartments1.Visible = false;
         controlAnalyticGeometry1.InitializeFrom(Model.Geometry, node.Text);
       }
       else if (node.Parent != null && node.Parent.Name == NODE_GEOMS &&
@@ -199,6 +217,7 @@ namespace EditSpatial
         controlDisplayNode1.Visible = false;
         controlSampleFieldGeometry1.Visible = true;
         controlCoordinateComponents1.Visible = false;
+        controlMapCompartments1.Visible = false;
         controlSampleFieldGeometry1.InitializeFrom(Model.Geometry, node.Text);
       }
       else
@@ -210,6 +229,7 @@ namespace EditSpatial
         controlDisplayNode1.Visible = true;
         controlSampleFieldGeometry1.Visible = false;
         controlCoordinateComponents1.Visible = false;
+        controlMapCompartments1.Visible = false;
         controlDisplayNode1.DisplayNode(node);
       }
     }
@@ -225,6 +245,8 @@ namespace EditSpatial
 
       InvalidateGeometryAll();
       splitGeometry.Enabled = Model.IsSpatial;
+      cmdAkira.Enabled = Model.IsSpatial;
+      cmdPrepareDune.Enabled = Model.IsSpatial;
 
       FillGeometryFromModel(Model);
       FillCoreTreeFromModel(Model);
@@ -988,6 +1010,8 @@ namespace EditSpatial
     private void OnSimulateWithAkiraClick(object sender, EventArgs e)
     {
       if (!haveAkira) return;
+      if (Model == null || Model.Document == null) return;
+      if (!Model.IsSpatial) return;
       try
       {
         HighLevel.Send("Spatial SBML", "Spatial SBML", "void doAnalysis(string)", Model.ToSBML());
@@ -1053,6 +1077,9 @@ namespace EditSpatial
 
     private void cmdPrepareDune_Click(object sender, EventArgs e)
     {
+      if (Model == null || Model.Document == null) return;
+      if (!Model.IsSpatial) return;
+
       using (var dlg = new FormPrepareDune { 
         Settings = Settings, 
         Model = Model, 
