@@ -7,13 +7,15 @@ namespace LibEditSpatial.Model
 {
   public class DmpModel
   {
-    public DmpModel(int rows, int cols)
+    public DmpModel(int cols, int rows)
     {
       Palette = DmpPalette.Default;
 
       Columns = cols;
+      MaxX = cols;
       Rows = rows;
-      Data = new double[rows, cols];
+      MaxY = rows;
+      Data = new double[cols, rows];
       Min = 0;
       Max = 10;
     }
@@ -24,13 +26,28 @@ namespace LibEditSpatial.Model
 
     public int Columns { get; set; }
     public int Rows { get; set; }
+
+    /// <summary>
+    /// Saves data in form of [columns, rows]
+    /// </summary>
     public double[,] Data { get; set; }
+
+    public double MinX { get; set; }
+    public double MaxX { get; set; }
+    public double MinY { get; set; }
+    public double MaxY { get; set; }
 
     public double Min { get; set; }
     public double Max { get; set; }
 
     public bool IssueEvents { get; set; }
 
+    /// <summary>
+    /// Access the element at the given index position
+    /// </summary>
+    /// <param name="x">index from 0...Columns</param>
+    /// <param name="y">index from 0...Rows</param>
+    /// <returns>value at given index position</returns>
     public double this[int x, int y]
     {
       get { return Data[x, y]; }
@@ -42,6 +59,34 @@ namespace LibEditSpatial.Model
         OnModelChanged();
       }
     }
+
+    //public double this[double x, double y]
+    //{
+    //  get
+    //  {
+    //    if (x < MinX)
+    //      x = MinX;
+    //    if (x > MaxX)
+    //      x = MaxX;
+    //    if (y < MinY)
+    //      y = MinY;
+    //    if (y > MaxY)
+    //      y = MaxY;
+
+    //    int posX = (int)Math.Round((x - MinX)) ;
+    //    int posY = 0;
+        
+
+    //    return Data[posX, posY]; 
+    //  }
+    //  set
+    //  {
+    //    Data[x, y] = value;
+    //    Min = Math.Min(Min, value);
+    //    Max = Math.Max(Max, value);
+    //    OnModelChanged();
+    //  }
+    //}
 
     public event EventHandler<DmpModel> ModelChanged;
 
@@ -56,8 +101,8 @@ namespace LibEditSpatial.Model
     public void RotateRight()
     {
       Data = RotateMatrixCounterClockwise(Data);
-      Rows = Data.GetLength(0);
-      Columns = Data.GetLength(1);
+      Columns = Data.GetLength(0);
+      Rows = Data.GetLength(1);
     }
 
     private static T[,] RotateMatrixCounterClockwise<T>(T[,] oldMatrix)
@@ -84,12 +129,13 @@ namespace LibEditSpatial.Model
       int minY = Math.Min(original.GetLength(1), newArray.GetLength(1));
 
       for (int i = 0; i < minY; ++i)
-        Array.Copy(original, i*original.GetLength(0), newArray, i*newArray.GetLength(0), minX);
+        for (int j = 0; j < minX; ++j)
+          newArray[j, i] = original[j, i];
 
       return newArray;
     }
 
-    public void Resize(int rows, int cols)
+    public void Resize(int cols, int rows)
     {
       Data = ResizeArray(Data, cols, rows);
       Rows = rows;
@@ -100,13 +146,16 @@ namespace LibEditSpatial.Model
     {
       var builder = new StringBuilder();
 
-      builder.AppendFormat("{0} {1}{2}", Rows, Columns, Environment.NewLine);
-      for (int i = 0; i < Rows; i++)
+      builder.AppendFormat("{0} {1}{2}", Columns, Rows, Environment.NewLine);
+      builder.AppendFormat("{0} {1} {2} {3} {4}", MinX, MaxX, MinY, MaxY, Environment.NewLine);
+
+      for (int y = 0; y < Rows; y++)
       {
-        for (int j = 0; j < Columns; j++)
+        for (int x = 0; x < Columns; x++)
+          
         {
-          builder.Append(Data[i, j]);
-          if (j + 1 < Columns)
+          builder.Append(Data[x, y]);
+          if (x + 1 < Columns)
             builder.Append(" ");
         }
         builder.AppendLine();
@@ -124,10 +173,10 @@ namespace LibEditSpatial.Model
 
     public Bitmap ToImage()
     {
-      var result = new Bitmap(Rows, Columns);
-      for (int i = 0; i < Rows; i++)
+      var result = new Bitmap(Columns, Rows);
         for (int j = 0; j < Columns; j++)
-          result.SetPixel(i, j, GetColor(Data[i, j]));
+          for (int i = 0; i < Rows; i++)
+            result.SetPixel(j, i, GetColor(Data[j, i]));
 
       return result;
     }
@@ -142,21 +191,50 @@ namespace LibEditSpatial.Model
         string[] dims = lines[0].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         if (dims.Length > 1)
         {
-          int.TryParse(dims[0], out rows);
-          int.TryParse(dims[1], out cols);
+          int.TryParse(dims[0], out cols);
+          int.TryParse(dims[1], out rows);
         }
       }
 
-      var model = new DmpModel(rows, cols) {Min = double.MaxValue, Max = double.MinValue};
-      for (int i = 1; i < Math.Min(rows + 1, lines.Length); i++)
+      var model = new DmpModel(cols, rows) {Min = double.MaxValue, Max = double.MinValue};
+      int start = 2;
+      if (lines.Length > 1)
       {
-        string[] entries = lines[i].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-        for (int j = 0; j < Math.Min(cols, entries.Length); j++)
+        string[] dims = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (dims.Length == 4)
+        {
+          double temp;
+          if (double.TryParse(dims[0], out temp))
+            model.MinX = temp;
+          if (double.TryParse(dims[1], out temp))
+            model.MaxX = temp;
+          if (double.TryParse(dims[2], out temp))
+            model.MinY = temp;
+          if (double.TryParse(dims[3], out temp))
+            model.MaxY = temp;
+
+        }
+        else
+        {
+          // old format
+          model.MinX = 0;
+          model.MinY = 0;
+          model.MaxX = model.Columns;
+          model.MaxY = model.Rows;
+          
+          start = 1;
+        }
+      }
+
+      for (int y = start; y < Math.Min(rows + start, lines.Length); y++)
+      {
+        string[] entries = lines[y].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+        for (int x = 0; x < Math.Min(cols, entries.Length); x++)
         {
           double current;
-          if (double.TryParse(entries[j], out current))
+          if (double.TryParse(entries[x], out current))
           {
-            model[i - 1, j] = current;
+            model[x, y - start] = current;
           }
         }
       }
@@ -176,20 +254,20 @@ namespace LibEditSpatial.Model
       int minY = Rows;
       int maxY = 0;
 
-      for(int i = 0; i < Rows; ++i)
-        for (int j = 0; j < Columns; ++j)
+      for(int y = 0; y < Rows; ++y)
+        for (int x = 0; x < Columns; ++x)
         { 
-          var current = Data[i, j];
+          var current = Data[x, y];
           if (current != 0)
           {
-            if (j < minX)
-              minX = j;
-            if (j > maxX)
-              maxX = j;
-            if (i < minY)
-              minY = i;
-            if (i > maxY)
-              maxY = i;
+            if (x < minX)
+              minX = x;
+            if (x > maxX)
+              maxX = x;
+            if (y < minY)
+              minY = y;
+            if (y > maxY)
+              maxY = y;
           }
         }
 
@@ -211,9 +289,9 @@ namespace LibEditSpatial.Model
       var difference = new Size(newStart.Width - used.X, newStart.Height - used.Y);
      // Data[difference.Width, difference.Height] = 7;
       var data = new double[Columns, Rows];
-      for (int i = used.Y; i <= used.Height; i++)
-        for (int j = used.X; j <= used.Width; j++)
-          data[i + difference.Height, j + difference.Width] = Data[i, j];
+      for (int y = used.Y; y <= used.Height; y++)
+        for (int x = used.X; x <= used.Width; x++)
+          data[x + difference.Width, y + difference.Height] = Data[x, y];
       Data = data;
     }
   }

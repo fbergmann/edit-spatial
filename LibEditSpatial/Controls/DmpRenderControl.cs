@@ -22,6 +22,19 @@ namespace LibEditSpatial.Controls
     private bool Painting { get; set; }
     public int PencilSize { get; set; }
 
+    public event EventHandler<Point> IndexLocationChanged;
+    protected virtual void OnLocationChanged(Point e)
+    {
+      var handler = IndexLocationChanged;
+      if (handler != null) handler(this, e);
+    }
+
+    public event EventHandler<PointF> DataLocationChanged;
+    protected virtual void OnDataLocationChanged(PointF e)
+    {
+      var handler = DataLocationChanged;
+      if (handler != null) handler(this, e);
+    }
 
     private void OnTimer(object sender, EventArgs e)
     {
@@ -68,6 +81,7 @@ namespace LibEditSpatial.Controls
 
           Model[posX, posY] = CurrentValue;
         }
+        Application.DoEvents();
       });
 
       Model[point.X, point.Y] = CurrentValue;
@@ -84,19 +98,29 @@ namespace LibEditSpatial.Controls
 
     private Point GetPointForMouse(int x, int y)
     {
-      double stretchX = (Model.Columns - 1)/(double) pictureBox1.Width;
-      double stretchY = (Model.Rows - 1)/(double) pictureBox1.Height;
+      double stretchX = (Model.Columns - 1) / (double)pictureBox1.Width;
+      double stretchY = (Model.Rows - 1) / (double)pictureBox1.Height;
 
-      return new Point(
-        Math.Max(Math.Min((int) Math.Round(stretchX*x + stretchX/2f), Model.Rows - 1), 0),
-        Math.Max(Math.Min((int) Math.Round(stretchY*y + stretchX/2f), Model.Columns - 1), 0));
+      var point = new Point(
+              Math.Max(Math.Min((int)Math.Round(stretchX * x + stretchX / 2f), Model.Columns - 1), 0),
+              Math.Max(Math.Min((int)Math.Round(stretchY * y + stretchY / 2f), Model.Rows - 1), 0));
+
+      OnDataLocationChanged(new PointF(
+        (float) (((float) point.X/(float) Model.Columns)*(Model.MaxX - Model.MinX) + Model.MinX),
+        (float) (((float) point.Y/(float) Model.Rows)*(Model.MaxY - Model.MinY) + Model.MinY)));
+        
+
+      OnLocationChanged(point);
+      return point;
     }
 
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
+      Point point = GetPointForMouse(e.X, e.Y);      
+
       if (Model == null || !Painting) return;
 
-      Point point = GetPointForMouse(e.X, e.Y);
+      
       SetValueAround(point);
     }
 

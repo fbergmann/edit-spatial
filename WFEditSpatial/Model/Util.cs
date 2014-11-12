@@ -391,25 +391,25 @@ namespace EditSpatial.Model
       Parameter param = species.getBoundaryCondition("Xmax");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Flux"
+          .getBoundaryCondition().getType() == "Value"
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Xmin");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Flux"
+          .getBoundaryCondition().getType() == "Value"
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Ymax");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Flux"
+          .getBoundaryCondition().getType() == "Value"
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Ymin");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Flux"
+          .getBoundaryCondition().getType() == "Value"
           ? "Dirichlet"
           : "Neumann";
       return "Neumann";

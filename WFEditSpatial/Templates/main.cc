@@ -418,7 +418,7 @@ bool isInside(const Dune::FieldVector<double, 2>& point, const Dune::FieldVector
 
   if (dh_geometry != NULL)
   {
-    double val = (*dh_geometry)((double)x, (double)y);
+    double val = (*dh_geometry).get((double)x, (double)y);
     bool inside = val >= (geometry_min - 1e-5) && val <= (geometry_max + 1e-5);
     return inside;
   }

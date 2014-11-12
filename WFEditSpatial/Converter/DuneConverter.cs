@@ -10,69 +10,81 @@ namespace EditSpatial.Converter
 {
   public class DuneConverter : IDisposable
   {
-    private readonly Geometry Geometry;
-    private readonly libsbmlcs.Model Model;
+    private readonly Geometry _Geometry;
+    private readonly libsbmlcs.Model _Model;
     private readonly SpatialModelPlugin SpatialModelPlugin;
-    private readonly SBMLDocument document;
-    private readonly StringBuilder errorBuilder;
+    private readonly SBMLDocument _Document;
+    private readonly SBMLDocument _Original;
+    private readonly StringBuilder _errorBuilder;
+
+    public string Errors
+    {
+      get
+      {
+        if (_errorBuilder == null) return "";
+        return _errorBuilder.ToString();
+      }
+    }
+
 
     public DuneConverter(SBMLDocument original)
     {
       OdeVariables = new List<string>();
-      errorBuilder = new StringBuilder();
-      document = original.clone();
+      _errorBuilder = new StringBuilder();
+      _Document = original.clone();
+      _Original = original;
 
-      document.getErrorLog().setSeverityOverride(libsbml.LIBSBML_OVERRIDE_DONT_LOG);
+      _Document.getErrorLog().setSeverityOverride(libsbml.LIBSBML_OVERRIDE_DONT_LOG);
       var prop = new ConversionProperties();
       prop.addOption("promoteLocalParameters", true,
         "Promotes all Local Parameters to Global ones");
-      int status = document.convert(prop);
+      int status = _Document.convert(prop);
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
-        errorBuilder.AppendFormat("promoting local to global parameters failed: {0}{1}", status, Environment.NewLine);
+        _errorBuilder.AppendFormat("promoting local to global parameters failed: {0}{1}", status, Environment.NewLine);
       }
 
       prop = new ConversionProperties();
       prop.addOption("expandFunctionDefinitions", true);
-      status = document.convert(prop);
+      status = _Document.convert(prop);
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
-        errorBuilder.AppendFormat("expanding function definitions failed: {0}{1}", status, Environment.NewLine);
+        _errorBuilder.AppendFormat("expanding function definitions failed: {0}{1}", status, Environment.NewLine);
       }
 
       prop = new ConversionProperties();
       prop.addOption("replaceReactions", true,
         "Replace reactions with rateRules");
-      status = document.convert(prop);
+      status = _Document.convert(prop);
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
-        errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", status, Environment.NewLine);
+        _errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", status, Environment.NewLine);
       }
 
       prop = new ConversionProperties();
       prop.addOption("renameSIds", true);
       prop.addOption("currentIds", "default");
       prop.addOption("newIds", "__default");
-      status = document.convert(prop);
+      status = _Document.convert(prop);
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
-        errorBuilder.AppendFormat("rename of ids failed: {0}{1}", status, Environment.NewLine);
+        _errorBuilder.AppendFormat("rename of ids failed: {0}{1}", status, Environment.NewLine);
       }
 
-      Model = document.getModel();
+      _Model = _Document.getModel();
 
-      for (int i = 0; i < Model.getNumRules(); ++i)
+      for (int i = 0; i < _Model.getNumRules(); ++i)
       {
-        Rule current = Model.getRule(i);
+        Rule current = _Model.getRule(i);
         if (current == null || current.getTypeCode() != libsbml.SBML_RATE_RULE) continue;
         OdeVariables.Add(current.getVariable());
       }
 
-      SpatialModelPlugin = (SpatialModelPlugin) Model.getPlugin("spatial");
+      SpatialModelPlugin = (SpatialModelPlugin) _Model.getPlugin("spatial");
 
       if (SpatialModelPlugin == null) return;
 
-      Geometry = SpatialModelPlugin.getGeometry();
+      _Geometry = SpatialModelPlugin.getGeometry();
     }
 
     public double GeometryMin { get; set; }
@@ -84,14 +96,14 @@ namespace EditSpatial.Converter
 
     public void Dispose()
     {
-      if (document != null)
-        document.Dispose();
-      if (Model != null)
-        Model.Dispose();
+      if (_Document != null)
+        _Document.Dispose();
+      if (_Model != null)
+        _Model.Dispose();
       if (SpatialModelPlugin != null)
         SpatialModelPlugin.Dispose();
-      if (Geometry != null)
-        Geometry.Dispose();
+      if (_Geometry != null)
+        _Geometry.Dispose();
     }
 
     public static string TranslateExpression(string expression, Dictionary<string, string> map = null)
@@ -262,7 +274,7 @@ namespace EditSpatial.Converter
 
     public string ToSBML()
     {
-      return libsbml.writeSBMLToString(document);
+      return libsbml.writeSBMLToString(_Document);
     }
 
     public void ExportTo(string filename)
@@ -276,6 +288,8 @@ namespace EditSpatial.Converter
       WriteLocalOperator(path);
       WriteMainFile(path, name);
       WriteReactionAdapter(path);
+      if (_Original != null)
+        libsbml.writeSBMLToFile(_Original, Path.Combine(path, "sbml.xml"));
     }
 
     private void WriteReactionAdapter(string path)
@@ -295,7 +309,7 @@ namespace EditSpatial.Converter
           , Environment.NewLine
           );
         declarations.AppendFormat(
-          "    const RF {0};{1}"
+          "    RF {0};{1}"
           , item
           , Environment.NewLine
           );
@@ -313,9 +327,9 @@ namespace EditSpatial.Converter
       odes.AppendLine();
       odes.AppendLine();
       odes.AppendLine("        //// calculate assignment rules");
-      for (int i = 0;i < Model.getNumRules(); ++i )
+      for (int i = 0;i < _Model.getNumRules(); ++i )
       {
-        var rule = Model.getRule(i) as AssignmentRule;
+        var rule = _Model.getRule(i) as AssignmentRule;
         if (rule == null || rule.getTypeCode() != libsbml.SBML_ASSIGNMENT_RULE) continue;
         odes.AppendFormat("        {0} = {1};{2}",
          TranslateExpression(rule.getVariable(), varMap),
@@ -330,7 +344,7 @@ namespace EditSpatial.Converter
       odes.AppendLine("        //// calculate rate rules");
       foreach (string item in OdeVariables)
       {
-        RateRule rule = Model.getRateRule(item);
+        RateRule rule = _Model.getRateRule(item);
         if (rule == null || !rule.isSetMath()) continue;
 
         odes.AppendFormat("        // {0} {1}", item, Environment.NewLine);
@@ -394,8 +408,8 @@ namespace EditSpatial.Converter
       map["%TIME_DTMAX%"] = "1";
       map["%TIME_DTPLOT%"] = "1";
 
-      map["%WORLD_WIDTH%"] = Geometry.getCoordinateComponent(0).getBoundaryMax().getValue().ToString();
-      map["%WORLD_HEIGHT%"] = Geometry.getCoordinateComponent(1).getBoundaryMax().getValue().ToString();
+      map["%WORLD_WIDTH%"] = _Geometry.getCoordinateComponent(0).getBoundaryMax().getValue().ToString();
+      map["%WORLD_HEIGHT%"] = _Geometry.getCoordinateComponent(1).getBoundaryMax().getValue().ToString();
 
       map["%GRID_X%"] = "64";
       map["%GRID_Y%"] = "64";
@@ -405,26 +419,26 @@ namespace EditSpatial.Converter
       // add reaction section
       builder.AppendLine("[Reaction]");
       ParameterIds = new List<string>();
-      for (int i = 0; i < Model.getNumParameters(); ++i)
+      for (int i = 0; i < _Model.getNumParameters(); ++i)
       {
-        Parameter current = Model.getParameter(i);
+        Parameter current = _Model.getParameter(i);
         if (current.IsSpatial()) continue;
 
         ParameterIds.Add(current.getId());
         builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getValue(), Environment.NewLine);
       }
 
-      for (int i = 0; i < Model.getNumCompartments(); ++i)
+      for (int i = 0; i < _Model.getNumCompartments(); ++i)
       {
-        Compartment current = Model.getCompartment(i);
+        Compartment current = _Model.getCompartment(i);
 
         ParameterIds.Add(current.getId());
         builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getSize(), Environment.NewLine);
       }
 
-      for (int i = 0; i < Model.getNumSpecies(); ++i)
+      for (int i = 0; i < _Model.getNumSpecies(); ++i)
       {
-        Species current = Model.getSpecies(i);
+        Species current = _Model.getSpecies(i);
         if (current == null || !current.getBoundaryCondition()) continue;
         ParameterIds.Add(current.getId());
         builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getInitialConcentration(), Environment.NewLine);
@@ -432,11 +446,10 @@ namespace EditSpatial.Converter
 
       builder.AppendLine();
 
-      int count = 1;
       // add component sections
       for (int i = 0; i < OdeVariables.Count; ++i)
       {
-        Species species = Model.getSpecies(OdeVariables[i]);
+        Species species = _Model.getSpecies(OdeVariables[i]);
         if (species == null) continue;
         var plug = (SpatialSpeciesRxnPlugin) species.getPlugin("spatial");
         if (plug == null || plug.getIsSpatial() == false) continue;
@@ -467,8 +480,7 @@ namespace EditSpatial.Converter
         builder.AppendFormat("# Dirichlet=1, Neumann=-1, Outflow=-2, None=-3{0}", Environment.NewLine);
         builder.AppendFormat("BCType = {0}{1}", type, Environment.NewLine);
 
-        builder.AppendLine();
-        ++count;
+        builder.AppendLine();      
       }
 
       builder.AppendLine();
@@ -616,13 +628,13 @@ namespace EditSpatial.Converter
 
       if (SpatialModelPlugin == null) return result;
 
-      if (Geometry == null || Geometry.getNumGeometryDefinitions() == 0) return result;
+      if (_Geometry == null || _Geometry.getNumGeometryDefinitions() == 0) return result;
 
-      AnalyticGeometry vol = Geometry.GetFirstAnalyticGeometry();
+      AnalyticGeometry vol = _Geometry.GetFirstAnalyticGeometry();
       if (vol != null && vol.getNumAnalyticVolumes() > 0)
         return GenerateGeometryExpressionForAnalyticVolume(vol);
 
-      SampledFieldGeometry sample = Geometry.GetFirstSampledFieldGeometry();
+      SampledFieldGeometry sample = _Geometry.GetFirstSampledFieldGeometry();
       if (sample != null && sample.getNumSampledVolumes() > 0)
         return GenerateExpressionForSampleFieldGeometry(sample, path);
 
@@ -702,12 +714,12 @@ namespace EditSpatial.Converter
 
         tempBuilder.AppendFormat("          if(dh_{0} != NULL){1}", item, Environment.NewLine);
         tempBuilder.AppendFormat(
-          "            __initial  = (typename Traits::RangeType)(*dh_{0})((double)(x[0]),(double)x[1] );{1}", item,
+          "            __initial  = (typename Traits::RangeType)(*dh_{0}).get((double)(x[0]),(double)x[1] );{1}", item,
           Environment.NewLine);
         tempBuilder.AppendLine("          else");
 
 
-        InitialAssignment initial = Model.getInitialAssignment(item);
+        InitialAssignment initial = _Model.getInitialAssignment(item);
         if (initial != null && initial.isSetMath())
         {
           tempBuilder.AppendLine();
@@ -727,7 +739,7 @@ namespace EditSpatial.Converter
         }
         else
         {
-          Species species = Model.getSpecies(item);
+          Species species = _Model.getSpecies(item);
           if (species != null)
           {
             if (species.isSetInitialConcentration())
@@ -792,5 +804,6 @@ namespace EditSpatial.Converter
 
       return final;
     }
+
   }
 }

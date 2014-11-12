@@ -13,7 +13,6 @@ namespace WFEditDMP
       NewModel();
 
       ctrlPalette1.PalleteValueChanged += (o, args) => { dmpRenderControl1.CurrentValue = args.Value; };
-
       ctrlPalette1.PalleteChanged += (o, args) =>
       {
         if (Model != null)
@@ -23,6 +22,10 @@ namespace WFEditDMP
         }
         DmpPalette.Default = args;
       };
+
+      dmpRenderControl1.IndexLocationChanged += (o, args) => { lblPosition.Text = string.Format("nx={0}, ny={1}", args.X, args.Y); };
+      dmpRenderControl1.DataLocationChanged += (o, args) => { lblData.Text = string.Format("x={0}, y={1}", args.X, args.Y); };
+
     }
 
     public DmpModel Model { get; set; }
@@ -39,14 +42,18 @@ namespace WFEditDMP
         Text = "Edit DMP";
 
       if (Model == null)
-      {
-        lblSize.Text = "no model";
+      {        
+        lblMessage.Text = "no model";
         return;
       }
 
-      lblSize.Text = string.Format("{0} x {1}", Model.Rows, Model.Columns);
-      txtRows.Text = Model.Rows.ToString();
+      lblSize.Text = string.Format("{0} x {1}", Model.Columns, Model.Rows);
       txtCols.Text = Model.Columns.ToString();
+      txtRows.Text = Model.Rows.ToString();
+      txtMinX.Text = Model.MinX.ToString();
+      txtMaxX.Text = Model.MaxX.ToString();
+      txtMinY.Text = Model.MinY.ToString();
+      txtMaxY.Text = Model.MaxY.ToString();
       dmpRenderControl1.LoadModel(Model);
     }
 
@@ -182,9 +189,9 @@ namespace WFEditDMP
     private void OnResizeClicked(object sender, EventArgs e)
     {
       int rows, cols;
-      if (int.TryParse(txtRows.Text, out rows) && int.TryParse(txtCols.Text, out cols))
+      if (int.TryParse(txtCols.Text, out cols) && int.TryParse(txtRows.Text, out rows))
       {
-        Model.Resize(rows, cols);
+        Model.Resize(cols, rows);
         UpdateUI();
       }
     }
@@ -207,6 +214,34 @@ namespace WFEditDMP
     {
       Model.Center();
       UpdateUI();
+    }
+
+    private void OnMinXChanged(object sender, EventArgs e)
+    {
+      double temp;
+      if (Model != null && double.TryParse(txtMinX.Text, out temp))
+        Model.MinX = temp;
+    }
+
+    private void OnMaxXChanged(object sender, EventArgs e)
+    {
+      double temp;
+      if (Model != null && double.TryParse(txtMaxX.Text, out temp))
+        Model.MaxX = temp;
+    }
+
+    private void OnMinYChanged(object sender, EventArgs e)
+    {
+      double temp;
+      if (Model != null && double.TryParse(txtMinY.Text, out temp))
+        Model.MinY = temp;
+    }
+
+    private void OnMaxYChanged(object sender, EventArgs e)
+    {
+      double temp;
+      if (Model != null && double.TryParse(txtMaxY.Text, out temp))
+        Model.MaxY = temp;
     }
   }
 }

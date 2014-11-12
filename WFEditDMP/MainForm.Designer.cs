@@ -31,13 +31,27 @@ namespace WFEditDMP
     /// </summary>
     private void InitializeComponent()
     {
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       LibEditSpatial.Controls.PalleteArgs palleteArgs1 = new LibEditSpatial.Controls.PalleteArgs();
       LibEditSpatial.Model.DmpPalette dmpPalette1 = new LibEditSpatial.Model.DmpPalette();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+      this.sizeToolStrip = new System.Windows.Forms.ToolStrip();
+      this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+      this.txtCols = new System.Windows.Forms.ToolStripTextBox();
+      this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+      this.txtRows = new System.Windows.Forms.ToolStripTextBox();
+      this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+      this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+      this.txtMinX = new System.Windows.Forms.ToolStripTextBox();
+      this.txtMaxX = new System.Windows.Forms.ToolStripTextBox();
+      this.txtMinY = new System.Windows.Forms.ToolStripTextBox();
+      this.txtMaxY = new System.Windows.Forms.ToolStripTextBox();
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+      this.lblMessage = new System.Windows.Forms.ToolStripStatusLabel();
       this.lblStatus = new System.Windows.Forms.ToolStripStatusLabel();
       this.lblSize = new System.Windows.Forms.ToolStripStatusLabel();
+      this.lblPosition = new System.Windows.Forms.ToolStripStatusLabel();
+      this.lblData = new System.Windows.Forms.ToolStripStatusLabel();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.ctrlPalette1 = new LibEditSpatial.Controls.CtrlPalette();
       this.dmpRenderControl1 = new LibEditSpatial.Controls.DmpRenderControl();
@@ -52,7 +66,7 @@ namespace WFEditDMP
       this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+      this.mainToolStrip = new System.Windows.Forms.ToolStrip();
       this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -61,25 +75,20 @@ namespace WFEditDMP
       this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       this.txtSize = new System.Windows.Forms.ToolStripTextBox();
       this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-      this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-      this.txtRows = new System.Windows.Forms.ToolStripTextBox();
-      this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-      this.txtCols = new System.Windows.Forms.ToolStripTextBox();
-      this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-      this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
       this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+      this.cmdCenter = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.cmdCenter = new System.Windows.Forms.ToolStripButton();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
       this.toolStripContainer1.SuspendLayout();
+      this.sizeToolStrip.SuspendLayout();
       this.statusStrip1.SuspendLayout();
       this.tableLayoutPanel1.SuspendLayout();
       this.menuStrip1.SuspendLayout();
-      this.toolStrip2.SuspendLayout();
+      this.mainToolStrip.SuspendLayout();
       this.SuspendLayout();
       // 
       // toolStripContainer1
@@ -87,13 +96,14 @@ namespace WFEditDMP
       // 
       // toolStripContainer1.BottomToolStripPanel
       // 
+      this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.sizeToolStrip);
       this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.statusStrip1);
       // 
       // toolStripContainer1.ContentPanel
       // 
       this.toolStripContainer1.ContentPanel.Controls.Add(this.tableLayoutPanel1);
       this.toolStripContainer1.ContentPanel.Padding = new System.Windows.Forms.Padding(5);
-      this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(984, 490);
+      this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(984, 465);
       this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
       this.toolStripContainer1.Name = "toolStripContainer1";
@@ -104,30 +114,137 @@ namespace WFEditDMP
       // toolStripContainer1.TopToolStripPanel
       // 
       this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
-      this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip2);
+      this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.mainToolStrip);
+      // 
+      // sizeToolStrip
+      // 
+      this.sizeToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+      this.sizeToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+      this.sizeToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
+            this.txtCols,
+            this.toolStripLabel2,
+            this.txtRows,
+            this.toolStripButton1,
+            this.toolStripSeparator4,
+            this.txtMinX,
+            this.txtMaxX,
+            this.txtMinY,
+            this.txtMaxY});
+      this.sizeToolStrip.Location = new System.Drawing.Point(0, 0);
+      this.sizeToolStrip.Name = "sizeToolStrip";
+      this.sizeToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+      this.sizeToolStrip.Size = new System.Drawing.Size(984, 25);
+      this.sizeToolStrip.Stretch = true;
+      this.sizeToolStrip.TabIndex = 2;
+      // 
+      // toolStripLabel1
+      // 
+      this.toolStripLabel1.Name = "toolStripLabel1";
+      this.toolStripLabel1.Size = new System.Drawing.Size(37, 22);
+      this.toolStripLabel1.Text = "Dims:";
+      // 
+      // txtCols
+      // 
+      this.txtCols.Name = "txtCols";
+      this.txtCols.Size = new System.Drawing.Size(50, 25);
+      this.txtCols.ToolTipText = "Columns";
+      // 
+      // toolStripLabel2
+      // 
+      this.toolStripLabel2.Name = "toolStripLabel2";
+      this.toolStripLabel2.Size = new System.Drawing.Size(12, 22);
+      this.toolStripLabel2.Text = "x";
+      // 
+      // txtRows
+      // 
+      this.txtRows.Name = "txtRows";
+      this.txtRows.Size = new System.Drawing.Size(50, 25);
+      this.txtRows.ToolTipText = "Rows";
+      // 
+      // toolStripButton1
+      // 
+      this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+      this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.toolStripButton1.Name = "toolStripButton1";
+      this.toolStripButton1.Size = new System.Drawing.Size(43, 22);
+      this.toolStripButton1.Text = "&Resize";
+      this.toolStripButton1.Click += new System.EventHandler(this.OnResizeClicked);
+      // 
+      // toolStripSeparator4
+      // 
+      this.toolStripSeparator4.Name = "toolStripSeparator4";
+      this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+      // 
+      // txtMinX
+      // 
+      this.txtMinX.Name = "txtMinX";
+      this.txtMinX.Size = new System.Drawing.Size(50, 25);
+      this.txtMinX.ToolTipText = "Min X";
+      this.txtMinX.TextChanged += new System.EventHandler(this.OnMinXChanged);
+      // 
+      // txtMaxX
+      // 
+      this.txtMaxX.Name = "txtMaxX";
+      this.txtMaxX.Size = new System.Drawing.Size(50, 25);
+      this.txtMaxX.ToolTipText = "Max X";
+      this.txtMaxX.TextChanged += new System.EventHandler(this.OnMaxXChanged);
+      // 
+      // txtMinY
+      // 
+      this.txtMinY.Name = "txtMinY";
+      this.txtMinY.Size = new System.Drawing.Size(50, 25);
+      this.txtMinY.ToolTipText = "Min Y";
+      this.txtMinY.TextChanged += new System.EventHandler(this.OnMinYChanged);
+      // 
+      // txtMaxY
+      // 
+      this.txtMaxY.Name = "txtMaxY";
+      this.txtMaxY.Size = new System.Drawing.Size(50, 25);
+      this.txtMaxY.ToolTipText = "Max Y";
+      this.txtMaxY.TextChanged += new System.EventHandler(this.OnMaxYChanged);
       // 
       // statusStrip1
       // 
       this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
       this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblMessage,
             this.lblStatus,
-            this.lblSize});
-      this.statusStrip1.Location = new System.Drawing.Point(0, 0);
+            this.lblSize,
+            this.lblPosition,
+            this.lblData});
+      this.statusStrip1.Location = new System.Drawing.Point(0, 25);
       this.statusStrip1.Name = "statusStrip1";
       this.statusStrip1.Size = new System.Drawing.Size(984, 22);
       this.statusStrip1.TabIndex = 0;
       // 
+      // lblMessage
+      // 
+      this.lblMessage.Name = "lblMessage";
+      this.lblMessage.Size = new System.Drawing.Size(969, 17);
+      this.lblMessage.Spring = true;
+      // 
       // lblStatus
       // 
       this.lblStatus.Name = "lblStatus";
-      this.lblStatus.Size = new System.Drawing.Size(969, 17);
-      this.lblStatus.Spring = true;
+      this.lblStatus.Size = new System.Drawing.Size(0, 17);
       this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // lblSize
       // 
       this.lblSize.Name = "lblSize";
       this.lblSize.Size = new System.Drawing.Size(0, 17);
+      // 
+      // lblPosition
+      // 
+      this.lblPosition.Name = "lblPosition";
+      this.lblPosition.Size = new System.Drawing.Size(0, 17);
+      // 
+      // lblData
+      // 
+      this.lblData.Name = "lblData";
+      this.lblData.Size = new System.Drawing.Size(0, 17);
       // 
       // tableLayoutPanel1
       // 
@@ -141,7 +258,7 @@ namespace WFEditDMP
       this.tableLayoutPanel1.RowCount = 2;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 71F));
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 480);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 455);
       this.tableLayoutPanel1.TabIndex = 2;
       // 
       // ctrlPalette1
@@ -153,7 +270,7 @@ namespace WFEditDMP
       this.ctrlPalette1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.ctrlPalette1.IsPainting = false;
       this.ctrlPalette1.IssuingEvents = true;
-      this.ctrlPalette1.Location = new System.Drawing.Point(3, 412);
+      this.ctrlPalette1.Location = new System.Drawing.Point(3, 387);
       this.ctrlPalette1.Name = "ctrlPalette1";
       dmpPalette1.Colors = ((System.Collections.Generic.List<System.Drawing.Color>)(resources.GetObject("dmpPalette1.Colors")));
       dmpPalette1.IsFirstTransparent = true;
@@ -171,7 +288,7 @@ namespace WFEditDMP
       this.dmpRenderControl1.Name = "dmpRenderControl1";
       this.dmpRenderControl1.Padding = new System.Windows.Forms.Padding(5);
       this.dmpRenderControl1.PencilSize = 1;
-      this.dmpRenderControl1.Size = new System.Drawing.Size(968, 403);
+      this.dmpRenderControl1.Size = new System.Drawing.Size(968, 378);
       this.dmpRenderControl1.TabIndex = 0;
       // 
       // menuStrip1
@@ -269,10 +386,11 @@ namespace WFEditDMP
       this.aboutToolStripMenuItem.Text = "&About...";
       this.aboutToolStripMenuItem.Click += new System.EventHandler(this.OnAboutClick);
       // 
-      // toolStrip2
+      // mainToolStrip
       // 
-      this.toolStrip2.Dock = System.Windows.Forms.DockStyle.None;
-      this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+      this.mainToolStrip.Dock = System.Windows.Forms.DockStyle.None;
+      this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+      this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
             this.saveToolStripButton,
@@ -281,21 +399,17 @@ namespace WFEditDMP
             this.toolStripSeparator2,
             this.txtSize,
             this.toolStripSeparator3,
-            this.toolStripLabel1,
-            this.txtRows,
-            this.toolStripLabel2,
-            this.txtCols,
-            this.toolStripButton1,
-            this.toolStripSeparator4,
             this.toolStripButton2,
             this.toolStripButton3,
             this.cmdCenter,
             this.toolStripSeparator7,
             this.helpToolStripButton});
-      this.toolStrip2.Location = new System.Drawing.Point(3, 24);
-      this.toolStrip2.Name = "toolStrip2";
-      this.toolStrip2.Size = new System.Drawing.Size(702, 25);
-      this.toolStrip2.TabIndex = 1;
+      this.mainToolStrip.Location = new System.Drawing.Point(0, 24);
+      this.mainToolStrip.Name = "mainToolStrip";
+      this.mainToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+      this.mainToolStrip.Size = new System.Drawing.Size(984, 25);
+      this.mainToolStrip.Stretch = true;
+      this.mainToolStrip.TabIndex = 1;
       // 
       // newToolStripButton
       // 
@@ -362,43 +476,6 @@ namespace WFEditDMP
       this.toolStripSeparator3.Name = "toolStripSeparator3";
       this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
       // 
-      // toolStripLabel1
-      // 
-      this.toolStripLabel1.Name = "toolStripLabel1";
-      this.toolStripLabel1.Size = new System.Drawing.Size(37, 22);
-      this.toolStripLabel1.Text = "Dims:";
-      // 
-      // txtRows
-      // 
-      this.txtRows.Name = "txtRows";
-      this.txtRows.Size = new System.Drawing.Size(50, 25);
-      // 
-      // toolStripLabel2
-      // 
-      this.toolStripLabel2.Name = "toolStripLabel2";
-      this.toolStripLabel2.Size = new System.Drawing.Size(12, 22);
-      this.toolStripLabel2.Text = "x";
-      // 
-      // txtCols
-      // 
-      this.txtCols.Name = "txtCols";
-      this.txtCols.Size = new System.Drawing.Size(50, 25);
-      // 
-      // toolStripButton1
-      // 
-      this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-      this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.toolStripButton1.Name = "toolStripButton1";
-      this.toolStripButton1.Size = new System.Drawing.Size(43, 22);
-      this.toolStripButton1.Text = "&Resize";
-      this.toolStripButton1.Click += new System.EventHandler(this.OnResizeClicked);
-      // 
-      // toolStripSeparator4
-      // 
-      this.toolStripSeparator4.Name = "toolStripSeparator4";
-      this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-      // 
       // toolStripButton2
       // 
       this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -419,6 +496,17 @@ namespace WFEditDMP
       this.toolStripButton3.Text = "Right";
       this.toolStripButton3.Click += new System.EventHandler(this.OnRotateRight);
       // 
+      // cmdCenter
+      // 
+      this.cmdCenter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.cmdCenter.Image = ((System.Drawing.Image)(resources.GetObject("cmdCenter.Image")));
+      this.cmdCenter.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.cmdCenter.Name = "cmdCenter";
+      this.cmdCenter.Size = new System.Drawing.Size(46, 22);
+      this.cmdCenter.Text = "Center";
+      this.cmdCenter.ToolTipText = "Center scene in the middle of the grid";
+      this.cmdCenter.Click += new System.EventHandler(this.OnCenterClick);
+      // 
       // toolStripSeparator7
       // 
       this.toolStripSeparator7.Name = "toolStripSeparator7";
@@ -433,17 +521,6 @@ namespace WFEditDMP
       this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAboutClick);
-      // 
-      // cmdCenter
-      // 
-      this.cmdCenter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.cmdCenter.Image = ((System.Drawing.Image)(resources.GetObject("cmdCenter.Image")));
-      this.cmdCenter.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.cmdCenter.Name = "cmdCenter";
-      this.cmdCenter.Size = new System.Drawing.Size(46, 22);
-      this.cmdCenter.Text = "Center";
-      this.cmdCenter.ToolTipText = "Center scene in the middle of the grid";
-      this.cmdCenter.Click += new System.EventHandler(this.OnCenterClick);
       // 
       // MainForm
       // 
@@ -462,13 +539,15 @@ namespace WFEditDMP
       this.toolStripContainer1.TopToolStripPanel.PerformLayout();
       this.toolStripContainer1.ResumeLayout(false);
       this.toolStripContainer1.PerformLayout();
+      this.sizeToolStrip.ResumeLayout(false);
+      this.sizeToolStrip.PerformLayout();
       this.statusStrip1.ResumeLayout(false);
       this.statusStrip1.PerformLayout();
       this.tableLayoutPanel1.ResumeLayout(false);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
-      this.toolStrip2.ResumeLayout(false);
-      this.toolStrip2.PerformLayout();
+      this.mainToolStrip.ResumeLayout(false);
+      this.mainToolStrip.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -487,7 +566,7 @@ namespace WFEditDMP
     private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-    private System.Windows.Forms.ToolStrip toolStrip2;
+    private System.Windows.Forms.ToolStrip mainToolStrip;
     private System.Windows.Forms.ToolStripButton newToolStripButton;
     private System.Windows.Forms.ToolStripButton openToolStripButton;
     private System.Windows.Forms.ToolStripButton saveToolStripButton;
@@ -504,15 +583,23 @@ namespace WFEditDMP
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     private System.Windows.Forms.ToolStripTextBox txtSize;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-    private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-    private System.Windows.Forms.ToolStripTextBox txtRows;
-    private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-    private System.Windows.Forms.ToolStripTextBox txtCols;
-    private System.Windows.Forms.ToolStripButton toolStripButton1;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     private System.Windows.Forms.ToolStripButton toolStripButton2;
     private System.Windows.Forms.ToolStripButton toolStripButton3;
     private System.Windows.Forms.ToolStripButton cmdCenter;
+    private System.Windows.Forms.ToolStrip sizeToolStrip;
+    private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+    private System.Windows.Forms.ToolStripTextBox txtCols;
+    private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+    private System.Windows.Forms.ToolStripTextBox txtRows;
+    private System.Windows.Forms.ToolStripButton toolStripButton1;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+    private System.Windows.Forms.ToolStripTextBox txtMinX;
+    private System.Windows.Forms.ToolStripTextBox txtMaxX;
+    private System.Windows.Forms.ToolStripTextBox txtMinY;
+    private System.Windows.Forms.ToolStripTextBox txtMaxY;
+    private System.Windows.Forms.ToolStripStatusLabel lblPosition;
+    private System.Windows.Forms.ToolStripStatusLabel lblMessage;
+    private System.Windows.Forms.ToolStripStatusLabel lblData;
   }
 }
 
