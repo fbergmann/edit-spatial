@@ -4,141 +4,193 @@
 #define DUNE_COPASI_DIFFUSIONPARAMETERS_HH
 
 #include <dune/copasi/utilities/componentparameters.hh>
+#include <dune/copasi/utilities/datahelper.hh>
+
 #include "local_operator.hh"
 
-//! Transport in water phase
+/** 
+ * Generic DiffusionParameter for all variables. 
+ *
+ * It is to be initialized from a config file, with the following parameters: 
+ * 
+ *  - D    -> double, the diffusion coefficient
+ *  - Xmin -> double, boundary condition at left boundary
+ *  - Xmax -> double, boundary condition at right boundary
+ *  - Ymin -> double, boundary condition at top boundary
+ *  - Ymax -> double, boundary condition at bottom boundary
+ *
+ *  - BCType: int, the type of boundary condition
+ *            Dirichlet=1, Neumann=-1, Outflow=-2, None=-3
+ * 
+ * Additionally the values returned can be overwritten by files. For that set the 
+ * parameters below to dmp files. 
+ *
+ *  - file_bcType, a file containing bctypes for all coordinates
+ *  - file_dc, a file containing the diffusion coefficients for the coordinates
+ *  - file_neumann, a file containing Neumann boundary values for the coordinates
+ *  - file_dirichlet, a file containing Dirichlet boundary values for the coordinates
+ */
 template<typename GV, typename RF>
 class DiffusionParameter :
-        public Dune::PDELab::DiffusionMulticomponentInterface<Dune::PDELab::DiffusionParameterTraits<GV,RF>,
-        DiffusionParameter<GV,RF> >
+  public Dune::PDELab::DiffusionMulticomponentInterface<Dune::PDELab::DiffusionParameterTraits<GV, RF>,
+  DiffusionParameter<GV, RF> >
 {
-    enum {dim=GV::Grid::dimension};
+  enum { dim = GV::Grid::dimension };
 
 public:
-    typedef Dune::PDELab::DiffusionParameterTraits<GV,RF> Traits;
-    typedef typename Traits::BCType BCType;
+  typedef Dune::PDELab::DiffusionParameterTraits<GV, RF> Traits;
+  typedef typename Traits::BCType BCType;
 
-    DiffusionParameter(const Dune::ParameterTree & param, const std::string cname)
-        : time(0.)
-        , Dt(param.sub(cname).template get<RF>("D"))
-        , Xmin(param.sub(cname).template get<RF>("Xmin", 0))
-        , Xmax(param.sub(cname).template get<RF>("Xmax", 0))
-        , Ymin(param.sub(cname).template get<RF>("Ymin", 0))
-        , Ymax(param.sub(cname).template get<RF>("Ymax", 0))
-        , width(param.sub("Domain").template get<int>("width", 0))
-        , height(param.sub("Domain").template get<int>("height", 0))
-        , boundarytype(BCType::Neumann)
-    {
-      int bc = param.sub(cname).template get<int>("BCType");
-      switch (bc) {
-      case 1:
-        boundarytype = BCType::Dirichlet;
-        break;
-      case -1:
-        boundarytype = BCType::Neumann;
-        break;
-      case -2:
-        boundarytype = BCType::Outflow;
-        break;
-      case -3:
-        boundarytype = BCType::None;
-        break;
-      }
+  DiffusionParameter(const Dune::ParameterTree & param, const std::string cname)
+    : time(0.)
+    , Dt(param.sub(cname).template get<RF>("D"))
+    , Xmin(param.sub(cname).template get<RF>("Xmin", 0))
+    , Xmax(param.sub(cname).template get<RF>("Xmax", 0))
+    , Ymin(param.sub(cname).template get<RF>("Ymin", 0))
+    , Ymax(param.sub(cname).template get<RF>("Ymax", 0))
+    , width(param.sub("Domain").template get<int>("width", 0))
+    , height(param.sub("Domain").template get<int>("height", 0))
+    , boundarytype(BCType::Neumann)
+    , dh_bcType(DataHelper::forFile(param.sub(cname).template get<std::string>("file_bcType", "")))
+    , dh_neumann(DataHelper::forFile(param.sub(cname).template get<std::string>("file_neumann", "")))
+    , dh_dirichlet(DataHelper::forFile(param.sub(cname).template get<std::string>("file_dirichlet", "")))
+    , dh_dc(DataHelper::forFile(param.sub(cname).template get<std::string>("file_dc", "")))
+
+  {
+    int bc = param.sub(cname).template get<int>("BCType");
+    switch (bc) {
+    case 1:
+      boundarytype = BCType::Dirichlet;
+      break;
+    case -1:
+      boundarytype = BCType::Neumann;
+      break;
+    case -2:
+      boundarytype = BCType::Outflow;
+      break;
+    case -3:
+      boundarytype = BCType::None;
+      break;
     }
+  }
 
 
-    //! tensor permeability
-    typename Traits::RangeFieldType
-    D (const typename Traits::ElementType& e, const typename Traits::DomainType& x) const
-    {
-        return Dt;
-    }
+  //! tensor permeability
+  typename Traits::RangeFieldType
+    D(const typename Traits::ElementType& e, const typename Traits::DomainType& x_) const
+  {
+    if (dh_dc == NULL) return Dt;
 
-    //! source/reaction term
+    typename Traits::DomainType x = e.geometry().global(x_);
+    return (typename Traits::RangeFieldType)dh_dc->get(double(x[0]), double(x[1]));
+  }
 
-    typename Traits::RangeFieldType
-    q (const typename Traits::ElementType& e, const typename Traits::DomainType& ) const
-    {
-        return 0.0;
-    }
+  //! source/reaction term
 
-    //! boundary condition type function
-    BCType
-    bctype(const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
-    {
-      return boundarytype;
-    }
+  typename Traits::RangeFieldType    q(const typename Traits::ElementType& e, const typename Traits::DomainType&) const
+  {
+    return 0.0;
+  }
 
-    bool
+  //! boundary condition type function
+  BCType
+    bctype(const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
+  {
+    if (dh_bcType == NULL) return boundarytype;
+
+    typename Traits::DomainType x = is.geometry().global(x_);
+    return (BCType)dh_bcType->get(double(x[0]), double(x[1]));
+  }
+
+  bool
     isDirichlet(const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x) const
+  {
+    return bctype(is, x) == BCType::Dirichlet;
+  }
+
+  //! Dirichlet boundary condition value
+  typename Traits::RangeFieldType
+    g(const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
+  {
+    if (!is.boundary() || bctype(is, x_) != BCType::Dirichlet)
+      return 0; // Dirichlet is zero
+
+    typename Traits::DomainType x = is.geometry().global(x_);
+
+    if (dh_dirichlet != NULL)
     {
-      return bctype(is, x) == BCType::Dirichlet;
+      return (typename Traits::RangeFieldType)dh_dirichlet->get(double(x[0]), double(x[1]));
     }
 
-    //! Dirichlet boundary condition value
-    typename Traits::RangeFieldType
-    g (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
-    {
-      if (!is.boundary() ||  boundarytype != BCType::Dirichlet)
-        return 0; // Dirichlet is zero
-      typename Traits::DomainType x = is.geometry().global(x_);
-      if (x[0] < 1e-6)
-        return Xmin;
-      if (x[0] > width - 1e-6)
-        return Xmax;
-      if (x[1] < 1e-6)
-        return Ymin;
-      if (x[1] > height - 1e-6)
-        return Ymax;
+    if (x[0] < 1e-6)
+      return Xmin;
+    if (x[0] > width - 1e-6)
+      return Xmax;
+    if (x[1] < 1e-6)
+      return Ymin;
+    if (x[1] > height - 1e-6)
+      return Ymax;
+
+    return 0.0;
+  }
+
+  //! Neumann boundary condition
+  typename Traits::RangeFieldType
+    j(const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
+  {
+    if (!is.boundary() || bctype(is, x_) != BCType::Neumann)
       return 0.0;
-    }
 
-    //! Neumann boundary condition
-    typename Traits::RangeFieldType
-    j (const typename Traits::IntersectionType& is, const typename Traits::IntersectionDomainType& x_) const
+    typename Traits::DomainType x = is.geometry().global(x_);
+    if (dh_neumann != NULL)
     {
-      if (!is.boundary() || boundarytype != BCType::Neumann)
-        return 0.0;
-      typename Traits::DomainType x = is.geometry().global(x_);
-      if (x[0] < 1e-6)
-        return Xmin;
-      if (x[0] > width - 1e-6)
-        return Xmax;
-      if (x[1] < 1e-6)
-        return Ymin;
-      if (x[1] > height - 1e-6)
-        return Ymax;
-      return 0.0;
+      return (typename Traits::RangeFieldType)dh_neumann->get(double(x[0]), double(x[1]));
     }
 
-    //! set time for subsequent evaluation
-    void setTime (RF t)
-    {
-        time = t;
-    }
+    if (x[0] < 1e-6)
+      return Xmin;
+    if (x[0] > width - 1e-6)
+      return Xmax;
+    if (x[1] < 1e-6)
+      return Ymin;
+    if (x[1] > height - 1e-6)
+      return Ymax;
 
-    void setTimeTarget(RF time_, RF dt_)
-    {
-        tend = time_;
-    }
+    return 0.0;
+  }
 
-    //! to be called once before each time step
-    void preStep (RF time_, RF dt_, int stages)
-    {
+  //! set time for subsequent evaluation
+  void setTime(RF t)
+  {
+    time = t;
+  }
 
-    }
+  void setTimeTarget(RF time_, RF dt_)
+  {
+    tend = time_;
+  }
+
+  //! to be called once before each time step
+  void preStep(RF time_, RF dt_, int stages)
+  {
+
+  }
 
 
 private:
-    RF time, tend, dt;
-    const RF Dt;
-    const RF Xmin;
-    const RF Xmax;
-    const RF Ymin;
-    const RF Ymax;
-    const RF width;
-    const RF height;
-    BCType boundarytype;
+  RF time, tend, dt;
+  const RF Dt;
+  const RF Xmin;
+  const RF Xmax;
+  const RF Ymin;
+  const RF Ymax;
+  const RF width;
+  const RF height;
+  BCType boundarytype;
+  const DataHelper* dh_bcType;
+  const DataHelper* dh_neumann;
+  const DataHelper* dh_dirichlet;
+  const DataHelper* dh_dc;
 };
 
 
