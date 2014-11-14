@@ -106,12 +106,12 @@ namespace EditSpatial.Converter
         _Geometry.Dispose();
     }
 
-    public static string TranslateExpression(string expression, Dictionary<string, string> map = null)
+    public static string TranslateExpression(string expression, Dictionary<string, string> map = null, libsbmlcs.Model model = null)
     {
-      return TranslateExpression(libsbml.parseFormula(expression), map);
+      return TranslateExpression(libsbml.parseFormula(expression), map, model);
     }
 
-    public static string TranslateExpression(ASTNode math, Dictionary<string, string> map = null)
+    public static string TranslateExpression(ASTNode math, Dictionary<string, string> map = null, libsbmlcs.Model model = null)
     {
       if (math == null) return "";
       switch (math.getType())
@@ -124,16 +124,16 @@ namespace EditSpatial.Converter
         {
           {
             var builder = new StringBuilder();
-            builder.AppendDuneNode("pow({0}", math.getChild(0), map);
-            builder.AppendDuneNode(", {0})", math.getChild(1), map);
+            builder.AppendDuneNode("pow({0}", math.getChild(0), map, model);
+            builder.AppendDuneNode(", {0})", math.getChild(1), map, model);
             return builder.ToString();
           }
         }
         case libsbml.AST_DIVIDE:
         {
           var builder = new StringBuilder();
-          builder.AppendDuneNode("{0}", math.getChild(0), map);
-          builder.AppendDuneNode(" / {0}", math.getChild(1), map);
+          builder.AppendDuneNode("{0}", math.getChild(0), map, model);
+          builder.AppendDuneNode(" / {0}", math.getChild(1), map, model);
           return builder.ToString();
         }
         case libsbml.AST_MINUS:
@@ -141,77 +141,77 @@ namespace EditSpatial.Converter
           var builder = new StringBuilder();
           if (math.getNumChildren() == 1)
           {
-            builder.AppendDuneNode(" - {0}", math.getChild(0), map);
+            builder.AppendDuneNode(" - {0}", math.getChild(0), map, model);
           }
           else
           {
-            builder.AppendDuneNode("{0}", math.getChild(0), map);
-            builder.AppendDuneNode(" - {0}", math.getChild(1), map);
+            builder.AppendDuneNode("{0}", math.getChild(0), map, model);
+            builder.AppendDuneNode(" - {0}", math.getChild(1), map, model);
           }
           return builder.ToString();
         }
         case libsbml.AST_PLUS:
         {
           var builder = new StringBuilder();
-          builder.AppendDuneNode("{0}", math.getChild(0), map);
+          builder.AppendDuneNode("{0}", math.getChild(0), map, model);
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendDuneNode(" + {0}", math.getChild(i), map);
+            builder.AppendDuneNode(" + {0}", math.getChild(i), map, model);
           }
           return builder.ToString();
         }
         case libsbml.AST_TIMES:
         {
           var builder = new StringBuilder();
-          builder.AppendDuneNode("{0}", math.getChild(0), map);
+          builder.AppendDuneNode("{0}", math.getChild(0), map, model);
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendDuneNode(" * {0}", math.getChild(i), map);
+            builder.AppendDuneNode(" * {0}", math.getChild(i), map, model);
           }
           return builder.ToString();
         }
         case libsbml.AST_RELATIONAL_LEQ:
         {
           var builder = new StringBuilder();
-          builder.AppendDuneNode("{0}", math.getChild(0), map);
-          builder.AppendDuneNode(" <= {0}", math.getChild(1), map);
+          builder.AppendDuneNode("{0}", math.getChild(0), map, model);
+          builder.AppendDuneNode(" <= {0}", math.getChild(1), map, model);
           return builder.ToString();
         }
         case libsbml.AST_RELATIONAL_LT:
         {
           var builder = new StringBuilder();
-          builder.AppendDuneNode("{0}", math.getChild(0), map);
-          builder.AppendDuneNode(" < {0}", math.getChild(1), map);
+          builder.AppendDuneNode("{0}", math.getChild(0), map, model);
+          builder.AppendDuneNode(" < {0}", math.getChild(1), map, model);
           return builder.ToString();
         }
         case libsbml.AST_RELATIONAL_GT:
         {
           var builder = new StringBuilder();
-          builder.AppendDuneNode("{0}", math.getChild(0), map);
-          builder.AppendDuneNode(" > {0}", math.getChild(1), map);
+          builder.AppendDuneNode("{0}", math.getChild(0), map, model);
+          builder.AppendDuneNode(" > {0}", math.getChild(1), map, model);
           return builder.ToString();
         }
         case libsbml.AST_RELATIONAL_GEQ:
         {
           var builder = new StringBuilder();
-          builder.AppendDuneNode("{0}", math.getChild(0), map);
-          builder.AppendDuneNode(" >= {0}", math.getChild(1), map);
+          builder.AppendDuneNode("{0}", math.getChild(0), map, model);
+          builder.AppendDuneNode(" >= {0}", math.getChild(1), map, model);
           return builder.ToString();
         }
         case libsbml.AST_POWER:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map));
-          builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
+          builder.AppendFormat("pow({0}", TranslateExpression(math.getChild(0), map, model));
+          builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map, model));
           return builder.ToString();
         }
         case libsbml.AST_LOGICAL_AND:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("({0}", TranslateExpression(math.getChild(0), map));
+          builder.AppendFormat("({0}", TranslateExpression(math.getChild(0), map, model));
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendFormat(" && {0}", TranslateExpression(math.getChild(i), map));
+            builder.AppendFormat(" && {0}", TranslateExpression(math.getChild(i), map, model));
           }
           builder.AppendFormat(")");
           return builder.ToString();
@@ -219,16 +219,16 @@ namespace EditSpatial.Converter
         case libsbml.AST_LOGICAL_NOT:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("!({0})", TranslateExpression(math.getChild(0), map));
+          builder.AppendFormat("!({0})", TranslateExpression(math.getChild(0), map, model));
           return builder.ToString();
         }
         case libsbml.AST_LOGICAL_OR:
         {
           var builder = new StringBuilder();
-          builder.AppendFormat("({0}", TranslateExpression(math.getChild(0), map));
+          builder.AppendFormat("({0}", TranslateExpression(math.getChild(0), map, model));
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendFormat(" || {0}", TranslateExpression(math.getChild(i), map));
+            builder.AppendFormat(" || {0}", TranslateExpression(math.getChild(i), map, model));
           }
           builder.AppendFormat(")");
           return builder.ToString();
@@ -239,10 +239,10 @@ namespace EditSpatial.Converter
           builder.AppendFormat("(");
           for (int i = 0; i < math.getNumChildren() - 1; i += 2)
           {
-            builder.AppendFormat("({0}) ", TranslateExpression(math.getChild(i + 1), map));
-            builder.AppendFormat("? {0} :", TranslateExpression(math.getChild(i), map));
+            builder.AppendFormat("({0}) ", TranslateExpression(math.getChild(i + 1), map, model));
+            builder.AppendFormat("? {0} :", TranslateExpression(math.getChild(i), map, model));
           }
-          builder.AppendFormat(" {0}", TranslateExpression(math.getChild(math.getNumChildren() - 1), map));
+          builder.AppendFormat(" {0}", TranslateExpression(math.getChild(math.getNumChildren() - 1), map, model));
           builder.AppendFormat(")");
           return builder.ToString();
         }
@@ -251,10 +251,10 @@ namespace EditSpatial.Converter
           string name = math.getName();
           var builder = new StringBuilder();
           builder.AppendFormat("{0}(", name);
-          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
+          builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map, model));
           for (int i = 1; i < math.getNumChildren(); ++i)
           {
-            builder.AppendFormat(", {0}", TranslateExpression(math.getChild(i), map));
+            builder.AppendFormat(", {0}", TranslateExpression(math.getChild(i), map, model));
           }
           builder.AppendFormat(")");
           return builder.ToString();
@@ -265,6 +265,12 @@ namespace EditSpatial.Converter
           string name = math.getName();
           if (map != null && map.ContainsKey(name))
           {
+            if (map.ContainsKey("use_compartments") && model != null)
+            {
+              var species = model.getSpecies(name);
+              if (species == null || !species.isSetCompartment()) return map[name];
+              return String.Format("isIn_{0} * {1}", species.getCompartment(),  map[name]);
+            }
             return map[name];
           }
           return name;
@@ -314,6 +320,7 @@ namespace EditSpatial.Converter
           , Environment.NewLine
           );
       }
+
       int count = 0;
       odes.AppendLine("        //// variable map: variable -> x(lsfu,...)");
       var varMap = new Dictionary<string, string>();
@@ -323,17 +330,44 @@ namespace EditSpatial.Converter
         odes.AppendFormat("        // {0} -> {1}{2}", item, varMap[item], Environment.NewLine);
         ++count;
       }
+      odes.AppendLine();
+      odes.AppendLine();
+
+
+      long numCompartments = _Model.getNumCompartments();
+      if (numCompartments > 1)
+      {
+        varMap["use_compartments"] = "1";
+        odes.AppendLine("        //// determine whether current location is in a compartment");
+        for (int i = 0; i < numCompartments; ++i)
+        {
+          var comp = _Model.getCompartment(i);
+          string compId = comp.getId();
+          initializer.AppendFormat(
+            "	   , dh_in{0}(DataHelper::forFile(param.sub(\"Reaction\").template get<std::string>(\"in_{0}\", \"\"))){1}"
+            , compId
+            , Environment.NewLine
+            );
+          declarations.AppendFormat(
+            "    const DataHelper* dh_in{0};{1}"
+            , compId
+            , Environment.NewLine
+            );
+          odes.AppendFormat("        RF isIn_{0} = dh_in{0} == NULL ? 1 :(RF)dh_in{0}->get((double)pos[0], (double)pos[1]);{1}", compId, Environment.NewLine);
+        }
+      }
+
 
       odes.AppendLine();
       odes.AppendLine();
       odes.AppendLine("        //// calculate assignment rules");
-      for (int i = 0;i < _Model.getNumRules(); ++i )
+      for (int i = 0; i < _Model.getNumRules(); ++i)
       {
         var rule = _Model.getRule(i) as AssignmentRule;
         if (rule == null || rule.getTypeCode() != libsbml.SBML_ASSIGNMENT_RULE) continue;
         odes.AppendFormat("        {0} = {1};{2}",
          TranslateExpression(rule.getVariable(), varMap),
-         TranslateExpression(rule.getMath(), varMap),
+         TranslateExpression(rule.getMath(), varMap, _Model),
          Environment.NewLine
         );
       }
@@ -350,7 +384,7 @@ namespace EditSpatial.Converter
         odes.AppendFormat("        // {0} {1}", item, Environment.NewLine);
         odes.AppendFormat("        RF r{0} = {1};{2}",
           count,
-          TranslateExpression(rule.getMath(), varMap),
+          TranslateExpression(rule.getMath(), varMap, _Model),
           Environment.NewLine
           );
 
@@ -472,6 +506,7 @@ namespace EditSpatial.Converter
         int type = GetBoundaryType(Xmin, Xmax, Ymin, Ymax);
 
         builder.AppendFormat("[{0}]{1}", species.getId(), Environment.NewLine);
+        builder.AppendFormat("# Species '{0}' in Compartment '{1}'{2}", species.getId(), species.getCompartment(), Environment.NewLine);
         builder.AppendFormat("D = {0}{1}", diff.Value, Environment.NewLine);
         builder.AppendFormat("Xmin = {0}{1}", Xmin == null ? 0 : Xmin.getValue(), Environment.NewLine);
         builder.AppendFormat("Xmax = {0}{1}", Xmax == null ? 0 : Xmax.getValue(), Environment.NewLine);
