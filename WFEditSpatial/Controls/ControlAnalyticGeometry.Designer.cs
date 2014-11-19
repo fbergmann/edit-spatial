@@ -41,6 +41,7 @@
       this.thumbGeometry = new System.Windows.Forms.PictureBox();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.panel1 = new System.Windows.Forms.Panel();
+      this.cmdMakeFirst = new System.Windows.Forms.Button();
       this.cmdSort = new System.Windows.Forms.Button();
       this.cmdCreateTiff = new System.Windows.Forms.Button();
       this.trackBar1 = new System.Windows.Forms.TrackBar();
@@ -51,7 +52,7 @@
       this.label2 = new System.Windows.Forms.Label();
       this.cmdReorder = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-      this.cmdMakeFirst = new System.Windows.Forms.Button();
+      this.cmdExport = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.thumbGeometry)).BeginInit();
@@ -173,6 +174,7 @@
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.cmdExport);
       this.panel1.Controls.Add(this.cmdMakeFirst);
       this.panel1.Controls.Add(this.cmdSort);
       this.panel1.Controls.Add(this.cmdCreateTiff);
@@ -191,6 +193,18 @@
       this.panel1.Name = "panel1";
       this.panel1.Size = new System.Drawing.Size(267, 157);
       this.panel1.TabIndex = 5;
+      // 
+      // cmdMakeFirst
+      // 
+      this.cmdMakeFirst.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdMakeFirst.Location = new System.Drawing.Point(178, 33);
+      this.cmdMakeFirst.Name = "cmdMakeFirst";
+      this.cmdMakeFirst.Size = new System.Drawing.Size(75, 23);
+      this.cmdMakeFirst.TabIndex = 13;
+      this.cmdMakeFirst.Text = "First";
+      this.toolTip1.SetToolTip(this.cmdMakeFirst, "Moves the selected entry to the first position");
+      this.cmdMakeFirst.UseVisualStyleBackColor = true;
+      this.cmdMakeFirst.Click += new System.EventHandler(this.OnMakeFirstClick);
       // 
       // cmdSort
       // 
@@ -290,17 +304,15 @@
       this.cmdReorder.UseVisualStyleBackColor = true;
       this.cmdReorder.Click += new System.EventHandler(this.OnReorderClick);
       // 
-      // cmdMakeFirst
+      // cmdExport
       // 
-      this.cmdMakeFirst.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdMakeFirst.Location = new System.Drawing.Point(178, 33);
-      this.cmdMakeFirst.Name = "cmdMakeFirst";
-      this.cmdMakeFirst.Size = new System.Drawing.Size(75, 23);
-      this.cmdMakeFirst.TabIndex = 13;
-      this.cmdMakeFirst.Text = "First";
-      this.toolTip1.SetToolTip(this.cmdMakeFirst, "Moves the selected entry to the first position");
-      this.cmdMakeFirst.UseVisualStyleBackColor = true;
-      this.cmdMakeFirst.Click += new System.EventHandler(this.OnMakeFirstClick);
+      this.cmdExport.Location = new System.Drawing.Point(97, 33);
+      this.cmdExport.Name = "cmdExport";
+      this.cmdExport.Size = new System.Drawing.Size(75, 23);
+      this.cmdExport.TabIndex = 14;
+      this.cmdExport.Text = "Export DMP";
+      this.cmdExport.UseVisualStyleBackColor = true;
+      this.cmdExport.Click += new System.EventHandler(this.cmdExport_Click);
       // 
       // ControlAnalyticGeometry
       // 
@@ -345,5 +357,6 @@
     private System.Windows.Forms.ToolTip toolTip1;
     private System.Windows.Forms.Button cmdSort;
     private System.Windows.Forms.Button cmdMakeFirst;
+    private System.Windows.Forms.Button cmdExport;
   }
 }

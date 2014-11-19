@@ -867,6 +867,26 @@ namespace EditSpatial
       Model.ExportToDune(dialog.FileName);
     }
 
+    private void OnAddSampledFieldGeometry(object sender, EventArgs e)
+    {
+      if (Model.Geometry == null) return;
+
+      var geom = Model.Geometry.createSampledFieldGeometry();
+      geom.setSpatialId(String.Format("sampledFieldGeometry{0}", Model.Geometry.GetNumSampledFieldGeometries()));
+      UpdateUI();
+    }
+
+    private void OnAddAnalyticGeometry(object sender, EventArgs e)
+    {
+      if (Model.Geometry == null) return;
+
+      var geom = Model.Geometry.createAnalyticGeometry();
+      geom.setSpatialId(String.Format("analyticGeometry{0}", Model.Geometry.GetNumAnalyticGeometries()));
+      UpdateUI();
+
+
+    }
+
     private void OnSpatialItemDeleteClick(object sender, EventArgs e)
     {
       TreeNode selected = treeSpatial.SelectedNode;
@@ -1091,5 +1111,9 @@ namespace EditSpatial
         dlg.ShowDialog(this);
       }
     }
+
+    
+
+    
   }
 }

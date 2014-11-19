@@ -1028,5 +1028,34 @@ namespace EditSpatial.Model
       return cplug.getCompartmentMapping();
     }
 
+    public static int GetNumAnalyticGeometries(this Geometry geom)
+    {
+      if (geom == null) return 0;
+
+      int count = 0;
+      
+      for (int i = 0;i < geom.getNumGeometryDefinitions(); ++i)
+      {
+        var current = geom.getGeometryDefinition(i);
+        if (current is AnalyticGeometry) ++count;
+      }
+
+      return count;
+    }
+
+    public static int GetNumSampledFieldGeometries(this Geometry geom)
+    {
+      if (geom == null) return 0;
+
+      int count = 0;
+
+      for (int i = 0; i < geom.getNumGeometryDefinitions(); ++i)
+      {
+        var current = geom.getGeometryDefinition(i);
+        if (current is SampledFieldGeometry) ++count;
+      }
+
+      return count;
+    }
   }
 }

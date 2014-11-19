@@ -31,9 +31,9 @@ namespace WFEditDMP
     /// </summary>
     private void InitializeComponent()
     {
+      LibEditSpatial.Controls.PalleteArgs palleteArgs2 = new LibEditSpatial.Controls.PalleteArgs();
+      LibEditSpatial.Model.DmpPalette dmpPalette2 = new LibEditSpatial.Model.DmpPalette();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-      LibEditSpatial.Controls.PalleteArgs palleteArgs1 = new LibEditSpatial.Controls.PalleteArgs();
-      LibEditSpatial.Model.DmpPalette dmpPalette1 = new LibEditSpatial.Model.DmpPalette();
       this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
       this.sizeToolStrip = new System.Windows.Forms.ToolStrip();
       this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -78,6 +78,8 @@ namespace WFEditDMP
       this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
       this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
       this.cmdCenter = new System.Windows.Forms.ToolStripButton();
+      this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolAdjust = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
@@ -263,18 +265,18 @@ namespace WFEditDMP
       // 
       // ctrlPalette1
       // 
-      palleteArgs1.Max = 0D;
-      palleteArgs1.Min = 0D;
-      palleteArgs1.Value = 0D;
-      this.ctrlPalette1.Current = palleteArgs1;
+      palleteArgs2.Max = 0D;
+      palleteArgs2.Min = 0D;
+      palleteArgs2.Value = 0D;
+      this.ctrlPalette1.Current = palleteArgs2;
       this.ctrlPalette1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.ctrlPalette1.IsPainting = false;
       this.ctrlPalette1.IssuingEvents = true;
       this.ctrlPalette1.Location = new System.Drawing.Point(3, 387);
       this.ctrlPalette1.Name = "ctrlPalette1";
-      dmpPalette1.Colors = ((System.Collections.Generic.List<System.Drawing.Color>)(resources.GetObject("dmpPalette1.Colors")));
-      dmpPalette1.IsFirstTransparent = true;
-      this.ctrlPalette1.Palette = dmpPalette1;
+      dmpPalette2.Colors = ((System.Collections.Generic.List<System.Drawing.Color>)(resources.GetObject("dmpPalette2.Colors")));
+      dmpPalette2.IsFirstTransparent = true;
+      this.ctrlPalette1.Palette = dmpPalette2;
       this.ctrlPalette1.Size = new System.Drawing.Size(968, 65);
       this.ctrlPalette1.TabIndex = 1;
       // 
@@ -402,6 +404,8 @@ namespace WFEditDMP
             this.toolStripButton2,
             this.toolStripButton3,
             this.cmdCenter,
+            this.toolStripSeparator5,
+            this.toolAdjust,
             this.toolStripSeparator7,
             this.helpToolStripButton});
       this.mainToolStrip.Location = new System.Drawing.Point(0, 24);
@@ -507,6 +511,21 @@ namespace WFEditDMP
       this.cmdCenter.ToolTipText = "Center scene in the middle of the grid";
       this.cmdCenter.Click += new System.EventHandler(this.OnCenterClick);
       // 
+      // toolStripSeparator5
+      // 
+      this.toolStripSeparator5.Name = "toolStripSeparator5";
+      this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+      // 
+      // toolAdjust
+      // 
+      this.toolAdjust.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolAdjust.Image = ((System.Drawing.Image)(resources.GetObject("toolAdjust.Image")));
+      this.toolAdjust.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.toolAdjust.Name = "toolAdjust";
+      this.toolAdjust.Size = new System.Drawing.Size(45, 22);
+      this.toolAdjust.Text = "Adjust";
+      this.toolAdjust.Click += new System.EventHandler(this.OnSplitIntoIndividuals);
+      // 
       // toolStripSeparator7
       // 
       this.toolStripSeparator7.Name = "toolStripSeparator7";
@@ -600,6 +619,8 @@ namespace WFEditDMP
     private System.Windows.Forms.ToolStripStatusLabel lblPosition;
     private System.Windows.Forms.ToolStripStatusLabel lblMessage;
     private System.Windows.Forms.ToolStripStatusLabel lblData;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+    private System.Windows.Forms.ToolStripButton toolAdjust;
   }
 }
 

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace LibEditSpatial.Model
 {
-  public class DmpModel
+  public class DmpModel : ICloneable
   {
     public DmpModel(int cols, int rows)
     {
@@ -25,6 +26,19 @@ namespace LibEditSpatial.Model
     public string FileName { get; set; }
 
     public int Columns { get; set; }
+
+    public System.Collections.Generic.List<double> Range
+    {
+      get
+      {
+        var numbers = Data;
+        var unique = Enumerable.Range(0, numbers.GetUpperBound(0) + 1)
+          .SelectMany(x => Enumerable.Range(0, numbers.GetUpperBound(1) + 1)
+            .Select(y => numbers[x, y])).Distinct().ToList();
+        unique.Sort();
+        return unique;
+      }
+    }
     public int Rows { get; set; }
 
     /// <summary>
@@ -89,6 +103,25 @@ namespace LibEditSpatial.Model
     //}
 
     public event EventHandler<DmpModel> ModelChanged;
+
+    public void Invert()
+    {
+      var range = Range;
+      int count = range.Count / 2;
+      for (int i = 0; i < count; i++)
+      {
+        var first = range[i];
+        var last = range[range.Count - 1 - i];
+        Transform(
+          x =>
+          {
+            if (x == first) return last;
+            if (x == last) return first;
+            return x;
+          }
+          );
+      }
+    }
 
     public void OnModelChanged()
     {
@@ -161,8 +194,8 @@ namespace LibEditSpatial.Model
         builder.AppendLine();
       }
 
-
       File.WriteAllText(fileName, builder.ToString());
+      FileName = fileName;
     }
 
     private Color GetColor(double val)
@@ -196,7 +229,13 @@ namespace LibEditSpatial.Model
         }
       }
 
-      var model = new DmpModel(cols, rows) {Min = double.MaxValue, Max = double.MinValue};
+      var model = new DmpModel(cols, rows) 
+      { 
+        Min = double.MaxValue,
+        Max = double.MinValue,
+        FileName = filename 
+      };
+
       int start = 2;
       if (lines.Length > 1)
       {
@@ -293,6 +332,44 @@ namespace LibEditSpatial.Model
         for (int x = used.X; x <= used.Width; x++)
           data[x + difference.Width, y + difference.Height] = Data[x, y];
       Data = data;
+    }
+
+    public void Transform(Func<double, double> transformation)
+    {
+      if (transformation == null) return;
+
+      for(int y = 0; y < Rows; ++y)
+        for (int x = 0; x < Columns; ++x)
+          Data[x, y] = transformation(Data[x, y]);
+
+    }
+
+    public static DmpModel operator +(DmpModel model, double value)
+    {
+      var tmp = (DmpModel)model.Clone();
+      tmp.Transform(x => x + value);
+      return tmp;
+    }
+
+    public static DmpModel operator *(DmpModel model, double value)
+    {
+      var tmp = (DmpModel)model.Clone();
+      tmp.Transform(x => x * value);
+      return tmp;
+    }
+
+    public object Clone()
+    {
+      return new DmpModel(Columns, Rows)
+      {
+        MinX = MinX,
+        MaxX = MaxX,
+        MinY = MinY,
+        MaxY = MaxY,
+        Min = Min,
+        Max = Max,
+        Data = (double[,]) Data.Clone()
+      };
     }
   }
 }

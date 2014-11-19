@@ -49,7 +49,9 @@
       this.splitGeometry = new System.Windows.Forms.SplitContainer();
       this.treeSpatial = new System.Windows.Forms.TreeView();
       this.contextMenuStripSpatial = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolAddAnalyticGeometry = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolDeleteSpatial = new System.Windows.Forms.ToolStripMenuItem();
+      this.controlMapCompartments1 = new EditSpatial.Controls.ControlMapCompartments();
       this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
       this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
       this.controlAdjacentDomains1 = new EditSpatial.Controls.ControlAdjacentDomains();
@@ -126,7 +128,7 @@
       this.cmdAkira = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.controlMapCompartments1 = new EditSpatial.Controls.ControlMapCompartments();
+      this.toolAddSampleField = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -265,16 +267,36 @@
       // contextMenuStripSpatial
       // 
       this.contextMenuStripSpatial.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem4});
+            this.toolAddAnalyticGeometry,
+            this.toolAddSampleField,
+            this.toolDeleteSpatial});
       this.contextMenuStripSpatial.Name = "contextMenuStrip1";
-      this.contextMenuStripSpatial.Size = new System.Drawing.Size(108, 26);
+      this.contextMenuStripSpatial.Size = new System.Drawing.Size(222, 92);
       // 
-      // toolStripMenuItem4
+      // toolAddAnalyticGeometry
       // 
-      this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-      this.toolStripMenuItem4.Size = new System.Drawing.Size(107, 22);
-      this.toolStripMenuItem4.Text = "&Delete";
-      this.toolStripMenuItem4.Click += new System.EventHandler(this.OnSpatialItemDeleteClick);
+      this.toolAddAnalyticGeometry.Name = "toolAddAnalyticGeometry";
+      this.toolAddAnalyticGeometry.Size = new System.Drawing.Size(221, 22);
+      this.toolAddAnalyticGeometry.Text = "&Add Analytic Geometry";
+      this.toolAddAnalyticGeometry.Click += new System.EventHandler(this.OnAddAnalyticGeometry);
+      // 
+      // toolDeleteSpatial
+      // 
+      this.toolDeleteSpatial.Name = "toolDeleteSpatial";
+      this.toolDeleteSpatial.Size = new System.Drawing.Size(221, 22);
+      this.toolDeleteSpatial.Text = "&Delete";
+      this.toolDeleteSpatial.Click += new System.EventHandler(this.OnSpatialItemDeleteClick);
+      // 
+      // controlMapCompartments1
+      // 
+      this.controlMapCompartments1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlMapCompartments1.IsInitializing = false;
+      this.controlMapCompartments1.Location = new System.Drawing.Point(0, 0);
+      this.controlMapCompartments1.Name = "controlMapCompartments1";
+      this.controlMapCompartments1.Size = new System.Drawing.Size(639, 450);
+      this.controlMapCompartments1.TabIndex = 7;
+      this.controlMapCompartments1.UpdateAction = null;
+      this.controlMapCompartments1.Visible = false;
       // 
       // controlSampleFieldGeometry1
       // 
@@ -1023,16 +1045,12 @@
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // controlMapCompartments1
+      // toolAddSampleField
       // 
-      this.controlMapCompartments1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlMapCompartments1.IsInitializing = false;
-      this.controlMapCompartments1.Location = new System.Drawing.Point(0, 0);
-      this.controlMapCompartments1.Name = "controlMapCompartments1";
-      this.controlMapCompartments1.Size = new System.Drawing.Size(639, 450);
-      this.controlMapCompartments1.TabIndex = 7;
-      this.controlMapCompartments1.UpdateAction = null;
-      this.controlMapCompartments1.Visible = false;
+      this.toolAddSampleField.Name = "toolAddSampleField";
+      this.toolAddSampleField.Size = new System.Drawing.Size(221, 22);
+      this.toolAddSampleField.Text = "Add Sample Field &Geometry";
+      this.toolAddSampleField.Click += new System.EventHandler(this.OnAddSampledFieldGeometry);
       // 
       // MainForm
       // 
@@ -1163,7 +1181,7 @@
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
     private System.Windows.Forms.ToolStripButton cmdAkira;
     private System.Windows.Forms.ContextMenuStrip contextMenuStripSpatial;
-    private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+    private System.Windows.Forms.ToolStripMenuItem toolDeleteSpatial;
     private System.Windows.Forms.ToolStripMenuItem mnuImport;
     private Controls.ControlRules controlRules1;
     private System.Windows.Forms.ToolStripMenuItem chkMultipleCompartments;
@@ -1171,6 +1189,8 @@
     private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
     private System.Windows.Forms.ToolStripButton cmdPrepareDune;
     private Controls.ControlMapCompartments controlMapCompartments1;
+    private System.Windows.Forms.ToolStripMenuItem toolAddAnalyticGeometry;
+    private System.Windows.Forms.ToolStripMenuItem toolAddSampleField;
   }
 }
 

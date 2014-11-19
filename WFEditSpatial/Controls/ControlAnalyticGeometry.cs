@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
 using EditSpatial.Model;
+using LibEditSpatial.Model;
 using libsbmlcs;
 using Image = System.Drawing.Image;
 
@@ -158,6 +159,107 @@ namespace EditSpatial.Controls
       Current.ExpandMath();
     }
 
+
+    private DmpModel GenerateDmp(int thumbSize)
+    {
+      if (Current == null || SpatialGeometry == null) return null;
+
+      try
+      {
+        Current.ExpandMath();
+
+        var formulas = new List<Tuple<int, ASTNode>>();
+        for (long i = 0; i < Current.getNumAnalyticVolumes(); ++i)
+        {
+          AnalyticVolume current = Current.getAnalyticVolume(i);
+          formulas.Add(new Tuple<int, ASTNode>((int)current.getOrdinal(), current.getMath()));
+        }
+        formulas.Sort((a, b) => b.Item1.CompareTo(a.Item1));
+
+        CoordinateComponent range1 = SpatialGeometry.getCoordinateComponent(0);
+        double r1Min = range1.getBoundaryMin().getValue();
+        double r1Max = range1.getBoundaryMax().getValue();
+        CoordinateComponent range2 = SpatialGeometry.getCoordinateComponent(1);
+        double r2Min = range2.getBoundaryMin().getValue();
+        double r2Max = range2.getBoundaryMax().getValue();
+
+        double r3Max = SpatialGeometry.getNumCoordinateComponents() == 3
+          ? SpatialGeometry.getCoordinateComponent(2).getBoundaryMax().getValue()
+          : 0;
+        double r3Min = SpatialGeometry.getNumCoordinateComponents() == 3
+          ? SpatialGeometry.getCoordinateComponent(2).getBoundaryMin().getValue()
+          : 0;
+
+        var resX = thumbSize;
+        var resY = thumbSize;
+
+        var result = new DmpModel(resX, resY) 
+        { 
+          MinX = r1Min, 
+          MaxX = r1Max, 
+          MinY = r2Min, 
+          MaxY = r2Max
+        };
+
+        for (int nX = 0; nX < resX; ++nX)
+        {
+          double x = r1Min
+                     +
+                     (r1Max - r1Min) /
+                     resX * nX;
+          for (int nY = 0; nY < resY; ++nY)
+          {
+            double y = r2Min
+                       +
+                       (r2Max - r2Min) /
+                       resY * nY;
+
+            for (int index = 0; index < formulas.Count; index++)
+            {
+              Tuple<int, ASTNode> item = formulas[index];
+              double isInside = Util.Evaluate(item.Item2,
+                new List<string>
+                {
+                  "x",
+                  "y",
+                  "z",
+                  "width",
+                  "height",
+                  "depth",
+                  "Xmin",
+                  "Xmax",
+                  "Ymin",
+                  "Ymax",
+                  "Zmin",
+                  "Zmax"
+                },
+                new List<double> { x, y, CurrentZ, r1Max, r2Max, r3Max, r1Min, r1Max, r2Min, r2Max, r3Min, r3Max },
+                new List<Tuple<string, double>>()
+                );
+              if (Math.Abs((isInside - 1.0)) < 1E-10)
+              {
+                result[nX, nY] = item.Item1;
+                break;
+              }
+            }
+          }
+        }
+        return result;
+      }
+      catch
+      {
+      }
+
+      return null;
+
+    }
+
+    private void ExportDmp(string fileName, int thumbSize)
+    {
+      var dmp = GenerateDmp(thumbSize);
+      if (dmp != null)
+        dmp.SaveAs(fileName);
+    }
 
     private Image GenerateImage(AnalyticGeometry analytic, Geometry geometry, int resX = 128, int resY = 128)
     {
@@ -411,6 +513,15 @@ namespace EditSpatial.Controls
         Current.getListOfAnalyticVolumes().insertAndOwn(0, current);
         InitializeFrom(SpatialGeometry, Current.getSpatialId());
         break;
+      }
+    }
+
+    private void cmdExport_Click(object sender, EventArgs e)
+    {
+      using (var dlg = new SaveFileDialog{ Title = "Export DMP", Filter = "DMP files|*.dmp|All files|*.*"})
+      {
+        if (dlg.ShowDialog() == DialogResult.OK)
+          ExportDmp(dlg.FileName, ThumbSize);
       }
     }
   }

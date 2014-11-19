@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using LibEditSpatial.Model;
+using WFEditDMP.Forms;
 
 namespace WFEditDMP
 {
@@ -29,20 +33,23 @@ namespace WFEditDMP
     }
 
     public DmpModel Model { get; set; }
-    public string FileName { get; set; }
     public string LastOpenDir { get; set; }
     public String[] PaletteFiles { get; set; }
     public string CurrentPalette { get; set; }
 
-    private void UpdateUI()
+    private void SetTitle(string fileName)
     {
-      if (!string.IsNullOrEmpty(FileName))
-        Text = String.Format("Edit DMP - [{0}]", Path.GetFileName(FileName));
+      if (!string.IsNullOrEmpty(fileName))
+        Text = String.Format("Edit DMP - [{0}]", Path.GetFileName(fileName));
       else
         Text = "Edit DMP";
+    }
 
+    private void UpdateUI()
+    {     
       if (Model == null)
-      {        
+      {
+        SetTitle(null);
         lblMessage.Text = "no model";
         return;
       }
@@ -55,11 +62,11 @@ namespace WFEditDMP
       txtMinY.Text = Model.MinY.ToString();
       txtMaxY.Text = Model.MaxY.ToString();
       dmpRenderControl1.LoadModel(Model);
+      SetTitle(Model.FileName);
     }
 
     public void OpenFile(string filename)
     {
-      FileName = filename;
       LastOpenDir = Path.GetDirectoryName(filename);
       Model = DmpModel.FromFile(filename);
       ctrlPalette1.UpdateValues(Model.Min, ctrlPalette1.Current.Value, Model.Max);
@@ -96,12 +103,12 @@ namespace WFEditDMP
 
     private void OnSaveClick(object sender, EventArgs e)
     {
-      if (string.IsNullOrWhiteSpace(FileName))
+      if (string.IsNullOrWhiteSpace(Model.FileName))
       {
         OnSaveAsClick(sender, e);
         return;
       }
-      SaveAs(FileName);
+      SaveAs(Model.FileName);
     }
 
     private void OnExitClick(object sender, EventArgs e)
@@ -116,7 +123,8 @@ namespace WFEditDMP
     private void SaveAs(string fileName)
     {
       if (Model == null) return;
-      Model.SaveAs(fileName);
+      Model.SaveAs(fileName);      
+      UpdateUI();
     }
 
     private void OnSaveAsClick(object sender, EventArgs e)
@@ -242,6 +250,22 @@ namespace WFEditDMP
       double temp;
       if (Model != null && double.TryParse(txtMaxY.Text, out temp))
         Model.MaxY = temp;
+    }
+
+    private void OnSplitIntoIndividuals(object sender, EventArgs e)
+    {
+      if (Model == null) return;
+      var range = Model.Range;
+
+      using (var dlg = new FormAdjustDmp())
+      {
+        dlg.InitializeFrom(range, Model);
+        if (dlg.ShowDialog(this) == DialogResult.OK)
+        {
+          Model = dlg.Model;
+          UpdateUI();
+        }
+      }
     }
   }
 }
