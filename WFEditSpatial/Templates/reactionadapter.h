@@ -29,9 +29,11 @@ public:
     }
 
     //! evaluate model in entity eg with local values x
-    template<typename EG, typename LFSU, typename X, typename LFSV, typename R>
-    void evaluate (const EG& eg, const LFSU& lfsu, const X& x, const LFSV& lfsv, R& r)
+    template<typename EG, typename LFSU, typename X, typename LFSV, typename R, typename DomainType>
+    void evaluate(const EG& eg, const LFSU& lfsu, const X& x, const LFSV& lfsv, R& r, const DomainType& x_)
     {
+      const auto& pos = eg.geometry().global(x_);
+
 %ODES%
     }
 

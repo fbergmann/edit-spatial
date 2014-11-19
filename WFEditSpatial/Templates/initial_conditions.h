@@ -30,6 +30,9 @@ public:
                           const typename Traits::DomainType& xlocal,
                           typename Traits::RangeType& __initial) const
     {
+      const auto& x = e.geometry().global(xlocal);
+%ADDITIONAL_INITIAlIZATION%
+
       switch(mComponentIndex)
       {
 %INITIALCONDITION%

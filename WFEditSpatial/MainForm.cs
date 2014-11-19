@@ -584,7 +584,7 @@ namespace EditSpatial
         return;
 
       SaveGeormetryAll();
-      Model.SaveTo(dialog.FileName);
+      Model.SaveTo(dialog.FileName);      
       UpdateUI();
     }
 

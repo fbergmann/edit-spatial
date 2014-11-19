@@ -29,6 +29,7 @@
  *  - file_dc, a file containing the diffusion coefficients for the coordinates
  *  - file_neumann, a file containing Neumann boundary values for the coordinates
  *  - file_dirichlet, a file containing Dirichlet boundary values for the coordinates
+ *  - file_compartment, a file 1 wherever inside compartment and 0 outside for the coordinates
  */
 template<typename GV, typename RF>
 class DiffusionParameter :
@@ -55,6 +56,7 @@ public:
     , dh_neumann(DataHelper::forFile(param.sub(cname).template get<std::string>("file_neumann", "")))
     , dh_dirichlet(DataHelper::forFile(param.sub(cname).template get<std::string>("file_dirichlet", "")))
     , dh_dc(DataHelper::forFile(param.sub(cname).template get<std::string>("file_dc", "")))
+    , dh_compartment(DataHelper::forFile(param.sub(cname).template get<std::string>("file_compartment", "")))
 
   {
     int bc = param.sub(cname).template get<int>("BCType");
@@ -79,9 +81,14 @@ public:
   typename Traits::RangeFieldType
     D(const typename Traits::ElementType& e, const typename Traits::DomainType& x_) const
   {
-    if (dh_dc == NULL) return Dt;
-
     typename Traits::DomainType x = e.geometry().global(x_);
+    
+    if (dh_dc == NULL)
+    {
+      if (dh_compartment == NULL) return Dt;
+      return Dt * dh_compartment->get(double(x[0]), double(x[1]));
+    }
+
     return (typename Traits::RangeFieldType)dh_dc->get(double(x[0]), double(x[1]));
   }
 
@@ -191,6 +198,7 @@ private:
   const DataHelper* dh_neumann;
   const DataHelper* dh_dirichlet;
   const DataHelper* dh_dc;
+  const DataHelper* dh_compartment;
 };
 
 

@@ -307,11 +307,11 @@ namespace EditSpatial.Model
     }
 
     public static void AppendDuneNode(this StringBuilder builder, string format, ASTNode node,
-      Dictionary<string, string> map)
+      Dictionary<string, string> map, libsbmlcs.Model model)
     {
       if (!node.IsBasic())
         format = format.Replace("{0}", "({0})");
-      builder.AppendFormat(format, DuneConverter.TranslateExpression(node, map));
+      builder.AppendFormat(format, DuneConverter.TranslateExpression(node, map, model));
     }
 
 

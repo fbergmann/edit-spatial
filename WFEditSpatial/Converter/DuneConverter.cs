@@ -382,11 +382,20 @@ namespace EditSpatial.Converter
         if (rule == null || !rule.isSetMath()) continue;
 
         odes.AppendFormat("        // {0} {1}", item, Environment.NewLine);
-        odes.AppendFormat("        RF r{0} = {1};{2}",
-          count,
-          TranslateExpression(rule.getMath(), varMap, _Model),
-          Environment.NewLine
-          );
+        var species = _Model.getSpecies(rule.getVariable());
+        if (species != null && numCompartments > 1 && species.isSetCompartment())
+          odes.AppendFormat("        RF r{0} = isIn_{1}*({2});{3}",
+            count,
+            species.getCompartment(),
+            TranslateExpression(rule.getMath(), varMap, _Model),
+            Environment.NewLine
+            );
+        else
+          odes.AppendFormat("        RF r{0} = {1};{2}",
+            count,
+            TranslateExpression(rule.getMath(), varMap, _Model),
+            Environment.NewLine
+            );
 
         odes2.AppendFormat("        r.accumulate(lfsv,{0},-r{1}*eg.geometry().volume());{2}",
           count - 1,
@@ -721,7 +730,41 @@ namespace EditSpatial.Converter
           );
       }
 
+      var varMap
+  = new Dictionary<string, string>
+                        {
+                          {"x", "x[0]"},
+                          {"y", "x[1]"},
+                          {"z", "x[2]"}
+                        };
+
+
+      var additionalInitializations = new StringBuilder();
+
       var tempBuilder = new StringBuilder();
+
+      long numCompartments = _Model.getNumCompartments();
+      if (numCompartments > 1)
+      {
+        additionalInitializations.AppendLine("      //// determine whether current location is in a compartment");
+        for (int i = 0; i < numCompartments; ++i)
+        {
+          var comp = _Model.getCompartment(i);
+          string compId = comp.getId();
+          initializer.AppendFormat(
+            "	   , dh_in{0}(DataHelper::forFile(param.sub(\"Reaction\").template get<std::string>(\"in_{0}\", \"\"))){1}"
+            , compId
+            , Environment.NewLine
+            );
+          declarations.AppendFormat(
+            "    const DataHelper* dh_in{0};{1}"
+            , compId
+            , Environment.NewLine
+            );
+          additionalInitializations.AppendFormat("      RF isIn_{0} = dh_in{0} == NULL ? 1 :(RF)dh_in{0}->get((double)x[0], (double)x[1]);{1}", compId, Environment.NewLine);
+        }
+      }
+
 
       int count = 0;
       foreach (string item in OdeVariables)
@@ -743,10 +786,6 @@ namespace EditSpatial.Converter
         tempBuilder.AppendLine("        {");
         tempBuilder.AppendFormat("          // initial conditions for {0}{1}", item, Environment.NewLine);
 
-        tempBuilder.AppendLine("          const int dim = Traits::GridViewType::Grid::dimension;");
-        tempBuilder.AppendLine("          typedef typename Traits::GridViewType::Grid::ctype ctype;");
-        tempBuilder.AppendLine("          Dune::FieldVector<ctype,dim> x = e.geometry().global(xlocal);");
-
         tempBuilder.AppendFormat("          if(dh_{0} != NULL){1}", item, Environment.NewLine);
         tempBuilder.AppendFormat(
           "            __initial  = (typename Traits::RangeType)(*dh_{0}).get((double)(x[0]),(double)x[1] );{1}", item,
@@ -754,19 +793,21 @@ namespace EditSpatial.Converter
         tempBuilder.AppendLine("          else");
 
 
-        InitialAssignment initial = _Model.getInitialAssignment(item);
+        tempBuilder.Append("            __initial = ");
+
+        var species = _Model.getSpecies(item);
+        if (numCompartments > 1 &&  species != null && species.isSetCompartment())
+        {
+          tempBuilder.AppendFormat("isIn_{0} * ", species.getCompartment());
+        }
+
+        var initial = _Model.getInitialAssignment(item);
         if (initial != null && initial.isSetMath())
         {
-          tempBuilder.AppendLine();
           tempBuilder.AppendFormat(
-            "            __initial = {0};{1}",
+            "{0};{1}",
             TranslateExpression(initial.getMath(),
-              new Dictionary<string, string>
-              {
-                {"x", "x[0]"},
-                {"y", "x[1]"},
-                {"z", "x[2]"}
-              }
+              varMap, _Model
               ),
             Environment.NewLine
             );
@@ -774,17 +815,16 @@ namespace EditSpatial.Converter
         }
         else
         {
-          Species species = _Model.getSpecies(item);
           if (species != null)
           {
             if (species.isSetInitialConcentration())
               tempBuilder.AppendFormat(
-                "            __initial = {0};{1}"
+                "{0};{1}"
                 , species.getInitialConcentration().ToString("E17")
                 , Environment.NewLine);
             else
               tempBuilder.AppendFormat(
-                "            __initial = {0};{1}"
+                "{0};{1}"
                 , species.getInitialAmount().ToString("E17")
                 , Environment.NewLine);
           }
@@ -799,9 +839,10 @@ namespace EditSpatial.Converter
       map["%INITIALIZER%"] = initializer.ToString();
       map["%DECLARATION%"] = declarations.ToString();
       map["%INITIALCONDITION%"] = tempBuilder.ToString();
+      map["%ADDITIONAL_INITIAlIZATION%"] = additionalInitializations.ToString();
+
       builder.AppendLine(ExpandTemplate(Resources.initial_conditions, map));
       builder.AppendLine();
-
 
       builder.AppendLine("#endif // INITIAL_CONDITIONS_H");
 

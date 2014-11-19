@@ -32,8 +32,8 @@ namespace Dune {
       {}
 
       //! do one step
-      template<typename EG, typename LFSU, typename X, typename LFSV, typename R>
-      void evaluate(const EG& eg, const LFSU& lfsu, const X& x, const LFSV& lfsv, R& r)
+      template<typename EG, typename LFSU, typename X, typename LFSV, typename R, typename DomainType>
+      void evaluate(const EG& eg, const LFSU& lfsu, const X& x, const LFSV& lfsv, R& r, const DomainType& x_)
       {
 
       }
@@ -235,7 +235,7 @@ namespace Dune {
           r.accumulate(lfsv, k, -q*eg.geometry().volume());
         }
 
-        ra.evaluate(eg.entity(), lfsu, x, lfsv, r);
+        ra.evaluate(eg.entity(), lfsu, x, lfsv, r, inside_local);
 
       }
 
