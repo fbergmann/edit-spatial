@@ -259,7 +259,7 @@ namespace WFEditDMP
 
       using (var dlg = new FormAdjustDmp())
       {
-        dlg.InitializeFrom(range, Model);
+        dlg.InitializeFrom(range, (DmpModel) Model.Clone());
         if (dlg.ShowDialog(this) == DialogResult.OK)
         {
           Model = dlg.Model;

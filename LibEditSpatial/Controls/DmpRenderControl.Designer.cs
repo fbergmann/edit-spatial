@@ -51,7 +51,7 @@
       // 
       // timer1
       // 
-      this.timer1.Tick += new System.EventHandler(this.OnTimer);
+      this.timer1.Tick += new System.EventHandler(this.OnTimerTick);
       // 
       // DmpRenderControl
       // 

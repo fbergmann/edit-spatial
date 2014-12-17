@@ -22,9 +22,13 @@ namespace LibEditSpatial.Controls
     private bool Painting { get; set; }
     public int PencilSize { get; set; }
 
+    public bool DisableEditing { get; set;  }
+    public bool DisableNotification { get; set;  }
+
     public event EventHandler<Point> IndexLocationChanged;
     protected virtual void OnLocationChanged(Point e)
     {
+      if (DisableNotification) return;
       var handler = IndexLocationChanged;
       if (handler != null) handler(this, e);
     }
@@ -32,11 +36,12 @@ namespace LibEditSpatial.Controls
     public event EventHandler<PointF> DataLocationChanged;
     protected virtual void OnDataLocationChanged(PointF e)
     {
+      if (DisableNotification) return;
       var handler = DataLocationChanged;
       if (handler != null) handler(this, e);
     }
 
-    private void OnTimer(object sender, EventArgs e)
+    private void OnTimerTick(object sender, EventArgs e)
     {
       Bitmap bmp = Model.ToImage();
       pictureBox1.Image = bmp;
@@ -57,17 +62,16 @@ namespace LibEditSpatial.Controls
 
     private void SetValueAround(Point point)
     {
-      //for (int i = 0; i < PencilSize; i++)
       Parallel.For(0, PencilSize, i =>
       {
         for (int j = 0; j < PencilSize; j++)
         {
-          double offSetX = Math.Floor(PencilSize/2f) - i;
-          double offSetY = Math.Floor(PencilSize/2f) - j;
+          double offSetX = Math.Floor(PencilSize / 2f) - i;
+          double offSetY = Math.Floor(PencilSize / 2f) - j;
 
 
-          var posX = (int) Math.Round(point.X - offSetX);
-          var posY = (int) Math.Round(point.Y - offSetY);
+          var posX = (int)Math.Round(point.X - offSetX);
+          var posY = (int)Math.Round(point.Y - offSetY);
 
           if (posX < 0) posX = 0;
           if (posY < 0) posY = 0;
@@ -77,7 +81,7 @@ namespace LibEditSpatial.Controls
 
           double distance = Math.Sqrt(Math.Pow(point.X - posX, 2) + Math.Pow(point.Y - posY, 2));
 
-          if (distance > PencilSize/2f) continue;
+          if (distance > PencilSize / 2f) continue;
 
           Model[posX, posY] = CurrentValue;
         }
@@ -93,11 +97,15 @@ namespace LibEditSpatial.Controls
       if (Model == null) return;
 
       Point point = GetPointForMouse(e.X, e.Y);
+
+      if (DisableEditing) return;
       SetValueAround(point);
     }
 
     private Point GetPointForMouse(int x, int y)
     {
+      if (Model == null) return Point.Empty;
+
       double stretchX = (Model.Columns - 1) / (double)pictureBox1.Width;
       double stretchY = (Model.Rows - 1) / (double)pictureBox1.Height;
 
@@ -106,9 +114,9 @@ namespace LibEditSpatial.Controls
               Math.Max(Math.Min((int)Math.Round(stretchY * y + stretchY / 2f), Model.Rows - 1), 0));
 
       OnDataLocationChanged(new PointF(
-        (float) (((float) point.X/(float) Model.Columns)*(Model.MaxX - Model.MinX) + Model.MinX),
-        (float) (((float) point.Y/(float) Model.Rows)*(Model.MaxY - Model.MinY) + Model.MinY)));
-        
+        (float)(((float)point.X / (float)Model.Columns) * (Model.MaxX - Model.MinX) + Model.MinX),
+        (float)(((float)point.Y / (float)Model.Rows) * (Model.MaxY - Model.MinY) + Model.MinY)));
+
 
       OnLocationChanged(point);
       return point;
@@ -116,11 +124,11 @@ namespace LibEditSpatial.Controls
 
     private void OnMouseMove(object sender, MouseEventArgs e)
     {
-      Point point = GetPointForMouse(e.X, e.Y);      
+      Point point = GetPointForMouse(e.X, e.Y);
 
       if (Model == null || !Painting) return;
 
-      
+
       SetValueAround(point);
     }
 

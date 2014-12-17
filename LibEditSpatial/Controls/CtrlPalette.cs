@@ -86,7 +86,7 @@ namespace LibEditSpatial.Controls
     private void SetCurrent(double val)
     {
       Current.Value = val;
-      trackBar1.Value = (int) (Math.Max(val, 0)*100);
+      trackBar1.Value = (int) Math.Min((Math.Max(val, trackBar1.Minimum) * 100), trackBar1.Maximum);
       OnPaletteValueChanged();
     }
 
