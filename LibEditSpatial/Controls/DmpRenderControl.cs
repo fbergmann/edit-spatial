@@ -62,6 +62,8 @@ namespace LibEditSpatial.Controls
 
     private void SetValueAround(Point point)
     {
+      if (DisableEditing) return; 
+
       Parallel.For(0, PencilSize, i =>
       {
         for (int j = 0; j < PencilSize; j++)
