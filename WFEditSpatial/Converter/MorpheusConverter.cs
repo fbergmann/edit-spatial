@@ -169,6 +169,7 @@ namespace EditSpatial.Converter
         case libsbml.AST_INTEGER:
           return math.getInteger().ToString();
         case libsbml.AST_REAL:
+        case libsbml.AST_REAL_E:
           return math.getReal().ToString();
         case libsbml.AST_DIVIDE:
         {

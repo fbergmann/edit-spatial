@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -151,6 +153,37 @@ namespace LibEditSpatial.Dialogs
 #pragma warning restore 4014
     }
 
+    private void QueueUpdate(string fullPath, string selectedItem)
+    {
+      UpdateItems.Add(new Tuple<string,string>(  fullPath, selectedItem ));
+
+      LaunchUpdate();
+    }
+
+    private void UpdateWorkerDoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+    {
+      var arg = e.Argument as Tuple<string, string>;
+      if (arg == null) return;
+
+      GeneratePreview(arg.Item1, arg.Item2);
+
+    }
+
+    private void LaunchUpdate()
+    {
+      if (backgroundWorker1.IsBusy) return;
+
+      var last = UpdateItems.LastOrDefault();
+      UpdateItems.Clear();
+
+      if (last == null) return;
+
+      backgroundWorker1.RunWorkerAsync(last);
+
+    }
+
+
+
     private void OnNewResult(object sender, FileSystemEventArgs e)
     {
       if (closing) return;
@@ -161,9 +194,9 @@ namespace LibEditSpatial.Dialogs
       }
 
       if (!chkPreview.Checked || cmbVariable.Items.Count == 0) return;
-#pragma warning disable 4014
-      GeneratePreview(e.FullPath, cmbVariable.SelectedItem as string);
-#pragma warning restore 4014
+
+      QueueUpdate(e.FullPath, cmbVariable.SelectedItem as string);
+
     }
 
     private void UpdatePreview(byte[] bytes, string species)
@@ -184,7 +217,7 @@ namespace LibEditSpatial.Dialogs
       pictureBox1.Image = image;
     }
 
-    public async Task GeneratePreview(string filename, string species)
+    public void GeneratePreview(string filename, string species)
     {
       if (string.IsNullOrWhiteSpace(species)) return;
       if (!File.Exists(filename)) return;
@@ -193,9 +226,7 @@ namespace LibEditSpatial.Dialogs
 
       string tempFile = Path.Combine(Path.GetTempPath(),
         Path.GetRandomFileName() + ".png");
-
-      await Task.Run(() => Thread.Sleep(1000));
-
+      
       var info = new ProcessStartInfo
       {
         FileName = Path.Combine(ParaViewDir, "pvpython"),
@@ -212,8 +243,6 @@ namespace LibEditSpatial.Dialogs
       };
 
 
-      await Task.Run(() =>
-      {
         var previewProcess = new Process {StartInfo = info};
         previewProcess.OutputDataReceived += (o, e2) => OnAddString(e2.Data);
         previewProcess.ErrorDataReceived += (o, e3) => OnAddString(e3.Data);
@@ -223,11 +252,10 @@ namespace LibEditSpatial.Dialogs
         previewProcess.BeginErrorReadLine();
         previewProcess.WaitForExit();
         previewProcess.EnableRaisingEvents = false;
-      });
 
       if (File.Exists(tempFile))
       {
-        byte[] bytes = await Task.Run(() => File.ReadAllBytes(tempFile));
+        byte[] bytes = File.ReadAllBytes(tempFile);
 
         File.Delete(tempFile);
 
@@ -310,6 +338,8 @@ namespace LibEditSpatial.Dialogs
       }
     }
 
+    List<Tuple<string, string>> UpdateItems { get; set;  }
+
     private void DlgRun_Load(object sender, EventArgs e)
     {
       cmbVariable.Items.Clear();
@@ -325,6 +355,8 @@ namespace LibEditSpatial.Dialogs
         else
           chkPreview.Checked = false;
       }
+
+      UpdateItems = new List<Tuple<string, string>>();
 
       if (File.Exists(FileName))
         OnRunClick(sender, e);
@@ -364,6 +396,12 @@ namespace LibEditSpatial.Dialogs
       catch
       {
       }
+    }
+
+    
+    private void UpdateWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+    {
+      LaunchUpdate();
     }
 
   }

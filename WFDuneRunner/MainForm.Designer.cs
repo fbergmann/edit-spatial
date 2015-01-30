@@ -60,6 +60,11 @@ namespace WFDuneRunner
       this.gridParameters = new System.Windows.Forms.DataGridView();
       this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.tabCompartments = new System.Windows.Forms.TabPage();
+      this.cmdInitFromSBML = new System.Windows.Forms.Button();
+      this.cmdAssignCompartments = new System.Windows.Forms.Button();
+      this.gridCompartments = new System.Windows.Forms.DataGridView();
+      this.cmdClearAssignments = new System.Windows.Forms.Button();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,6 +84,10 @@ namespace WFDuneRunner
       this.cmdRun = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.colCompartment = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.Filename = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBrowseFile = new System.Windows.Forms.DataGridViewButtonColumn();
+      this.colViewDmp = new System.Windows.Forms.DataGridViewButtonColumn();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -97,6 +106,8 @@ namespace WFDuneRunner
       ((System.ComponentModel.ISupportInitialize)(this.gridVariables)).BeginInit();
       this.tabParameters.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).BeginInit();
+      this.tabCompartments.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.gridCompartments)).BeginInit();
       this.menuStrip1.SuspendLayout();
       this.toolStrip1.SuspendLayout();
       this.SuspendLayout();
@@ -188,7 +199,7 @@ namespace WFDuneRunner
       this.tabDomain.Location = new System.Drawing.Point(4, 22);
       this.tabDomain.Name = "tabDomain";
       this.tabDomain.Padding = new System.Windows.Forms.Padding(3);
-      this.tabDomain.Size = new System.Drawing.Size(252, 464);
+      this.tabDomain.Size = new System.Drawing.Size(219, 464);
       this.tabDomain.TabIndex = 1;
       this.tabDomain.Text = "Domain";
       this.tabDomain.UseVisualStyleBackColor = true;
@@ -199,7 +210,7 @@ namespace WFDuneRunner
       this.ctrlDomain1.Location = new System.Drawing.Point(3, 3);
       this.ctrlDomain1.Model = null;
       this.ctrlDomain1.Name = "ctrlDomain1";
-      this.ctrlDomain1.Size = new System.Drawing.Size(246, 458);
+      this.ctrlDomain1.Size = new System.Drawing.Size(213, 458);
       this.ctrlDomain1.TabIndex = 0;
       // 
       // tabNewton
@@ -207,7 +218,7 @@ namespace WFDuneRunner
       this.tabNewton.Controls.Add(this.ctrlNewton1);
       this.tabNewton.Location = new System.Drawing.Point(4, 22);
       this.tabNewton.Name = "tabNewton";
-      this.tabNewton.Size = new System.Drawing.Size(252, 464);
+      this.tabNewton.Size = new System.Drawing.Size(219, 464);
       this.tabNewton.TabIndex = 2;
       this.tabNewton.Text = "Newton";
       this.tabNewton.UseVisualStyleBackColor = true;
@@ -218,7 +229,7 @@ namespace WFDuneRunner
       this.ctrlNewton1.Location = new System.Drawing.Point(0, 0);
       this.ctrlNewton1.Model = null;
       this.ctrlNewton1.Name = "ctrlNewton1";
-      this.ctrlNewton1.Size = new System.Drawing.Size(252, 464);
+      this.ctrlNewton1.Size = new System.Drawing.Size(219, 464);
       this.ctrlNewton1.TabIndex = 0;
       // 
       // tabGlobal
@@ -227,7 +238,7 @@ namespace WFDuneRunner
       this.tabGlobal.Location = new System.Drawing.Point(4, 22);
       this.tabGlobal.Name = "tabGlobal";
       this.tabGlobal.Padding = new System.Windows.Forms.Padding(3);
-      this.tabGlobal.Size = new System.Drawing.Size(252, 464);
+      this.tabGlobal.Size = new System.Drawing.Size(219, 464);
       this.tabGlobal.TabIndex = 3;
       this.tabGlobal.Text = "Global";
       this.tabGlobal.UseVisualStyleBackColor = true;
@@ -238,13 +249,14 @@ namespace WFDuneRunner
       this.ctrlGlobal1.Location = new System.Drawing.Point(3, 3);
       this.ctrlGlobal1.Model = null;
       this.ctrlGlobal1.Name = "ctrlGlobal1";
-      this.ctrlGlobal1.Size = new System.Drawing.Size(246, 458);
+      this.ctrlGlobal1.Size = new System.Drawing.Size(213, 458);
       this.ctrlGlobal1.TabIndex = 0;
       // 
       // tabControl2
       // 
       this.tabControl2.Controls.Add(this.tabVariables);
       this.tabControl2.Controls.Add(this.tabParameters);
+      this.tabControl2.Controls.Add(this.tabCompartments);
       this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
       this.tabControl2.Location = new System.Drawing.Point(0, 0);
       this.tabControl2.Name = "tabControl2";
@@ -286,7 +298,7 @@ namespace WFDuneRunner
       this.gridVariables.Name = "gridVariables";
       this.gridVariables.Size = new System.Drawing.Size(739, 458);
       this.gridVariables.TabIndex = 0;
-      this.gridVariables.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridVariables_CellClick);
+      this.gridVariables.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnVariableCellClick);
       this.gridVariables.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnVariableChanged);
       // 
       // colVarname
@@ -366,7 +378,7 @@ namespace WFDuneRunner
       this.tabParameters.Location = new System.Drawing.Point(4, 22);
       this.tabParameters.Name = "tabParameters";
       this.tabParameters.Padding = new System.Windows.Forms.Padding(3);
-      this.tabParameters.Size = new System.Drawing.Size(512, 464);
+      this.tabParameters.Size = new System.Drawing.Size(745, 464);
       this.tabParameters.TabIndex = 1;
       this.tabParameters.Text = "Parameters";
       this.tabParameters.UseVisualStyleBackColor = true;
@@ -385,7 +397,7 @@ namespace WFDuneRunner
       this.gridParameters.GridColor = System.Drawing.SystemColors.ControlLight;
       this.gridParameters.Location = new System.Drawing.Point(3, 3);
       this.gridParameters.Name = "gridParameters";
-      this.gridParameters.Size = new System.Drawing.Size(506, 458);
+      this.gridParameters.Size = new System.Drawing.Size(739, 458);
       this.gridParameters.TabIndex = 0;
       // 
       // colName
@@ -401,6 +413,69 @@ namespace WFDuneRunner
       this.colValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
       this.colValue.HeaderText = "Value";
       this.colValue.Name = "colValue";
+      // 
+      // tabCompartments
+      // 
+      this.tabCompartments.Controls.Add(this.cmdInitFromSBML);
+      this.tabCompartments.Controls.Add(this.cmdAssignCompartments);
+      this.tabCompartments.Controls.Add(this.gridCompartments);
+      this.tabCompartments.Controls.Add(this.cmdClearAssignments);
+      this.tabCompartments.Location = new System.Drawing.Point(4, 22);
+      this.tabCompartments.Name = "tabCompartments";
+      this.tabCompartments.Padding = new System.Windows.Forms.Padding(3);
+      this.tabCompartments.Size = new System.Drawing.Size(745, 464);
+      this.tabCompartments.TabIndex = 2;
+      this.tabCompartments.Text = "Compartments";
+      this.tabCompartments.UseVisualStyleBackColor = true;
+      // 
+      // cmdInitFromSBML
+      // 
+      this.cmdInitFromSBML.Location = new System.Drawing.Point(216, 6);
+      this.cmdInitFromSBML.Name = "cmdInitFromSBML";
+      this.cmdInitFromSBML.Size = new System.Drawing.Size(104, 23);
+      this.cmdInitFromSBML.TabIndex = 4;
+      this.cmdInitFromSBML.Text = "Init from SBML";
+      this.cmdInitFromSBML.UseVisualStyleBackColor = true;
+      this.cmdInitFromSBML.Click += new System.EventHandler(this.OnInitFromSBMLClick);
+      // 
+      // cmdAssignCompartments
+      // 
+      this.cmdAssignCompartments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdAssignCompartments.Location = new System.Drawing.Point(551, 6);
+      this.cmdAssignCompartments.Name = "cmdAssignCompartments";
+      this.cmdAssignCompartments.Size = new System.Drawing.Size(191, 23);
+      this.cmdAssignCompartments.TabIndex = 3;
+      this.cmdAssignCompartments.Text = "Apply Compartment Assignments";
+      this.cmdAssignCompartments.UseVisualStyleBackColor = true;
+      this.cmdAssignCompartments.Click += new System.EventHandler(this.OnApplyCompartmentAssignments);
+      // 
+      // gridCompartments
+      // 
+      this.gridCompartments.AllowUserToAddRows = false;
+      this.gridCompartments.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+      this.gridCompartments.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+      this.gridCompartments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.gridCompartments.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCompartment,
+            this.Filename,
+            this.colBrowseFile,
+            this.colViewDmp});
+      this.gridCompartments.Location = new System.Drawing.Point(6, 35);
+      this.gridCompartments.Name = "gridCompartments";
+      this.gridCompartments.Size = new System.Drawing.Size(736, 423);
+      this.gridCompartments.TabIndex = 2;
+      this.gridCompartments.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCompartmentCellClick);
+      this.gridCompartments.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCompartmentAssignmentChanged);
+      // 
+      // cmdClearAssignments
+      // 
+      this.cmdClearAssignments.Location = new System.Drawing.Point(6, 6);
+      this.cmdClearAssignments.Name = "cmdClearAssignments";
+      this.cmdClearAssignments.Size = new System.Drawing.Size(204, 23);
+      this.cmdClearAssignments.TabIndex = 1;
+      this.cmdClearAssignments.Text = "Remove Compartment Assignments";
+      this.cmdClearAssignments.UseVisualStyleBackColor = true;
+      this.cmdClearAssignments.Click += new System.EventHandler(this.OnClearAllCompartmentAssignments);
       // 
       // menuStrip1
       // 
@@ -572,6 +647,32 @@ namespace WFDuneRunner
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
+      // colCompartment
+      // 
+      this.colCompartment.HeaderText = "Compartment Id";
+      this.colCompartment.Name = "colCompartment";
+      // 
+      // Filename
+      // 
+      this.Filename.HeaderText = "Filename";
+      this.Filename.Name = "Filename";
+      // 
+      // colBrowseFile
+      // 
+      this.colBrowseFile.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBrowseFile.HeaderText = "...";
+      this.colBrowseFile.Name = "colBrowseFile";
+      this.colBrowseFile.Width = 20;
+      // 
+      // colViewDmp
+      // 
+      this.colViewDmp.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colViewDmp.HeaderText = "Edit";
+      this.colViewDmp.Name = "colViewDmp";
+      this.colViewDmp.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.colViewDmp.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      this.colViewDmp.Width = 48;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -602,6 +703,8 @@ namespace WFDuneRunner
       ((System.ComponentModel.ISupportInitialize)(this.gridVariables)).EndInit();
       this.tabParameters.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.gridParameters)).EndInit();
+      this.tabCompartments.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.gridCompartments)).EndInit();
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
       this.toolStrip1.ResumeLayout(false);
@@ -660,6 +763,15 @@ namespace WFDuneRunner
     private System.Windows.Forms.DataGridViewTextBoxColumn colData;
     private System.Windows.Forms.DataGridViewButtonColumn colEdit;
     private System.Windows.Forms.DataGridViewButtonColumn colBrowse;
+    private System.Windows.Forms.TabPage tabCompartments;
+    private System.Windows.Forms.DataGridView gridCompartments;
+    private System.Windows.Forms.Button cmdClearAssignments;
+    private System.Windows.Forms.Button cmdAssignCompartments;
+    private System.Windows.Forms.Button cmdInitFromSBML;
+    private System.Windows.Forms.DataGridViewTextBoxColumn colCompartment;
+    private System.Windows.Forms.DataGridViewTextBoxColumn Filename;
+    private System.Windows.Forms.DataGridViewButtonColumn colBrowseFile;
+    private System.Windows.Forms.DataGridViewButtonColumn colViewDmp;
   }
 }
 

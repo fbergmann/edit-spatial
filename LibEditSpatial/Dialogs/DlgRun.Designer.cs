@@ -46,6 +46,7 @@
       this.tabMessages = new System.Windows.Forms.TabPage();
       this.cmdParaview = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
       this.tabControl1.SuspendLayout();
       this.tabPreview.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -227,6 +228,11 @@
       this.cmdParaview.UseVisualStyleBackColor = true;
       this.cmdParaview.Click += new System.EventHandler(this.OnOpenPV);
       // 
+      // backgroundWorker1
+      // 
+      this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.UpdateWorkerDoWork);
+      this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.UpdateWorkerCompleted);
+      // 
       // DlgRun
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -276,5 +282,6 @@
     private System.Windows.Forms.TabPage tabMessages;
     private System.Windows.Forms.Button cmdParaview;
     private System.Windows.Forms.ToolTip toolTip1;
+    private System.ComponentModel.BackgroundWorker backgroundWorker1;
   }
 }

@@ -17,7 +17,7 @@ This project requires the following libraries:
 This project is licensed under the BSD license: 
 
 ```
-Copyright (c) 2013, Frank T. Bergmann  
+Copyright (c) 20135, Frank T. Bergmann  
 All rights reserved. 
 
 Redistribution and use in source and binary forms, with or without 

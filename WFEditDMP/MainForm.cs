@@ -94,6 +94,7 @@ namespace WFEditDMP
         Title = "Open file",
         Filter = "DMP files|*.dmp|TIFF files|*.tif;*.tiff|All files|*.*",
         AutoUpgradeEnabled = true,
+        InitialDirectory = LastOpenDir
       })
       {
         if (dialog.ShowDialog() == DialogResult.OK)
@@ -135,6 +136,7 @@ namespace WFEditDMP
         Title = "Save file",
         Filter = "DMP files|*.dmp|TIFF files|*.tif;*.tiff|All files|*.*",
         AutoUpgradeEnabled = true,
+        InitialDirectory = LastOpenDir
       })
       {
         if (dialog.ShowDialog() == DialogResult.OK)

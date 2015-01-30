@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using libsbmlcs;
 using LibEditSpatial.Dialogs;
 using LibEditSpatial.Model;
+using System.Linq;
 
 namespace WFDuneRunner
 {
@@ -38,6 +40,8 @@ namespace WFDuneRunner
     {
       FileName = filename;
       Config = DuneConfig.FromFile(filename);
+      VariableCompartmentMap = new Dictionary<string, string>();
+      CompartmentIds = new List<string>();
       UpdateUI();
     }
 
@@ -284,14 +288,18 @@ namespace WFDuneRunner
           var path = Path.GetDirectoryName(FileName);
           var filename = dlg.FileName;
           if (filename.StartsWith(path))
+          { 
             filename = filename.Replace(path, "");
+            while (filename.StartsWith("\\"))
+              filename = filename.Substring(1);
+          }
           result = filename;
           assign = true;
         }
       }
       return assign;
     }
-    private void gridVariables_CellClick(object sender, DataGridViewCellEventArgs e)
+    private void OnVariableCellClick(object sender, DataGridViewCellEventArgs e)
     {
       if (_isLoading) return;
 
@@ -338,5 +346,157 @@ namespace WFDuneRunner
           break;
       }
     }
+
+    private void OnCompartmentAssignmentChanged(object sender, DataGridViewCellEventArgs e)
+    {
+      if (_isLoading) return;
+
+      if (e.RowIndex < 0) return;
+
+     ///
+    }
+
+    private void OnCompartmentCellClick(object sender, DataGridViewCellEventArgs e)
+    {
+      if (_isLoading) return;
+
+      if (e.RowIndex < 0) return;
+
+      DataGridViewRow row = gridCompartments.Rows[e.RowIndex];
+      if (row.IsNewRow) return;
+
+      switch (e.ColumnIndex)
+      {
+        case 2: // browse file
+          {
+            string result;
+            if (BrowseDmpFile(out result))
+              row.Cells[1].Value = result;
+            break;
+          }
+        case 3: // view compartment
+          {
+            string file = row.Cells[1].Value as string;
+            string id = row.Cells[0].Value as string;
+            if (string.IsNullOrWhiteSpace(file))
+            {
+              int count = 1;
+              string baseName = "inside_" + id;
+              string name = baseName + ".dmp";
+
+              string dir = Path.GetDirectoryName(FileName);
+              while (File.Exists(Path.Combine(dir, name)))
+              {
+                name = string.Format("{0}_{1}.dmp", baseName, count++);
+              }
+
+              row.Cells[1].Value = name;
+              var dmpFile = new DmpModel(Config.DomainConfig.GridX, Config.DomainConfig.GridY);
+              file = Path.Combine(dir, name);
+              dmpFile.SaveAs(file);
+            }
+
+            OpenDmpFile(file);
+            break;
+          }
+        default:
+          break;
+      }
+    }
+
+    private void OnClearAllCompartmentAssignments(object sender, EventArgs e)
+    {
+      if (_isLoading) return;
+
+      var variables = Config.GetVariableKeys();
+      foreach(var id in variables)
+      {
+        var current = Config[id];
+        if (current.ContainsKey("file_compartment"))
+          current.Remove("file_compartment");
+      }
+
+      var main = Config["Reaction"];
+      var keys = main.Keys;
+      foreach (var key in keys)
+      {
+        if (key.StartsWith("in_"))
+          main.Remove(key);
+      }
+
+
+    }
+
+    private void OnApplyCompartmentAssignments(object sender, EventArgs e)
+    {
+      if (_isLoading) return;
+
+      OnClearAllCompartmentAssignments(sender, e);
+
+      var variables = Config.GetVariableKeys();
+      var main = Config["Reaction"];
+
+      foreach (DataGridViewRow row in gridCompartments.Rows)
+      {
+        var compId = row.Cells[0].Value as string;
+        var dmpFile = row.Cells[1].Value as string;
+
+        var ids = VariableCompartmentMap.Where( item => item.Value == compId).Select( item2 => item2.Key).ToList();
+
+        foreach(var id in ids)
+        {
+          if (!variables.Contains(id)) continue;
+          var current = Config[id];
+          if (current == null) continue;
+          current["file_compartment"] = dmpFile;
+        }
+
+        main["in_" + compId] = dmpFile;
+
+      }
+
+    }
+
+    public Dictionary<string, string> VariableCompartmentMap { get; set;  }
+    public List<string> CompartmentIds { get; set; }
+
+    private void InitFromSBML(string fileName)
+    {
+      CompartmentIds = new List<string>();
+      VariableCompartmentMap = new Dictionary<string, string>();
+
+      var doc = libsbml.readSBMLFromFile(fileName);
+      var model = doc.getModel();
+      if (model == null) return;
+
+      CompartmentIds = new List<string>();
+      VariableCompartmentMap = new Dictionary<string, string>();
+
+      for (int i = 0; i < model.getNumCompartments(); ++i)
+        CompartmentIds.Add(model.getCompartment(i).getId());
+
+      for (int i = 0; i < model.getNumSpecies(); ++i)
+      {
+        var species = model.getSpecies(i);
+        VariableCompartmentMap[species.getId()] = species.getCompartment();
+      }
+
+      gridCompartments.Rows.Clear();
+      foreach(var id in CompartmentIds)
+      {
+        gridCompartments.Rows.Add(id, "");
+      }
+    }
+
+    private void OnInitFromSBMLClick(object sender, EventArgs e)
+    {
+      using (var dlg = new OpenFileDialog {Title = "Open SBML file", Filter = "SBML files|*.xml;*.sbml|All files|*.*"})
+      {
+        if (dlg.ShowDialog() ==System.Windows.Forms.DialogResult.OK)
+        {
+          InitFromSBML(dlg.FileName);
+        }
+      }
+  }
   }
 }

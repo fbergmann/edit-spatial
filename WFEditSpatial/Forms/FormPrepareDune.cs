@@ -292,5 +292,17 @@ namespace EditSpatial.Forms
       }
 
     }
+
+    private void cmdFolder_Click(object sender, EventArgs e)
+    {
+      try
+      {
+        Process.Start(Path.Combine(txtTargetDir.Text, txtName.Text));
+      }
+      catch
+      {
+
+      }
+    }
   }
 }

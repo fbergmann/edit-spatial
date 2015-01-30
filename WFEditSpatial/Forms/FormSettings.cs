@@ -26,6 +26,7 @@ namespace EditSpatial.Forms
       txtCygwin.Text = _Settings.CygwinDir;
       txtParaviewDir.Text = _Settings.ParaViewDir;
       txtDuneDir.Text = _Settings.DuneDir;
+      txtDefaultDir.Text = _Settings.DefaultDir;
       chkIgnoreCompartments.Checked = _Settings.IgnoreMultiCompartments;
     }
 

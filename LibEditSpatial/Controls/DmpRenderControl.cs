@@ -43,6 +43,7 @@ namespace LibEditSpatial.Controls
 
     private void OnTimerTick(object sender, EventArgs e)
     {
+      if (Model == null) return;
       Bitmap bmp = Model.ToImage();
       pictureBox1.Image = bmp;
       timer1.Enabled = false;

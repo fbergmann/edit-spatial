@@ -45,6 +45,7 @@
       this.label1 = new System.Windows.Forms.Label();
       this.cmdCreateHost = new System.Windows.Forms.Button();
       this.textBox1 = new System.Windows.Forms.TextBox();
+      this.cmdFolder = new System.Windows.Forms.Button();
       this.tableLayoutPanel1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.panel2.SuspendLayout();
@@ -67,7 +68,7 @@
       this.tableLayoutPanel1.RowCount = 2;
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
-      this.tableLayoutPanel1.Size = new System.Drawing.Size(624, 441);
+      this.tableLayoutPanel1.Size = new System.Drawing.Size(641, 441);
       this.tableLayoutPanel1.TabIndex = 0;
       // 
       // panel1
@@ -76,14 +77,14 @@
       this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel1.Location = new System.Drawing.Point(3, 408);
       this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(618, 30);
+      this.panel1.Size = new System.Drawing.Size(635, 30);
       this.panel1.TabIndex = 0;
       // 
       // cmdClose
       // 
       this.cmdClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
       this.cmdClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cmdClose.Location = new System.Drawing.Point(540, 4);
+      this.cmdClose.Location = new System.Drawing.Point(557, 4);
       this.cmdClose.Name = "cmdClose";
       this.cmdClose.Size = new System.Drawing.Size(75, 23);
       this.cmdClose.TabIndex = 0;
@@ -96,7 +97,7 @@
       this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel2.Location = new System.Drawing.Point(3, 3);
       this.panel2.Name = "panel2";
-      this.panel2.Size = new System.Drawing.Size(618, 399);
+      this.panel2.Size = new System.Drawing.Size(635, 399);
       this.panel2.TabIndex = 1;
       // 
       // splitContainer1
@@ -114,12 +115,13 @@
       // splitContainer1.Panel2
       // 
       this.splitContainer1.Panel2.Controls.Add(this.textBox1);
-      this.splitContainer1.Size = new System.Drawing.Size(618, 399);
+      this.splitContainer1.Size = new System.Drawing.Size(635, 399);
       this.splitContainer1.SplitterDistance = 107;
       this.splitContainer1.TabIndex = 0;
       // 
       // panel3
       // 
+      this.panel3.Controls.Add(this.cmdFolder);
       this.panel3.Controls.Add(this.cmdEditConfig);
       this.panel3.Controls.Add(this.cmdRun);
       this.panel3.Controls.Add(this.cmdCompile);
@@ -133,13 +135,13 @@
       this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
       this.panel3.Location = new System.Drawing.Point(0, 0);
       this.panel3.Name = "panel3";
-      this.panel3.Size = new System.Drawing.Size(618, 107);
+      this.panel3.Size = new System.Drawing.Size(635, 107);
       this.panel3.TabIndex = 0;
       // 
       // cmdEditConfig
       // 
       this.cmdEditConfig.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdEditConfig.Location = new System.Drawing.Point(459, 75);
+      this.cmdEditConfig.Location = new System.Drawing.Point(476, 75);
       this.cmdEditConfig.Name = "cmdEditConfig";
       this.cmdEditConfig.Size = new System.Drawing.Size(75, 23);
       this.cmdEditConfig.TabIndex = 9;
@@ -150,7 +152,7 @@
       // cmdRun
       // 
       this.cmdRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdRun.Location = new System.Drawing.Point(540, 75);
+      this.cmdRun.Location = new System.Drawing.Point(557, 75);
       this.cmdRun.Name = "cmdRun";
       this.cmdRun.Size = new System.Drawing.Size(75, 23);
       this.cmdRun.TabIndex = 8;
@@ -184,7 +186,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.txtName.Location = new System.Drawing.Point(102, 40);
       this.txtName.Name = "txtName";
-      this.txtName.Size = new System.Drawing.Size(432, 20);
+      this.txtName.Size = new System.Drawing.Size(449, 20);
       this.txtName.TabIndex = 5;
       // 
       // label2
@@ -199,7 +201,7 @@
       // cmdBrowseTarget
       // 
       this.cmdBrowseTarget.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdBrowseTarget.Location = new System.Drawing.Point(540, 9);
+      this.cmdBrowseTarget.Location = new System.Drawing.Point(557, 9);
       this.cmdBrowseTarget.Name = "cmdBrowseTarget";
       this.cmdBrowseTarget.Size = new System.Drawing.Size(75, 23);
       this.cmdBrowseTarget.TabIndex = 3;
@@ -215,7 +217,7 @@
       this.txtTargetDir.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
       this.txtTargetDir.Location = new System.Drawing.Point(102, 11);
       this.txtTargetDir.Name = "txtTargetDir";
-      this.txtTargetDir.Size = new System.Drawing.Size(432, 20);
+      this.txtTargetDir.Size = new System.Drawing.Size(449, 20);
       this.txtTargetDir.TabIndex = 2;
       // 
       // label1
@@ -246,8 +248,19 @@
       this.textBox1.Multiline = true;
       this.textBox1.Name = "textBox1";
       this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.textBox1.Size = new System.Drawing.Size(618, 288);
+      this.textBox1.Size = new System.Drawing.Size(635, 288);
       this.textBox1.TabIndex = 0;
+      // 
+      // cmdFolder
+      // 
+      this.cmdFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdFolder.Location = new System.Drawing.Point(395, 75);
+      this.cmdFolder.Name = "cmdFolder";
+      this.cmdFolder.Size = new System.Drawing.Size(75, 23);
+      this.cmdFolder.TabIndex = 10;
+      this.cmdFolder.Text = "&Folder";
+      this.cmdFolder.UseVisualStyleBackColor = true;
+      this.cmdFolder.Click += new System.EventHandler(this.cmdFolder_Click);
       // 
       // FormPrepareDune
       // 
@@ -255,7 +268,7 @@
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.CancelButton = this.cmdClose;
-      this.ClientSize = new System.Drawing.Size(624, 441);
+      this.ClientSize = new System.Drawing.Size(641, 441);
       this.Controls.Add(this.tableLayoutPanel1);
       this.MinimumSize = new System.Drawing.Size(640, 480);
       this.Name = "FormPrepareDune";
@@ -295,5 +308,6 @@
     private System.Windows.Forms.Button cmdExportDune;
     private System.Windows.Forms.Button cmdRun;
     private System.Windows.Forms.Button cmdEditConfig;
+    private System.Windows.Forms.Button cmdFolder;
   }
 }
