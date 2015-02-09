@@ -47,7 +47,7 @@ namespace LibEditSpatial.Model
         GridX = dict.Get<int>("nx"),
         GridY = dict.Get<int>("ny"),
         GridZ = dict.Get<int>("nz"),
-        Refinement = dict.Get<int>("refine"),
+        Refinement = dict.Get<int>("refine")
       };
       return result;
     }

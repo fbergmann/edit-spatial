@@ -25,7 +25,7 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly()
+        var attributes = Assembly.GetExecutingAssembly()
           .GetCustomAttributes(typeof (AssemblyTitleAttribute), false);
         if (attributes.Length > 0)
         {
@@ -48,7 +48,7 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly()
+        var attributes = Assembly.GetExecutingAssembly()
           .GetCustomAttributes(typeof (AssemblyDescriptionAttribute), false);
         if (attributes.Length == 0)
         {
@@ -62,7 +62,7 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly()
+        var attributes = Assembly.GetExecutingAssembly()
           .GetCustomAttributes(typeof (AssemblyProductAttribute), false);
         if (attributes.Length == 0)
         {
@@ -76,7 +76,7 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly()
+        var attributes = Assembly.GetExecutingAssembly()
           .GetCustomAttributes(typeof (AssemblyCopyrightAttribute), false);
         if (attributes.Length == 0)
         {
@@ -90,7 +90,7 @@ namespace EditSpatial.Forms
     {
       get
       {
-        object[] attributes = Assembly.GetExecutingAssembly()
+        var attributes = Assembly.GetExecutingAssembly()
           .GetCustomAttributes(typeof (AssemblyCompanyAttribute), false);
         if (attributes.Length == 0)
         {

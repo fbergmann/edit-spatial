@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Forms
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Forms
 {
   partial class FormSpatialAnnotation
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -304,24 +307,24 @@
 
     #endregion
 
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.DataGridView grid;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.TextBox txtUpdate;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.TextBox txtStep;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Button cmdOK;
-    private System.Windows.Forms.Button cmdCancel;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.ToolStrip toolStrip1;
-    private System.Windows.Forms.ToolStripButton cmdFromNotes;
-    private System.Windows.Forms.ToolStripButton cmdClear;
-    private System.Windows.Forms.DataGridViewComboBoxColumn colId;
-    private System.Windows.Forms.DataGridViewComboBoxColumn colPalette;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colMax;
-    private System.Windows.Forms.ToolStripButton cmdCombine;
-    private System.Windows.Forms.ToolStripButton cmdAddAll;
+    private TableLayoutPanel tableLayoutPanel1;
+    private SplitContainer splitContainer1;
+    private DataGridView grid;
+    private Panel panel1;
+    private TextBox txtUpdate;
+    private Label label3;
+    private TextBox txtStep;
+    private Label label2;
+    private Button cmdOK;
+    private Button cmdCancel;
+    private Label label1;
+    private ToolStrip toolStrip1;
+    private ToolStripButton cmdFromNotes;
+    private ToolStripButton cmdClear;
+    private DataGridViewComboBoxColumn colId;
+    private DataGridViewComboBoxColumn colPalette;
+    private DataGridViewTextBoxColumn colMax;
+    private ToolStripButton cmdCombine;
+    private ToolStripButton cmdAddAll;
   }
 }

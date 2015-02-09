@@ -23,7 +23,6 @@ namespace LibEditSpatial.Controls
       txtPlotStep.Text = Model.PlotStep.ToString();
     }
 
-
     private void OnEndTimeChanged(object sender, EventArgs e)
     {
       if (Model == null) return;

@@ -38,9 +38,9 @@ namespace EditSpatial.Forms
     {
       Model = model;
 
-      bool haveNoDocument = model == null || model.Document == null;
+      var haveNoDocument = model == null || model.Document == null;
 
-      string errors = haveNoDocument
+      var errors = haveNoDocument
         ? "No document loaded ..."
         : model.Document.getErrorLog().toString().Replace("\n", Environment.NewLine);
       controlText1.Text = errors;
@@ -51,9 +51,9 @@ namespace EditSpatial.Forms
         return;
       }
 
-      long numWarnings = model.Document.getNumErrors(libsbml.LIBSBML_SEV_WARNING);
-      long numErrors = model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR);
-      long numFatals = model.Document.getNumErrors(libsbml.LIBSBML_SEV_FATAL);
+      var numWarnings = model.Document.getNumErrors(libsbml.LIBSBML_SEV_WARNING);
+      var numErrors = model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR);
+      var numFatals = model.Document.getNumErrors(libsbml.LIBSBML_SEV_FATAL);
 
       if (numErrors + numFatals > 0)
       {

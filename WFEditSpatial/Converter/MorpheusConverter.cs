@@ -8,24 +8,21 @@ using System.Text;
 using System.Xml;
 using EditSpatial.Model;
 using libsbmlcs;
-using Image = System.Drawing.Image;
 
 namespace EditSpatial.Converter
 {
   public class MorpheusConverter : IDisposable
   {
-    private readonly libsbmlcs.Model Model;
-
     private readonly Dictionary<string, string> boundaryConditions;
     private readonly Dictionary<string, string> boundaryLables;
     private readonly Dictionary<string, Dictionary<string, string>> boundaryValue;
     private readonly Dictionary<string, string> coordinates;
     private readonly Dictionary<string, string> diffusion;
-
     private readonly Dimensions dims;
     private readonly SBMLDocument document;
     private readonly StringBuilder errorBuilder;
     private readonly Dictionary<string, string> initial;
+    private readonly libsbmlcs.Model Model;
     private readonly int numVariables;
 
     public MorpheusConverter(SBMLDocument original)
@@ -38,7 +35,7 @@ namespace EditSpatial.Converter
       var prop = new ConversionProperties();
       prop.addOption("replaceReactions", true,
         "Replace reactions with rateRules");
-      int status = document.convert(prop);
+      var status = document.convert(prop);
       if (status != libsbml.LIBSBML_OPERATION_SUCCESS)
       {
         errorBuilder.AppendFormat("conversion of rates failed: {0}{1}", status, Environment.NewLine);
@@ -57,10 +54,10 @@ namespace EditSpatial.Converter
 
       boundaryLables = new Dictionary<string, string>();
       coordinates = new Dictionary<string, string>();
-      for (int i = 0; i < Geometry.getNumCoordinateComponents(); ++i)
+      for (var i = 0; i < Geometry.getNumCoordinateComponents(); ++i)
       {
-        CoordinateComponent current = Geometry.getCoordinateComponent(i);
-        string prefix = "x";
+        var current = Geometry.getCoordinateComponent(i);
+        var prefix = "x";
         if (current.getComponentType() == "cartesianX")
           prefix = "x";
         else if (current.getComponentType() == "cartesianY")
@@ -81,19 +78,19 @@ namespace EditSpatial.Converter
 
       boundaryConditions = new Dictionary<string, string>();
       diffusion = new Dictionary<string, string>();
-      for (int i = 0; i < Model.getNumParameters(); ++i)
+      for (var i = 0; i < Model.getNumParameters(); ++i)
       {
-        Parameter current = Model.getParameter(i);
+        var current = Model.getParameter(i);
         var plugin = (SpatialParameterPlugin) current.getPlugin("spatial");
         if (plugin == null) continue;
         if (plugin.getType() == libsbml.SBML_SPATIAL_BOUNDARYCONDITION)
         {
-          BoundaryCondition condition = plugin.getBoundaryCondition();
+          var condition = plugin.getBoundaryCondition();
           boundaryConditions[condition.getCoordinateBoundary()] = TranslateCondition(condition.getType());
         }
         if (plugin.getType() == libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT)
         {
-          DiffusionCoefficient diff = plugin.getDiffusionCoefficient();
+          var diff = plugin.getDiffusionCoefficient();
           diffusion[diff.getVariable()] = current.getValue().ToString(CultureInfo.InvariantCulture);
         }
       }
@@ -101,16 +98,16 @@ namespace EditSpatial.Converter
 
       boundaryValue = new Dictionary<string, Dictionary<string, string>>();
       initial = new Dictionary<string, string>();
-      for (int i = 0; i < Model.getNumSpecies(); ++i)
+      for (var i = 0; i < Model.getNumSpecies(); ++i)
       {
-        Species current = Model.getSpecies(i);
+        var current = Model.getSpecies(i);
         var plugin = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
         if (plugin == null || !plugin.getIsSpatial()) continue;
 
         ++numVariables;
 
         boundaryValue[current.getId()] = new Dictionary<string, string>();
-        double? bcValue = current.getXMinBC();
+        var bcValue = current.getXMinBC();
         if (bcValue.HasValue && bcValue.Value != 0)
           boundaryValue[current.getId()]["-x"] = bcValue.Value.ToString();
         bcValue = current.getXMaxBC();
@@ -128,7 +125,7 @@ namespace EditSpatial.Converter
         else if (current.isSetInitialAmount())
           initial[current.getId()] = current.getInitialAmount().ToString();
 
-        InitialAssignment assignment = Model.getInitialAssignment(current.getId());
+        var assignment = Model.getInitialAssignment(current.getId());
         if (assignment == null) continue;
         initial[current.getId()] = TranslateExpression(assignment.getMath(), coordinates);
       }
@@ -144,7 +141,6 @@ namespace EditSpatial.Converter
       }
     }
 
-
     public void Dispose()
     {
       if (document != null)
@@ -159,7 +155,6 @@ namespace EditSpatial.Converter
     {
       return TranslateExpression(libsbml.parseFormula(expression), null);
     }
-
 
     public static string TranslateExpression(ASTNode math, Dictionary<string, string> map)
     {
@@ -196,7 +191,7 @@ namespace EditSpatial.Converter
         {
           var builder = new StringBuilder();
           builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          for (int i = 1; i < math.getNumChildren(); ++i)
+          for (var i = 1; i < math.getNumChildren(); ++i)
           {
             builder.AppendMorpheusNode(" + {0}", math.getChild(i), map);
           }
@@ -206,7 +201,7 @@ namespace EditSpatial.Converter
         {
           var builder = new StringBuilder();
           builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          for (int i = 1; i < math.getNumChildren(); ++i)
+          for (var i = 1; i < math.getNumChildren(); ++i)
           {
             builder.AppendMorpheusNode(" * {0}", math.getChild(i), map);
           }
@@ -245,7 +240,7 @@ namespace EditSpatial.Converter
         {
           var builder = new StringBuilder();
           builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          for (int i = 1; i < math.getNumChildren(); ++i)
+          for (var i = 1; i < math.getNumChildren(); ++i)
           {
             builder.AppendMorpheusNode(" and {0}", math.getChild(i), map);
           }
@@ -255,7 +250,7 @@ namespace EditSpatial.Converter
         {
           var builder = new StringBuilder();
           builder.AppendMorpheusNode("{0}", math.getChild(0), map);
-          for (int i = 1; i < math.getNumChildren(); ++i)
+          for (var i = 1; i < math.getNumChildren(); ++i)
           {
             builder.AppendMorpheusNode(" or {0}", math.getChild(i), map);
           }
@@ -265,7 +260,7 @@ namespace EditSpatial.Converter
         {
           var builder = new StringBuilder();
           builder.AppendFormat("if(");
-          for (int i = 0; i < math.getNumChildren() - 1; i += 2)
+          for (var i = 0; i < math.getNumChildren() - 1; i += 2)
           {
             builder.AppendMorpheusNode("{0}", math.getChild(i + 1), map);
             builder.AppendMorpheusNode(", {0}", math.getChild(i), map);
@@ -279,7 +274,7 @@ namespace EditSpatial.Converter
           var builder = new StringBuilder();
           builder.AppendFormat("{0}(", math.getName());
           builder.AppendFormat("{0}", TranslateExpression(math.getChild(0), map));
-          for (int i = 1; i < math.getNumChildren(); ++i)
+          for (var i = 1; i < math.getNumChildren(); ++i)
           {
             builder.AppendFormat(", {0}", TranslateExpression(math.getChild(i), map));
           }
@@ -316,12 +311,11 @@ namespace EditSpatial.Converter
       }
     }
 
-
     public string ToMorpheus(string filename = null)
     {
       var settings = new XmlWriterSettings {Indent = true, Encoding = Encoding.UTF8, OmitXmlDeclaration = true};
       var buffer = new StringBuilder();
-      XmlWriter writer = XmlWriter.Create(buffer, settings);
+      var writer = XmlWriter.Create(buffer, settings);
 
       writer.WriteStartDocument();
 
@@ -344,7 +338,7 @@ namespace EditSpatial.Converter
 
     private void WriteAnalysis(XmlWriter writer)
     {
-      int multiplier = Math.Max(1, numVariables/2);
+      var multiplier = Math.Max(1, numVariables/2);
       const double scale = 4;
 
       writer.WriteStartElement("Analysis");
@@ -362,9 +356,9 @@ namespace EditSpatial.Converter
       writer.WriteEndElement(); // Terminal
 
 
-      for (int i = 0; i < Model.getNumSpecies(); i++)
+      for (var i = 0; i < Model.getNumSpecies(); i++)
       {
-        Species current = Model.getSpecies(i);
+        var current = Model.getSpecies(i);
         var plugin = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
         if (plugin == null) continue;
         if (plugin.getIsSpatial())
@@ -397,9 +391,9 @@ namespace EditSpatial.Converter
     {
       writer.WriteStartElement("PDE");
 
-      for (int i = 0; i < Model.getNumSpecies(); i++)
+      for (var i = 0; i < Model.getNumSpecies(); i++)
       {
-        Species current = Model.getSpecies(i);
+        var current = Model.getSpecies(i);
         var plugin = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
         if (plugin == null) continue;
         if (!plugin.getIsSpatial()) continue;
@@ -423,7 +417,7 @@ namespace EditSpatial.Converter
 
         if (boundaryValue.ContainsKey(current.getId()))
         {
-          Dictionary<string, string> bounds = boundaryValue[current.getId()];
+          var bounds = boundaryValue[current.getId()];
           foreach (var item in bounds)
           {
             writer.WriteStartElement("BoundaryValue");
@@ -445,7 +439,7 @@ namespace EditSpatial.Converter
 
     private string SimplifyExpression(string expression)
     {
-      string result = expression.Replace("+ ( - 1) *", "-");
+      var result = expression.Replace("+ ( - 1) *", "-");
       result = result.Replace(" +  - ", " - ");
       result = result.Replace(" 1 * ", " ");
       result = result.Replace(" * 1 ", " ");
@@ -461,18 +455,18 @@ namespace EditSpatial.Converter
       writer.WriteAttributeString("time-step", "0.01");
       writer.WriteAttributeString("name", Model.isSetName() ? Model.getName() : Model.getId());
 
-      for (int i = 0; i < Model.getNumCompartments(); ++i)
+      for (var i = 0; i < Model.getNumCompartments(); ++i)
       {
-        Compartment current = Model.getCompartment(i);
+        var current = Model.getCompartment(i);
 
         writer.WriteStartElement("Constant");
         writer.WriteAttributeString("symbol", current.getId());
         writer.WriteAttributeString("value", current.getSize().ToString());
         writer.WriteEndElement(); // Constant
       }
-      for (int i = 0; i < Model.getNumParameters(); ++i)
+      for (var i = 0; i < Model.getNumParameters(); ++i)
       {
-        Parameter current = Model.getParameter(i);
+        var current = Model.getParameter(i);
         var plugin = (SpatialParameterPlugin) current.getPlugin("spatial");
         if (plugin != null && plugin.getType() != -1) continue;
 
@@ -482,9 +476,9 @@ namespace EditSpatial.Converter
         writer.WriteEndElement(); // Constant
       }
 
-      for (int i = 0; i < Model.getNumRules(); ++i)
+      for (var i = 0; i < Model.getNumRules(); ++i)
       {
-        Rule current = Model.getRule(i);
+        var current = Model.getRule(i);
         if (current.isRate())
         {
           writer.WriteStartElement("DiffEqn");
@@ -548,18 +542,18 @@ namespace EditSpatial.Converter
       writer.WriteEndElement(); // BoundaryConditions
 
       // write domain (if analytic)
-      AnalyticGeometry analyticGeometry = Geometry.GetFirstAnalyticGeometry();
+      var analyticGeometry = Geometry.GetFirstAnalyticGeometry();
       if (filename != null && analyticGeometry != null && analyticGeometry.getNumAnalyticVolumes() > 0)
       {
-        string path = Path.GetDirectoryName(filename);
-        string name = Path.GetFileNameWithoutExtension(filename);
+        var path = Path.GetDirectoryName(filename);
+        var name = Path.GetFileNameWithoutExtension(filename);
         if (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(name))
         {
-          AnalyticVolume vol = analyticGeometry.getAnalyticVolume(0);
+          var vol = analyticGeometry.getAnalyticVolume(0);
           writer.WriteStartElement("Domain");
           writer.WriteAttributeString("boundary-type", boundaryConditions.Values.First());
           writer.WriteStartElement("Image");
-          Image image = analyticGeometry.GenerateTiffForOrdinal(Geometry, (int) vol.getOrdinal());
+          var image = analyticGeometry.GenerateTiffForOrdinal(Geometry, (int) vol.getOrdinal());
           image.Save(Path.Combine(path, name + ".tif"), ImageFormat.Tiff);
           writer.WriteAttributeString("path", name + ".tif");
           writer.WriteEndElement(); // Image
@@ -585,7 +579,7 @@ namespace EditSpatial.Converter
         writer.WriteString(Model.getId());
       writer.WriteEndElement(); // Title
       writer.WriteStartElement("Details");
-      string errorString = errorBuilder.ToString();
+      var errorString = errorBuilder.ToString();
       if (!string.IsNullOrWhiteSpace(errorString))
         writer.WriteString("Conversion messages: " + errorString);
       writer.WriteEndElement(); // Details

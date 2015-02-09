@@ -1,11 +1,14 @@
-﻿namespace LibEditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace LibEditSpatial.Controls
 {
   partial class CtrlPalette
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -197,16 +200,16 @@
 
     #endregion
 
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.PictureBox pictureBox1;
-    private System.Windows.Forms.TextBox txtMin;
-    private System.Windows.Forms.TextBox txtCurrent;
-    private System.Windows.Forms.TrackBar trackBar1;
-    private System.Windows.Forms.TextBox txtMax;
-    private System.Windows.Forms.ToolTip toolTip1;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.ToolStrip toolStrip1;
-    private System.Windows.Forms.ToolStripButton openToolStripButton;
-    private System.Windows.Forms.ToolStripButton saveToolStripButton;
+    private TableLayoutPanel tableLayoutPanel1;
+    private PictureBox pictureBox1;
+    private TextBox txtMin;
+    private TextBox txtCurrent;
+    private TrackBar trackBar1;
+    private TextBox txtMax;
+    private ToolTip toolTip1;
+    private Panel panel1;
+    private ToolStrip toolStrip1;
+    private ToolStripButton openToolStripButton;
+    private ToolStripButton saveToolStripButton;
   }
 }

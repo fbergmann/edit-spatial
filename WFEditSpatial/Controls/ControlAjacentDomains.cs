@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using libsbmlcs;
+﻿using libsbmlcs;
 
 namespace EditSpatial.Controls
 {
@@ -20,8 +19,8 @@ namespace EditSpatial.Controls
 
       for (long i = 0; i < geometry.getNumAdjacentDomains(); ++i)
       {
-        AdjacentDomains domain = geometry.getAdjacentDomains(i);
-        string spatialId = domain.getSpatialId();
+        var domain = geometry.getAdjacentDomains(i);
+        var spatialId = domain.getSpatialId();
         grid.Rows.Add(spatialId, domain.getDomain1(), domain.getDomain2());
       }
     }
@@ -30,10 +29,10 @@ namespace EditSpatial.Controls
     {
       if (Current == null) return;
 
-      for (int i = 0; i < grid.Rows.Count && i < Current.getNumAdjacentDomains(); ++i)
+      for (var i = 0; i < grid.Rows.Count && i < Current.getNumAdjacentDomains(); ++i)
       {
-        AdjacentDomains domain = Current.getAdjacentDomains(i);
-        DataGridViewRow row = grid.Rows[i];
+        var domain = Current.getAdjacentDomains(i);
+        var row = grid.Rows[i];
         if (domain == null) continue;
 
         domain.setSpatialId((string) row.Cells[0].Value);

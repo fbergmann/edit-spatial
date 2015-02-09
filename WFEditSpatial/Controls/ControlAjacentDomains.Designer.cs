@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Controls
 {
   partial class ControlAdjacentDomains
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -83,9 +86,9 @@
 
     #endregion
 
-    private System.Windows.Forms.DataGridView grid;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colSpatialId;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDomain1;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDomain2;
+    private DataGridView grid;
+    private DataGridViewTextBoxColumn colSpatialId;
+    private DataGridViewTextBoxColumn colDomain1;
+    private DataGridViewTextBoxColumn colDomain2;
   }
 }

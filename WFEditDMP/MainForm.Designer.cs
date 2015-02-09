@@ -1,5 +1,6 @@
-﻿using LibEditSpatial.Controls;
-using LibEditSpatial.Model;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using LibEditSpatial.Controls;
 
 namespace WFEditDMP
 {
@@ -8,7 +9,7 @@ namespace WFEditDMP
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -573,54 +574,54 @@ namespace WFEditDMP
 
     #endregion
 
-    private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-    private System.Windows.Forms.MenuStrip menuStrip1;
-    private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-    private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-    private System.Windows.Forms.ToolStrip mainToolStrip;
-    private System.Windows.Forms.ToolStripButton newToolStripButton;
-    private System.Windows.Forms.ToolStripButton openToolStripButton;
-    private System.Windows.Forms.ToolStripButton saveToolStripButton;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-    private System.Windows.Forms.ToolStripButton helpToolStripButton;
-    private System.Windows.Forms.StatusStrip statusStrip1;
-    private System.Windows.Forms.ToolStripStatusLabel lblStatus;
-    private System.Windows.Forms.ToolStripStatusLabel lblSize;
+    private ToolStripContainer toolStripContainer1;
+    private MenuStrip menuStrip1;
+    private ToolStripMenuItem fileToolStripMenuItem;
+    private ToolStripMenuItem newToolStripMenuItem;
+    private ToolStripMenuItem openToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator;
+    private ToolStripMenuItem saveToolStripMenuItem;
+    private ToolStripMenuItem saveAsToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator1;
+    private ToolStripMenuItem exitToolStripMenuItem;
+    private ToolStripMenuItem helpToolStripMenuItem;
+    private ToolStripMenuItem aboutToolStripMenuItem;
+    private ToolStrip mainToolStrip;
+    private ToolStripButton newToolStripButton;
+    private ToolStripButton openToolStripButton;
+    private ToolStripButton saveToolStripButton;
+    private ToolStripSeparator toolStripSeparator6;
+    private ToolStripSeparator toolStripSeparator7;
+    private ToolStripButton helpToolStripButton;
+    private StatusStrip statusStrip1;
+    private ToolStripStatusLabel lblStatus;
+    private ToolStripStatusLabel lblSize;
     private DmpRenderControl dmpRenderControl1;
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+    private TableLayoutPanel tableLayoutPanel1;
     private CtrlPalette ctrlPalette1;
-    private System.Windows.Forms.ToolStripComboBox cmbPalettes;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-    private System.Windows.Forms.ToolStripTextBox txtSize;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-    private System.Windows.Forms.ToolStripButton toolStripButton2;
-    private System.Windows.Forms.ToolStripButton toolStripButton3;
-    private System.Windows.Forms.ToolStripButton cmdCenter;
-    private System.Windows.Forms.ToolStrip sizeToolStrip;
-    private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-    private System.Windows.Forms.ToolStripTextBox txtCols;
-    private System.Windows.Forms.ToolStripLabel toolStripLabel2;
-    private System.Windows.Forms.ToolStripTextBox txtRows;
-    private System.Windows.Forms.ToolStripButton toolStripButton1;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-    private System.Windows.Forms.ToolStripTextBox txtMinX;
-    private System.Windows.Forms.ToolStripTextBox txtMaxX;
-    private System.Windows.Forms.ToolStripTextBox txtMinY;
-    private System.Windows.Forms.ToolStripTextBox txtMaxY;
-    private System.Windows.Forms.ToolStripStatusLabel lblPosition;
-    private System.Windows.Forms.ToolStripStatusLabel lblMessage;
-    private System.Windows.Forms.ToolStripStatusLabel lblData;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-    private System.Windows.Forms.ToolStripButton toolAdjust;
+    private ToolStripComboBox cmbPalettes;
+    private ToolStripSeparator toolStripSeparator2;
+    private ToolStripTextBox txtSize;
+    private ToolStripSeparator toolStripSeparator3;
+    private ToolStripButton toolStripButton2;
+    private ToolStripButton toolStripButton3;
+    private ToolStripButton cmdCenter;
+    private ToolStrip sizeToolStrip;
+    private ToolStripLabel toolStripLabel1;
+    private ToolStripTextBox txtCols;
+    private ToolStripLabel toolStripLabel2;
+    private ToolStripTextBox txtRows;
+    private ToolStripButton toolStripButton1;
+    private ToolStripSeparator toolStripSeparator4;
+    private ToolStripTextBox txtMinX;
+    private ToolStripTextBox txtMaxX;
+    private ToolStripTextBox txtMinY;
+    private ToolStripTextBox txtMaxY;
+    private ToolStripStatusLabel lblPosition;
+    private ToolStripStatusLabel lblMessage;
+    private ToolStripStatusLabel lblData;
+    private ToolStripSeparator toolStripSeparator5;
+    private ToolStripButton toolAdjust;
   }
 }
 

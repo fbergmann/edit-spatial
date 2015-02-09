@@ -1,11 +1,13 @@
-﻿namespace EditSpatial.Controls
+﻿using System.ComponentModel;
+
+namespace EditSpatial.Controls
 {
   partial class ControlText
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.

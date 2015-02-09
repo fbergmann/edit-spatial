@@ -23,15 +23,15 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-        libsbmlcs.Model model = document.getModel();
+        var model = document.getModel();
 
         CommitAddedRows(Current);
         for (long i = 0; i < model.getNumSpecies(); ++i)
         {
-          Species current = model.getSpecies(i);
+          var current = model.getSpecies(i);
 
           var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
-          string isSpatial = "NA";
+          var isSpatial = "NA";
           if (plug != null && plug.isSetIsSpatial())
           {
             isSpatial = plug.getIsSpatial().ToString();
@@ -58,12 +58,12 @@ namespace EditSpatial.Controls
     {
       if (RowsAdded.Count > 0 && current != null)
       {
-        for (int i = RowsAdded.Count - 1; i >= 0; i--)
+        for (var i = RowsAdded.Count - 1; i >= 0; i--)
         {
           try
           {
-            DataGridViewRow row = grid.Rows[RowsAdded[i]];
-            Species species = current.getModel().createSpecies();
+            var row = grid.Rows[RowsAdded[i]];
+            var species = current.getModel().createSpecies();
             species.initDefaults();
             species.setId(row.Cells[0].Value as string);
             species.setName(row.Cells[1].Value as string);
@@ -94,17 +94,16 @@ namespace EditSpatial.Controls
       }
     }
 
-
     public override void SaveChanges()
     {
       if (Current == null) return;
 
       CommitAddedRows(Current);
 
-      for (int i = 0; i < grid.Rows.Count; ++i)
+      for (var i = 0; i < grid.Rows.Count; ++i)
       {
-        DataGridViewRow row = grid.Rows[i];
-        Species current = Current.getModel().getSpecies((string) row.Cells[0].Value);
+        var row = grid.Rows[i];
+        var current = Current.getModel().getSpecies((string) row.Cells[0].Value);
         if (current == null) continue;
 
         current.setName(row.Cells[1].Value as string);

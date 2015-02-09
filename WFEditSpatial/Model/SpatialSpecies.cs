@@ -3,18 +3,13 @@ namespace EditSpatial.Model
   public class SpatialSpecies
   {
     public string Id { get; set; }
-
     public double MinBoundaryX { get; set; }
     public double MinBoundaryY { get; set; }
-
     public double MaxBoundaryX { get; set; }
     public double MaxBoundaryY { get; set; }
-
     public double DiffusionX { get; set; }
     public double DiffusionY { get; set; }
-
     public string BCType { get; set; }
-
     public string InitialCondition { get; set; }
 
     protected bool Equals(SpatialSpecies other)
@@ -31,7 +26,6 @@ namespace EditSpatial.Model
     {
       return Id;
     }
-
 
     public override bool Equals(object obj)
     {

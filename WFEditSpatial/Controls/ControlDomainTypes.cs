@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using libsbmlcs;
+﻿using libsbmlcs;
 
 namespace EditSpatial.Controls
 {
@@ -19,7 +18,7 @@ namespace EditSpatial.Controls
       if (geometry == null) return;
       for (long i = 0; i < geometry.getNumDomainTypes(); ++i)
       {
-        DomainType domainType = geometry.getDomainType(i);
+        var domainType = geometry.getDomainType(i);
         grid.Rows.Add(domainType.getSpatialId(), domainType.getSpatialDimensions());
       }
     }
@@ -27,10 +26,10 @@ namespace EditSpatial.Controls
     public override void SaveChanges()
     {
       if (Current == null) return;
-      for (int i = 0; i < grid.Rows.Count && i < Current.getNumDomainTypes(); ++i)
+      for (var i = 0; i < grid.Rows.Count && i < Current.getNumDomainTypes(); ++i)
       {
-        DomainType current = Current.getDomainType(i);
-        DataGridViewRow row = grid.Rows[i];
+        var current = Current.getDomainType(i);
+        var row = grid.Rows[i];
         current.setSpatialId((string) row.Cells[0].Value);
         current.setSpatialDimensions((long) row.Cells[1].Value);
       }

@@ -1,11 +1,14 @@
-﻿namespace LibEditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace LibEditSpatial.Controls
 {
   partial class CtrlGlobal
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -254,21 +257,21 @@
 
     #endregion
 
-    private System.Windows.Forms.TextBox txtSubsampling;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.TextBox txtExplicitsolver;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.TextBox txtIntegrationorder;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.TextBox txtOverlap;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox txtVTKname;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.CheckBox chkWriteVTK;
-    private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.RadioButton radExplicit;
-    private System.Windows.Forms.RadioButton radImplicit;
-    private System.Windows.Forms.TextBox txtImplicitSovler;
-    private System.Windows.Forms.Label label6;
+    private TextBox txtSubsampling;
+    private Label label5;
+    private TextBox txtExplicitsolver;
+    private Label label4;
+    private TextBox txtIntegrationorder;
+    private Label label3;
+    private TextBox txtOverlap;
+    private Label label2;
+    private TextBox txtVTKname;
+    private Label label1;
+    private CheckBox chkWriteVTK;
+    private GroupBox groupBox1;
+    private RadioButton radExplicit;
+    private RadioButton radImplicit;
+    private TextBox txtImplicitSovler;
+    private Label label6;
   }
 }

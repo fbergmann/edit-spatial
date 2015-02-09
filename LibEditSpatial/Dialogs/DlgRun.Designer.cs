@@ -1,11 +1,14 @@
-﻿namespace LibEditSpatial.Dialogs
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace LibEditSpatial.Dialogs
 {
   partial class DlgRun
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -265,23 +268,23 @@
 
     #endregion
 
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.TextBox txtFileName;
-    private System.Windows.Forms.Button cmdBrowse;
-    private System.Windows.Forms.ProgressBar progressBar1;
-    private System.Windows.Forms.Button cmdKill;
-    private System.Windows.Forms.TextBox txtResult;
-    private System.Windows.Forms.Button cmdRun;
-    private System.Windows.Forms.Button cmdCompile;
-    private System.Windows.Forms.TabControl tabControl1;
-    private System.Windows.Forms.TabPage tabPreview;
-    private System.Windows.Forms.PictureBox pictureBox1;
-    private System.Windows.Forms.ComboBox cmbVariable;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.CheckBox chkPreview;
-    private System.Windows.Forms.TabPage tabMessages;
-    private System.Windows.Forms.Button cmdParaview;
-    private System.Windows.Forms.ToolTip toolTip1;
-    private System.ComponentModel.BackgroundWorker backgroundWorker1;
+    private Label label1;
+    private TextBox txtFileName;
+    private Button cmdBrowse;
+    private ProgressBar progressBar1;
+    private Button cmdKill;
+    private TextBox txtResult;
+    private Button cmdRun;
+    private Button cmdCompile;
+    private TabControl tabControl1;
+    private TabPage tabPreview;
+    private PictureBox pictureBox1;
+    private ComboBox cmbVariable;
+    private Label label2;
+    private CheckBox chkPreview;
+    private TabPage tabMessages;
+    private Button cmdParaview;
+    private ToolTip toolTip1;
+    private BackgroundWorker backgroundWorker1;
   }
 }

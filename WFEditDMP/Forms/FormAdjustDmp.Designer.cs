@@ -1,11 +1,14 @@
-﻿namespace WFEditDMP.Forms
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace WFEditDMP.Forms
 {
   partial class FormAdjustDmp
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -242,19 +245,19 @@
 
     #endregion
 
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.ListBox listBox1;
-    private System.Windows.Forms.SplitContainer splitContainer2;
-    private System.Windows.Forms.PictureBox pictureBox1;
-    private System.Windows.Forms.Panel panel2;
-    private System.Windows.Forms.Button cmdInvert;
-    private System.Windows.Forms.ToolTip toolTip1;
-    private System.Windows.Forms.TextBox txtReplacement;
-    private System.Windows.Forms.Button cmdReplace;
-    private System.Windows.Forms.Button cmdMerge;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Button cmdOK;
-    private System.Windows.Forms.Button cmdCancel;
+    private TableLayoutPanel tableLayoutPanel1;
+    private SplitContainer splitContainer1;
+    private ListBox listBox1;
+    private SplitContainer splitContainer2;
+    private PictureBox pictureBox1;
+    private Panel panel2;
+    private Button cmdInvert;
+    private ToolTip toolTip1;
+    private TextBox txtReplacement;
+    private Button cmdReplace;
+    private Button cmdMerge;
+    private Panel panel1;
+    private Button cmdOK;
+    private Button cmdCancel;
   }
 }

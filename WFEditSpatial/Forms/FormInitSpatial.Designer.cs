@@ -1,11 +1,15 @@
-﻿namespace EditSpatial.Forms
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using EditSpatial.Controls;
+
+namespace EditSpatial.Forms
 {
   partial class FormInitSpatial
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -742,59 +746,59 @@
 
     #endregion
 
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.TabControl tabControl1;
-    private System.Windows.Forms.TabPage tabSpecies;
-    private System.Windows.Forms.Panel panel2;
-    private System.Windows.Forms.TabPage tabGeometry;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Button cmdCancel;
-    private System.Windows.Forms.Button cmdNext;
-    private System.Windows.Forms.Button cmdFinish;
-    private System.Windows.Forms.Button cmdPrev;
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-    private System.Windows.Forms.ListBox lstSpatialSpecies;
-    private System.Windows.Forms.ListBox lstAllSpecies;
-    private System.Windows.Forms.Label lblIntro;
-    private System.Windows.Forms.DataGridView grid;
-    private System.Windows.Forms.Panel panel3;
-    private System.Windows.Forms.TextBox txtDimY;
-    private System.Windows.Forms.TextBox txtDimX;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.GroupBox groupBox2;
-    private System.Windows.Forms.ToolTip toolTip1;
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.Panel panel4;
-    private System.Windows.Forms.GroupBox groupBox3;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.TextBox txtDepth;
-    private System.Windows.Forms.TextBox txtWidth;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.TextBox txtHeight;
-    private System.Windows.Forms.Panel panel5;
-    private System.Windows.Forms.GroupBox groupBox4;
-    private System.Windows.Forms.RadioButton radSample;
-    private System.Windows.Forms.RadioButton radAnalytic;
-    private System.Windows.Forms.RadioButton radDefault;
-    private System.Windows.Forms.Panel panel6;
-    private Controls.ControlSampleFieldGeometry controlSampleFieldGeometry1;
-    private Controls.ControlAnalyticGeometry controlAnalyticGeometry1;
-    private System.Windows.Forms.Button cmdApplyDiff;
-    private System.Windows.Forms.TextBox txtDiffDefault;
-    private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colSpeciesId;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusionX;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusionY;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colInitialExpression;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryX;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryY;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryXm;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundaryYm;
-    private System.Windows.Forms.DataGridViewComboBoxColumn colType;
-    private System.Windows.Forms.Button cmdIsoTropic;
+    private TableLayoutPanel tableLayoutPanel1;
+    private TabControl tabControl1;
+    private TabPage tabSpecies;
+    private Panel panel2;
+    private TabPage tabGeometry;
+    private Panel panel1;
+    private Button cmdCancel;
+    private Button cmdNext;
+    private Button cmdFinish;
+    private Button cmdPrev;
+    private TableLayoutPanel tableLayoutPanel2;
+    private ListBox lstSpatialSpecies;
+    private ListBox lstAllSpecies;
+    private Label lblIntro;
+    private DataGridView grid;
+    private Panel panel3;
+    private TextBox txtDimY;
+    private TextBox txtDimX;
+    private Label label1;
+    private Label label2;
+    private GroupBox groupBox1;
+    private GroupBox groupBox2;
+    private ToolTip toolTip1;
+    private TableLayoutPanel tableLayoutPanel3;
+    private Label label3;
+    private Panel panel4;
+    private GroupBox groupBox3;
+    private Label label6;
+    private TextBox txtDepth;
+    private TextBox txtWidth;
+    private Label label4;
+    private Label label5;
+    private TextBox txtHeight;
+    private Panel panel5;
+    private GroupBox groupBox4;
+    private RadioButton radSample;
+    private RadioButton radAnalytic;
+    private RadioButton radDefault;
+    private Panel panel6;
+    private ControlSampleFieldGeometry controlSampleFieldGeometry1;
+    private ControlAnalyticGeometry controlAnalyticGeometry1;
+    private Button cmdApplyDiff;
+    private TextBox txtDiffDefault;
+    private Label label7;
+    private DataGridViewTextBoxColumn colSpeciesId;
+    private DataGridViewTextBoxColumn colDiffusionX;
+    private DataGridViewTextBoxColumn colDiffusionY;
+    private DataGridViewTextBoxColumn colInitialExpression;
+    private DataGridViewTextBoxColumn colBoundaryX;
+    private DataGridViewTextBoxColumn colBoundaryY;
+    private DataGridViewTextBoxColumn colBoundaryXm;
+    private DataGridViewTextBoxColumn colBoundaryYm;
+    private DataGridViewComboBoxColumn colType;
+    private Button cmdIsoTropic;
   }
 }

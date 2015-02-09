@@ -3,11 +3,9 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using EditSpatial.Controls;
-using EditSpatial.Converter;
 using EditSpatial.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
-using Microsoft.Win32;
 using SBW;
 using SBW.Utils;
 
@@ -15,8 +13,6 @@ namespace EditSpatial
 {
   public partial class MainForm : Form, ISBWAnalyzer
   {
-    public static EditSpatialSettings Settings { get; set; }
-    
     private const string NODE_COORDINATES = "nodeCoordinateComponents";
     private const string NODE_DOMAINTYPES = "nodeOfDomainTypes";
     private const string NODE_DOMAINS = "nodeOfDomains";
@@ -29,7 +25,6 @@ namespace EditSpatial
     private const string NODE_RULES = "nodeRules";
     private const string NODE_INITIAL_ASSIGNMENTS = "nodeInitialAssignments";
     private const string NODE_COMPARTMENT_MAPPINGS = "nodeCompartmentMappings";
-
     private readonly SBWFavorites favs;
     private readonly SBWMenu menu;
     private bool haveAkira;
@@ -61,10 +56,10 @@ namespace EditSpatial
       NewModel();
     }
 
+    public static EditSpatialSettings Settings { get; set; }
     public SpatialModel Model { get; set; }
     public FormErrors ErrorForm { get; set; }
     public FormSpatialAnnotation Annotation { get; set; }
-
 
     public void doAnalysis(string model)
     {
@@ -80,7 +75,7 @@ namespace EditSpatial
 
     public void InvalidateCoreAll()
     {
-      foreach (object control in splitInitial.Panel2.Controls)
+      foreach (var control in splitInitial.Panel2.Controls)
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;
@@ -90,7 +85,7 @@ namespace EditSpatial
 
     public void SaveCoreAll()
     {
-      foreach (object control in splitInitial.Panel2.Controls)
+      foreach (var control in splitInitial.Panel2.Controls)
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;
@@ -102,7 +97,7 @@ namespace EditSpatial
 
     public void InvalidateGeometryAll()
     {
-      foreach (object control in splitGeometry.Panel2.Controls)
+      foreach (var control in splitGeometry.Panel2.Controls)
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;
@@ -112,7 +107,7 @@ namespace EditSpatial
 
     public void SaveGeormetryAll()
     {
-      foreach (object control in splitGeometry.Panel2.Controls)
+      foreach (var control in splitGeometry.Panel2.Controls)
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;
@@ -124,7 +119,7 @@ namespace EditSpatial
 
     private void OnGeometrySelect(object sender, TreeViewEventArgs e)
     {
-      TreeNode node = e.Node;
+      var node = e.Node;
       SaveGeormetryAll();
       InvalidateGeometryAll();
       SelectGeometryNode(node);
@@ -284,7 +279,7 @@ namespace EditSpatial
         ClearCoreTree();
         return;
       }
-      libsbmlcs.Model model = spatialModel.Document.getModel();
+      var model = spatialModel.Document.getModel();
       if (model == null)
       {
         ClearCoreTree();
@@ -302,10 +297,10 @@ namespace EditSpatial
 
     private void UpdateTreeWithInitialAssignments(libsbmlcs.Model model)
     {
-      TreeNode root = treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
+      var root = treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
       foreach (TreeNode item in root.Nodes)
       {
-        InitialAssignment current = model.getInitialAssignment(item.Text);
+        var current = model.getInitialAssignment(item.Text);
         if (current == null) continue;
         item.Tag = current.toSBML();
       }
@@ -313,11 +308,11 @@ namespace EditSpatial
 
     private void FillTreeWithInitialAssignments(libsbmlcs.Model model)
     {
-      TreeNode root = treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
+      var root = treeCore.Nodes[NODE_INITIAL_ASSIGNMENTS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumInitialAssignments(); ++i)
       {
-        InitialAssignment current = model.getInitialAssignment(i);
+        var current = model.getInitialAssignment(i);
         var node = new TreeNode(current.getSymbol()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -325,11 +320,11 @@ namespace EditSpatial
 
     private void FillTreeWithRules(libsbmlcs.Model model)
     {
-      TreeNode root = treeCore.Nodes[NODE_RULES];
+      var root = treeCore.Nodes[NODE_RULES];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumRules(); ++i)
       {
-        Rule current = model.getRule(i);
+        var current = model.getRule(i);
         var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -337,11 +332,11 @@ namespace EditSpatial
 
     private void FillTreeWithReactions(libsbmlcs.Model model)
     {
-      TreeNode root = treeCore.Nodes[NODE_REACTIONS];
+      var root = treeCore.Nodes[NODE_REACTIONS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumReactions(); ++i)
       {
-        Reaction current = model.getReaction(i);
+        var current = model.getReaction(i);
         var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -349,11 +344,11 @@ namespace EditSpatial
 
     private void FillTreeWithParameters(libsbmlcs.Model model)
     {
-      TreeNode root = treeCore.Nodes[NODE_PARAMETERS];
+      var root = treeCore.Nodes[NODE_PARAMETERS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumParameters(); ++i)
       {
-        Parameter current = model.getParameter(i);
+        var current = model.getParameter(i);
         var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -361,11 +356,11 @@ namespace EditSpatial
 
     private void FillTreeWithSpecies(libsbmlcs.Model model)
     {
-      TreeNode root = treeCore.Nodes[NODE_SPECIES];
+      var root = treeCore.Nodes[NODE_SPECIES];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumSpecies(); ++i)
       {
-        Species current = model.getSpecies(i);
+        var current = model.getSpecies(i);
         var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -373,11 +368,11 @@ namespace EditSpatial
 
     private void FillTreeWithCompartments(libsbmlcs.Model model)
     {
-      TreeNode root = treeCore.Nodes[NODE_COMPARTMENTS];
+      var root = treeCore.Nodes[NODE_COMPARTMENTS];
       root.Nodes.Clear();
       for (long i = 0; i < model.getNumCompartments(); ++i)
       {
-        Compartment current = model.getCompartment(i);
+        var current = model.getCompartment(i);
         var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -385,7 +380,7 @@ namespace EditSpatial
 
     private void FillGeometryFromModel(SpatialModel model)
     {
-      Geometry geom = model.Geometry;
+      var geom = model.Geometry;
       if (geom == null)
       {
         treeSpatial.Nodes[NODE_COORDINATES].Nodes.Clear();
@@ -396,11 +391,11 @@ namespace EditSpatial
         return;
       }
 
-      TreeNode root = treeSpatial.Nodes[NODE_COORDINATES];
+      var root = treeSpatial.Nodes[NODE_COORDINATES];
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumCoordinateComponents(); ++i)
       {
-        CoordinateComponent current = geom.getCoordinateComponent(i);
+        var current = geom.getCoordinateComponent(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -409,7 +404,7 @@ namespace EditSpatial
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumDomainTypes(); ++i)
       {
-        DomainType current = geom.getDomainType(i);
+        var current = geom.getDomainType(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -419,7 +414,7 @@ namespace EditSpatial
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumDomains(); ++i)
       {
-        Domain current = geom.getDomain(i);
+        var current = geom.getDomain(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -428,7 +423,7 @@ namespace EditSpatial
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumAdjacentDomains(); ++i)
       {
-        AdjacentDomains current = geom.getAdjacentDomains(i);
+        var current = geom.getAdjacentDomains(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
@@ -437,7 +432,7 @@ namespace EditSpatial
       root.Nodes.Clear();
       for (long i = 0; i < geom.getNumGeometryDefinitions(); ++i)
       {
-        GeometryDefinition current = geom.getGeometryDefinition(i);
+        var current = geom.getGeometryDefinition(i);
         var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
 
         var analytic = current as AnalyticGeometry;
@@ -445,7 +440,7 @@ namespace EditSpatial
         {
           for (long j = 0; j < analytic.getNumAnalyticVolumes(); ++j)
           {
-            AnalyticVolume vol = analytic.getAnalyticVolume(j);
+            var vol = analytic.getAnalyticVolume(j);
             var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
             node.Nodes.Add(volNode);
           }
@@ -454,7 +449,7 @@ namespace EditSpatial
         var sample = current as SampledFieldGeometry;
         if (sample != null)
         {
-          SampledField field = sample.getSampledField();
+          var field = sample.getSampledField();
           if (field != null)
           {
             var fieldNode = new TreeNode(field.getSpatialId()) {Tag = field.toSBML()};
@@ -462,7 +457,7 @@ namespace EditSpatial
 
             for (long j = 0; j < sample.getNumSampledVolumes(); ++j)
             {
-              SampledVolume vol = sample.getSampledVolume(j);
+              var vol = sample.getSampledVolume(j);
               var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
               node.Nodes.Add(volNode);
             }
@@ -541,7 +536,7 @@ namespace EditSpatial
           var dialog = new FormInitSpatial {SpatialModel = Model};
           if (dialog.ShowDialog(this) == DialogResult.OK)
           {
-            CreateModel selection = dialog.CreateModel;
+            var selection = dialog.CreateModel;
 
             if (!Model.ConvertToSpatial(selection))
             {
@@ -584,7 +579,7 @@ namespace EditSpatial
         return;
 
       SaveGeormetryAll();
-      Model.SaveTo(dialog.FileName);      
+      Model.SaveTo(dialog.FileName);
       UpdateUI();
     }
 
@@ -618,7 +613,7 @@ namespace EditSpatial
 
     private void OnCoreSelect(object sender, TreeViewEventArgs e)
     {
-      TreeNode node = e.Node;
+      var node = e.Node;
       SaveCoreAll();
       InvalidateCoreAll();
       SelectCoreNode(node);
@@ -689,12 +684,11 @@ namespace EditSpatial
       }
     }
 
-
     private void OnLoad(object sender, EventArgs e)
     {
       ReadSettings();
 
-      bool remove = false;
+      var remove = false;
       haveAkira = false;
       try
       {
@@ -728,12 +722,11 @@ namespace EditSpatial
     {
       Settings = EditSpatialSettings.GetDefault(Size);
 
-      if (Settings.Width < Screen.FromControl(this).WorkingArea.Width && Settings.Height < Screen.FromControl(this).WorkingArea.Height)
+      if (Settings.Width < Screen.FromControl(this).WorkingArea.Width &&
+          Settings.Height < Screen.FromControl(this).WorkingArea.Height)
         Size = new Size(Settings.Width, Settings.Height);
 
       chkMultipleCompartments.Checked = Settings.IgnoreMultiCompartments;
-
-
     }
 
     private void OnFormClosed(object sender, FormClosedEventArgs e)
@@ -795,7 +788,7 @@ namespace EditSpatial
       var dialog = new FormInitSpatial {SpatialModel = Model};
       if (dialog.ShowDialog(this) == DialogResult.OK)
       {
-        CreateModel selection = dialog.CreateModel;
+        var selection = dialog.CreateModel;
 
         if (!Model.ConvertToSpatial(selection))
         {
@@ -807,7 +800,6 @@ namespace EditSpatial
         }
       }
     }
-
 
     private void OnExportDuneSBMLClick(object sender, EventArgs e)
     {
@@ -883,17 +875,15 @@ namespace EditSpatial
       var geom = Model.Geometry.createAnalyticGeometry();
       geom.setSpatialId(String.Format("analyticGeometry{0}", Model.Geometry.GetNumAnalyticGeometries()));
       UpdateUI();
-
-
     }
 
     private void OnSpatialItemDeleteClick(object sender, EventArgs e)
     {
-      TreeNode selected = treeSpatial.SelectedNode;
+      var selected = treeSpatial.SelectedNode;
       if (selected == null || selected.Level == 0) return;
 
-      string selectedId = selected.Text;
-      TreeNode parent = selected.Parent;
+      var selectedId = selected.Text;
+      var parent = selected.Parent;
       if (Model.Geometry == null) return;
 
       if (selected.Level == 1)
@@ -937,7 +927,7 @@ namespace EditSpatial
         {
           case NODE_GEOMS:
           {
-            GeometryDefinition geom = Model.Geometry.getGeometryDefinition(parent.Text);
+            var geom = Model.Geometry.getGeometryDefinition(parent.Text);
             if (geom is AnalyticGeometry)
             {
               var ageom = geom as AnalyticGeometry;
@@ -960,11 +950,11 @@ namespace EditSpatial
 
     private void OnCoreItemDeleteClick(object sender, EventArgs e)
     {
-      TreeNode selected = treeCore.SelectedNode;
+      var selected = treeCore.SelectedNode;
       if (selected == null || selected.Level == 0) return;
 
-      string selectedId = selected.Text;
-      TreeNode parent = selected.Parent;
+      var selectedId = selected.Text;
+      var parent = selected.Parent;
       switch (parent.Name)
       {
         case NODE_PARAMETERS:
@@ -1041,6 +1031,41 @@ namespace EditSpatial
       }
     }
 
+    private void chkMultipleCompartments_Click(object sender, EventArgs e)
+    {
+      Settings.IgnoreMultiCompartments = chkMultipleCompartments.Checked;
+      Settings.Save();
+    }
+
+    private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      using (var dlg = new FormSettings {Settings = Settings})
+      {
+        if (dlg.ShowDialog(this) == DialogResult.OK)
+        {
+          dlg.Settings.Save();
+          ReadSettings();
+        }
+      }
+    }
+
+    private void cmdPrepareDune_Click(object sender, EventArgs e)
+    {
+      if (Model == null || Model.Document == null) return;
+      if (!Model.IsSpatial) return;
+
+      using (var dlg = new FormPrepareDune
+      {
+        Settings = Settings,
+        Model = Model,
+        TargetDir = Settings.DefaultDir,
+        ModuleName = Path.GetFileNameWithoutExtension(Model.FileName)
+      })
+      {
+        dlg.ShowDialog(this);
+      }
+    }
+
     #region Drag / Drop
 
     private void MainForm_DragDrop(object sender, DragEventArgs e)
@@ -1074,46 +1099,6 @@ namespace EditSpatial
       e.Effect = DragDropEffects.None;
     }
 
-    
     #endregion
-
-    private void chkMultipleCompartments_Click(object sender, EventArgs e)
-    {
-      Settings.IgnoreMultiCompartments = chkMultipleCompartments.Checked;
-      Settings.Save();
-    }
-
-    private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-      using (var dlg = new FormSettings {Settings = Settings})
-      {
-        if (dlg.ShowDialog(this) == DialogResult.OK)
-        {
-          dlg.Settings.Save();
-          ReadSettings();
-        }
-      }
-    }
-
-    private void cmdPrepareDune_Click(object sender, EventArgs e)
-    {
-      if (Model == null || Model.Document == null) return;
-      if (!Model.IsSpatial) return;
-
-      using (var dlg = new FormPrepareDune { 
-        Settings = Settings, 
-        Model = Model, 
-        TargetDir = Settings.DefaultDir, 
-        ModuleName = Path.GetFileNameWithoutExtension(Model.FileName),
-
-      })
-      {
-        dlg.ShowDialog(this);
-      }
-    }
-
-    
-
-    
   }
 }

@@ -16,9 +16,12 @@ namespace WFEditDMP
       Application.SetCompatibleTextRenderingDefault(false);
       var form = new MainForm();
 
-      foreach (string item in args)
+      foreach (var item in args)
         if (File.Exists(item))
+        {
           form.OpenFile(item);
+          break;
+        }
 
       Application.Run(form);
     }

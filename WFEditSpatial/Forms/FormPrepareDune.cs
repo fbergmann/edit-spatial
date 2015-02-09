@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,23 +13,25 @@ namespace EditSpatial.Forms
 {
   public partial class FormPrepareDune : Form
   {
-    
+    private bool closing;
+    private Process process;
+
     public FormPrepareDune()
     {
       InitializeComponent();
     }
 
-    public string BuildDir {
-      get {
-        return Path.Combine(Target, "build");
-      }
+    public string BuildDir
+    {
+      get { return Path.Combine(Target, "build"); }
     }
 
     public string Target
     {
       get
       {
-        return Path.Combine(TargetDir, ModuleName); ;
+        return Path.Combine(TargetDir, ModuleName);
+        ;
       }
     }
 
@@ -51,7 +48,6 @@ namespace EditSpatial.Forms
     }
 
     public EditSpatialSettings Settings { get; set; }
-
     public SpatialModel Model { get; set; }
 
     private void OnBrowseClicke(object sender, EventArgs e)
@@ -62,11 +58,11 @@ namespace EditSpatial.Forms
     private void DoCreateHost()
     {
       Util.UnzipArchive(
-              Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "host.zip"), Target);
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "host.zip"), Target);
     }
+
     private void OnCreateHostClick(object sender, EventArgs e)
     {
-      
       if (Directory.Exists(Target))
       {
         var result = MessageBox.Show(
@@ -85,16 +81,9 @@ namespace EditSpatial.Forms
         catch
         {
         }
-
       }
       DoCreateHost();
-
-
     }
-
-    private Process process;
-
-    
 
     private async Task RunCMake(string buildDir)
     {
@@ -104,10 +93,10 @@ namespace EditSpatial.Forms
       {
         FileName = Path.Combine(Settings.CygwinDir, "bash"),
         Arguments = string.Format(
-        "-c \"cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX={0} {1}\"", 
-        LibEditSpatial.Util.ToCygwin(Settings.DuneDir),
-        LibEditSpatial.Util.ToCygwin(Target)
-        ),
+          "-c \"cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX={0} {1}\"",
+          LibEditSpatial.Util.ToCygwin(Settings.DuneDir),
+          LibEditSpatial.Util.ToCygwin(Target)
+          ),
         WorkingDirectory = buildDir,
         RedirectStandardError = true,
         RedirectStandardOutput = true,
@@ -127,9 +116,8 @@ namespace EditSpatial.Forms
       var info = new ProcessStartInfo
       {
         FileName = Path.Combine(Settings.CygwinDir, "bash"),
-        Arguments = 
-        "-c make",
-        
+        Arguments =
+          "-c make",
         WorkingDirectory = buildDir,
         RedirectStandardError = true,
         RedirectStandardOutput = true,
@@ -146,8 +134,6 @@ namespace EditSpatial.Forms
     {
       process = null;
     }
-
-    private bool closing;
 
     private void OnAddString(string data)
     {
@@ -167,7 +153,7 @@ namespace EditSpatial.Forms
       if (!string.IsNullOrEmpty(Settings.CygwinDir))
         info.EnvironmentVariables["PATH"] = Settings.CygwinDir + ";" + info.EnvironmentVariables["PATH"];
 
-      process = new Process { StartInfo = info, EnableRaisingEvents = true };
+      process = new Process {StartInfo = info, EnableRaisingEvents = true};
       process.Exited += (o, e1) => ReEnableUI();
       process.OutputDataReceived += (o, e2) => OnAddString(e2.Data);
       process.ErrorDataReceived += (o, e3) => OnAddString(e3.Data);
@@ -187,8 +173,9 @@ namespace EditSpatial.Forms
       // run cmake
 
       Task.Factory.StartNew(() => RunCMake(BuildDir)
-        .ContinueWith((prevTask) => RunMake(BuildDir)));
+        .ContinueWith(prevTask => RunMake(BuildDir)));
     }
+
     private void OnCompileModel(object sender, EventArgs e)
     {
       if (!Directory.Exists(Target))
@@ -199,7 +186,6 @@ namespace EditSpatial.Forms
       }
 
       DoCompile();
-           
     }
 
     private void DoExport()
@@ -217,7 +203,6 @@ namespace EditSpatial.Forms
         return;
       }
       DoExport();
-      
     }
 
     private void OnFormClosing(object sender, FormClosingEventArgs e)
@@ -237,22 +222,23 @@ namespace EditSpatial.Forms
       }
       return null;
     }
+
     private void OnRunClick(object sender, EventArgs e)
     {
       if (!Directory.Exists(Target))
       {
         MessageBox.Show("Please create hosting application first", "Hosting application not present.",
-         MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
       if (!Directory.Exists(BuildDir))
       {
         MessageBox.Show("Please compile application first", "Application not compiled.",
-         MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
-      
-      string runDir = Path.Combine(BuildDir, "src");
+
+      var runDir = Path.Combine(BuildDir, "src");
       var config = GetConfigFromDir(runDir);
       if (config != null)
         using (var dlg = new DlgRun
@@ -272,25 +258,23 @@ namespace EditSpatial.Forms
       if (!Directory.Exists(Target))
       {
         MessageBox.Show("Please create hosting application first", "Hosting application not present.",
-         MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
       if (!Directory.Exists(Path.Combine(Target, "build")))
       {
         MessageBox.Show("Please compile application first", "Application not compiled.",
-         MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
-      string runDir = Path.Combine(BuildDir, "src");
+      var runDir = Path.Combine(BuildDir, "src");
       var config = GetConfigFromDir(runDir);
       if (config != null)
-      using (var dlg = new WFDuneRunner.MainForm())
-      {
-      
-        dlg.LoadFile(config.FileName);
-        dlg.ShowDialog(this);
-      }
-
+        using (var dlg = new WFDuneRunner.MainForm())
+        {
+          dlg.LoadFile(config.FileName);
+          dlg.ShowDialog(this);
+        }
     }
 
     private void cmdFolder_Click(object sender, EventArgs e)
@@ -301,7 +285,6 @@ namespace EditSpatial.Forms
       }
       catch
       {
-
       }
     }
   }

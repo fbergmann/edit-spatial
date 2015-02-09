@@ -1,11 +1,14 @@
-﻿namespace LibEditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace LibEditSpatial.Controls
 {
   partial class CtrlNewton
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -268,23 +271,23 @@
 
     #endregion
 
-    private System.Windows.Forms.TextBox txtMaxIterations;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.TextBox txtAbsoluteLimit;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.TextBox txtLineSearchMaxIterations;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.TextBox txtReassembleThreshold;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox txtLinearVerbosity;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.TextBox txtReduction;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.TextBox txtLinearReduction;
-    private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.TextBox txtLineSearchDampingFactor;
-    private System.Windows.Forms.Label label8;
-    private System.Windows.Forms.TextBox txtVerbosity;
-    private System.Windows.Forms.Label label9;
+    private TextBox txtMaxIterations;
+    private Label label5;
+    private TextBox txtAbsoluteLimit;
+    private Label label4;
+    private TextBox txtLineSearchMaxIterations;
+    private Label label3;
+    private TextBox txtReassembleThreshold;
+    private Label label2;
+    private TextBox txtLinearVerbosity;
+    private Label label1;
+    private TextBox txtReduction;
+    private Label label6;
+    private TextBox txtLinearReduction;
+    private Label label7;
+    private TextBox txtLineSearchDampingFactor;
+    private Label label8;
+    private TextBox txtVerbosity;
+    private Label label9;
   }
 }

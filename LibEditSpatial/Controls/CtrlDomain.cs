@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using LibEditSpatial.Model;
@@ -19,9 +19,9 @@ namespace LibEditSpatial.Controls
     {
       Model = model;
 
-      txtWidth.Text = Model.Width.ToString();
-      txtHeight.Text = Model.Height.ToString();
-      txtDepth.Text = Model.Depth.ToString();
+      txtWidth.Text = Model.Width.ToString(CultureInfo.InvariantCulture);
+      txtHeight.Text = Model.Height.ToString(CultureInfo.InvariantCulture);
+      txtDepth.Text = Model.Depth.ToString(CultureInfo.InvariantCulture);
 
       txtGridX.Text = Model.GridX.ToString();
       txtGridY.Text = Model.GridY.ToString();
@@ -29,8 +29,8 @@ namespace LibEditSpatial.Controls
       txtRefinement.Text = Model.Refinement.ToString();
 
       txtFile.Text = Model.Geometry;
-      txtMin.Text = Model.GeometryMin.ToString();
-      txtMax.Text = Model.GeometryMax.ToString();
+      txtMin.Text = Model.GeometryMin.ToString(CultureInfo.InvariantCulture);
+      txtMax.Text = Model.GeometryMax.ToString(CultureInfo.InvariantCulture);
     }
 
     private void OnWidthChanged(object sender, EventArgs e)
@@ -132,11 +132,10 @@ namespace LibEditSpatial.Controls
       if (handler != null) handler(this, filename);
     }
 
-
     private void OnEditClicked(object sender, EventArgs e)
     {
       if (Model == null) return;
-      string file = Model.Geometry;
+      var file = Model.Geometry;
       if (!File.Exists(file)) return;
       try
       {

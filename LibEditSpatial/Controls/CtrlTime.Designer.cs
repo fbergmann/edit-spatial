@@ -1,11 +1,14 @@
-﻿namespace LibEditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace LibEditSpatial.Controls
 {
   partial class CtrlTime
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -168,15 +171,15 @@
 
     #endregion
 
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.TextBox txtTime;
-    private System.Windows.Forms.TextBox txtInitialStep;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox txtMinStep;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.TextBox txtPlotStep;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.TextBox txtMaxStep;
-    private System.Windows.Forms.Label label5;
+    private Label label1;
+    private TextBox txtTime;
+    private TextBox txtInitialStep;
+    private Label label2;
+    private TextBox txtMinStep;
+    private Label label3;
+    private TextBox txtPlotStep;
+    private Label label4;
+    private TextBox txtMaxStep;
+    private Label label5;
   }
 }

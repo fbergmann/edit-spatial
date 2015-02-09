@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Controls
 {
   partial class ControlAnalyticGeometry
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -335,29 +338,29 @@
 
     #endregion
 
-    private System.Windows.Forms.DataGridView grid;
-    private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.TextBox txtId;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colSpatialId;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colType;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colOrdinal;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDomainType;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colMath;
-    private System.Windows.Forms.PictureBox thumbGeometry;
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.TextBox txtSize;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Button cmdReorder;
-    private System.Windows.Forms.Button cmdUpdateImage;
-    private System.Windows.Forms.TextBox txtZ;
-    private System.Windows.Forms.Label lblZ;
-    private System.Windows.Forms.TrackBar trackBar1;
-    private System.Windows.Forms.Button cmdCreateTiff;
-    private System.Windows.Forms.ToolTip toolTip1;
-    private System.Windows.Forms.Button cmdSort;
-    private System.Windows.Forms.Button cmdMakeFirst;
-    private System.Windows.Forms.Button cmdExport;
+    private DataGridView grid;
+    private GroupBox groupBox1;
+    private Label label1;
+    private TextBox txtId;
+    private DataGridViewTextBoxColumn colSpatialId;
+    private DataGridViewTextBoxColumn colType;
+    private DataGridViewTextBoxColumn colOrdinal;
+    private DataGridViewTextBoxColumn colDomainType;
+    private DataGridViewTextBoxColumn colMath;
+    private PictureBox thumbGeometry;
+    private TableLayoutPanel tableLayoutPanel1;
+    private Panel panel1;
+    private TextBox txtSize;
+    private Label label2;
+    private Button cmdReorder;
+    private Button cmdUpdateImage;
+    private TextBox txtZ;
+    private Label lblZ;
+    private TrackBar trackBar1;
+    private Button cmdCreateTiff;
+    private ToolTip toolTip1;
+    private Button cmdSort;
+    private Button cmdMakeFirst;
+    private Button cmdExport;
   }
 }

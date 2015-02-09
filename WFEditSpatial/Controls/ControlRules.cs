@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using libsbmlcs;
+﻿using libsbmlcs;
 
 namespace EditSpatial.Controls
 {
@@ -21,19 +20,18 @@ namespace EditSpatial.Controls
       return "AssignmentRule";
     }
 
-
     public void InitializeFrom(SBMLDocument document)
     {
       grid.Rows.Clear();
       Current = document;
       if (document == null || document.getModel() == null) return;
 
-      libsbmlcs.Model model = document.getModel();
+      var model = document.getModel();
 
 
       for (long i = 0; i < model.getNumRules(); ++i)
       {
-        Rule current = model.getRule(i);
+        var current = model.getRule(i);
         grid.Rows.Add(current.getVariable(),
           current.isSetMath() ? libsbml.formulaToL3String(current.getMath()) : "",
           RuleName(current.getTypeCode()));
@@ -52,15 +50,15 @@ namespace EditSpatial.Controls
     public override void SaveChanges()
     {
       if (Current == null) return;
-      for (int i = 0; i < grid.Rows.Count; ++i)
+      for (var i = 0; i < grid.Rows.Count; ++i)
       {
-        DataGridViewRow row = grid.Rows[i];
+        var row = grid.Rows[i];
         var value = (string) row.Cells[1].Value;
         if (string.IsNullOrEmpty(value)) continue;
-        ASTNode node = libsbml.parseL3Formula(value);
+        var node = libsbml.parseL3Formula(value);
         if (node == null) continue;
 
-        Rule current = Current.getModel().getRuleByVariable((string) row.Cells[0].Value);
+        var current = Current.getModel().getRuleByVariable((string) row.Cells[0].Value);
         if (current == null)
         {
           current = CreateRule(Current.getModel(), (string) row.Cells[2].Value);

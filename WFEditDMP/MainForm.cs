@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using LibEditSpatial.Model;
 using WFEditDMP.Forms;
@@ -27,9 +25,10 @@ namespace WFEditDMP
         DmpPalette.Default = args;
       };
 
-      dmpRenderControl1.IndexLocationChanged += (o, args) => { lblPosition.Text = string.Format("nx={0}, ny={1}", args.X, args.Y); };
-      dmpRenderControl1.DataLocationChanged += (o, args) => { lblData.Text = string.Format("x={0}, y={1}", args.X, args.Y); };
-
+      dmpRenderControl1.IndexLocationChanged +=
+        (o, args) => { lblPosition.Text = string.Format("nx={0}, ny={1}", args.X, args.Y); };
+      dmpRenderControl1.DataLocationChanged +=
+        (o, args) => { lblData.Text = string.Format("x={0}, y={1}", args.X, args.Y); };
     }
 
     public DmpModel Model { get; set; }
@@ -46,7 +45,7 @@ namespace WFEditDMP
     }
 
     private void UpdateUI()
-    {     
+    {
       if (Model == null)
       {
         SetTitle(null);
@@ -57,10 +56,10 @@ namespace WFEditDMP
       lblSize.Text = string.Format("{0} x {1}", Model.Columns, Model.Rows);
       txtCols.Text = Model.Columns.ToString();
       txtRows.Text = Model.Rows.ToString();
-      txtMinX.Text = Model.MinX.ToString();
-      txtMaxX.Text = Model.MaxX.ToString();
-      txtMinY.Text = Model.MinY.ToString();
-      txtMaxY.Text = Model.MaxY.ToString();
+      txtMinX.Text = Model.MinX.ToString(CultureInfo.InvariantCulture);
+      txtMaxX.Text = Model.MaxX.ToString(CultureInfo.InvariantCulture);
+      txtMinY.Text = Model.MinY.ToString(CultureInfo.InvariantCulture);
+      txtMaxY.Text = Model.MaxY.ToString(CultureInfo.InvariantCulture);
       dmpRenderControl1.LoadModel(Model);
       SetTitle(Model.FileName);
     }
@@ -124,7 +123,7 @@ namespace WFEditDMP
     private void SaveAs(string fileName)
     {
       if (Model == null) return;
-      Model.SaveAs(fileName);      
+      Model.SaveAs(fileName);
       UpdateUI();
     }
 
@@ -149,7 +148,7 @@ namespace WFEditDMP
       PaletteFiles = Directory.GetFiles(baseDirectory, "*.txt", SearchOption.TopDirectoryOnly);
       cmbPalettes.Items.Clear();
       cmbPalettes.Items.Add("Default");
-      foreach (string file in PaletteFiles)
+      foreach (var file in PaletteFiles)
       {
         cmbPalettes.Items.Add(Path.GetFileNameWithoutExtension(file));
       }
@@ -159,12 +158,12 @@ namespace WFEditDMP
     {
       ctrlPalette1.Palette = DmpPalette.Default;
 
-      LoadPalettes(Path.Combine( AppDomain.CurrentDomain.BaseDirectory, "Palettes"));
+      LoadPalettes(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Palettes"));
     }
 
     private void OnPaletteChanged(object sender, EventArgs e)
     {
-      int index = cmbPalettes.SelectedIndex;
+      var index = cmbPalettes.SelectedIndex;
 
       if (index < 0) return;
 

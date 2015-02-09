@@ -7,10 +7,7 @@ namespace LibEditSpatial.Model
 {
   public class DuneConfig
   {
-    public string FileName { get; set; }
-
     internal const string STR_GLOBAL = "Global";
-
     internal DomainConfig _DomainConfig;
     internal GlobalConfig _GlobalConfig;
     internal NewtonConfig _NewtonConfig;
@@ -24,9 +21,9 @@ namespace LibEditSpatial.Model
       Entries = new Dictionary<string, Dictionary<string, string>>();
     }
 
+    public string FileName { get; set; }
     public Dictionary<string, Dictionary<string, string>> Entries { get; set; }
 
-    
     public GlobalConfig GlobalConfig
     {
       get
@@ -38,7 +35,7 @@ namespace LibEditSpatial.Model
           else
             _GlobalConfig = GlobalConfig.Default;
         }
-       
+
         return _GlobalConfig;
       }
       set
@@ -49,7 +46,6 @@ namespace LibEditSpatial.Model
       }
     }
 
-    
     public NewtonConfig NewtonConfig
     {
       get
@@ -72,7 +68,6 @@ namespace LibEditSpatial.Model
       }
     }
 
-    
     public DomainConfig DomainConfig
     {
       get
@@ -95,7 +90,6 @@ namespace LibEditSpatial.Model
       }
     }
 
-    
     public TimeLoopConfig TimeConfig
     {
       get
@@ -148,7 +142,7 @@ namespace LibEditSpatial.Model
 
       foreach (var item in map)
       {
-        string val = item.Value.Trim();
+        var val = item.Value.Trim();
         if (!string.IsNullOrWhiteSpace(basedir) && val.StartsWith(basedir))
           val = val.Replace(basedir, "");
 
@@ -181,33 +175,32 @@ namespace LibEditSpatial.Model
       WriteSection(builder, "Timeloop", TimeConfig.ToDict(), baseDir);
       WriteSection(builder, "Domain", DomainConfig.ToDict(), baseDir);
       WriteSection(builder, "Reaction", Entries["Reaction"], baseDir);
-      foreach (string item in GetVariableKeys())
+      foreach (var item in GetVariableKeys())
         WriteSection(builder, item, Entries[item], baseDir);
       if (Entries.ContainsKey("Data"))
         WriteSection(builder, "Data", Entries["Data"], baseDir);
 
       File.WriteAllText(fileName, builder.ToString());
-      
+
       FileName = fileName;
     }
 
-
     public static DuneConfig FromFile(string filename)
     {
-      string[] lines = File.ReadAllLines(filename);
+      var lines = File.ReadAllLines(filename);
 
-      var result = new DuneConfig{FileName = filename};
+      var result = new DuneConfig {FileName = filename};
 
-      string current = STR_GLOBAL;
+      var current = STR_GLOBAL;
       var entries = new Dictionary<string, string>();
 
-      foreach (string line in lines)
+      foreach (var line in lines)
       {
         // skip comments
-        string trimmed = line.Trim();
+        var trimmed = line.Trim();
 
         // remove comment at the end
-        int commentIndex = trimmed.IndexOf("#");
+        var commentIndex = trimmed.IndexOf("#");
         if (commentIndex != -1)
         {
           trimmed = trimmed.Substring(0, commentIndex).Trim();
@@ -223,10 +216,10 @@ namespace LibEditSpatial.Model
           continue;
         }
 
-        string[] pair = trimmed.Split(new[] {'='}, StringSplitOptions.RemoveEmptyEntries);
+        var pair = trimmed.Split(new[] {'='}, StringSplitOptions.RemoveEmptyEntries);
         if (pair.Length > 0)
         {
-          string key = pair[0].Trim();
+          var key = pair[0].Trim();
           if (!string.IsNullOrWhiteSpace(key))
             if (pair.Length >= 2)
               entries[key] = pair[1].Trim();

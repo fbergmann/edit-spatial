@@ -12,6 +12,7 @@ namespace LibEditSpatial.Model
     public string TimeStepping { get; set; }
     public string ExplicitSolver { get; set; }
     public string ImplicitSolver { get; set; }
+    public string SBMLFile { get; set; }
 
     public static GlobalConfig Default
     {
@@ -41,7 +42,8 @@ namespace LibEditSpatial.Model
         SubSampling = dict.Get<int>("subsampling"),
         TimeStepping = dict.GetString("timestepping"),
         ExplicitSolver = dict.GetString("explicitsolver"),
-        ImplicitSolver = dict.GetString("implicitsolver")
+        ImplicitSolver = dict.GetString("implicitsolver"),
+        SBMLFile = dict.GetString("sbmlfile")
       };
 
       return result;
@@ -58,6 +60,7 @@ namespace LibEditSpatial.Model
       result["timestepping"] = TimeStepping;
       result["explicitsolver"] = ExplicitSolver;
       result["implicitsolver"] = ImplicitSolver;
+      result["sbmlfile"] = SBMLFile;
       return result;
     }
   }

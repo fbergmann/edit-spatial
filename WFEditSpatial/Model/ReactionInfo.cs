@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using libsbmlcs;
 
 namespace EditSpatial.Model
 {
-  public class ReactionInfo
+  public class ReactionInfo : IDisposable
   {
     public ReactionInfo(Reaction reaction)
     {
@@ -19,7 +20,6 @@ namespace EditSpatial.Model
 
     public Reaction Reaction { get; set; }
     public libsbmlcs.Model Model { get; set; }
-
     public List<SpeciesReferenceInfo> Reactants { get; set; }
     public List<SpeciesReferenceInfo> Products { get; set; }
 
@@ -27,7 +27,7 @@ namespace EditSpatial.Model
     {
       get
       {
-        List<string> list = Reactants.Select(sri => sri.Compartment).ToList();
+        var list = Reactants.Select(sri => sri.Compartment).ToList();
         list.AddRange(Products.Select(sri => sri.Compartment).ToList());
         return list.Distinct().ToList();
       }
@@ -35,12 +35,12 @@ namespace EditSpatial.Model
 
     private void AnalyzeReaction()
     {
-      for (int i = 0; i < Reaction.getNumReactants(); ++i)
+      for (var i = 0; i < Reaction.getNumReactants(); ++i)
       {
-        SpeciesReference reference = Reaction.getReactant(i);
+        var reference = Reaction.getReactant(i);
         if (reference != null && reference.isSetSpecies())
         {
-          Species species = Model.getSpecies(reference.getSpecies());
+          var species = Model.getSpecies(reference.getSpecies());
           if (species == null || !species.isSetCompartment()) continue;
           Reactants.Add(new SpeciesReferenceInfo
           {
@@ -51,12 +51,12 @@ namespace EditSpatial.Model
         }
       }
 
-      for (int i = 0; i < Reaction.getNumProducts(); ++i)
+      for (var i = 0; i < Reaction.getNumProducts(); ++i)
       {
-        SpeciesReference reference = Reaction.getProduct(i);
+        var reference = Reaction.getProduct(i);
         if (reference != null && reference.isSetSpecies())
         {
-          Species species = Model.getSpecies(reference.getSpecies());
+          var species = Model.getSpecies(reference.getSpecies());
           if (species == null || !species.isSetCompartment()) continue;
           Products.Add(new SpeciesReferenceInfo
           {
@@ -66,6 +66,12 @@ namespace EditSpatial.Model
           });
         }
       }
+    }
+
+    public void Dispose()
+    {
+      if (Model != null)
+      Model.Dispose();
     }
   }
 }

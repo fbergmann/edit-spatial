@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Controls
 {
   partial class ControlCoordinateComponents
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -94,9 +97,9 @@
 
     #endregion
 
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.TextBox txtCoordSystem;
-    private System.Windows.Forms.TableLayoutPanel tblLayout;
-    private System.Windows.Forms.Panel panel1;
+    private Label label1;
+    private TextBox txtCoordSystem;
+    private TableLayoutPanel tblLayout;
+    private Panel panel1;
   }
 }

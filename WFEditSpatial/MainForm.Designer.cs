@@ -1,11 +1,15 @@
-﻿namespace EditSpatial
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using EditSpatial.Controls;
+
+namespace EditSpatial
 {
   partial class MainForm
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -1104,93 +1108,93 @@
 
     #endregion
 
-    private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-    private System.Windows.Forms.StatusStrip statusStrip1;
-    private System.Windows.Forms.TabControl tabControl1;
-    private System.Windows.Forms.TabPage tabPage1;
-    private System.Windows.Forms.TabPage tabPage2;
-    private System.Windows.Forms.TabPage tabPage3;
-    private System.Windows.Forms.TabPage tabPage4;
-    private System.Windows.Forms.MenuStrip menuStrip1;
-    private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-    private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-    private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-    private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-    private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-    private System.Windows.Forms.ToolStrip toolStrip1;
-    private System.Windows.Forms.ToolStripButton newToolStripButton;
-    private System.Windows.Forms.ToolStripButton openToolStripButton;
-    private System.Windows.Forms.ToolStripButton saveToolStripButton;
-    private System.Windows.Forms.ToolStripButton printToolStripButton;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-    private System.Windows.Forms.ToolStripButton cutToolStripButton;
-    private System.Windows.Forms.ToolStripButton copyToolStripButton;
-    private System.Windows.Forms.ToolStripButton pasteToolStripButton;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-    private System.Windows.Forms.ToolStripButton helpToolStripButton;
-    private System.Windows.Forms.SplitContainer splitGeometry;
-    private System.Windows.Forms.TreeView treeSpatial;
-    private Controls.ControlDisplayNode controlDisplayNode1;
-    private Controls.ControlText txtSBML;
-    private System.Windows.Forms.SplitContainer splitInitial;
-    private System.Windows.Forms.TreeView treeCore;
-    private Controls.ControlDisplayNode controlDisplayNode2;
-    private Controls.ControlText txtJarnac;
-    private Controls.ControlCoordinateComponents controlCoordinateComponents1;
-    private Controls.ControlDomainTypes controlDomainTypes1;
-    private Controls.ControlDomains controlDomains1;
-    private Controls.ControlAdjacentDomains controlAdjacentDomains1;
-    private Controls.ControlAnalyticGeometry controlAnalyticGeometry1;
-    private Controls.ControlSampleFieldGeometry controlSampleFieldGeometry1;
-    private System.Windows.Forms.ToolStripMenuItem modelToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem showWarningsErrorsToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem mnuSBW;
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Button cmdApplyJarnac;
-    private System.Windows.Forms.ToolStripMenuItem toolExportMorpheus;
-    private Controls.ControlInitialAssignments controlInitialAssignments1;
-    private System.Windows.Forms.ToolStripMenuItem spatialWizardToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem mnuExportDune;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStripCore;
-    private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-    private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
-    private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-    private System.Windows.Forms.ToolStripMenuItem moveAssignmentRuleToInitialAssignmentToolStripMenuItem;
-    private Controls.ControlParameters controlParameters1;
-    private Controls.ControlSpecies controlSpecies1;
-    private Controls.ControlCompartment controlCompartment1;
-    private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
-    private System.Windows.Forms.ToolStripMenuItem editSpatialAnnotationToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-    private System.Windows.Forms.ToolStripButton cmdAkira;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStripSpatial;
-    private System.Windows.Forms.ToolStripMenuItem toolDeleteSpatial;
-    private System.Windows.Forms.ToolStripMenuItem mnuImport;
-    private Controls.ControlRules controlRules1;
-    private System.Windows.Forms.ToolStripMenuItem chkMultipleCompartments;
-    private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
-    private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
-    private System.Windows.Forms.ToolStripButton cmdPrepareDune;
-    private Controls.ControlMapCompartments controlMapCompartments1;
-    private System.Windows.Forms.ToolStripMenuItem toolAddAnalyticGeometry;
-    private System.Windows.Forms.ToolStripMenuItem toolAddSampleField;
+    private ToolStripContainer toolStripContainer1;
+    private StatusStrip statusStrip1;
+    private TabControl tabControl1;
+    private TabPage tabPage1;
+    private TabPage tabPage2;
+    private TabPage tabPage3;
+    private TabPage tabPage4;
+    private MenuStrip menuStrip1;
+    private ToolStripMenuItem fileToolStripMenuItem;
+    private ToolStripMenuItem newToolStripMenuItem;
+    private ToolStripMenuItem openToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator;
+    private ToolStripMenuItem saveToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator1;
+    private ToolStripMenuItem printToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator2;
+    private ToolStripMenuItem exitToolStripMenuItem;
+    private ToolStripMenuItem editToolStripMenuItem;
+    private ToolStripMenuItem undoToolStripMenuItem;
+    private ToolStripMenuItem redoToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator3;
+    private ToolStripMenuItem cutToolStripMenuItem;
+    private ToolStripMenuItem copyToolStripMenuItem;
+    private ToolStripMenuItem pasteToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator4;
+    private ToolStripMenuItem selectAllToolStripMenuItem;
+    private ToolStripMenuItem helpToolStripMenuItem;
+    private ToolStripMenuItem aboutToolStripMenuItem;
+    private ToolStrip toolStrip1;
+    private ToolStripButton newToolStripButton;
+    private ToolStripButton openToolStripButton;
+    private ToolStripButton saveToolStripButton;
+    private ToolStripButton printToolStripButton;
+    private ToolStripSeparator toolStripSeparator6;
+    private ToolStripButton cutToolStripButton;
+    private ToolStripButton copyToolStripButton;
+    private ToolStripButton pasteToolStripButton;
+    private ToolStripSeparator toolStripSeparator7;
+    private ToolStripButton helpToolStripButton;
+    private SplitContainer splitGeometry;
+    private TreeView treeSpatial;
+    private ControlDisplayNode controlDisplayNode1;
+    private ControlText txtSBML;
+    private SplitContainer splitInitial;
+    private TreeView treeCore;
+    private ControlDisplayNode controlDisplayNode2;
+    private ControlText txtJarnac;
+    private ControlCoordinateComponents controlCoordinateComponents1;
+    private ControlDomainTypes controlDomainTypes1;
+    private ControlDomains controlDomains1;
+    private ControlAdjacentDomains controlAdjacentDomains1;
+    private ControlAnalyticGeometry controlAnalyticGeometry1;
+    private ControlSampleFieldGeometry controlSampleFieldGeometry1;
+    private ToolStripMenuItem modelToolStripMenuItem;
+    private ToolStripMenuItem showWarningsErrorsToolStripMenuItem;
+    private ToolStripMenuItem mnuSBW;
+    private TableLayoutPanel tableLayoutPanel1;
+    private Panel panel1;
+    private Button cmdApplyJarnac;
+    private ToolStripMenuItem toolExportMorpheus;
+    private ControlInitialAssignments controlInitialAssignments1;
+    private ToolStripMenuItem spatialWizardToolStripMenuItem;
+    private ToolStripMenuItem mnuExportDune;
+    private ContextMenuStrip contextMenuStripCore;
+    private ToolStripMenuItem deleteToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator5;
+    private ToolStripMenuItem toolStripMenuItem1;
+    private ToolStripSeparator toolStripMenuItem2;
+    private ToolStripMenuItem moveAssignmentRuleToInitialAssignmentToolStripMenuItem;
+    private ControlParameters controlParameters1;
+    private ControlSpecies controlSpecies1;
+    private ControlCompartment controlCompartment1;
+    private ToolStripSeparator toolStripMenuItem3;
+    private ToolStripMenuItem editSpatialAnnotationToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator8;
+    private ToolStripButton cmdAkira;
+    private ContextMenuStrip contextMenuStripSpatial;
+    private ToolStripMenuItem toolDeleteSpatial;
+    private ToolStripMenuItem mnuImport;
+    private ControlRules controlRules1;
+    private ToolStripMenuItem chkMultipleCompartments;
+    private ToolStripSeparator toolStripMenuItem5;
+    private ToolStripMenuItem preferencesToolStripMenuItem;
+    private ToolStripButton cmdPrepareDune;
+    private ControlMapCompartments controlMapCompartments1;
+    private ToolStripMenuItem toolAddAnalyticGeometry;
+    private ToolStripMenuItem toolAddSampleField;
   }
 }
 

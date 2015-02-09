@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Forms
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Forms
 {
   partial class FormSettings
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -33,6 +36,9 @@
       this.cmdOK = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.panel2 = new System.Windows.Forms.Panel();
+      this.cmdBrowseDefaultDir = new System.Windows.Forms.Button();
+      this.txtDefaultDir = new System.Windows.Forms.TextBox();
+      this.label4 = new System.Windows.Forms.Label();
       this.chkIgnoreCompartments = new System.Windows.Forms.CheckBox();
       this.cmdBrowseDune = new System.Windows.Forms.Button();
       this.txtDuneDir = new System.Windows.Forms.TextBox();
@@ -43,9 +49,6 @@
       this.cmdBrowseCygwin = new System.Windows.Forms.Button();
       this.txtCygwin = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
-      this.cmdBrowseDefaultDir = new System.Windows.Forms.Button();
-      this.txtDefaultDir = new System.Windows.Forms.TextBox();
-      this.label4 = new System.Windows.Forms.Label();
       this.tableLayoutPanel1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.panel2.SuspendLayout();
@@ -119,12 +122,44 @@
       this.panel2.Size = new System.Drawing.Size(618, 397);
       this.panel2.TabIndex = 1;
       // 
+      // cmdBrowseDefaultDir
+      // 
+      this.cmdBrowseDefaultDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdBrowseDefaultDir.Location = new System.Drawing.Point(534, 94);
+      this.cmdBrowseDefaultDir.Name = "cmdBrowseDefaultDir";
+      this.cmdBrowseDefaultDir.Size = new System.Drawing.Size(75, 23);
+      this.cmdBrowseDefaultDir.TabIndex = 12;
+      this.cmdBrowseDefaultDir.Text = "...";
+      this.cmdBrowseDefaultDir.UseVisualStyleBackColor = true;
+      this.cmdBrowseDefaultDir.Click += new System.EventHandler(this.cmdBrowseDefaultDir_Click);
+      // 
+      // txtDefaultDir
+      // 
+      this.txtDefaultDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtDefaultDir.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+      this.txtDefaultDir.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
+      this.txtDefaultDir.Location = new System.Drawing.Point(87, 96);
+      this.txtDefaultDir.Name = "txtDefaultDir";
+      this.txtDefaultDir.Size = new System.Drawing.Size(441, 20);
+      this.txtDefaultDir.TabIndex = 11;
+      this.txtDefaultDir.TextChanged += new System.EventHandler(this.txtDefaultDir_TextChanged);
+      // 
+      // label4
+      // 
+      this.label4.AutoSize = true;
+      this.label4.Location = new System.Drawing.Point(19, 99);
+      this.label4.Name = "label4";
+      this.label4.Size = new System.Drawing.Size(63, 13);
+      this.label4.TabIndex = 10;
+      this.label4.Text = "Default Dir: ";
+      // 
       // chkIgnoreCompartments
       // 
       this.chkIgnoreCompartments.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.chkIgnoreCompartments.AutoSize = true;
-      this.chkIgnoreCompartments.Location = new System.Drawing.Point(9, 135);
+      this.chkIgnoreCompartments.Location = new System.Drawing.Point(87, 132);
       this.chkIgnoreCompartments.Name = "chkIgnoreCompartments";
       this.chkIgnoreCompartments.Size = new System.Drawing.Size(340, 17);
       this.chkIgnoreCompartments.TabIndex = 9;
@@ -228,38 +263,6 @@
       this.label1.TabIndex = 0;
       this.label1.Text = "Cygwin Dir: ";
       // 
-      // cmdBrowseDefaultDir
-      // 
-      this.cmdBrowseDefaultDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdBrowseDefaultDir.Location = new System.Drawing.Point(534, 94);
-      this.cmdBrowseDefaultDir.Name = "cmdBrowseDefaultDir";
-      this.cmdBrowseDefaultDir.Size = new System.Drawing.Size(75, 23);
-      this.cmdBrowseDefaultDir.TabIndex = 12;
-      this.cmdBrowseDefaultDir.Text = "...";
-      this.cmdBrowseDefaultDir.UseVisualStyleBackColor = true;
-      this.cmdBrowseDefaultDir.Click += new System.EventHandler(this.cmdBrowseDefaultDir_Click);
-      // 
-      // txtDefaultDir
-      // 
-      this.txtDefaultDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.txtDefaultDir.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-      this.txtDefaultDir.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystemDirectories;
-      this.txtDefaultDir.Location = new System.Drawing.Point(87, 96);
-      this.txtDefaultDir.Name = "txtDefaultDir";
-      this.txtDefaultDir.Size = new System.Drawing.Size(441, 20);
-      this.txtDefaultDir.TabIndex = 11;
-      this.txtDefaultDir.TextChanged += new System.EventHandler(this.txtDefaultDir_TextChanged);
-      // 
-      // label4
-      // 
-      this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(19, 99);
-      this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(63, 13);
-      this.label4.TabIndex = 10;
-      this.label4.Text = "Default Dir: ";
-      // 
       // FormSettings
       // 
       this.AcceptButton = this.cmdOK;
@@ -282,23 +285,23 @@
 
     #endregion
 
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Button cmdOK;
-    private System.Windows.Forms.Button cmdCancel;
-    private System.Windows.Forms.Panel panel2;
-    private System.Windows.Forms.Button cmdBrowsePV;
-    private System.Windows.Forms.TextBox txtParaviewDir;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Button cmdBrowseCygwin;
-    private System.Windows.Forms.TextBox txtCygwin;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.CheckBox chkIgnoreCompartments;
-    private System.Windows.Forms.Button cmdBrowseDune;
-    private System.Windows.Forms.TextBox txtDuneDir;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.Button cmdBrowseDefaultDir;
-    private System.Windows.Forms.TextBox txtDefaultDir;
-    private System.Windows.Forms.Label label4;
+    private TableLayoutPanel tableLayoutPanel1;
+    private Panel panel1;
+    private Button cmdOK;
+    private Button cmdCancel;
+    private Panel panel2;
+    private Button cmdBrowsePV;
+    private TextBox txtParaviewDir;
+    private Label label2;
+    private Button cmdBrowseCygwin;
+    private TextBox txtCygwin;
+    private Label label1;
+    private CheckBox chkIgnoreCompartments;
+    private Button cmdBrowseDune;
+    private TextBox txtDuneDir;
+    private Label label3;
+    private Button cmdBrowseDefaultDir;
+    private TextBox txtDefaultDir;
+    private Label label4;
   }
 }

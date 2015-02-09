@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using EditSpatial.Model;
 
@@ -13,12 +6,23 @@ namespace EditSpatial.Forms
 {
   public partial class FormSettings : Form
   {
+    private EditSpatialSettings _Settings;
+
     public FormSettings()
     {
       InitializeComponent();
     }
 
-    private EditSpatialSettings _Settings;
+    public EditSpatialSettings Settings
+    {
+      get { return _Settings; }
+      set
+      {
+        _Settings = value;
+        UpdateUI();
+      }
+    }
+
     private void UpdateUI()
     {
       if (_Settings == null) return;
@@ -29,21 +33,6 @@ namespace EditSpatial.Forms
       txtDefaultDir.Text = _Settings.DefaultDir;
       chkIgnoreCompartments.Checked = _Settings.IgnoreMultiCompartments;
     }
-
-    public EditSpatialSettings Settings
-    {
-      get
-      {
-        return _Settings;
-      }
-      set
-      {
-        _Settings = value;
-        UpdateUI();
-      }
-    }
-
- 
 
     private void OnBrowseCygwin(object sender, EventArgs e)
     {
@@ -76,21 +65,18 @@ namespace EditSpatial.Forms
     {
       if (_Settings == null) return;
       _Settings.ParaViewDir = txtParaviewDir.Text;
-
     }
 
     private void txtCygwin_TextChanged(object sender, EventArgs e)
     {
       if (_Settings == null) return;
       _Settings.CygwinDir = txtCygwin.Text;
-
     }
 
     private void chkIgnoreCompartments_CheckedChanged(object sender, EventArgs e)
     {
       if (_Settings == null) return;
       _Settings.IgnoreMultiCompartments = chkIgnoreCompartments.Checked;
-
     }
 
     private void txtDefaultDir_TextChanged(object sender, EventArgs e)

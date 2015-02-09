@@ -1,4 +1,6 @@
-﻿using LibEditSpatial.Controls;
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using LibEditSpatial.Controls;
 
 namespace WFDuneRunner
 {
@@ -7,7 +9,7 @@ namespace WFDuneRunner
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -715,63 +717,63 @@ namespace WFDuneRunner
 
     #endregion
 
-    private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-    private System.Windows.Forms.StatusStrip statusStrip1;
-    private System.Windows.Forms.MenuStrip menuStrip1;
-    private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-    private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-    private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-    private System.Windows.Forms.ToolStrip toolStrip1;
-    private System.Windows.Forms.ToolStripButton newToolStripButton;
-    private System.Windows.Forms.ToolStripButton openToolStripButton;
-    private System.Windows.Forms.ToolStripButton saveToolStripButton;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-    private System.Windows.Forms.ToolStripButton helpToolStripButton;
-    private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.TabControl tabControl1;
-    private System.Windows.Forms.TabPage tabTime;
-    private System.Windows.Forms.TabPage tabDomain;
-    private System.Windows.Forms.TabPage tabNewton;
-    private System.Windows.Forms.TabControl tabControl2;
-    private System.Windows.Forms.TabPage tabVariables;
-    private System.Windows.Forms.TabPage tabParameters;
-    private System.Windows.Forms.DataGridView gridParameters;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colName;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
+    private ToolStripContainer toolStripContainer1;
+    private StatusStrip statusStrip1;
+    private MenuStrip menuStrip1;
+    private ToolStripMenuItem fileToolStripMenuItem;
+    private ToolStripMenuItem newToolStripMenuItem;
+    private ToolStripMenuItem openToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator;
+    private ToolStripMenuItem saveToolStripMenuItem;
+    private ToolStripMenuItem saveAsToolStripMenuItem;
+    private ToolStripSeparator toolStripSeparator1;
+    private ToolStripMenuItem exitToolStripMenuItem;
+    private ToolStripMenuItem helpToolStripMenuItem;
+    private ToolStripMenuItem aboutToolStripMenuItem;
+    private ToolStrip toolStrip1;
+    private ToolStripButton newToolStripButton;
+    private ToolStripButton openToolStripButton;
+    private ToolStripButton saveToolStripButton;
+    private ToolStripSeparator toolStripSeparator6;
+    private ToolStripButton helpToolStripButton;
+    private SplitContainer splitContainer1;
+    private TabControl tabControl1;
+    private TabPage tabTime;
+    private TabPage tabDomain;
+    private TabPage tabNewton;
+    private TabControl tabControl2;
+    private TabPage tabVariables;
+    private TabPage tabParameters;
+    private DataGridView gridParameters;
+    private DataGridViewTextBoxColumn colName;
+    private DataGridViewTextBoxColumn colValue;
     private CtrlTime ctrlTime1;
     private CtrlDomain ctrlDomain1;
-    private System.Windows.Forms.DataGridView gridVariables;
+    private DataGridView gridVariables;
     private CtrlNewton ctrlNewton1;
-    private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-    private System.Windows.Forms.ToolStripButton cmdRun;
-    private System.Windows.Forms.TabPage tabGlobal;
+    private ToolStripSeparator toolStripSeparator2;
+    private ToolStripButton cmdRun;
+    private TabPage tabGlobal;
     private CtrlGlobal ctrlGlobal1;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colVarname;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colDiffusion;
-    private System.Windows.Forms.DataGridViewComboBoxColumn colBcType;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBCMinX;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBCmaxX;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBCminY;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBCmaxY;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colData;
-    private System.Windows.Forms.DataGridViewButtonColumn colEdit;
-    private System.Windows.Forms.DataGridViewButtonColumn colBrowse;
-    private System.Windows.Forms.TabPage tabCompartments;
-    private System.Windows.Forms.DataGridView gridCompartments;
-    private System.Windows.Forms.Button cmdClearAssignments;
-    private System.Windows.Forms.Button cmdAssignCompartments;
-    private System.Windows.Forms.Button cmdInitFromSBML;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colCompartment;
-    private System.Windows.Forms.DataGridViewTextBoxColumn Filename;
-    private System.Windows.Forms.DataGridViewButtonColumn colBrowseFile;
-    private System.Windows.Forms.DataGridViewButtonColumn colViewDmp;
+    private DataGridViewTextBoxColumn colVarname;
+    private DataGridViewTextBoxColumn colDiffusion;
+    private DataGridViewComboBoxColumn colBcType;
+    private DataGridViewTextBoxColumn colBCMinX;
+    private DataGridViewTextBoxColumn colBCmaxX;
+    private DataGridViewTextBoxColumn colBCminY;
+    private DataGridViewTextBoxColumn colBCmaxY;
+    private DataGridViewTextBoxColumn colData;
+    private DataGridViewButtonColumn colEdit;
+    private DataGridViewButtonColumn colBrowse;
+    private TabPage tabCompartments;
+    private DataGridView gridCompartments;
+    private Button cmdClearAssignments;
+    private Button cmdAssignCompartments;
+    private Button cmdInitFromSBML;
+    private DataGridViewTextBoxColumn colCompartment;
+    private DataGridViewTextBoxColumn Filename;
+    private DataGridViewButtonColumn colBrowseFile;
+    private DataGridViewButtonColumn colViewDmp;
   }
 }
 

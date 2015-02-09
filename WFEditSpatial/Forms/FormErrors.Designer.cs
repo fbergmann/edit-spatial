@@ -1,11 +1,15 @@
-﻿namespace EditSpatial.Forms
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+using EditSpatial.Controls;
+
+namespace EditSpatial.Forms
 {
   partial class FormErrors
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -161,13 +165,13 @@
 
     #endregion
 
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Panel panel2;
-    private Controls.ControlText controlText1;
-    private System.Windows.Forms.Button cmdClose;
-    private System.Windows.Forms.Button cmdValidate;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.Button cmdFixCommon;
+    private TableLayoutPanel tableLayoutPanel1;
+    private Panel panel1;
+    private Panel panel2;
+    private ControlText controlText1;
+    private Button cmdClose;
+    private Button cmdValidate;
+    private Label label1;
+    private Button cmdFixCommon;
   }
 }

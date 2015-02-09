@@ -24,13 +24,9 @@ namespace EditSpatial.Model
     public double Ymax { get; set; }
     public double Zmin { get; set; }
     public double Zmax { get; set; }
-
     public List<string> UsedSymbols { get; set; }
-
     public List<AnalyticSettings> AnalyticDomains { get; set; }
-
     public GeometryType Type { get; set; }
-
     public bool WrapOutside { get; set; }
   }
 }

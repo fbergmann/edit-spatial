@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using EditSpatial.Converter;
-using libSbl2SBML;
 using libsbmlcs;
+using libSbl2SBML;
 using SBMLSupport;
 
 namespace EditSpatial.Model
@@ -15,19 +15,6 @@ namespace EditSpatial.Model
   public class SpatialModel
   {
     internal static CustomSpatialValidator CustomSpatialValidator = new CustomSpatialValidator();
-
-    public void ExportDuneSBML(string filename)
-    {
-      try
-      {
-        var converter = new DuneConverter(Document);
-        File.WriteAllText(filename, converter.ToSBML());
-      }
-      catch 
-      {
-        
-      }
-    }
 
     public SpatialModel()
     {
@@ -91,6 +78,18 @@ namespace EditSpatial.Model
       get { return Document != null && Document.getModel() != null; }
     }
 
+    public void ExportDuneSBML(string filename)
+    {
+      try
+      {
+        var converter = new DuneConverter(Document);
+        File.WriteAllText(filename, converter.ToSBML());
+      }
+      catch
+      {
+      }
+    }
+
     private double GetBoundaryMaxValue(int val, double defaultValue = 0)
     {
       if (val >= Geometry.getNumCoordinateComponents()) return defaultValue;
@@ -120,11 +119,10 @@ namespace EditSpatial.Model
       return model;
     }
 
-
     public static SpatialModel FromJarnac(string content)
     {
       NOM.Namespaces = new List<string>();
-      TModel model = TModel.ReadModel(content);
+      var model = TModel.ReadModel(content);
       model.RemoveAnnotation();
       model.RemoveNotes();
       return FromString(model.toSBML(false));
@@ -172,14 +170,13 @@ namespace EditSpatial.Model
       }
     }
 
-
     public void MoveAllRulesToAssignments()
     {
       if (Document == null || Document.getModel() == null)
         return;
 
-      libsbmlcs.Model model = Document.getModel();
-      for (int i = (int) model.getNumRules() - 1; i >= 0; i--)
+      var model = Document.getModel();
+      for (var i = (int) model.getNumRules() - 1; i >= 0; i--)
       {
         var current = model.getRule(i) as AssignmentRule;
         if (current == null) continue;
@@ -189,10 +186,9 @@ namespace EditSpatial.Model
       OnModelChanged();
     }
 
-
     public bool FixCommonErrors()
     {
-      bool result = false;
+      var result = false;
 
       if (Document == null) return result;
 
@@ -201,17 +197,17 @@ namespace EditSpatial.Model
 
       if (Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) == 0) return result;
 
-      for (int i = 0; i < Document.getNumErrors(); ++i)
+      for (var i = 0; i < Document.getNumErrors(); ++i)
       {
-        SBMLError current = Document.getError(i);
-        long id = current.getErrorId();
-        string message = current.getMessage();
+        var current = Document.getError(i);
+        var id = current.getErrorId();
+        var message = current.getMessage();
 
         switch (current.getErrorId())
         {
           case 99109:
           {
-            SBasePlugin plugin = Document.getPlugin("req");
+            var plugin = Document.getPlugin("req");
             if (plugin == null) break;
             Document.setPackageRequired("req", false);
             result = true;
@@ -219,9 +215,9 @@ namespace EditSpatial.Model
           }
           case 20517:
           {
-            for (int j = 0; j < Document.getModel().getNumCompartments(); ++j)
+            for (var j = 0; j < Document.getModel().getNumCompartments(); ++j)
             {
-              Compartment comp = Document.getModel().getCompartment(j);
+              var comp = Document.getModel().getCompartment(j);
               if (!comp.isSetConstant())
                 comp.setConstant(true);
             }
@@ -230,9 +226,9 @@ namespace EditSpatial.Model
           }
           case 20623:
           {
-            for (int j = 0; j < Document.getModel().getNumSpecies(); ++j)
+            for (var j = 0; j < Document.getModel().getNumSpecies(); ++j)
             {
-              Species species = Document.getModel().getSpecies(j);
+              var species = Document.getModel().getSpecies(j);
               if (!species.isSetConstant())
                 species.setConstant(false);
             }
@@ -242,18 +238,18 @@ namespace EditSpatial.Model
 
           case 21116:
           {
-            for (int j = 0; j < Document.getModel().getNumReactions(); ++j)
+            for (var j = 0; j < Document.getModel().getNumReactions(); ++j)
             {
-              Reaction reaction = Document.getModel().getReaction(j);
-              for (int k = 0; k < reaction.getNumProducts(); ++k)
+              var reaction = Document.getModel().getReaction(j);
+              for (var k = 0; k < reaction.getNumProducts(); ++k)
               {
-                SpeciesReference reference = reaction.getProduct(k);
+                var reference = reaction.getProduct(k);
                 if (!reference.isSetConstant())
                   reference.setConstant(true);
               }
-              for (int k = 0; k < reaction.getNumReactants(); ++k)
+              for (var k = 0; k < reaction.getNumReactants(); ++k)
               {
-                SpeciesReference reference = reaction.getReactant(k);
+                var reference = reaction.getReactant(k);
                 if (!reference.isSetConstant())
                   reference.setConstant(true);
               }
@@ -264,9 +260,9 @@ namespace EditSpatial.Model
 
           case 21110:
           {
-            for (int j = 0; j < Document.getModel().getNumReactions(); ++j)
+            for (var j = 0; j < Document.getModel().getNumReactions(); ++j)
             {
-              Reaction reaction = Document.getModel().getReaction(j);
+              var reaction = Document.getModel().getReaction(j);
               if (!reaction.isSetFast())
                 reaction.setFast(false);
               if (!reaction.isSetReversible())
@@ -278,9 +274,9 @@ namespace EditSpatial.Model
 
           case 20706:
           {
-            for (int j = 0; j < Document.getModel().getNumParameters(); ++j)
+            for (var j = 0; j < Document.getModel().getNumParameters(); ++j)
             {
-              Parameter parameter = Document.getModel().getParameter(j);
+              var parameter = Document.getModel().getParameter(j);
               if (!parameter.isSetConstant())
                 parameter.setConstant(false);
             }
@@ -292,12 +288,12 @@ namespace EditSpatial.Model
           {
             // have both rule and reaction on species this error is there in old versions of 
             // vcell code, that would export initial assignments as assignment rules
-            Match match = Regex.Match(message.Split(new[] {'\n'})[2],
+            var match = Regex.Match(message.Split('\n')[2],
               ".*'(?<speciesId>\\w+?)'.*'(?<reactionId>\\w+?)'.*",
               RegexOptions.ExplicitCapture);
             if (match.Success)
             {
-              string speciesId = match.Groups["speciesId"].Value;
+              var speciesId = match.Groups["speciesId"].Value;
 
               Document.getModel().MoveRuleToAssignment(speciesId);
               result = true;
@@ -306,18 +302,18 @@ namespace EditSpatial.Model
           }
           case 21121:
           {
-            Match match = Regex.Match(message, ".*'(?<speciesId>\\w+?)'.*'(?<reactionId>\\w+?)'.*",
+            var match = Regex.Match(message, ".*'(?<speciesId>\\w+?)'.*'(?<reactionId>\\w+?)'.*",
               RegexOptions.ExplicitCapture);
             if (match.Success)
             {
-              string speciesId = match.Groups["speciesId"].Value;
-              string reactionId = match.Groups["reactionId"].Value;
-              Reaction reaction = Document.getModel().getReaction(reactionId);
+              var speciesId = match.Groups["speciesId"].Value;
+              var reactionId = match.Groups["reactionId"].Value;
+              var reaction = Document.getModel().getReaction(reactionId);
               if (reaction != null)
               {
                 if (reaction.getModifier(speciesId) == null)
                 {
-                  ModifierSpeciesReference modifier = reaction.createModifier();
+                  var modifier = reaction.createModifier();
                   modifier.setSpecies(speciesId);
                   result = true;
                 }
@@ -331,18 +327,18 @@ namespace EditSpatial.Model
           case 99303:
           {
             // remove the unitdefinition referenced by an element
-            Match match = Regex.Match(message, ".*<(?<type>\\w+?)>.*'(?<id>\\w+?)'.*",
+            var match = Regex.Match(message, ".*<(?<type>\\w+?)>.*'(?<id>\\w+?)'.*",
               RegexOptions.ExplicitCapture);
             if (match.Success)
             {
-              string type = match.Groups["type"].Value;
-              string elementId = match.Groups["id"].Value;
+              var type = match.Groups["type"].Value;
+              var elementId = match.Groups["id"].Value;
 
               switch (type)
               {
                 case "parameter":
                 {
-                  Parameter param = Document.getModel().getParameter(elementId);
+                  var param = Document.getModel().getParameter(elementId);
                   if (param != null)
                   {
                     param.unsetUnits();
@@ -378,37 +374,37 @@ namespace EditSpatial.Model
     {
       if (Document == null || !IsSpatial || Geometry == null) return;
 
-      long numCooords = Geometry.getNumCoordinateComponents();
+      var numCooords = Geometry.getNumCoordinateComponents();
 
       var dict = new Dictionary<string, List<Tuple<int, Parameter>>>();
 
-      for (int i = 0; i < Document.getModel().getNumParameters(); ++i)
+      for (var i = 0; i < Document.getModel().getNumParameters(); ++i)
       {
-        Parameter current = Document.getModel().getParameter(i);
+        var current = Document.getModel().getParameter(i);
         if (current == null) continue;
         var plug = current.getPlugin("spatial") as SpatialParameterPlugin;
         if (plug == null) continue;
         if (plug.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
-        DiffusionCoefficient diff = plug.getDiffusionCoefficient();
+        var diff = plug.getDiffusionCoefficient();
         if (diff == null || !diff.isSetCoordinateIndex()) continue;
         if (!dict.ContainsKey(diff.getVariable()))
           dict[diff.getVariable()] = new List<Tuple<int, Parameter>>();
         dict[diff.getVariable()].Add(new Tuple<int, Parameter>((int) diff.getCoordinateIndex(), current));
       }
 
-      foreach (string key in dict.Keys)
+      foreach (var key in dict.Keys)
       {
-        List<Tuple<int, Parameter>> current = dict[key];
+        var current = dict[key];
         if (current == null || current.Count == 0 || current.Count == numCooords) continue;
 
         foreach (var entry in current)
         {
-          Parameter param = entry.Item2;
+          var param = entry.Item2;
           if (param == null) continue;
           var plug = param.getPlugin("spatial") as SpatialParameterPlugin;
           if (plug == null) continue;
           if (plug.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
-          DiffusionCoefficient diff = plug.getDiffusionCoefficient();
+          var diff = plug.getDiffusionCoefficient();
           if (diff == null || !diff.isSetCoordinateIndex()) continue;
           diff.unsetCoordinateIndex();
         }
@@ -451,11 +447,11 @@ namespace EditSpatial.Model
 
       if (!ConvertToL3()) return false;
 
-      libsbmlcs.Model model = Document.getModel();
+      var model = Document.getModel();
       var plugin = (SpatialModelPlugin) model.getPlugin("spatial");
       if (plugin == null)
         return false;
-      Geometry geometry = plugin.getGeometry();
+      var geometry = plugin.getGeometry();
       if (geometry == null)
         return false;
 
@@ -480,15 +476,15 @@ namespace EditSpatial.Model
       if (info.CompartmentIds.Count == 2)
       {
         // straight transport
-        string comp1Id = info.CompartmentIds[0];
-        Compartment comp1 = model.getCompartment(comp1Id);
+        var comp1Id = info.CompartmentIds[0];
+        var comp1 = model.getCompartment(comp1Id);
         if (comp1 == null || comp1.getSpatialDimensions() == 2) return;
-        string comp2Id = info.CompartmentIds[1];
-        Compartment comp2 = model.getCompartment(comp2Id);
+        var comp2Id = info.CompartmentIds[1];
+        var comp2 = model.getCompartment(comp2Id);
         if (comp2 == null || comp2.getSpatialDimensions() == 2) return;
 
-        string memId = String.Format("mem_{0}_{1}", comp2Id, comp1Id);
-        Compartment memComp = model.getCompartment(memId);
+        var memId = String.Format("mem_{0}_{1}", comp2Id, comp1Id);
+        var memComp = model.getCompartment(memId);
         if (memComp == null)
         {
           memId = String.Format("mem_{0}_{1}", comp1Id, comp2Id);
@@ -505,32 +501,32 @@ namespace EditSpatial.Model
         }
 
         var math = new ASTNode(reaction.getKineticLaw().getMath());
-        Reaction react1 = model.createReaction();
+        var react1 = model.createReaction();
         react1.initDefaults();
         react1.setReversible(reaction.getReversible());
         react1.setId(String.Format("mem_{0}_{1}", comp1Id, reaction.getId()));
 
         var react2builder = new StringBuilder("1");
-        Reaction react2 = model.createReaction();
+        var react2 = model.createReaction();
         react2.initDefaults();
         react2.setReversible(reaction.getReversible());
         react2.setId(String.Format("mem_{0}_{1}", comp2Id, reaction.getId()));
 
 
-        for (int i = 0; i < reaction.getNumReactants(); ++i)
+        for (var i = 0; i < reaction.getNumReactants(); ++i)
         {
-          SpeciesReference reference = reaction.getReactant(i);
-          Species species = model.getSpecies(reference.getSpecies());
+          var reference = reaction.getReactant(i);
+          var species = model.getSpecies(reference.getSpecies());
           if (species.getCompartment() == comp1Id)
           {
-            SpeciesReference newRef = react1.createReactant();
+            var newRef = react1.createReactant();
             newRef.setSpecies(reference.getSpecies());
             newRef.setStoichiometry(reference.getStoichiometry());
           }
           else
           {
-            string newId = "mem_" + species.getId();
-            Species newSpecies = model.getSpecies(newId);
+            var newId = "mem_" + species.getId();
+            var newSpecies = model.getSpecies(newId);
             if (newSpecies == null)
             {
               newSpecies = model.createSpecies();
@@ -541,7 +537,7 @@ namespace EditSpatial.Model
               newSpecies.setInitialConcentration(0);
             }
 
-            SpeciesReference newRef = react2.createProduct();
+            var newRef = react2.createProduct();
             newRef.setSpecies(newSpecies.getId());
             newRef.setStoichiometry(reference.getStoichiometry());
 
@@ -555,20 +551,20 @@ namespace EditSpatial.Model
         }
 
 
-        for (int i = 0; i < reaction.getNumProducts(); ++i)
+        for (var i = 0; i < reaction.getNumProducts(); ++i)
         {
-          SpeciesReference reference = reaction.getProduct(i);
-          Species species = model.getSpecies(reference.getSpecies());
+          var reference = reaction.getProduct(i);
+          var species = model.getSpecies(reference.getSpecies());
           if (species.getCompartment() == comp1Id)
           {
-            SpeciesReference newRef = react1.createProduct();
+            var newRef = react1.createProduct();
             newRef.setSpecies(species.getId());
             newRef.setStoichiometry(reference.getStoichiometry());
           }
           else
           {
-            string newId = "mem_" + species.getId();
-            Species newSpecies = model.getSpecies(newId);
+            var newId = "mem_" + species.getId();
+            var newSpecies = model.getSpecies(newId);
             if (newSpecies == null)
             {
               newSpecies = model.createSpecies();
@@ -579,7 +575,7 @@ namespace EditSpatial.Model
               newSpecies.setInitialConcentration(0);
             }
 
-            SpeciesReference newRef = react1.createProduct();
+            var newRef = react1.createProduct();
             newRef.setSpecies(newSpecies.getId());
             newRef.setStoichiometry(reference.getStoichiometry());
 
@@ -595,14 +591,14 @@ namespace EditSpatial.Model
           }
         }
 
-        KineticLaw law = react2.createKineticLaw();
+        var law = react2.createKineticLaw();
         law.setFormula(react2builder.ToString());
 
         law = react1.createKineticLaw();
-        for (int l = 0; l < reaction.getKineticLaw().getNumLocalParameters(); ++l)
+        for (var l = 0; l < reaction.getKineticLaw().getNumLocalParameters(); ++l)
         {
-          Parameter param = reaction.getKineticLaw().getParameter(l);
-          Parameter newParam = law.createParameter();
+          var param = reaction.getKineticLaw().getParameter(l);
+          var newParam = law.createParameter();
           newParam.initDefaults();
           newParam.setId(param.getId());
           newParam.setValue(param.getValue());
@@ -626,10 +622,10 @@ namespace EditSpatial.Model
     /// <param name="model">the model to check</param>
     internal void CorrectCompartmentsAndTransport(libsbmlcs.Model model)
     {
-      for (int i = (int) model.getNumReactions() - 1; i >= 0; --i)
+      for (var i = (int) model.getNumReactions() - 1; i >= 0; --i)
       {
-        Reaction reaction = model.getReaction(i);
-        List<string> comps = Util.GetCompartmentsFromReaction(reaction);
+        var reaction = model.getReaction(i);
+        var comps = Util.GetCompartmentsFromReaction(reaction);
         if (comps.Count < 2)
           continue;
 
@@ -640,50 +636,50 @@ namespace EditSpatial.Model
     private bool SetupGeometry(libsbmlcs.Model model, Geometry geometry,
       CreateModel createModel)
     {
-      long numCompartments = model.getNumCompartments();
+      var numCompartments = model.getNumCompartments();
       if (numCompartments == 1 || MainForm.Settings.IgnoreMultiCompartments)
         return SetupUnicompartmentalGeometry(model, geometry, createModel);
 
-      int num3DComps = 0;
-      for (int index = 0; index < numCompartments; ++index)
+      var num3DComps = 0;
+      for (var index = 0; index < numCompartments; ++index)
       {
-        Compartment current = model.getCompartment(index);
+        var current = model.getCompartment(index);
         if (current == null || !current.isSetSpatialDimensions()) continue;
         if (current.getSpatialDimensions() == 3) num3DComps ++;
       }
 
-      double length = createModel.Geometry.Xmax/num3DComps;
-      AnalyticGeometry def = geometry.createAnalyticGeometry();
+      var length = createModel.Geometry.Xmax/num3DComps;
+      var def = geometry.createAnalyticGeometry();
       def.setSpatialId("geometry");
 
-      List<string> order = OrderCompartments(model);
-      int i = 0;
+      var order = OrderCompartments(model);
+      var i = 0;
       AdjacentDomains lastAdjacent = null;
       Domain memDomain = null;
-      for (int j = 0; j < order.Count; j++)
+      for (var j = 0; j < order.Count; j++)
       {
-        Compartment comp = model.getCompartment(order[j]);
+        var comp = model.getCompartment(order[j]);
         var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
         if (cplug == null)
           return false;
-        DomainType domainType = geometry.createDomainType();
+        var domainType = geometry.createDomainType();
         domainType.setSpatialId("domainType_" + order[j]);
         domainType.setSpatialDimensions((int) comp.getSpatialDimensionsAsDouble());
-        Domain domain = geometry.createDomain();
+        var domain = geometry.createDomain();
         domain.setSpatialId("domain_" + order[j]);
         domain.setDomainType("domainType_" + order[j]);
-        InteriorPoint point = domain.createInteriorPoint();
+        var point = domain.createInteriorPoint();
         point.setCoord1(i*length + length/2.0);
         point.setCoord2(createModel.Geometry.Ymax/2.0);
         point.setCoord3(0);
         if (lastAdjacent != null)
         {
-          AdjacentDomains adj = geometry.createAdjacentDomains();
+          var adj = geometry.createAdjacentDomains();
           adj.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
           adj.setDomain1(memDomain.getSpatialId());
           adj.setDomain2(domain.getSpatialId());
         }
-        AnalyticVolume vol = def.createAnalyticVolume();
+        var vol = def.createAnalyticVolume();
         vol.setSpatialId("vol_" + order[j]);
         vol.setDomainType("domainType_" + order[j]);
         vol.setFunctionType("layered");
@@ -693,7 +689,7 @@ namespace EditSpatial.Model
           : j == order.Count - 1
             ? string.Format("geq(x, {0})", (i*length)) // last compartment gets rest
             : string.Format("and(geq(x, {0}), lt(x, {1}))", (i*length), ((i + 1)*length))));
-        CompartmentMapping map = cplug.getCompartmentMapping();
+        var map = cplug.getCompartmentMapping();
         map.setSpatialId("mapping_" + order[j]);
         map.setCompartment(comp.getId());
         map.setDomainType(domainType.getSpatialId());
@@ -771,14 +767,14 @@ namespace EditSpatial.Model
 
     private static bool SetupUnicompartmentalGeometry(libsbmlcs.Model model, Geometry geometry, CreateModel createModel)
     {
-      DomainType domainType = geometry.createDomainType();
+      var domainType = geometry.createDomainType();
       domainType.setSpatialId("domainType0");
       domainType.setSpatialDimensions(3);
 
-      Domain domain = geometry.createDomain();
+      var domain = geometry.createDomain();
       domain.setSpatialId("domain0");
       domain.setDomainType("domainType0");
-      InteriorPoint point = domain.createInteriorPoint();
+      var point = domain.createInteriorPoint();
       point.setCoord1(createModel.Geometry.Xmax/2.0);
       point.setCoord2(createModel.Geometry.Ymax/2.0);
       point.setCoord3(0);
@@ -809,12 +805,12 @@ namespace EditSpatial.Model
       vol.setFunctionType("layered");
 
 
-      Compartment comp = model.getCompartment(0);
+      var comp = model.getCompartment(0);
       var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
       if (cplug == null)
         return false;
 
-      CompartmentMapping map = cplug.getCompartmentMapping();
+      var map = cplug.getCompartmentMapping();
       map.setSpatialId("mapping0");
       map.setCompartment(comp.getId());
       map.setDomainType(domainType.getSpatialId());
@@ -881,7 +877,7 @@ namespace EditSpatial.Model
         map.setDomainType(domainType.getSpatialId());
         map.setUnitSize(1);
 
-        AdjacentDomains adjacent = geometry.createAdjacentDomains();
+        var adjacent = geometry.createAdjacentDomains();
         adjacent.setSpatialId("adj_1");
         adjacent.setDomain1("domain2");
         adjacent.setDomain2("domain1");
@@ -897,31 +893,31 @@ namespace EditSpatial.Model
 
     private static void SetupSpecies(CreateModel createModel, libsbmlcs.Model model)
     {
-      List<string> spatialElements = (from s in createModel.Species select s.Id).ToList();
+      var spatialElements = (from s in createModel.Species select s.Id).ToList();
 
-      for (int i = 0; i < model.getNumSpecies(); i++)
+      for (var i = 0; i < model.getNumSpecies(); i++)
       {
-        Species species = model.getSpecies(i);
+        var species = model.getSpecies(i);
         var splug = (SpatialSpeciesRxnPlugin) species.getPlugin("spatial");
         if (splug == null) continue;
         splug.setIsSpatial(false);
-        string id = species.getId();
+        var id = species.getId();
         if (!spatialElements.Contains(id)) continue;
 
-        SpatialSpecies currentSpecies = createModel[id];
+        var currentSpecies = createModel[id];
         species.setInitialExpession(currentSpecies.InitialCondition);
         splug.setIsSpatial(true);
         SetRequiredElements(species);
 
-        Parameter temp = species.getParameterDiffusionX();
+        var temp = species.getParameterDiffusionX();
         if (temp != null && temp.isSetId())
           model.removeParameter(temp.getId());
-        Parameter param = model.createParameter();
+        var param = model.createParameter();
         param.initDefaults();
         param.setId(id + "_diff_X");
         param.setValue(currentSpecies.DiffusionX);
         var pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        DiffusionCoefficient diff = pplug.getDiffusionCoefficient();
+        var diff = pplug.getDiffusionCoefficient();
         diff.setVariable(id);
         diff.setCoordinateIndex(0);
         SetRequiredElements(param);
@@ -948,7 +944,7 @@ namespace EditSpatial.Model
         param.setId(id + "_BC_Xmin");
         param.setValue(currentSpecies.MinBoundaryX);
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        BoundaryCondition bc = pplug.getBoundaryCondition();
+        var bc = pplug.getBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Xmin");
         bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
@@ -1002,14 +998,14 @@ namespace EditSpatial.Model
 
     private void SetIsLocalOnReactions(libsbmlcs.Model model)
     {
-      for (int i = 0; i < model.getNumReactions(); i++)
+      for (var i = 0; i < model.getNumReactions(); i++)
       {
-        Reaction reaction = model.getReaction(i);
+        var reaction = model.getReaction(i);
         var rplug = (SpatialSpeciesRxnPlugin) reaction.getPlugin("spatial");
         if (rplug == null) continue;
         SetRequiredElements(reaction);
-        List<string> idsContainedIn = GetSpeciesReferenceIdsContainedIn(reaction);
-        bool isLocal = idsContainedIn.Count > 0;
+        var idsContainedIn = GetSpeciesReferenceIdsContainedIn(reaction);
+        var isLocal = idsContainedIn.Count > 0;
         rplug.setIsLocal(isLocal);
       }
     }
@@ -1019,7 +1015,7 @@ namespace EditSpatial.Model
     {
       geometry.setCoordinateSystem("Cartesian");
 
-      CoordinateComponent coord = geometry.getCoordinateComponent("x");
+      var coord = geometry.getCoordinateComponent("x");
       if (coord == null)
       {
         coord = geometry.createCoordinateComponent();
@@ -1030,12 +1026,12 @@ namespace EditSpatial.Model
       coord.setComponentType("cartesianX");
       coord.setIndex(0);
 
-      BoundaryMin min = coord.getBoundaryMin();
+      var min = coord.getBoundaryMin();
       if (min == null)
         min = coord.createBoundaryMin();
       min.setSpatialId("Xmin");
       min.setValue(settings.Xmin);
-      BoundaryMax max = coord.getBoundaryMax();
+      var max = coord.getBoundaryMax();
       if (max == null) max = coord.createBoundaryMax();
       max.setSpatialId("Xmax");
       max.setValue(settings.Xmax);
@@ -1059,12 +1055,12 @@ namespace EditSpatial.Model
       max.setValue(settings.Ymax);
 
       model.removeParameter("x");
-      Parameter param = model.createParameter();
+      var param = model.createParameter();
       param.initDefaults();
       param.setId("x");
       param.setValue(0);
       var pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-      SpatialSymbolReference symbol = pplug.getSpatialSymbolReference();
+      var symbol = pplug.getSpatialSymbolReference();
       symbol.setSpatialId("x");
       symbol.setType("coordinateComponent");
       SetRequiredElements(param, false);
@@ -1173,21 +1169,21 @@ namespace EditSpatial.Model
       var orders = new Dictionary<string, List<string>>();
       var matrix = new int[model.getNumReactions(), model.getNumCompartments()];
       var reactions = new List<string>();
-      for (int i = 0; i < model.getNumReactions(); i++)
+      for (var i = 0; i < model.getNumReactions(); i++)
         reactions.Add(model.getReaction(i).getId());
       var compartments = new List<string>();
-      for (int i = 0; i < model.getNumCompartments(); i++)
+      for (var i = 0; i < model.getNumCompartments(); i++)
         compartments.Add(model.getCompartment(i).getId());
 
-      for (int i = 0; i < model.getNumReactions(); i++)
+      for (var i = 0; i < model.getNumReactions(); i++)
       {
-        Reaction reaction = model.getReaction(i);
-        string id = reaction.getId();
-        for (int j = 0; j < reaction.getNumReactants(); j++)
+        var reaction = model.getReaction(i);
+        var id = reaction.getId();
+        for (var j = 0; j < reaction.getNumReactants(); j++)
         {
-          SpeciesReference reference = reaction.getReactant(j);
+          var reference = reaction.getReactant(j);
           if (!reference.isSetSpecies()) continue;
-          Species species = model.getSpecies(reference.getSpecies());
+          var species = model.getSpecies(reference.getSpecies());
           if (species == null) continue;
 
           if (!orders.ContainsKey(id))
@@ -1199,11 +1195,11 @@ namespace EditSpatial.Model
           matrix[reactions.IndexOf(id), compartments.IndexOf(species.getCompartment())] = 1;
         }
 
-        for (int j = 0; j < reaction.getNumProducts(); j++)
+        for (var j = 0; j < reaction.getNumProducts(); j++)
         {
-          SpeciesReference reference = reaction.getProduct(j);
+          var reference = reaction.getProduct(j);
           if (!reference.isSetSpecies()) continue;
-          Species species = model.getSpecies(reference.getSpecies());
+          var species = model.getSpecies(reference.getSpecies());
           if (species == null) continue;
 
           if (!orders.ContainsKey(id))
@@ -1215,11 +1211,11 @@ namespace EditSpatial.Model
           matrix[reactions.IndexOf(id), compartments.IndexOf(species.getCompartment())] = 1;
         }
 
-        for (int j = 0; j < reaction.getNumModifiers(); j++)
+        for (var j = 0; j < reaction.getNumModifiers(); j++)
         {
-          ModifierSpeciesReference reference = reaction.getModifier(j);
+          var reference = reaction.getModifier(j);
           if (!reference.isSetSpecies()) continue;
-          Species species = model.getSpecies(reference.getSpecies());
+          var species = model.getSpecies(reference.getSpecies());
           if (species == null) continue;
 
           if (!orders.ContainsKey(id))
@@ -1243,22 +1239,22 @@ namespace EditSpatial.Model
           uniqueOrders.Add(order);
       }
 
-      for (int i = uniqueOrders.Count - 1; i >= 0; i--)
+      for (var i = uniqueOrders.Count - 1; i >= 0; i--)
         if (uniqueOrders[i].Count < 2)
           uniqueOrders.RemoveAt(i);
 
-      Dictionary<string, int> counts = CountOccurances(uniqueOrders);
+      var counts = CountOccurances(uniqueOrders);
 
-      int max = counts.Any() ? counts.Values.Max() : 0;
+      var max = counts.Any() ? counts.Values.Max() : 0;
 
       while (max > 1)
       {
         // get first one that occurs only once
-        KeyValuePair<string, int> current = counts.FirstOrDefault(e => e.Value == 1);
-        string id = current.Key;
+        var current = counts.FirstOrDefault(e => e.Value == 1);
+        var id = current.Key;
         if (string.IsNullOrEmpty(id)) break;
 
-        List<string> order = RemoveIdFrom(uniqueOrders, id);
+        var order = RemoveIdFrom(uniqueOrders, id);
         if (list.Contains(id))
         {
           if (counts.ContainsKey(id))
@@ -1276,9 +1272,9 @@ namespace EditSpatial.Model
       }
 
       // add remaining
-      for (int i = 0; i < model.getNumCompartments(); ++i)
+      for (var i = 0; i < model.getNumCompartments(); ++i)
       {
-        Compartment current = model.getCompartment(i);
+        var current = model.getCompartment(i);
         if (!list.Contains(current.getId())) list.Add(current.getId());
       }
 
@@ -1287,7 +1283,7 @@ namespace EditSpatial.Model
 
     private List<string> RemoveIdFrom(List<List<string>> uniqueOrders, string id)
     {
-      List<string> item = uniqueOrders.FirstOrDefault(e => e.Contains(id));
+      var item = uniqueOrders.FirstOrDefault(e => e.Contains(id));
       if (item == null) return null;
       uniqueOrders.Remove(item);
       return item;
@@ -1298,7 +1294,7 @@ namespace EditSpatial.Model
       var counts = new Dictionary<string, int>();
       foreach (var entries in orders)
       {
-        foreach (string key in entries)
+        foreach (var key in entries)
         {
           if (!counts.ContainsKey(key))
             counts[key] = 0;
@@ -1308,10 +1304,9 @@ namespace EditSpatial.Model
       return counts;
     }
 
-
     private bool Contains(List<List<string>> uniqueOrders, List<string> order)
     {
-      string stringOrder = Combine(order);
+      var stringOrder = Combine(order);
       foreach (var item in uniqueOrders)
       {
         if (Combine(item) == stringOrder)
@@ -1323,7 +1318,7 @@ namespace EditSpatial.Model
     private string Combine(List<string> order)
     {
       var builder = new StringBuilder();
-      for (int i = 0; i < order.Count; i++)
+      for (var i = 0; i < order.Count; i++)
       {
         builder.Append(order[i]);
         if (i + 1 < order.Count)
@@ -1341,38 +1336,38 @@ namespace EditSpatial.Model
     {
       var result = new List<string>();
       if (reaction == null || reaction.getSBMLDocument() == null) return result;
-      libsbmlcs.Model model = reaction.getSBMLDocument().getModel();
+      var model = reaction.getSBMLDocument().getModel();
       if (model == null) return result;
-      for (int i = 0; i < reaction.getNumReactants(); ++i)
+      for (var i = 0; i < reaction.getNumReactants(); ++i)
       {
-        SpeciesReference currentRef = reaction.getReactant(i);
-        string id = currentRef.getSpecies();
-        Species current = model.getSpecies(id);
+        var currentRef = reaction.getReactant(i);
+        var id = currentRef.getSpecies();
+        var current = model.getSpecies(id);
         if (current == null) continue;
         var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
-        bool isSpatial = plug != null && plug.getIsSpatial();
+        var isSpatial = plug != null && plug.getIsSpatial();
         if (isSpatial && !result.Contains(id))
           result.Add(id);
       }
-      for (int i = 0; i < reaction.getNumProducts(); ++i)
+      for (var i = 0; i < reaction.getNumProducts(); ++i)
       {
-        SpeciesReference currentRef = reaction.getProduct(i);
-        string id = currentRef.getSpecies();
-        Species current = model.getSpecies(id);
+        var currentRef = reaction.getProduct(i);
+        var id = currentRef.getSpecies();
+        var current = model.getSpecies(id);
         if (current == null) continue;
         var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
-        bool isSpatial = plug != null && plug.getIsSpatial();
+        var isSpatial = plug != null && plug.getIsSpatial();
         if (isSpatial && !result.Contains(id))
           result.Add(id);
       }
-      for (int i = 0; i < reaction.getNumModifiers(); ++i)
+      for (var i = 0; i < reaction.getNumModifiers(); ++i)
       {
-        ModifierSpeciesReference currentRef = reaction.getModifier(i);
-        string id = currentRef.getSpecies();
-        Species current = model.getSpecies(id);
+        var currentRef = reaction.getModifier(i);
+        var id = currentRef.getSpecies();
+        var current = model.getSpecies(id);
         if (current == null) continue;
         var plug = (SpatialSpeciesRxnPlugin) model.getSpecies(id).getPlugin("spatial");
-        bool isSpatial = plug != null && plug.getIsSpatial();
+        var isSpatial = plug != null && plug.getIsSpatial();
         if (isSpatial && !result.Contains(id))
           result.Add(id);
       }
@@ -1383,7 +1378,7 @@ namespace EditSpatial.Model
 
     protected virtual void OnModelChanged()
     {
-      EventHandler handler = ModelChanged;
+      var handler = ModelChanged;
       if (handler != null) handler(this, EventArgs.Empty);
     }
 

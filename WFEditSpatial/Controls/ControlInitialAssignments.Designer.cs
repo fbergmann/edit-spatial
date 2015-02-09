@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Controls
 {
   partial class ControlInitialAssignments
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -73,8 +76,8 @@
 
     #endregion
 
-    private System.Windows.Forms.DataGridView grid;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colSymbol;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colMath;
+    private DataGridView grid;
+    private DataGridViewTextBoxColumn colSymbol;
+    private DataGridViewTextBoxColumn colMath;
   }
 }

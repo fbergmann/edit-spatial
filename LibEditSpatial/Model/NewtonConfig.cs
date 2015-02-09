@@ -45,7 +45,7 @@ namespace LibEditSpatial.Model
         Reduction = dict.Get<double>("Reduction"),
         LinearReduction = dict.Get<double>("LinearReduction"),
         LineSearchDampingFactor = dict.Get<double>("LineSearchDampingFactor"),
-        Verbosity = dict.Get<int>("Verbosity"),
+        Verbosity = dict.Get<int>("Verbosity")
       };
       return result;
     }

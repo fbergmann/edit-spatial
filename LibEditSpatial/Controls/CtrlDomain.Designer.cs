@@ -1,11 +1,14 @@
-﻿namespace LibEditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace LibEditSpatial.Controls
 {
   partial class CtrlDomain
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -369,30 +372,30 @@
 
     #endregion
 
-    private System.Windows.Forms.GroupBox grpDimensions;
-    private System.Windows.Forms.TextBox txtDepth;
-    private System.Windows.Forms.Label label3;
-    private System.Windows.Forms.TextBox txtHeight;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.TextBox txtWidth;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.GroupBox groupBox1;
-    private System.Windows.Forms.TextBox txtRefinement;
-    private System.Windows.Forms.Label label7;
-    private System.Windows.Forms.TextBox txtGridZ;
-    private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.TextBox txtGridY;
-    private System.Windows.Forms.Label label5;
-    private System.Windows.Forms.TextBox txtGridX;
-    private System.Windows.Forms.Label label6;
-    private System.Windows.Forms.GroupBox groupBox2;
-    private System.Windows.Forms.Button cmdEdit;
-    private System.Windows.Forms.Button cmdLoad;
-    private System.Windows.Forms.TextBox txtMax;
-    private System.Windows.Forms.Label label8;
-    private System.Windows.Forms.TextBox txtMin;
-    private System.Windows.Forms.Label label9;
-    private System.Windows.Forms.TextBox txtFile;
-    private System.Windows.Forms.Label label10;
+    private GroupBox grpDimensions;
+    private TextBox txtDepth;
+    private Label label3;
+    private TextBox txtHeight;
+    private Label label2;
+    private TextBox txtWidth;
+    private Label label1;
+    private GroupBox groupBox1;
+    private TextBox txtRefinement;
+    private Label label7;
+    private TextBox txtGridZ;
+    private Label label4;
+    private TextBox txtGridY;
+    private Label label5;
+    private TextBox txtGridX;
+    private Label label6;
+    private GroupBox groupBox2;
+    private Button cmdEdit;
+    private Button cmdLoad;
+    private TextBox txtMax;
+    private Label label8;
+    private TextBox txtMin;
+    private Label label9;
+    private TextBox txtFile;
+    private Label label10;
   }
 }

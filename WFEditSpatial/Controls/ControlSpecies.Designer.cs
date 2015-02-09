@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Controls
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Controls
 {
   partial class ControlSpecies
   {
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary> 
     /// Clean up any resources being used.
@@ -100,12 +103,12 @@
 
     #endregion
 
-    private System.Windows.Forms.DataGridView grid;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colId;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colName;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colComp;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colBoundary;
-    private System.Windows.Forms.DataGridViewTextBoxColumn colIsSpatial;
+    private DataGridView grid;
+    private DataGridViewTextBoxColumn colId;
+    private DataGridViewTextBoxColumn colName;
+    private DataGridViewTextBoxColumn colValue;
+    private DataGridViewTextBoxColumn colComp;
+    private DataGridViewTextBoxColumn colBoundary;
+    private DataGridViewTextBoxColumn colIsSpatial;
   }
 }

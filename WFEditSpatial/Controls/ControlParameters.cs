@@ -23,12 +23,12 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-        libsbmlcs.Model model = document.getModel();
+        var model = document.getModel();
 
         CommitAddedRows(Current);
         for (long i = 0; i < model.getNumParameters(); ++i)
         {
-          Parameter current = model.getParameter(i);
+          var current = model.getParameter(i);
           grid.Rows.Add(current.getId(),
             current.getName(),
             current.getValue().ToString());
@@ -44,14 +44,14 @@ namespace EditSpatial.Controls
     {
       if (RowsAdded.Count > 0 && current != null)
       {
-        for (int i = RowsAdded.Count - 1; i >= 0; i--)
+        for (var i = RowsAdded.Count - 1; i >= 0; i--)
         {
           try
           {
-            int index = RowsAdded[i];
+            var index = RowsAdded[i];
             if (index < 0) continue;
-            DataGridViewRow row = grid.Rows[index];
-            Parameter param = current.getModel().createParameter();
+            var row = grid.Rows[index];
+            var param = current.getModel().createParameter();
             param.initDefaults();
             param.setId(row.Cells[0].Value as string);
             param.setName(row.Cells[1].Value as string);
@@ -67,17 +67,16 @@ namespace EditSpatial.Controls
       }
     }
 
-
     public override void SaveChanges()
     {
       if (Current == null) return;
 
       CommitAddedRows(Current);
 
-      for (int i = 0; i < grid.Rows.Count; ++i)
+      for (var i = 0; i < grid.Rows.Count; ++i)
       {
-        DataGridViewRow row = grid.Rows[i];
-        Parameter current = Current.getModel().getParameter((string) row.Cells[0].Value);
+        var row = grid.Rows[i];
+        var current = Current.getModel().getParameter((string) row.Cells[0].Value);
         if (current == null) continue;
 
         current.setName((string) row.Cells[1].Value);
@@ -110,7 +109,7 @@ namespace EditSpatial.Controls
         ids.Add(e.Row.Cells[0].Value as string);
       }
 
-      foreach (string id in ids)
+      foreach (var id in ids)
         Current.getModel().removeParameter(id);
 
       InitializeFrom(Current);

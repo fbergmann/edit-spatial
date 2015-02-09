@@ -23,12 +23,12 @@ namespace EditSpatial.Controls
       try
       {
         IsInitializing = true;
-        libsbmlcs.Model model = document.getModel();
+        var model = document.getModel();
 
         CommitAddedRows(Current);
         for (long i = 0; i < model.getNumCompartments(); ++i)
         {
-          Compartment current = model.getCompartment(i);
+          var current = model.getCompartment(i);
           grid.Rows.Add(current.getId(),
             current.getName(),
             current.getSize().ToString(),
@@ -46,12 +46,12 @@ namespace EditSpatial.Controls
     {
       if (RowsAdded.Count > 0 && current != null)
       {
-        for (int i = RowsAdded.Count - 1; i >= 0; i--)
+        for (var i = RowsAdded.Count - 1; i >= 0; i--)
         {
           try
           {
-            DataGridViewRow row = grid.Rows[RowsAdded[i]];
-            Compartment comp = current.getModel().createCompartment();
+            var row = grid.Rows[RowsAdded[i]];
+            var comp = current.getModel().createCompartment();
             comp.initDefaults();
             comp.setId(row.Cells[0].Value as string);
             comp.setName(row.Cells[1].Value as string);
@@ -69,17 +69,16 @@ namespace EditSpatial.Controls
       }
     }
 
-
     public override void SaveChanges()
     {
       if (Current == null) return;
 
       CommitAddedRows(Current);
 
-      for (int i = 0; i < grid.Rows.Count; ++i)
+      for (var i = 0; i < grid.Rows.Count; ++i)
       {
-        DataGridViewRow row = grid.Rows[i];
-        Compartment current = Current.getModel().getCompartment((string) row.Cells[0].Value);
+        var row = grid.Rows[i];
+        var current = Current.getModel().getCompartment((string) row.Cells[0].Value);
         if (current == null) continue;
 
         current.setName(row.Cells[1].Value as string);

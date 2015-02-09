@@ -23,7 +23,6 @@ namespace LibEditSpatial.Model
       return dict[option];
     }
 
-
     public static T Get<T>(this Dictionary<string, string> dict, string option, T defaultValue = default(T))
     {
       if (!dict.ContainsKey(option)) return defaultValue;

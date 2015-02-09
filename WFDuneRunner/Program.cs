@@ -16,10 +16,13 @@ namespace WFDuneRunner
       Application.SetCompatibleTextRenderingDefault(false);
       var form = new MainForm();
 
-      foreach (string file in args)
+      foreach (var file in args)
       {
         if (File.Exists(file))
+        {
           form.LoadFile(file);
+          break;
+        }
       }
 
       Application.Run(form);

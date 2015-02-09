@@ -17,6 +17,8 @@ namespace EditSpatial.Model
 {
   internal static class Util
   {
+    public const int CHUNK_SIZE = 2048;
+
     public static string[][] InbuiltFunctions =
     {
       new[]
@@ -52,10 +54,10 @@ namespace EditSpatial.Model
     public static Image GenerateTiffForOrdinal(this AnalyticGeometry analytic, Geometry geometry, int ordinal = 1,
       double z = 1)
     {
-      CoordinateComponent range1 = geometry.getCoordinateComponent(0);
-      double r1Max = range1.getBoundaryMax().getValue();
-      CoordinateComponent range2 = geometry.getCoordinateComponent(1);
-      double r2Max = range2.getBoundaryMax().getValue();
+      var range1 = geometry.getCoordinateComponent(0);
+      var r1Max = range1.getBoundaryMax().getValue();
+      var range2 = geometry.getCoordinateComponent(1);
+      var r2Max = range2.getBoundaryMax().getValue();
 
       return analytic.GenerateTiff(geometry, (int) r1Max, (int) r2Max, ordinal, z);
     }
@@ -71,42 +73,42 @@ namespace EditSpatial.Model
         var formulas = new List<Tuple<int, ASTNode>>();
         for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
         {
-          AnalyticVolume current = analytic.getAnalyticVolume(i);
+          var current = analytic.getAnalyticVolume(i);
           if (current.getOrdinal() == ordinal)
             formulas.Add(new Tuple<int, ASTNode>((int) current.getOrdinal(), current.getMath()));
         }
         formulas.Sort((a, b) => a.Item1.CompareTo(b.Item1));
 
 
-        CoordinateComponent range1 = geometry.getCoordinateComponent(0);
-        double r1Min = range1.getBoundaryMin().getValue();
-        double r1Max = range1.getBoundaryMax().getValue();
-        CoordinateComponent range2 = geometry.getCoordinateComponent(1);
-        double r2Min = range2.getBoundaryMin().getValue();
-        double r2Max = range2.getBoundaryMax().getValue();
+        var range1 = geometry.getCoordinateComponent(0);
+        var r1Min = range1.getBoundaryMin().getValue();
+        var r1Max = range1.getBoundaryMax().getValue();
+        var range2 = geometry.getCoordinateComponent(1);
+        var r2Min = range2.getBoundaryMin().getValue();
+        var r2Max = range2.getBoundaryMax().getValue();
 
-        double depth = geometry.getNumCoordinateComponents() == 3
+        var depth = geometry.getNumCoordinateComponents() == 3
           ? geometry.getCoordinateComponent(2).getBoundaryMax().getValue()
           : 0;
 
         var result = new Bitmap(resX, resY);
-        for (int i = 0; i < resX; ++i)
+        for (var i = 0; i < resX; ++i)
         {
-          double x = r1Min
-                     +
-                     (r1Max - r1Min)/
-                     resX*i;
-          for (int j = 0; j < resY; ++j)
+          var x = r1Min
+                  +
+                  (r1Max - r1Min)/
+                  resX*i;
+          for (var j = 0; j < resY; ++j)
           {
-            double y = r2Min
-                       +
-                       (r2Max - r2Min)/
-                       resY*j;
+            var y = r2Min
+                    +
+                    (r2Max - r2Min)/
+                    resY*j;
 
-            for (int index = 0; index < formulas.Count; index++)
+            for (var index = 0; index < formulas.Count; index++)
             {
-              Tuple<int, ASTNode> item = formulas[index];
-              double isInside = Evaluate(item.Item2,
+              var item = formulas[index];
+              var isInside = Evaluate(item.Item2,
                 new List<string> {"x", "y", "z", "width", "height", "depth"},
                 new List<double> {x, y, z, r1Max, r2Max, depth},
                 new List<Tuple<string, double>>()
@@ -133,12 +135,12 @@ namespace EditSpatial.Model
 
       for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
       {
-        AnalyticVolume current = analytic.getAnalyticVolume(i);
+        var current = analytic.getAnalyticVolume(i);
         if (current == null || !current.isSetMath())
           continue;
-        string formula = libsbml.formulaToString(current.getMath());
+        var formula = libsbml.formulaToString(current.getMath());
 
-        for (int k = 0; k < InbuiltFunctions.Length; ++k)
+        for (var k = 0; k < InbuiltFunctions.Length; ++k)
         {
           if (formula.Contains(InbuiltFunctions[k][0]))
           {
@@ -157,29 +159,29 @@ namespace EditSpatial.Model
       var result = new List<string>();
       if (reaction == null) return result;
 
-      libsbmlcs.Model model = reaction.getModel();
+      var model = reaction.getModel();
       if (model == null) return result;
-      for (int i = 0; i < reaction.getNumReactants(); ++i)
+      for (var i = 0; i < reaction.getNumReactants(); ++i)
       {
-        SpeciesReference reference = reaction.getReactant(i);
+        var reference = reaction.getReactant(i);
         if (reference != null && reference.isSetSpecies())
         {
-          Species species = model.getSpecies(reference.getSpecies());
+          var species = model.getSpecies(reference.getSpecies());
           if (species == null || !species.isSetCompartment()) continue;
-          string compartment = species.getCompartment();
+          var compartment = species.getCompartment();
           if (!result.Contains(compartment))
             result.Add(compartment);
         }
       }
 
-      for (int i = 0; i < reaction.getNumProducts(); ++i)
+      for (var i = 0; i < reaction.getNumProducts(); ++i)
       {
-        SpeciesReference reference = reaction.getProduct(i);
+        var reference = reaction.getProduct(i);
         if (reference != null && reference.isSetSpecies())
         {
-          Species species = model.getSpecies(reference.getSpecies());
+          var species = model.getSpecies(reference.getSpecies());
           if (species == null || !species.isSetCompartment()) continue;
-          string compartment = species.getCompartment();
+          var compartment = species.getCompartment();
           if (!result.Contains(compartment))
             result.Add(compartment);
         }
@@ -193,28 +195,28 @@ namespace EditSpatial.Model
       var result = new Dictionary<string, List<string>>();
       if (reaction == null) return result;
 
-      for (int i = 0; i < reaction.getNumReactants(); ++i)
+      for (var i = 0; i < reaction.getNumReactants(); ++i)
       {
-        SpeciesReference reference = reaction.getReactant(i);
+        var reference = reaction.getReactant(i);
         if (reference != null && reference.isSetSpecies())
         {
-          Species species = model.getSpecies(reference.getSpecies());
+          var species = model.getSpecies(reference.getSpecies());
           if (species == null || !species.isSetCompartment()) continue;
-          string compartment = species.getCompartment();
+          var compartment = species.getCompartment();
           if (!result.ContainsKey(compartment))
             result[compartment] = new List<string>();
           result[compartment].Add(species.getId());
         }
       }
 
-      for (int i = 0; i < reaction.getNumProducts(); ++i)
+      for (var i = 0; i < reaction.getNumProducts(); ++i)
       {
-        SpeciesReference reference = reaction.getProduct(i);
+        var reference = reaction.getProduct(i);
         if (reference != null && reference.isSetSpecies())
         {
-          Species species = model.getSpecies(reference.getSpecies());
+          var species = model.getSpecies(reference.getSpecies());
           if (species == null || !species.isSetCompartment()) continue;
-          string compartment = species.getCompartment();
+          var compartment = species.getCompartment();
           if (!result.ContainsKey(compartment))
             result[compartment] = new List<string>();
           result[compartment].Add(species.getId());
@@ -230,7 +232,7 @@ namespace EditSpatial.Model
       var rule = model.getRuleByVariable(id) as AssignmentRule;
       if (rule != null)
       {
-        InitialAssignment ia = model.createInitialAssignment();
+        var ia = model.createInitialAssignment();
         ia.setSymbol(rule.getVariable());
         ia.setMath(rule.getMath());
         model.removeRule(rule.getVariable());
@@ -240,7 +242,7 @@ namespace EditSpatial.Model
     public static AnalyticGeometry GetFirstAnalyticGeometry(this Geometry geometry)
     {
       if (geometry == null) return null;
-      for (int i = 0; i < geometry.getNumGeometryDefinitions(); ++i)
+      for (var i = 0; i < geometry.getNumGeometryDefinitions(); ++i)
       {
         var analytic = geometry.getGeometryDefinition(i) as AnalyticGeometry;
         if (analytic != null) return analytic;
@@ -251,7 +253,7 @@ namespace EditSpatial.Model
     public static SampledFieldGeometry GetFirstSampledFieldGeometry(this Geometry geometry)
     {
       if (geometry == null) return null;
-      for (int i = 0; i < geometry.getNumGeometryDefinitions(); ++i)
+      for (var i = 0; i < geometry.getNumGeometryDefinitions(); ++i)
       {
         var sampledFieldGeometry = geometry.getGeometryDefinition(i) as SampledFieldGeometry;
         if (sampledFieldGeometry != null) return sampledFieldGeometry;
@@ -259,15 +261,14 @@ namespace EditSpatial.Model
       return null;
     }
 
-
     public static void setInitialExpession(this Species species, string expression)
     {
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
         return;
 
-      libsbmlcs.Model model = species.getSBMLDocument().getModel();
+      var model = species.getSBMLDocument().getModel();
 
-      ASTNode node = libsbml.parseFormula(expression);
+      var node = libsbml.parseFormula(expression);
 
       if (node == null) return;
 
@@ -280,7 +281,7 @@ namespace EditSpatial.Model
         return;
       }
 
-      InitialAssignment initial = model.getInitialAssignment(species.getId());
+      var initial = model.getInitialAssignment(species.getId());
       if (initial == null)
       {
         initial = model.createInitialAssignment();
@@ -314,7 +315,6 @@ namespace EditSpatial.Model
       builder.AppendFormat(format, DuneConverter.TranslateExpression(node, map, model));
     }
 
-
     private static double GetRealValue(ASTNode node)
     {
       switch (node.getType())
@@ -333,13 +333,13 @@ namespace EditSpatial.Model
 
     public static string getInitialExpession(this Species species)
     {
-      string result = "";
+      var result = "";
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
         return result;
 
-      libsbmlcs.Model model = species.getSBMLDocument().getModel();
+      var model = species.getSBMLDocument().getModel();
 
-      InitialAssignment initial = model.getInitialAssignment(species.getId());
+      var initial = model.getInitialAssignment(species.getId());
       if (initial != null && initial.isSetMath()) return libsbml.formulaToString(initial.getMath());
 
       if (species.isSetInitialAmount())
@@ -353,42 +353,42 @@ namespace EditSpatial.Model
 
     public static double? getDiffusionY(this Species species)
     {
-      Parameter param = species.getParameterDiffusionY();
+      var param = species.getParameterDiffusionY();
       if (param == null) return null;
       return param.getValue();
     }
 
     public static double? getXMaxBC(this Species species)
     {
-      Parameter param = species.getBoundaryCondition("Xmax");
+      var param = species.getBoundaryCondition("Xmax");
       if (param == null) return null;
       return param.getValue();
     }
 
     public static double? getYMaxBC(this Species species)
     {
-      Parameter param = species.getBoundaryCondition("Ymax");
+      var param = species.getBoundaryCondition("Ymax");
       if (param == null) return null;
       return param.getValue();
     }
 
     public static double? getXMinBC(this Species species)
     {
-      Parameter param = species.getBoundaryCondition("Xmin");
+      var param = species.getBoundaryCondition("Xmin");
       if (param == null) return null;
       return param.getValue();
     }
 
     public static double? getYMinBC(this Species species)
     {
-      Parameter param = species.getBoundaryCondition("Ymin");
+      var param = species.getBoundaryCondition("Ymin");
       if (param == null) return null;
       return param.getValue();
     }
 
     public static string getBcType(this Species species)
     {
-      Parameter param = species.getBoundaryCondition("Xmax");
+      var param = species.getBoundaryCondition("Xmax");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
           .getBoundaryCondition().getType() == "Value"
@@ -415,7 +415,6 @@ namespace EditSpatial.Model
       return "Neumann";
     }
 
-
     public static bool IsSpatial(this Parameter parameter)
     {
       var plug = (SpatialParameterPlugin) parameter.getPlugin("spatial");
@@ -429,7 +428,7 @@ namespace EditSpatial.Model
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
         return null;
 
-      libsbmlcs.Model model = species.getSBMLDocument().getModel();
+      var model = species.getSBMLDocument().getModel();
       Parameter param = species.getSpatialParameter(typeCode, box);
       if (param == null)
       {
@@ -442,14 +441,14 @@ namespace EditSpatial.Model
           {
             case libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT:
             {
-              DiffusionCoefficient diff = plugin.getDiffusionCoefficient();
+              var diff = plugin.getDiffusionCoefficient();
               diff.setCoordinateIndex((int) box);
               diff.setVariable(species.getId());
               break;
             }
             case libsbml.SBML_SPATIAL_BOUNDARYCONDITION:
             {
-              BoundaryCondition bc = plugin.getBoundaryCondition();
+              var bc = plugin.getBoundaryCondition();
               bc.setVariable(species.getId());
               bc.setCoordinateBoundary((string) box);
               break;
@@ -469,10 +468,10 @@ namespace EditSpatial.Model
       if (species == null || species.getSBMLDocument() == null || species.getSBMLDocument().getModel() == null)
         return null;
 
-      libsbmlcs.Model model = species.getSBMLDocument().getModel();
-      for (int i = 0; i < model.getNumParameters(); ++i)
+      var model = species.getSBMLDocument().getModel();
+      for (var i = 0; i < model.getNumParameters(); ++i)
       {
-        Parameter parameter = model.getParameter(i);
+        var parameter = model.getParameter(i);
         if (parameter == null) continue;
         var plugin = parameter.getPlugin("spatial") as SpatialParameterPlugin;
         if (plugin == null) continue;
@@ -481,15 +480,15 @@ namespace EditSpatial.Model
 
         if (typeCode == libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT)
         {
-          DiffusionCoefficient diff = plugin.getDiffusionCoefficient();
-          int index = 0;
+          var diff = plugin.getDiffusionCoefficient();
+          var index = 0;
           if (box != null && box is int)
             index = (int) box;
           if (diff == null || diff.getCoordinateIndex() != index || diff.getVariable() != species.getId()) continue;
         }
         else if (typeCode == libsbml.SBML_SPATIAL_BOUNDARYCONDITION)
         {
-          BoundaryCondition bc = plugin.getBoundaryCondition();
+          var bc = plugin.getBoundaryCondition();
           if (bc == null || bc.getVariable() != species.getId()) continue;
           if (box != null && box is string)
           {
@@ -503,7 +502,6 @@ namespace EditSpatial.Model
 
       return null;
     }
-
 
     public static Parameter getParameterDiffusionX(this Species species)
     {
@@ -522,7 +520,7 @@ namespace EditSpatial.Model
 
     public static double? getDiffusionX(this Species species)
     {
-      Parameter param = species.getParameterDiffusionX();
+      var param = species.getParameterDiffusionX();
       if (param == null) return null;
       return param.getValue();
     }
@@ -530,7 +528,7 @@ namespace EditSpatial.Model
     internal static byte[] ToBytes(int[] array)
     {
       var result = new byte[array.Length];
-      for (int i = 0; i < array.Length; i++)
+      for (var i = 0; i < array.Length; i++)
       {
         result[i] = (byte) (array[i]);
       }
@@ -540,7 +538,7 @@ namespace EditSpatial.Model
     private static int[] ToInt(byte[] array)
     {
       var result = new int[array.Length];
-      for (int i = 0; i < array.Length; i++)
+      for (var i = 0; i < array.Length; i++)
       {
         result[i] = array[i];
       }
@@ -556,7 +554,7 @@ namespace EditSpatial.Model
         {
           var intValue = new int[data.getSamplesLength()];
           data.getSamples(intValue);
-          byte[] bytes = ToBytes(intValue);
+          var bytes = ToBytes(intValue);
           var stream = new MemoryStream(bytes);
           var result = new MemoryStream();
           var zipInputStream = new InflaterInputStream(stream);
@@ -575,10 +573,8 @@ namespace EditSpatial.Model
       }
     }
 
-    public const int CHUNK_SIZE = 2048;
-
     /// <summary>
-    /// Returns the path of the unpacked archive (temp+filename)
+    ///   Returns the path of the unpacked archive (temp+filename)
     /// </summary>
     /// <param name="archiveFilename">name of the archive file</param>
     /// <param name="deleteIfExists"></param>
@@ -627,8 +623,6 @@ namespace EditSpatial.Model
       }
     }
 
-
-
     internal static double ComputeValueForFormula(string formula, List<string> variableIds, List<double> variableData)
     {
       if (formula == null && variableIds.Count > 0) formula = variableIds[0];
@@ -636,12 +630,12 @@ namespace EditSpatial.Model
       // if we are lucky just return a given variable column
       if (variableIds.Contains(formula))
       {
-        int index = variableIds.IndexOf(formula);
+        var index = variableIds.IndexOf(formula);
         return variableData[index];
       }
       // at this point ... we should try and get a libSBML AST Tree and then evaluate it ...
 
-      ASTNode tree = libsbml.parseFormula(formula);
+      var tree = libsbml.parseFormula(formula);
 
       if (tree == null)
         throw new Exception("Invalid MathML in ComputeChange::ComputeValueForFormula");
@@ -708,7 +702,7 @@ namespace EditSpatial.Model
       {
         if (sVariableIds.Contains(node.getName()))
         {
-          int variableIndex = sVariableIds.IndexOf(node.getName());
+          var variableIndex = sVariableIds.IndexOf(node.getName());
           return oVariableData[variableIndex];
         }
         foreach (var param in listOfParameters)
@@ -832,7 +826,7 @@ namespace EditSpatial.Model
         {
           var numChildren = (int) node.getNumChildren();
           var temps = new double[numChildren];
-          for (int i = 0; i < numChildren; i++)
+          for (var i = 0; i < numChildren; i++)
           {
             temps[i] = EvaluateSingle(node.getChild(i), sVariableIds, oVariableData,
               listOfParameters);
@@ -872,7 +866,7 @@ namespace EditSpatial.Model
         {
           var numChildren = (int) node.getNumChildren();
           var temps = new double[numChildren];
-          for (int i = 0; i < numChildren; i++)
+          for (var i = 0; i < numChildren; i++)
           {
             temps[i] = EvaluateSingle(node.getChild(i), sVariableIds, oVariableData,
               listOfParameters);
@@ -890,7 +884,7 @@ namespace EditSpatial.Model
         {
           var numChildren = (int) node.getNumChildren();
           var temps = new double[numChildren];
-          for (int i = 0; i < numChildren; i++)
+          for (var i = 0; i < numChildren; i++)
           {
             temps[i] = EvaluateSingle(node.getChild(i), sVariableIds, oVariableData,
               listOfParameters);
@@ -902,7 +896,7 @@ namespace EditSpatial.Model
         {
           var numChildren = (int) node.getNumChildren();
           var temps = new double[numChildren];
-          for (int i = 0; i < numChildren; i++)
+          for (var i = 0; i < numChildren; i++)
           {
             temps[i] = EvaluateSingle(node.getChild(i), sVariableIds, oVariableData,
               listOfParameters);
@@ -958,9 +952,9 @@ namespace EditSpatial.Model
     public static double Piecewise(double[] args)
     {
       double result;
-      for (int i = 0; i < args.Length - 1; i += 2)
+      for (var i = 0; i < args.Length - 1; i += 2)
       {
-        double num = args[i + 1];
+        var num = args[i + 1];
         if (num == 1.0)
         {
           result = args[i];
@@ -998,7 +992,7 @@ namespace EditSpatial.Model
 
     public static string GetDir(string baseDir)
     {
-      using (var dlg = new VistaFolderBrowserDialog { SelectedPath = baseDir, Description = "Open Directory" })
+      using (var dlg = new VistaFolderBrowserDialog {SelectedPath = baseDir, Description = "Open Directory"})
       {
         if (dlg.ShowDialog() == DialogResult.OK)
           return dlg.SelectedPath;
@@ -1009,12 +1003,12 @@ namespace EditSpatial.Model
     public static double GetDouble(this DataGridViewCell cell, double defaultValue = 0)
     {
       var value = cell.Value;
-      if (value.GetType() == typeof(string))
+      if (value.GetType() == typeof (string))
       {
         return SaveDouble((string) value, defaultValue);
       }
-      
-      if (value.GetType() == typeof (double) || value.GetType() == typeof(int))
+
+      if (value.GetType() == typeof (double) || value.GetType() == typeof (int))
         return (double) value;
 
       return defaultValue;
@@ -1023,7 +1017,7 @@ namespace EditSpatial.Model
     public static CompartmentMapping getCompartmentMapping(this Compartment comp)
     {
       if (comp == null) return null;
-      var cplug = (SpatialCompartmentPlugin)comp.getPlugin("spatial");
+      var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
       if (cplug == null) return null;
       return cplug.getCompartmentMapping();
     }
@@ -1032,9 +1026,9 @@ namespace EditSpatial.Model
     {
       if (geom == null) return 0;
 
-      int count = 0;
-      
-      for (int i = 0;i < geom.getNumGeometryDefinitions(); ++i)
+      var count = 0;
+
+      for (var i = 0; i < geom.getNumGeometryDefinitions(); ++i)
       {
         var current = geom.getGeometryDefinition(i);
         if (current is AnalyticGeometry) ++count;
@@ -1047,9 +1041,9 @@ namespace EditSpatial.Model
     {
       if (geom == null) return 0;
 
-      int count = 0;
+      var count = 0;
 
-      for (int i = 0; i < geom.getNumGeometryDefinitions(); ++i)
+      for (var i = 0; i < geom.getNumGeometryDefinitions(); ++i)
       {
         var current = geom.getGeometryDefinition(i);
         if (current is SampledFieldGeometry) ++count;

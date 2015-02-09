@@ -32,7 +32,7 @@ namespace EditSpatial.Controls
           SizeType = SizeType.AutoSize
         });
 
-        CoordinateComponent current = geometry.getCoordinateComponent(i);
+        var current = geometry.getCoordinateComponent(i);
         var control = new ControlCoordinateComponent {Dock = DockStyle.Fill};
         control.InitializeFrom(current);
         tblLayout.Controls.Add(control, 0, ((int) i) + 1);
@@ -44,7 +44,7 @@ namespace EditSpatial.Controls
       if (Current == null) return;
       Current.setCoordinateSystem(txtCoordSystem.Text);
 
-      foreach (object control in tblLayout.Controls)
+      foreach (var control in tblLayout.Controls)
       {
         var current = control as BaseSpatialControl;
         if (current == null) continue;

@@ -14,7 +14,7 @@ namespace EditSpatial.Controls
 
     public void DisplayNode(TreeNode node)
     {
-      string sbml = node == null ? null : (string) node.Tag;
+      var sbml = node == null ? null : (string) node.Tag;
       if (string.IsNullOrWhiteSpace(sbml))
         sbml = "<none>";
       sbml = sbml.Replace("\n", Environment.NewLine);

@@ -17,7 +17,6 @@ namespace LibEditSpatial.Controls
     }
 
     public PalleteArgs Current { get; set; }
-
     public bool IssuingEvents { get; set; }
     public bool IsPainting { get; set; }
 
@@ -38,9 +37,7 @@ namespace LibEditSpatial.Controls
     }
 
     public event EventHandler<PalleteArgs> PalleteValueChanged;
-
     public event EventHandler<DmpPalette> PalleteChanged;
-
 
     public void UpdateValues(double min, double current, double max)
     {
@@ -86,7 +83,7 @@ namespace LibEditSpatial.Controls
     private void SetCurrent(double val)
     {
       Current.Value = val;
-      trackBar1.Value = (int) Math.Min((Math.Max(val, trackBar1.Minimum) * 100), trackBar1.Maximum);
+      trackBar1.Value = (int) Math.Min((Math.Max(val, trackBar1.Minimum)*100), trackBar1.Maximum);
       OnPaletteValueChanged();
     }
 
@@ -129,12 +126,12 @@ namespace LibEditSpatial.Controls
     {
       if (Palette == null || !IsPainting) return;
 
-      float length = pictureBox1.Width/(float) Palette.Colors.Count;
+      var length = pictureBox1.Width/(float) Palette.Colors.Count;
       float test = (int) (e.X/length);
       if (test >= Palette.Colors.Count)
         test = Palette.Colors.Count - 1;
 
-      double stretchX = Math.Round((test / Palette.Colors.Count) * Current.Max, 2);
+      var stretchX = Math.Round((test/Palette.Colors.Count)*Current.Max, 2);
       SetCurrent(stretchX);
       txtCurrent.Text = stretchX.ToString();
       //
@@ -149,12 +146,12 @@ namespace LibEditSpatial.Controls
     {
       if (Palette == null) return;
 
-      float length = pictureBox1.Width/(float) Palette.Colors.Count;
+      var length = pictureBox1.Width/(float) Palette.Colors.Count;
       float test = (int) (e.X/length);
       if (test >= Palette.Colors.Count)
         test = Palette.Colors.Count - 1;
 
-      double stretchX = Math.Round((test/Palette.Colors.Count)*Current.Max, 2);
+      var stretchX = Math.Round((test/Palette.Colors.Count)*Current.Max, 2);
       SetCurrent(stretchX);
       txtCurrent.Text = stretchX.ToString();
     }
@@ -167,7 +164,7 @@ namespace LibEditSpatial.Controls
 
     public void ChangePalette(string filename)
     {
-      DmpPalette palette = DmpPalette.FromFile(filename);
+      var palette = DmpPalette.FromFile(filename);
       ChangePalette(palette);
     }
 
@@ -177,7 +174,7 @@ namespace LibEditSpatial.Controls
       {
         Title = "Open Palette",
         Filter = "Palette files|*.txt|All files|*.*",
-        AutoUpgradeEnabled = true,
+        AutoUpgradeEnabled = true
       })
       {
         if (dialog.ShowDialog() == DialogResult.OK)

@@ -8,7 +8,6 @@ namespace EditSpatial.Model
     {
     }
 
-
     public CustomSpatialValidator(CustomSpatialValidator orig)
       : base(orig)
     {
@@ -19,10 +18,9 @@ namespace EditSpatial.Model
       return new CustomSpatialValidator(this);
     }
 
-
     private bool containsSpatialMath(ASTNode node, libsbmlcs.Model model)
     {
-      for (int i = 0; i < node.getNumChildren(); ++i)
+      for (var i = 0; i < node.getNumChildren(); ++i)
       {
         if (containsSpatialMath(node.getChild(i), model))
           return true;
@@ -30,7 +28,7 @@ namespace EditSpatial.Model
 
       if (!node.isName()) return false;
 
-      SBase element = model.getElementBySId(node.getName());
+      var element = model.getElementBySId(node.getName());
 
       if (element == null) return false;
 
@@ -48,7 +46,7 @@ namespace EditSpatial.Model
     {
       if (model == null || s == null || !s.isSetId()) return false;
 
-      Rule rule = model.getRule(s.getId());
+      var rule = model.getRule(s.getId());
       if (rule == null || rule.getTypeCode() != libsbml.SBML_ASSIGNMENT_RULE) return false;
 
       var ar = (AssignmentRule) (rule);
@@ -63,12 +61,12 @@ namespace EditSpatial.Model
       if (getDocument() == null || getModel() == null)
         return 0;
 
-      int numErrors = 0;
+      var numErrors = 0;
 
-      libsbmlcs.Model model = getModel();
-      for (int i = 0; i < model.getNumSpecies(); ++i)
+      var model = getModel();
+      for (var i = 0; i < model.getNumSpecies(); ++i)
       {
-        Species species = model.getSpecies(i);
+        var species = model.getSpecies(i);
         var plug = (SpatialSpeciesRxnPlugin) species.getPlugin("spatial");
         if (plug == null) continue;
 

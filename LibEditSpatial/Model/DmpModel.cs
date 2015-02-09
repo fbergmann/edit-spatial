@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -22,12 +23,10 @@ namespace LibEditSpatial.Model
     }
 
     public DmpPalette Palette { get; set; }
-
     public string FileName { get; set; }
-
     public int Columns { get; set; }
 
-    public System.Collections.Generic.List<double> Range
+    public List<double> Range
     {
       get
       {
@@ -39,10 +38,11 @@ namespace LibEditSpatial.Model
         return unique;
       }
     }
+
     public int Rows { get; set; }
 
     /// <summary>
-    /// Saves data in form of [columns, rows]
+    ///   Saves data in form of [columns, rows]
     /// </summary>
     public double[,] Data { get; set; }
 
@@ -50,14 +50,12 @@ namespace LibEditSpatial.Model
     public double MaxX { get; set; }
     public double MinY { get; set; }
     public double MaxY { get; set; }
-
     public double Min { get; set; }
     public double Max { get; set; }
-
     public bool IssueEvents { get; set; }
 
     /// <summary>
-    /// Access the element at the given index position
+    ///   Access the element at the given index position
     /// </summary>
     /// <param name="x">index from 0...Columns</param>
     /// <param name="y">index from 0...Rows</param>
@@ -72,6 +70,20 @@ namespace LibEditSpatial.Model
         Max = Math.Max(Max, value);
         OnModelChanged();
       }
+    }
+
+    public object Clone()
+    {
+      return new DmpModel(Columns, Rows)
+      {
+        MinX = MinX,
+        MaxX = MaxX,
+        MinY = MinY,
+        MaxY = MaxY,
+        Min = Min,
+        Max = Max,
+        Data = (double[,]) Data.Clone()
+      };
     }
 
     //public double this[double x, double y]
@@ -89,7 +101,7 @@ namespace LibEditSpatial.Model
 
     //    int posX = (int)Math.Round((x - MinX)) ;
     //    int posY = 0;
-        
+
 
     //    return Data[posX, posY]; 
     //  }
@@ -107,8 +119,8 @@ namespace LibEditSpatial.Model
     public void Invert()
     {
       var range = Range;
-      int count = range.Count / 2;
-      for (int i = 0; i < count; i++)
+      var count = range.Count/2;
+      for (var i = 0; i < count; i++)
       {
         var first = range[i];
         var last = range[range.Count - 1 - i];
@@ -141,11 +153,11 @@ namespace LibEditSpatial.Model
     private static T[,] RotateMatrixCounterClockwise<T>(T[,] oldMatrix)
     {
       var newMatrix = new T[oldMatrix.GetLength(1), oldMatrix.GetLength(0)];
-      int newRow = 0;
-      for (int oldColumn = oldMatrix.GetLength(1) - 1; oldColumn >= 0; oldColumn--)
+      var newRow = 0;
+      for (var oldColumn = oldMatrix.GetLength(1) - 1; oldColumn >= 0; oldColumn--)
       {
-        int newColumn = 0;
-        for (int oldRow = 0; oldRow < oldMatrix.GetLength(0); oldRow++)
+        var newColumn = 0;
+        for (var oldRow = 0; oldRow < oldMatrix.GetLength(0); oldRow++)
         {
           newMatrix[newRow, newColumn] = oldMatrix[oldRow, oldColumn];
           newColumn++;
@@ -158,11 +170,11 @@ namespace LibEditSpatial.Model
     protected T[,] ResizeArray<T>(T[,] original, int x, int y)
     {
       var newArray = new T[x, y];
-      int minX = Math.Min(original.GetLength(0), newArray.GetLength(0));
-      int minY = Math.Min(original.GetLength(1), newArray.GetLength(1));
+      var minX = Math.Min(original.GetLength(0), newArray.GetLength(0));
+      var minY = Math.Min(original.GetLength(1), newArray.GetLength(1));
 
-      for (int i = 0; i < minY; ++i)
-        for (int j = 0; j < minX; ++j)
+      for (var i = 0; i < minY; ++i)
+        for (var j = 0; j < minX; ++j)
           newArray[j, i] = original[j, i];
 
       return newArray;
@@ -182,10 +194,10 @@ namespace LibEditSpatial.Model
       builder.AppendFormat("{0} {1}{2}", Columns, Rows, Environment.NewLine);
       builder.AppendFormat("{0} {1} {2} {3} {4}", MinX, MaxX, MinY, MaxY, Environment.NewLine);
 
-      for (int y = 0; y < Rows; y++)
+      for (var y = 0; y < Rows; y++)
       {
-        for (int x = 0; x < Columns; x++)
-          
+        for (var x = 0; x < Columns; x++)
+
         {
           builder.Append(Data[x, y]);
           if (x + 1 < Columns)
@@ -203,25 +215,24 @@ namespace LibEditSpatial.Model
       return Palette.GetColor(Max == 0 ? 0 : (val - Min)/Max);
     }
 
-
     public Bitmap ToImage()
     {
       var result = new Bitmap(Columns, Rows);
-        for (int j = 0; j < Columns; j++)
-          for (int i = 0; i < Rows; i++)
-            result.SetPixel(j, i, GetColor(Data[j, i]));
+      for (var j = 0; j < Columns; j++)
+        for (var i = 0; i < Rows; i++)
+          result.SetPixel(j, i, GetColor(Data[j, i]));
 
       return result;
     }
 
     public static DmpModel FromFile(string filename)
     {
-      string[] lines = File.ReadAllLines(filename);
-      int rows = 0;
-      int cols = 0;
+      var lines = File.ReadAllLines(filename);
+      var rows = 0;
+      var cols = 0;
       if (lines.Length > 0)
       {
-        string[] dims = lines[0].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+        var dims = lines[0].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         if (dims.Length > 1)
         {
           int.TryParse(dims[0], out cols);
@@ -229,17 +240,17 @@ namespace LibEditSpatial.Model
         }
       }
 
-      var model = new DmpModel(cols, rows) 
-      { 
+      var model = new DmpModel(cols, rows)
+      {
         Min = double.MaxValue,
         Max = double.MinValue,
-        FileName = filename 
+        FileName = filename
       };
 
-      int start = 2;
+      var start = 2;
       if (lines.Length > 1)
       {
-        string[] dims = lines[1].Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        var dims = lines[1].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         if (dims.Length == 4)
         {
           double temp;
@@ -251,7 +262,6 @@ namespace LibEditSpatial.Model
             model.MinY = temp;
           if (double.TryParse(dims[3], out temp))
             model.MaxY = temp;
-
         }
         else
         {
@@ -260,15 +270,15 @@ namespace LibEditSpatial.Model
           model.MinY = 0;
           model.MaxX = model.Columns;
           model.MaxY = model.Rows;
-          
+
           start = 1;
         }
       }
 
-      for (int y = start; y < Math.Min(rows + start, lines.Length); y++)
+      for (var y = start; y < Math.Min(rows + start, lines.Length); y++)
       {
-        string[] entries = lines[y].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-        for (int x = 0; x < Math.Min(cols, entries.Length); x++)
+        var entries = lines[y].Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+        for (var x = 0; x < Math.Min(cols, entries.Length); x++)
         {
           double current;
           if (double.TryParse(entries[x], out current))
@@ -288,14 +298,14 @@ namespace LibEditSpatial.Model
 
     private Rectangle FindDimensions()
     {
-      int minX = Columns;
-      int maxX = 0;
-      int minY = Rows;
-      int maxY = 0;
+      var minX = Columns;
+      var maxX = 0;
+      var minY = Rows;
+      var maxY = 0;
 
-      for(int y = 0; y < Rows; ++y)
-        for (int x = 0; x < Columns; ++x)
-        { 
+      for (var y = 0; y < Rows; ++y)
+        for (var x = 0; x < Columns; ++x)
+        {
           var current = Data[x, y];
           if (current != 0)
           {
@@ -311,8 +321,8 @@ namespace LibEditSpatial.Model
         }
 
       return new Rectangle(minX, minY, maxX, maxY);
-
     }
+
     public void Center()
     {
       // find dimensions of non-zero entries
@@ -320,16 +330,16 @@ namespace LibEditSpatial.Model
       //Data[used.Y, used.X] = 3;
       //Data[used.Height, used.Width] = 5;
       var total = new Rectangle(0, 0, Columns, Rows);
-      var endDiff = new Size(total.Width - used.Width, total.Height- used.Height);
+      var endDiff = new Size(total.Width - used.Width, total.Height - used.Height);
       var newStart = new Size(
-        (int)Math.Floor(((double)(endDiff.Width + used.X))/2.0),
-        (int)Math.Floor(((double)(endDiff.Height + used.Y)) / 2.0));
+        (int) Math.Floor((endDiff.Width + used.X)/2.0),
+        (int) Math.Floor((endDiff.Height + used.Y)/2.0));
       //Data[newStart.Height, newStart.Width] = 7;
       var difference = new Size(newStart.Width - used.X, newStart.Height - used.Y);
-     // Data[difference.Width, difference.Height] = 7;
+      // Data[difference.Width, difference.Height] = 7;
       var data = new double[Columns, Rows];
-      for (int y = used.Y; y <= used.Height; y++)
-        for (int x = used.X; x <= used.Width; x++)
+      for (var y = used.Y; y <= used.Height; y++)
+        for (var x = used.X; x <= used.Width; x++)
           data[x + difference.Width, y + difference.Height] = Data[x, y];
       Data = data;
     }
@@ -338,38 +348,23 @@ namespace LibEditSpatial.Model
     {
       if (transformation == null) return;
 
-      for(int y = 0; y < Rows; ++y)
-        for (int x = 0; x < Columns; ++x)
+      for (var y = 0; y < Rows; ++y)
+        for (var x = 0; x < Columns; ++x)
           Data[x, y] = transformation(Data[x, y]);
-
     }
 
     public static DmpModel operator +(DmpModel model, double value)
     {
-      var tmp = (DmpModel)model.Clone();
+      var tmp = (DmpModel) model.Clone();
       tmp.Transform(x => x + value);
       return tmp;
     }
 
     public static DmpModel operator *(DmpModel model, double value)
     {
-      var tmp = (DmpModel)model.Clone();
-      tmp.Transform(x => x * value);
+      var tmp = (DmpModel) model.Clone();
+      tmp.Transform(x => x*value);
       return tmp;
-    }
-
-    public object Clone()
-    {
-      return new DmpModel(Columns, Rows)
-      {
-        MinX = MinX,
-        MaxX = MaxX,
-        MinY = MinY,
-        MaxY = MaxY,
-        Min = Min,
-        Max = Max,
-        Data = (double[,]) Data.Clone()
-      };
     }
   }
 }

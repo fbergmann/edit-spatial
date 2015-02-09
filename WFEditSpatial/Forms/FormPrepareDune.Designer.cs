@@ -1,11 +1,14 @@
-﻿namespace EditSpatial.Forms
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace EditSpatial.Forms
 {
   partial class FormPrepareDune
   {
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
 
     /// <summary>
     /// Clean up any resources being used.
@@ -291,23 +294,23 @@
 
     #endregion
 
-    private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-    private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Button cmdClose;
-    private System.Windows.Forms.Panel panel2;
-    private System.Windows.Forms.SplitContainer splitContainer1;
-    private System.Windows.Forms.Panel panel3;
-    private System.Windows.Forms.TextBox textBox1;
-    private System.Windows.Forms.TextBox txtName;
-    private System.Windows.Forms.Label label2;
-    private System.Windows.Forms.Button cmdBrowseTarget;
-    private System.Windows.Forms.TextBox txtTargetDir;
-    private System.Windows.Forms.Label label1;
-    private System.Windows.Forms.Button cmdCreateHost;
-    private System.Windows.Forms.Button cmdCompile;
-    private System.Windows.Forms.Button cmdExportDune;
-    private System.Windows.Forms.Button cmdRun;
-    private System.Windows.Forms.Button cmdEditConfig;
-    private System.Windows.Forms.Button cmdFolder;
+    private TableLayoutPanel tableLayoutPanel1;
+    private Panel panel1;
+    private Button cmdClose;
+    private Panel panel2;
+    private SplitContainer splitContainer1;
+    private Panel panel3;
+    private TextBox textBox1;
+    private TextBox txtName;
+    private Label label2;
+    private Button cmdBrowseTarget;
+    private TextBox txtTargetDir;
+    private Label label1;
+    private Button cmdCreateHost;
+    private Button cmdCompile;
+    private Button cmdExportDune;
+    private Button cmdRun;
+    private Button cmdEditConfig;
+    private Button cmdFolder;
   }
 }

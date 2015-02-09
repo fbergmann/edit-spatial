@@ -58,12 +58,11 @@ namespace LibEditSpatial.Model
     }
 
     public List<Color> Colors { get; set; }
-
     public bool IsFirstTransparent { get; set; }
 
     public Color GetColor(double val)
     {
-      int index = Math.Max(Math.Min((int) Math.Round(val*Colors.Count), Colors.Count - 1), 0);
+      var index = Math.Max(Math.Min((int) Math.Round(val*Colors.Count), Colors.Count - 1), 0);
       return Colors[index];
     }
 
@@ -73,10 +72,10 @@ namespace LibEditSpatial.Model
         size = new Size {Width = 100, Height = 30};
 
       var image = new Bitmap(size.Value.Width, size.Value.Height);
-      using (Graphics graphics = Graphics.FromImage(image))
+      using (var graphics = Graphics.FromImage(image))
       {
-        float length = size.Value.Width/(float) Colors.Count;
-        for (int i = 0; i < Colors.Count; ++i)
+        var length = size.Value.Width/(float) Colors.Count;
+        for (var i = 0; i < Colors.Count; ++i)
         {
           graphics.FillRectangle(new SolidBrush(Colors[i]), length*i, 0f, length, size.Value.Height);
         }
@@ -87,7 +86,7 @@ namespace LibEditSpatial.Model
     public void SaveAs(string filename)
     {
       var builder = new StringBuilder();
-      foreach (Color color in Colors)
+      foreach (var color in Colors)
       {
         builder.AppendLine(ToArgbString(color));
       }
@@ -106,7 +105,7 @@ namespace LibEditSpatial.Model
     {
       if (oByte == 0)
         return "00";
-      string sResult = Convert.ToString(oByte, 16);
+      var sResult = Convert.ToString(oByte, 16);
       if (sResult.Length == 1)
         sResult = "0" + sResult;
       return sResult;
@@ -114,7 +113,7 @@ namespace LibEditSpatial.Model
 
     public static Color ParseARGB(String argbString)
     {
-      Color oResult = Color.Empty;
+      var oResult = Color.Empty;
       if (argbString == String.Empty) return Color.Empty;
 
       try
@@ -147,13 +146,13 @@ namespace LibEditSpatial.Model
 
     public static DmpPalette FromFile(string fileName)
     {
-      string[] lines = File.ReadAllLines(fileName);
+      var lines = File.ReadAllLines(fileName);
       var result = new DmpPalette();
-      foreach (string line in lines)
+      foreach (var line in lines)
       {
         try
         {
-          Color color = ParseARGB(line.Replace("#", ""));
+          var color = ParseARGB(line.Replace("#", ""));
           result.Colors.Add(color);
         }
         catch

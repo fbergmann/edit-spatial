@@ -11,7 +11,6 @@ namespace EditSpatial.Controls
     }
 
     public bool IsInitializing { get; set; }
-
     public Action UpdateAction { get; set; }
 
     public virtual void SaveChanges()

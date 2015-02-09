@@ -49,8 +49,8 @@ namespace EditSpatial.Controls
 
       for (long i = 0; i < sampledFieldGeometry.getNumSampledVolumes(); ++i)
       {
-        SampledVolume vol = sampledFieldGeometry.getSampledVolume(i);
-        string spatialId = vol.getSpatialId();
+        var vol = sampledFieldGeometry.getSampledVolume(i);
+        var spatialId = vol.getSpatialId();
 
         grid.Rows.Add(
           spatialId,
@@ -63,7 +63,7 @@ namespace EditSpatial.Controls
 
       _Field = sampledFieldGeometry.getSampledField();
       _Data = _Field == null ? null : _Field.getImageData();
-      int numSamples = _Field == null ? 0 : _Field.getNumSamples3() - 1;
+      var numSamples = _Field == null ? 0 : _Field.getNumSamples3() - 1;
 
 
       if (SpatialGeometry.getNumCoordinateComponents() < 3 || numSamples == 0)
@@ -90,10 +90,10 @@ namespace EditSpatial.Controls
       if (Current == null || SpatialGeometry == null) return;
 
       Current.setSpatialId(txtId.Text);
-      for (int i = 0; i < grid.Rows.Count && i < Current.getNumSampledVolumes(); ++i)
+      for (var i = 0; i < grid.Rows.Count && i < Current.getNumSampledVolumes(); ++i)
       {
-        DataGridViewRow row = grid.Rows[i];
-        SampledVolume current = Current.getSampledVolume(i);
+        var row = grid.Rows[i];
+        var current = Current.getSampledVolume(i);
         current.setSpatialId((string) row.Cells[0].Value);
         current.setDomainType((string) row.Cells[1].Value);
         double value;
@@ -109,7 +109,7 @@ namespace EditSpatial.Controls
     private List<int> GetUniqueValues(int[] data)
     {
       var result = new List<int>();
-      foreach (int t in data.Where(t => !result.Contains(t)))
+      foreach (var t in data.Where(t => !result.Contains(t)))
       {
         result.Add(t);
       }
@@ -128,16 +128,16 @@ namespace EditSpatial.Controls
           return new Bitmap(1, 1);
 
 
-        long uncompressedLength = _Data.getUncompressedLength();
+        var uncompressedLength = _Data.getUncompressedLength();
         if (uncompressedLength == 0)
           _Data.uncompress();
         uncompressedLength = _Data.getUncompressedLength();
         var array = new int[uncompressedLength];
         _Data.getUncompressed(array);
 
-        List<int> values = GetUniqueValues(array);
+        var values = GetUniqueValues(array);
 
-        int z = Util.SaveInt(txtZ.Text, 0);
+        var z = Util.SaveInt(txtZ.Text, 0);
         if (z >= _Field.getNumSamples3())
           z = _Field.getNumSamples3() - 1;
         if (z < 0) z = 0;
@@ -147,7 +147,7 @@ namespace EditSpatial.Controls
         {
           for (long j = 0; j < _Field.getNumSamples2(); ++j)
           {
-            int index =
+            var index =
               GetIndexFor(array[i + _Field.getNumSamples1()*j + _Field.getNumSamples1()*_Field.getNumSamples2()*z]);
 
             result.SetPixel((int) i, (int) j, GetColorForIndex(index));
@@ -168,8 +168,8 @@ namespace EditSpatial.Controls
 
       for (long i = 0; i < Current.getNumSampledVolumes(); ++i)
       {
-        SampledVolume current = Current.getSampledVolume(i);
-        double currentValue = current.getSampledValue();
+        var current = Current.getSampledVolume(i);
+        var currentValue = current.getSampledValue();
         var currentIntValue = (uint) currentValue;
         if (Math.Abs(currentValue - value) < 1e-10)
           return (int) i;
@@ -213,7 +213,6 @@ namespace EditSpatial.Controls
       }
     }
 
-
     private void OnReorderClick(object sender, EventArgs e)
     {
     }
@@ -251,9 +250,9 @@ namespace EditSpatial.Controls
         return;
 
       var vols = new List<SampledVolume>();
-      for (int i = (int) Current.getNumSampledVolumes() - 1; i >= 0; --i)
+      for (var i = (int) Current.getNumSampledVolumes() - 1; i >= 0; --i)
         vols.Add(Current.removeSampledVolume(i));
-      foreach (SampledVolume vol in vols)
+      foreach (var vol in vols)
       {
         Current.addSampledVolume(vol);
       }
@@ -286,11 +285,11 @@ namespace EditSpatial.Controls
       _Field.setNumSamples2(image.Height);
       _Field.setNumSamples3(1);
       var data = new int[image.Width*image.Height];
-      int count = 0;
-      for (int i = 0; i < image.Width; ++i)
-        for (int j = 0; j < image.Height; ++j)
+      var count = 0;
+      for (var i = 0; i < image.Width; ++i)
+        for (var j = 0; j < image.Height; ++j)
         {
-          Color currentColor = image.GetPixel(i, j);
+          var currentColor = image.GetPixel(i, j);
 
           var value = (int) (currentColor.GetBrightness()*10f);
           //if (currentColor.B > 10 && currentColor.G > 10 && currentColor.R > 10)
@@ -300,11 +299,11 @@ namespace EditSpatial.Controls
           data[count++] = value;
         }
 
-      List<int> values = GetUniqueValues(data);
-      int col = 0;
-      foreach (int val in values)
+      var values = GetUniqueValues(data);
+      var col = 0;
+      foreach (var val in values)
       {
-        SampledVolume vol = Current.createSampledVolume();
+        var vol = Current.createSampledVolume();
         vol.setSpatialId(string.Format("vol_{0}", col++));
         vol.setSampledValue(val);
         vol.setMinValue(val);

@@ -35,7 +35,7 @@ namespace LibEditSpatial.Model
         MinStep = dict.Get<double>("dt_min"),
         MaxStep = dict.Get<double>("dt_max"),
         PlotStep = dict.Get<double>("dt_plot"),
-        IncreaseRate = dict.Get<int>("increase_rate"),
+        IncreaseRate = dict.Get<int>("increase_rate")
       };
       return result;
     }
