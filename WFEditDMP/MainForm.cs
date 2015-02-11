@@ -123,7 +123,12 @@ namespace WFEditDMP
     private void SaveAs(string fileName)
     {
       if (Model == null) return;
-      Model.SaveAs(fileName);
+
+      string lower = fileName.ToLowerInvariant();
+      if (lower.EndsWith(".tif") || lower.EndsWith(".tiff"))
+        Model.ToImage().Save(fileName);
+      else 
+        Model.SaveAs(fileName);
       UpdateUI();
     }
 
@@ -266,6 +271,58 @@ namespace WFEditDMP
           Model = dlg.Model;
           UpdateUI();
         }
+      }
+    }
+
+    private int FindHCF(int m, int n)
+    {
+      int temp, reminder;
+      if (m < n)
+      {
+        temp = m;
+        m = n;
+        n = temp;
+      }
+      while (true)
+      {
+        reminder = m % n;
+        if (reminder == 0)
+          return n;
+        else
+          m = n;
+        n = reminder;
+      }
+    }
+
+    private void OnAspectClick(object sender, EventArgs e)
+    {
+      // resizes the window to match the aspect ratio
+      var screen = Screen.FromControl(this);
+      StartPosition = FormStartPosition.Manual;
+      var bounds = screen.Bounds;
+      Location = bounds.Location;
+
+      int hcf = FindHCF((int)Math.Round(Model.MaxX), (int)Math.Round(Model.MaxY));
+
+      double width = Math.Round(Model.MaxX);
+      double height = Math.Round(Model.MaxY);
+
+      double factorX = width / (double)hcf;
+      double factorY = height / (double)hcf;
+
+      double maxWidth = bounds.Width - 50;
+      double maxHeight = bounds.Height - 50;
+      double min = Math.Min(maxWidth, maxHeight);
+
+      if (factorX > factorY)
+      {
+        double newHeight = height / width * min;
+        Size = new System.Drawing.Size((int)min, (int)newHeight);
+      }
+      else
+      {
+        double newWidth = width / height * min;
+        Size = new System.Drawing.Size((int)newWidth, (int)min);
       }
     }
   }

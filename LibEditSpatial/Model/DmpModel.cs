@@ -218,9 +218,9 @@ namespace LibEditSpatial.Model
     public Bitmap ToImage()
     {
       var result = new Bitmap(Columns, Rows);
-      for (var j = 0; j < Columns; j++)
-        for (var i = 0; i < Rows; i++)
-          result.SetPixel(j, i, GetColor(Data[j, i]));
+      for (var x = 0; x < Columns; x++)
+        for (var y = 0; y < Rows; y++)
+          result.SetPixel(x, y, GetColor(Data[x, y]));
 
       return result;
     }

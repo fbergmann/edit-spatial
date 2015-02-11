@@ -101,6 +101,7 @@ namespace LibEditSpatial.Controls
       var point = GetPointForMouse(e.X, e.Y);
 
       if (DisableEditing) return;
+
       SetValueAround(point);
     }
 
@@ -119,8 +120,8 @@ namespace LibEditSpatial.Controls
         (float) ((point.X/(float) Model.Columns)*(Model.MaxX - Model.MinX) + Model.MinX),
         (float) ((point.Y/(float) Model.Rows)*(Model.MaxY - Model.MinY) + Model.MinY)));
 
-
       OnLocationChanged(point);
+
       return point;
     }
 
@@ -129,7 +130,6 @@ namespace LibEditSpatial.Controls
       var point = GetPointForMouse(e.X, e.Y);
 
       if (Model == null || !Painting) return;
-
 
       SetValueAround(point);
     }

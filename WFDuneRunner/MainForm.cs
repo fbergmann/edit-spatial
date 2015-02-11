@@ -137,6 +137,8 @@ namespace WFDuneRunner
         gridCompartments.Rows.Add(id, Config["Reaction"].Get("in_" + id, ""));
       }
     }
+
+
     internal void UpdateUI()
     {
       SetTitle();
@@ -435,8 +437,13 @@ namespace WFDuneRunner
         case 2: // browse file
         {
           string result;
+          var id = row.Cells[0].Value as string;
           if (BrowseDmpFile(out result))
+          {
             row.Cells[1].Value = result;
+            Config.ApplyCompartmentMasking(id, result);
+            UpdateVariables();
+          }
           break;
         }
         case 3: // view compartment
@@ -456,6 +463,8 @@ namespace WFDuneRunner
             }
 
             row.Cells[1].Value = name;
+            Config.ApplyCompartmentMasking(id, name);
+            UpdateVariables();
             var dmpFile = new DmpModel(Config.DomainConfig.GridX, Config.DomainConfig.GridY) 
             { MaxX = Config.DomainConfig.Width, 
               MaxY = Config.DomainConfig.Height };

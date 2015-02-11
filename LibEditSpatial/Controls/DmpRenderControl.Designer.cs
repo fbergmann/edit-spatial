@@ -39,10 +39,11 @@ namespace LibEditSpatial.Controls
       // 
       // pictureBox1
       // 
+      this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.pictureBox1.Location = new System.Drawing.Point(5, 5);
+      this.pictureBox1.Location = new System.Drawing.Point(0, 0);
       this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(138, 138);
+      this.pictureBox1.Size = new System.Drawing.Size(150, 150);
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
       this.pictureBox1.TabIndex = 0;
       this.pictureBox1.TabStop = false;
@@ -60,11 +61,10 @@ namespace LibEditSpatial.Controls
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
       this.Controls.Add(this.pictureBox1);
+      this.DoubleBuffered = true;
       this.Name = "DmpRenderControl";
-      this.Padding = new System.Windows.Forms.Padding(5);
-      this.Size = new System.Drawing.Size(148, 148);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.ResumeLayout(false);
 

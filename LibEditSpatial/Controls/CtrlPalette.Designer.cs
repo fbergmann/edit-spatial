@@ -77,6 +77,7 @@ namespace LibEditSpatial.Controls
       // 
       // pictureBox1
       // 
+      this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.tableLayoutPanel1.SetColumnSpan(this.pictureBox1, 5);
       this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
       this.pictureBox1.Location = new System.Drawing.Point(8, 38);
@@ -151,11 +152,13 @@ namespace LibEditSpatial.Controls
       // 
       // toolStrip1
       // 
+      this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
       this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripButton,
             this.saveToolStripButton});
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
+      this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
       this.toolStrip1.Size = new System.Drawing.Size(84, 25);
       this.toolStrip1.TabIndex = 0;
       this.toolStrip1.Text = "toolStrip1";
