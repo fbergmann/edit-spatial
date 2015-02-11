@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using libsbmlcs;
 
 namespace LibEditSpatial.Model
 {
@@ -13,12 +15,19 @@ namespace LibEditSpatial.Model
     internal NewtonConfig _NewtonConfig;
     internal TimeLoopConfig _TimeConfig;
 
+    public Dictionary<string, string> VariableCompartmentMap { get; set; }
+    public List<string> CompartmentIds { get; set; }
+
+
     /// <summary>
     ///   Initializes a new instance of the DuneConfig class.
     /// </summary>
     public DuneConfig()
     {
       Entries = new Dictionary<string, Dictionary<string, string>>();
+      VariableCompartmentMap = new Dictionary<string, string>();
+      CompartmentIds = new List<string>();
+
     }
 
     public string FileName { get; set; }
@@ -122,6 +131,47 @@ namespace LibEditSpatial.Model
       }
     }
 
+    /// <summary>
+    /// Returns all species in the given compartment
+    /// </summary>
+    /// <param name="compId">the compartment id</param>
+    /// <returns>all species in that compartment</returns>
+    public List<string> GetSpeciesIn(string compId)
+    {
+      return VariableCompartmentMap.Where(item => item.Value == compId).Select(item2 => item2.Key).ToList();
+    }
+
+    /// <summary>
+    /// Initialize SBML mapping of species from the given SBML file
+    /// </summary>
+    /// <param name="fileName">the sbml file</param>
+    public void InitFromSBML(string fileName)
+    {
+      CompartmentIds = new List<string>();
+      VariableCompartmentMap = new Dictionary<string, string>();
+
+      var doc = libsbml.readSBMLFromFile(fileName);
+      var model = doc.getModel();
+      if (model == null) return;
+
+      CompartmentIds = new List<string>();
+      VariableCompartmentMap = new Dictionary<string, string>();
+
+      for (var i = 0; i < model.getNumCompartments(); ++i)
+        CompartmentIds.Add(model.getCompartment(i).getId());
+
+      for (var i = 0; i < model.getNumSpecies(); ++i)
+      {
+        var species = model.getSpecies(i);
+        VariableCompartmentMap[species.getId()] = species.getCompartment();
+      }
+      
+    }
+
+    /// <summary>
+    /// Return the name of all entries that represent variables
+    /// </summary>
+    /// <returns></returns>
     public List<string> GetVariableKeys()
     {
       var result = new List<string>(Entries.Keys);
@@ -158,7 +208,7 @@ namespace LibEditSpatial.Model
 
       var builder = new StringBuilder();
       builder.AppendLine("# Dune Config file");
-      builder.AppendLine("# written: " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+      builder.AppendLine(string.Format("# written: {0} {1}", DateTime.Now.ToShortDateString(), DateTime.Now.ToShortTimeString()));
       builder.AppendLine();
 
       WriteSection(builder, "", GlobalConfig.ToDict(), baseDir);
@@ -185,11 +235,37 @@ namespace LibEditSpatial.Model
       FileName = fileName;
     }
 
+    public void ApplyCompartmentMasking(string compId, string fileName)
+    {
+      var ids = GetSpeciesIn(compId);
+      var variables = GetVariableKeys();
+      var main = this["Reaction"];
+
+      foreach (var id in ids)
+      {
+        if (!variables.Contains(id)) continue;
+        var current = this[id];
+        if (current == null) continue;
+        current["file_compartment"] = fileName;
+      }
+
+      if (main == null) return;
+
+      main["in_" + compId] = fileName;
+
+    }
+
+
     public static DuneConfig FromFile(string filename)
     {
       var lines = File.ReadAllLines(filename);
 
-      var result = new DuneConfig {FileName = filename};
+      var result = new DuneConfig {
+        FileName = filename,
+        VariableCompartmentMap = new Dictionary<string, string>(),
+        CompartmentIds = new List<string>()
+
+      };
 
       var current = STR_GLOBAL;
       var entries = new Dictionary<string, string>();
@@ -200,7 +276,7 @@ namespace LibEditSpatial.Model
         var trimmed = line.Trim();
 
         // remove comment at the end
-        var commentIndex = trimmed.IndexOf("#");
+        var commentIndex = trimmed.IndexOf("#", StringComparison.Ordinal);
         if (commentIndex != -1)
         {
           trimmed = trimmed.Substring(0, commentIndex).Trim();
@@ -230,7 +306,53 @@ namespace LibEditSpatial.Model
 
       result.Entries.Add(current, entries);
 
+      result.InitCompartmentMasking();
+
+
       return result;
+    }
+
+    public void ClearCompartmentMasking()
+    {
+      var variables = GetVariableKeys();
+      foreach (var id in variables)
+      {
+        var current = this[id];
+        if (current.ContainsKey("file_compartment"))
+          current.Remove("file_compartment");
+      }
+
+      var main = this["Reaction"];
+      if (main == null) return;
+
+      var keys = new List<string>(main.Keys);
+      foreach (var key in keys)
+      {
+        if (key.StartsWith("in_"))
+          main.Remove(key);
+      }
+
+    }
+    public void InitCompartmentMasking()
+    {
+
+      var sbmlFile = GlobalConfig.SBMLFile;
+
+      if (!string.IsNullOrWhiteSpace(sbmlFile))
+      {
+        var currentDir = Path.GetDirectoryName(FileName);
+        if (File.Exists(sbmlFile))
+        {
+          InitFromSBML(sbmlFile);
+        }
+
+        else if (File.Exists(Path.Combine(currentDir, sbmlFile)))
+        {
+          InitFromSBML(Path.Combine(currentDir, sbmlFile));
+        }
+        return;
+      }
+
     }
   }
 }

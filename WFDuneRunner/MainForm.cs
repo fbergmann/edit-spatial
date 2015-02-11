@@ -34,8 +34,6 @@ namespace WFDuneRunner
     public DuneConfig Config { get; set; }
     public string FileName { get; set; }
     public string CurrentDir { get; set; }
-    public Dictionary<string, string> VariableCompartmentMap { get; set; }
-    public List<string> CompartmentIds { get; set; }
 
     public string ExecutableFileName
     {
@@ -55,8 +53,7 @@ namespace WFDuneRunner
       CurrentDir = Path.GetDirectoryName(filename);
 
       Config = DuneConfig.FromFile(filename);
-      VariableCompartmentMap = new Dictionary<string, string>();
-      CompartmentIds = new List<string>();
+
       UpdateUI();
     }
 
@@ -100,23 +97,18 @@ namespace WFDuneRunner
         Text = string.Format("Dune Runner [{0}]", Path.GetFileName(FileName));
     }
 
-    internal void UpdateUI()
+    private void UpdateParameters()
     {
-      SetTitle();
-
-      ctrlTime1.LoadModel(Config.TimeConfig);
-      ctrlDomain1.LoadModel(Config.DomainConfig);
-      ctrlNewton1.LoadModel(Config.NewtonConfig);
-      ctrlGlobal1.LoadModel(Config.GlobalConfig);
-
-      _isLoading = true;
       gridParameters.Rows.Clear();
       var parameters = Config["Reaction"];
       foreach (var item in parameters)
       {
         gridParameters.Rows.Add(item.Key, item.Value);
       }
+    }
 
+    private void UpdateVariables()
+    {
       gridVariables.Rows.Clear();
       var data = Config["Data"];
       var varKeys = Config.GetVariableKeys();
@@ -130,25 +122,40 @@ namespace WFDuneRunner
           entries.ContainsKey("Xmax") ? entries["Xmax"] : "0",
           entries.ContainsKey("Ymin") ? entries["Ymin"] : "0",
           entries.ContainsKey("Xmax") ? entries["Xmax"] : "0",
-          (data != null && data.ContainsKey(item)) ? data[item] : ""
+          (data != null && data.ContainsKey(item)) ? data[item] : "",
+          null, null,
+          entries.ContainsKey("file_compartment") ? entries["file_compartment"] : "0"
           );
       }
+    }
+
+    private void UpdateCompartments()
+    {
+      gridCompartments.Rows.Clear();
+      foreach (var id in Config.CompartmentIds)
+      {
+        gridCompartments.Rows.Add(id, Config["Reaction"].Get("in_" + id, ""));
+      }
+    }
+    internal void UpdateUI()
+    {
+      SetTitle();
+
+      ctrlTime1.LoadModel(Config.TimeConfig);
+      ctrlDomain1.LoadModel(Config.DomainConfig);
+      ctrlNewton1.LoadModel(Config.NewtonConfig);
+      ctrlGlobal1.LoadModel(Config.GlobalConfig);
+
+      _isLoading = true;
+
+      UpdateParameters();
+
+      UpdateVariables();
+
+      UpdateCompartments();
+
 
       cmdRun.Enabled = (!string.IsNullOrWhiteSpace(ExecutableFileName));
-
-      var sbmlFile = Config.GlobalConfig.SBMLFile;
-      if (!string.IsNullOrWhiteSpace(sbmlFile))
-      {
-        if (File.Exists(sbmlFile))
-        {
-          InitFromSBML(sbmlFile);
-        }
-
-        else if (File.Exists(Path.Combine(CurrentDir, sbmlFile)))
-        {
-          InitFromSBML(Path.Combine(CurrentDir, sbmlFile));
-        }
-      }
 
       _isLoading = false;
     }
@@ -280,6 +287,7 @@ namespace WFDuneRunner
         }
         case 7:
         {
+          if (id != null)
           data[id] = row.Cells[7].Value as string;
           break;
         }
@@ -292,7 +300,7 @@ namespace WFDuneRunner
     {
       if (string.IsNullOrWhiteSpace(file)) return;
 
-      if (!File.Exists(file))
+      if (FileName != null && !File.Exists(file))
       {
         file = Path.Combine(Path.GetDirectoryName(FileName), file);
         if (!File.Exists(file)) return;
@@ -368,6 +376,8 @@ namespace WFDuneRunner
 
             row.Cells[7].Value = name;
             var dmpFile = new DmpModel(Config.DomainConfig.GridX, Config.DomainConfig.GridY);
+            dmpFile.MaxX = Config.DomainConfig.Width;
+            dmpFile.MaxY = Config.DomainConfig.Height;
             file = Path.Combine(dir, name);
             dmpFile.SaveAs(file);
           }
@@ -392,6 +402,23 @@ namespace WFDuneRunner
       if (_isLoading) return;
 
       if (e.RowIndex < 0) return;
+      var row = gridCompartments.Rows[e.RowIndex];
+      if (row.IsNewRow) return;
+
+      switch (e.ColumnIndex)
+      {
+        case 1: // edited compartmentfile
+        {
+          var file = row.Cells[1].Value as string;
+          var id = row.Cells[0].Value as string;
+          Config.ApplyCompartmentMasking(id, file);
+          UpdateVariables();
+          break;
+        }
+        default:
+          break;
+      }
+      
     }
 
     private void OnCompartmentCellClick(object sender, DataGridViewCellEventArgs e)
@@ -429,7 +456,9 @@ namespace WFDuneRunner
             }
 
             row.Cells[1].Value = name;
-            var dmpFile = new DmpModel(Config.DomainConfig.GridX, Config.DomainConfig.GridY);
+            var dmpFile = new DmpModel(Config.DomainConfig.GridX, Config.DomainConfig.GridY) 
+            { MaxX = Config.DomainConfig.Width, 
+              MaxY = Config.DomainConfig.Height };
             file = Path.Combine(dir, name);
             dmpFile.SaveAs(file);
           }
@@ -442,80 +471,50 @@ namespace WFDuneRunner
       }
     }
 
+    public void ClearExistingAssignments()
+    {
+      Config.ClearCompartmentMasking();
+    }
+
     private void OnClearAllCompartmentAssignments(object sender, EventArgs e)
     {
       if (_isLoading) return;
 
-      var variables = Config.GetVariableKeys();
-      foreach (var id in variables)
-      {
-        var current = Config[id];
-        if (current.ContainsKey("file_compartment"))
-          current.Remove("file_compartment");
-      }
-
-      var main = Config["Reaction"];
-      var keys = main.Keys;
-      foreach (var key in keys)
-      {
-        if (key.StartsWith("in_"))
-          main.Remove(key);
-      }
+      ClearExistingAssignments();
     }
 
-    private void OnApplyCompartmentAssignments(object sender, EventArgs e)
+    public void ApplyCompartmentAssignments(bool clearExisting = false)
     {
-      if (_isLoading) return;
 
-      OnClearAllCompartmentAssignments(sender, e);
-
-      var variables = Config.GetVariableKeys();
-      var main = Config["Reaction"];
+      if (clearExisting)
+        ClearExistingAssignments();
 
       foreach (DataGridViewRow row in gridCompartments.Rows)
       {
         var compId = row.Cells[0].Value as string;
         var dmpFile = row.Cells[1].Value as string;
 
-        var ids = VariableCompartmentMap.Where(item => item.Value == compId).Select(item2 => item2.Key).ToList();
-
-        foreach (var id in ids)
-        {
-          if (!variables.Contains(id)) continue;
-          var current = Config[id];
-          if (current == null) continue;
-          current["file_compartment"] = dmpFile;
-        }
-
-        main["in_" + compId] = dmpFile;
+        Config.ApplyCompartmentMasking(compId, dmpFile);
+        
       }
+    }
+    
+    private void OnApplyCompartmentAssignments(object sender, EventArgs e)
+    {
+      if (_isLoading) return;
+
+      ApplyCompartmentAssignments();
+
     }
 
     private void InitFromSBML(string fileName)
     {
-      CompartmentIds = new List<string>();
-      VariableCompartmentMap = new Dictionary<string, string>();
-
-      var doc = libsbml.readSBMLFromFile(fileName);
-      var model = doc.getModel();
-      if (model == null) return;
-
-      CompartmentIds = new List<string>();
-      VariableCompartmentMap = new Dictionary<string, string>();
-
-      for (var i = 0; i < model.getNumCompartments(); ++i)
-        CompartmentIds.Add(model.getCompartment(i).getId());
-
-      for (var i = 0; i < model.getNumSpecies(); ++i)
-      {
-        var species = model.getSpecies(i);
-        VariableCompartmentMap[species.getId()] = species.getCompartment();
-      }
+      Config.InitFromSBML(fileName);
 
       gridCompartments.Rows.Clear();
-      foreach (var id in CompartmentIds)
+      foreach (var id in Config.CompartmentIds)
       {
-        gridCompartments.Rows.Add(id, "");
+        gridCompartments.Rows.Add(id, Config["Reaction"].Get("in_" + id, ""));
       }
     }
 

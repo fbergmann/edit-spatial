@@ -66,6 +66,10 @@ namespace WFDuneRunner
       this.cmdInitFromSBML = new System.Windows.Forms.Button();
       this.cmdAssignCompartments = new System.Windows.Forms.Button();
       this.gridCompartments = new System.Windows.Forms.DataGridView();
+      this.colCompartment = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.Filename = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBrowseFile = new System.Windows.Forms.DataGridViewButtonColumn();
+      this.colViewDmp = new System.Windows.Forms.DataGridViewButtonColumn();
       this.cmdClearAssignments = new System.Windows.Forms.Button();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,10 +90,7 @@ namespace WFDuneRunner
       this.cmdRun = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.colCompartment = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.Filename = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBrowseFile = new System.Windows.Forms.DataGridViewButtonColumn();
-      this.colViewDmp = new System.Windows.Forms.DataGridViewButtonColumn();
+      this.colCompartmentMask = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -294,7 +295,8 @@ namespace WFDuneRunner
             this.colBCmaxY,
             this.colData,
             this.colEdit,
-            this.colBrowse});
+            this.colBrowse,
+            this.colCompartmentMask});
       this.gridVariables.Dock = System.Windows.Forms.DockStyle.Fill;
       this.gridVariables.Location = new System.Drawing.Point(3, 3);
       this.gridVariables.Name = "gridVariables";
@@ -468,6 +470,32 @@ namespace WFDuneRunner
       this.gridCompartments.TabIndex = 2;
       this.gridCompartments.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCompartmentCellClick);
       this.gridCompartments.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCompartmentAssignmentChanged);
+      // 
+      // colCompartment
+      // 
+      this.colCompartment.HeaderText = "Compartment Id";
+      this.colCompartment.Name = "colCompartment";
+      // 
+      // Filename
+      // 
+      this.Filename.HeaderText = "Filename";
+      this.Filename.Name = "Filename";
+      // 
+      // colBrowseFile
+      // 
+      this.colBrowseFile.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBrowseFile.HeaderText = "...";
+      this.colBrowseFile.Name = "colBrowseFile";
+      this.colBrowseFile.Width = 20;
+      // 
+      // colViewDmp
+      // 
+      this.colViewDmp.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colViewDmp.HeaderText = "Edit";
+      this.colViewDmp.Name = "colViewDmp";
+      this.colViewDmp.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+      this.colViewDmp.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+      this.colViewDmp.Width = 48;
       // 
       // cmdClearAssignments
       // 
@@ -649,31 +677,11 @@ namespace WFDuneRunner
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // colCompartment
+      // colCompartmentMask
       // 
-      this.colCompartment.HeaderText = "Compartment Id";
-      this.colCompartment.Name = "colCompartment";
-      // 
-      // Filename
-      // 
-      this.Filename.HeaderText = "Filename";
-      this.Filename.Name = "Filename";
-      // 
-      // colBrowseFile
-      // 
-      this.colBrowseFile.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colBrowseFile.HeaderText = "...";
-      this.colBrowseFile.Name = "colBrowseFile";
-      this.colBrowseFile.Width = 20;
-      // 
-      // colViewDmp
-      // 
-      this.colViewDmp.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colViewDmp.HeaderText = "Edit";
-      this.colViewDmp.Name = "colViewDmp";
-      this.colViewDmp.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-      this.colViewDmp.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-      this.colViewDmp.Width = 48;
+      this.colCompartmentMask.HeaderText = "Compartment";
+      this.colCompartmentMask.Name = "colCompartmentMask";
+      this.colCompartmentMask.Visible = false;
       // 
       // MainForm
       // 
@@ -774,6 +782,7 @@ namespace WFDuneRunner
     private DataGridViewTextBoxColumn Filename;
     private DataGridViewButtonColumn colBrowseFile;
     private DataGridViewButtonColumn colViewDmp;
+    private DataGridViewTextBoxColumn colCompartmentMask;
   }
 }
 
