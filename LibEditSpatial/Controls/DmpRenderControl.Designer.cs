@@ -32,7 +32,7 @@ namespace LibEditSpatial.Controls
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.pictureBox1 = new LibEditSpatial.Controls.CtrlPictureBox();
       this.timer1 = new System.Windows.Forms.Timer(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.SuspendLayout();
@@ -41,6 +41,7 @@ namespace LibEditSpatial.Controls
       // 
       this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.pictureBox1.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
       this.pictureBox1.Location = new System.Drawing.Point(0, 0);
       this.pictureBox1.Name = "pictureBox1";
       this.pictureBox1.Size = new System.Drawing.Size(150, 150);
@@ -72,7 +73,7 @@ namespace LibEditSpatial.Controls
 
     #endregion
 
-    private PictureBox pictureBox1;
+    private CtrlPictureBox pictureBox1;
     private Timer timer1;
   }
 }

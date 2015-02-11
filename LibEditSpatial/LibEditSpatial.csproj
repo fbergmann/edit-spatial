@@ -71,6 +71,12 @@
     <Compile Include="Controls\CtrlPalette.Designer.cs">
       <DependentUpon>CtrlPalette.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\CtrlPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\CtrlPictureBox.Designer.cs">
+      <DependentUpon>CtrlPictureBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CtrlTime.cs">
       <SubType>UserControl</SubType>
     </Compile>
