@@ -58,6 +58,7 @@ namespace WFDuneRunner
       this.colData = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colEdit = new System.Windows.Forms.DataGridViewButtonColumn();
       this.colBrowse = new System.Windows.Forms.DataGridViewButtonColumn();
+      this.colCompartmentMask = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.tabParameters = new System.Windows.Forms.TabPage();
       this.gridParameters = new System.Windows.Forms.DataGridView();
       this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -90,7 +91,6 @@ namespace WFDuneRunner
       this.cmdRun = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.colCompartmentMask = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -375,6 +375,12 @@ namespace WFDuneRunner
       this.colBrowse.HeaderText = "...";
       this.colBrowse.Name = "colBrowse";
       this.colBrowse.Width = 20;
+      // 
+      // colCompartmentMask
+      // 
+      this.colCompartmentMask.HeaderText = "Compartment";
+      this.colCompartmentMask.Name = "colCompartmentMask";
+      this.colCompartmentMask.Visible = false;
       // 
       // tabParameters
       // 
@@ -677,18 +683,13 @@ namespace WFDuneRunner
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // colCompartmentMask
-      // 
-      this.colCompartmentMask.HeaderText = "Compartment";
-      this.colCompartmentMask.Name = "colCompartmentMask";
-      this.colCompartmentMask.Visible = false;
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(984, 561);
       this.Controls.Add(this.toolStripContainer1);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "MainForm";
       this.Text = "Dune Runner";

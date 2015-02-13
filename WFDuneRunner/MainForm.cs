@@ -198,6 +198,8 @@ namespace WFDuneRunner
 
     private void OnAbout(object sender, EventArgs e)
     {
+      using (var dlg = new AboutBox())
+        dlg.ShowDialog();
     }
 
     private void SaveFile(string fileName)

@@ -22,10 +22,24 @@ namespace LibEditSpatial.Model
       Max = 10;
     }
 
+    /// <summary>
+    /// Current Palette
+    /// </summary>
     public DmpPalette Palette { get; set; }
+  
+    /// <summary>
+    /// Filename for the model
+    /// </summary>
     public string FileName { get; set; }
+    
+    /// <summary>
+    /// Number of Columns
+    /// </summary>
     public int Columns { get; set; }
 
+    /// <summary>
+    /// Returns all unique values in this model
+    /// </summary>
     public List<double> Range
     {
       get
@@ -39,22 +53,32 @@ namespace LibEditSpatial.Model
       }
     }
 
+    /// <summary>
+    /// X range
+    /// </summary>
     public double XRange {
       get { return MaxX - MinX; }
     }
 
+    /// <summary>
+    /// Y range
+    /// </summary>
     public double YRange
     {
       get { return MaxY - MinY; }
     }
 
+    /// <summary>
+    /// data range
+    /// </summary>
     public double DataRange
     {
       get { return Max - Min; }
     }
   
-
-
+    /// <summary>
+    /// number of rows
+    /// </summary>
     public int Rows { get; set; }
 
     /// <summary>

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("WFDuneRunner")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("DuneRunner")]
+[assembly: AssemblyDescription("This application edits DUNE run configurations, and can launch the spatial model.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WFDuneRunner")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright ©  2014-2015 Frank T. Bergmann")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
