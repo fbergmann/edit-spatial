@@ -1,3 +1,5 @@
+using System;
+
 namespace LibEditSpatial.Controls
 {
   public class PalleteArgs
@@ -18,7 +20,7 @@ namespace LibEditSpatial.Controls
       if (value < Min) return 0;
       if (value > Max) return 1;
 
-      if (Range == 0) return 0;
+      if (Math.Abs(Range) < 1e-10) return 0;
 
       return (value - Min) / Range;
     }

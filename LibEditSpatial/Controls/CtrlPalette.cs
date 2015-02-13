@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 using LibEditSpatial.Model;
 
@@ -17,7 +18,9 @@ namespace LibEditSpatial.Controls
     }
 
     public PalleteArgs Current { get; set; }
+
     public bool IssuingEvents { get; set; }
+    
     public bool IsPainting { get; set; }
 
     public DmpPalette Palette
@@ -45,9 +48,9 @@ namespace LibEditSpatial.Controls
       if (current < min) current = min;
 
       IssuingEvents = false;
-      txtMin.Text = min.ToString();
-      txtCurrent.Text = current.ToString();
-      txtMax.Text = max.ToString();
+      txtMin.Text = min.ToString(CultureInfo.InvariantCulture);
+      txtCurrent.Text = current.ToString(CultureInfo.InvariantCulture);
+      txtMax.Text = max.ToString(CultureInfo.InvariantCulture);
       trackBar1.Minimum = (int) (min*100f);
       trackBar1.Maximum = (int) (max*100f);
       trackBar1.Value = (int) (current*100f);
@@ -98,7 +101,7 @@ namespace LibEditSpatial.Controls
 
     private void OnScrollChanged(object sender, EventArgs e)
     {
-      txtCurrent.Text = ((double) (trackBar1.Value)/100f).ToString();
+      txtCurrent.Text = ((double) (trackBar1.Value)/100f).ToString(CultureInfo.InvariantCulture);
     }
 
     private void OnMaxChanged(object sender, EventArgs e)
@@ -133,7 +136,7 @@ namespace LibEditSpatial.Controls
 
       var stretchX = Math.Round(Current.MapFromUnit(test / Palette.Colors.Count), 2);
       SetCurrent(stretchX);
-      txtCurrent.Text = stretchX.ToString();
+      txtCurrent.Text = stretchX.ToString(CultureInfo.InvariantCulture);
       //
     }
 
@@ -153,7 +156,7 @@ namespace LibEditSpatial.Controls
 
       var stretchX = Math.Round(Current.MapFromUnit(test / Palette.Colors.Count), 2);
       SetCurrent(stretchX);
-      txtCurrent.Text = stretchX.ToString();
+      txtCurrent.Text = stretchX.ToString(CultureInfo.InvariantCulture);
     }
 
     public void ChangePalette(DmpPalette palette)

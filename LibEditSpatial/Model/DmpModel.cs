@@ -143,8 +143,8 @@ namespace LibEditSpatial.Model
         Transform(
           x =>
           {
-            if (x == first) return last;
-            if (x == last) return first;
+            if (Math.Abs(x - first) < 1e-10) return last;
+            if (Math.Abs(x - last) < 1e-10) return first;
             return x;
           }
           );
@@ -304,7 +304,7 @@ namespace LibEditSpatial.Model
         }
       }
 
-      if (model.Min == model.Max)
+      if (Math.Abs(model.Min - model.Max) < 1e-10)
       {
         model.Max = model.Min + 10;
       }
@@ -317,7 +317,7 @@ namespace LibEditSpatial.Model
       if (value < Min) return 0;
       if (value > Max) return 1;
 
-      if (DataRange == 0) return 0;
+      if (Math.Abs(DataRange) < 1e-10) return 0;
 
       return (value-Min)/DataRange;
     }
@@ -338,7 +338,7 @@ namespace LibEditSpatial.Model
         for (var x = 0; x < Columns; ++x)
         {
           var current = Data[x, y];
-          if (current != 0)
+          if (Math.Abs(current) > 1e-10)
           {
             if (x < minX)
               minX = x;
