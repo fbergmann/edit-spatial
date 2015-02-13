@@ -54,6 +54,8 @@ namespace WFEditDMP
       this.lblPosition = new System.Windows.Forms.ToolStripStatusLabel();
       this.lblData = new System.Windows.Forms.ToolStripStatusLabel();
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+      this.ctrlPalette1 = new LibEditSpatial.Controls.CtrlPalette();
+      this.dmpRenderControl1 = new LibEditSpatial.Controls.DmpRenderControl();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,11 +82,9 @@ namespace WFEditDMP
       this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
       this.toolAdjust = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-      this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.ctrlPalette1 = new LibEditSpatial.Controls.CtrlPalette();
-      this.dmpRenderControl1 = new LibEditSpatial.Controls.DmpRenderControl();
-      this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+      this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+      this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -265,6 +265,37 @@ namespace WFEditDMP
       this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 71F));
       this.tableLayoutPanel1.Size = new System.Drawing.Size(974, 455);
       this.tableLayoutPanel1.TabIndex = 2;
+      // 
+      // ctrlPalette1
+      // 
+      palleteArgs1.Max = 0D;
+      palleteArgs1.Min = 0D;
+      palleteArgs1.Value = 0D;
+      this.ctrlPalette1.Current = palleteArgs1;
+      this.ctrlPalette1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ctrlPalette1.IsPainting = false;
+      this.ctrlPalette1.IssuingEvents = true;
+      this.ctrlPalette1.Location = new System.Drawing.Point(3, 387);
+      this.ctrlPalette1.Name = "ctrlPalette1";
+      dmpPalette1.Colors = ((System.Collections.Generic.List<System.Drawing.Color>)(resources.GetObject("dmpPalette1.Colors")));
+      dmpPalette1.IsFirstTransparent = true;
+      this.ctrlPalette1.Palette = dmpPalette1;
+      this.ctrlPalette1.Size = new System.Drawing.Size(968, 65);
+      this.ctrlPalette1.TabIndex = 1;
+      // 
+      // dmpRenderControl1
+      // 
+      this.dmpRenderControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+      this.dmpRenderControl1.CurrentValue = 10D;
+      this.dmpRenderControl1.DisableEditing = false;
+      this.dmpRenderControl1.DisableNotification = false;
+      this.dmpRenderControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dmpRenderControl1.Location = new System.Drawing.Point(3, 3);
+      this.dmpRenderControl1.Model = null;
+      this.dmpRenderControl1.Name = "dmpRenderControl1";
+      this.dmpRenderControl1.PencilSize = 1;
+      this.dmpRenderControl1.Size = new System.Drawing.Size(968, 378);
+      this.dmpRenderControl1.TabIndex = 0;
       // 
       // menuStrip1
       // 
@@ -507,52 +538,6 @@ namespace WFEditDMP
       this.toolStripSeparator7.Name = "toolStripSeparator7";
       this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
       // 
-      // helpToolStripButton
-      // 
-      this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-      this.helpToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripButton.Image")));
-      this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.helpToolStripButton.Name = "helpToolStripButton";
-      this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
-      this.helpToolStripButton.Text = "He&lp";
-      this.helpToolStripButton.Click += new System.EventHandler(this.OnAboutClick);
-      // 
-      // ctrlPalette1
-      // 
-      palleteArgs1.Max = 0D;
-      palleteArgs1.Min = 0D;
-      palleteArgs1.Value = 0D;
-      this.ctrlPalette1.Current = palleteArgs1;
-      this.ctrlPalette1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ctrlPalette1.IsPainting = false;
-      this.ctrlPalette1.IssuingEvents = true;
-      this.ctrlPalette1.Location = new System.Drawing.Point(3, 387);
-      this.ctrlPalette1.Name = "ctrlPalette1";
-      dmpPalette1.Colors = ((System.Collections.Generic.List<System.Drawing.Color>)(resources.GetObject("dmpPalette1.Colors")));
-      dmpPalette1.IsFirstTransparent = true;
-      this.ctrlPalette1.Palette = dmpPalette1;
-      this.ctrlPalette1.Size = new System.Drawing.Size(968, 65);
-      this.ctrlPalette1.TabIndex = 1;
-      // 
-      // dmpRenderControl1
-      // 
-      this.dmpRenderControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.dmpRenderControl1.CurrentValue = 10D;
-      this.dmpRenderControl1.DisableEditing = false;
-      this.dmpRenderControl1.DisableNotification = false;
-      this.dmpRenderControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.dmpRenderControl1.Location = new System.Drawing.Point(3, 3);
-      this.dmpRenderControl1.Model = null;
-      this.dmpRenderControl1.Name = "dmpRenderControl1";
-      this.dmpRenderControl1.PencilSize = 1;
-      this.dmpRenderControl1.Size = new System.Drawing.Size(968, 378);
-      this.dmpRenderControl1.TabIndex = 0;
-      // 
-      // toolStripSeparator8
-      // 
-      this.toolStripSeparator8.Name = "toolStripSeparator8";
-      this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
-      // 
       // toolStripButton4
       // 
       this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -563,12 +548,28 @@ namespace WFEditDMP
       this.toolStripButton4.Text = "Aspect";
       this.toolStripButton4.Click += new System.EventHandler(this.OnAspectClick);
       // 
+      // toolStripSeparator8
+      // 
+      this.toolStripSeparator8.Name = "toolStripSeparator8";
+      this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+      // 
+      // helpToolStripButton
+      // 
+      this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+      this.helpToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripButton.Image")));
+      this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.helpToolStripButton.Name = "helpToolStripButton";
+      this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
+      this.helpToolStripButton.Text = "He&lp";
+      this.helpToolStripButton.Click += new System.EventHandler(this.OnAboutClick);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(984, 561);
       this.Controls.Add(this.toolStripContainer1);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "MainForm";
       this.Text = "Edit DMP";

@@ -32,32 +32,33 @@ namespace WFEditDMP.Forms
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAdjustDmp));
       this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-      this.panel1 = new System.Windows.Forms.Panel();
       this.listBox1 = new System.Windows.Forms.ListBox();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.panel2 = new System.Windows.Forms.Panel();
-      this.cmdCancel = new System.Windows.Forms.Button();
-      this.cmdOK = new System.Windows.Forms.Button();
-      this.cmdMerge = new System.Windows.Forms.Button();
-      this.cmdReplace = new System.Windows.Forms.Button();
-      this.txtReplacement = new System.Windows.Forms.TextBox();
       this.cmdInvert = new System.Windows.Forms.Button();
+      this.txtReplacement = new System.Windows.Forms.TextBox();
+      this.cmdReplace = new System.Windows.Forms.Button();
+      this.cmdMerge = new System.Windows.Forms.Button();
+      this.panel1 = new System.Windows.Forms.Panel();
+      this.cmdOK = new System.Windows.Forms.Button();
+      this.cmdCancel = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
       this.tableLayoutPanel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
-      this.panel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
       this.splitContainer2.Panel1.SuspendLayout();
       this.splitContainer2.Panel2.SuspendLayout();
       this.splitContainer2.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.panel2.SuspendLayout();
+      this.panel1.SuspendLayout();
       this.SuspendLayout();
       // 
       // tableLayoutPanel1
@@ -91,16 +92,6 @@ namespace WFEditDMP.Forms
       this.splitContainer1.Size = new System.Drawing.Size(808, 480);
       this.splitContainer1.SplitterDistance = 140;
       this.splitContainer1.TabIndex = 0;
-      // 
-      // panel1
-      // 
-      this.panel1.Controls.Add(this.cmdOK);
-      this.panel1.Controls.Add(this.cmdCancel);
-      this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.panel1.Location = new System.Drawing.Point(3, 489);
-      this.panel1.Name = "panel1";
-      this.panel1.Size = new System.Drawing.Size(808, 30);
-      this.panel1.TabIndex = 1;
       // 
       // listBox1
       // 
@@ -152,38 +143,25 @@ namespace WFEditDMP.Forms
       this.panel2.Size = new System.Drawing.Size(664, 166);
       this.panel2.TabIndex = 0;
       // 
-      // cmdCancel
+      // cmdInvert
       // 
-      this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-      this.cmdCancel.Location = new System.Drawing.Point(730, 4);
-      this.cmdCancel.Name = "cmdCancel";
-      this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-      this.cmdCancel.TabIndex = 0;
-      this.cmdCancel.Text = "&Cancel";
-      this.cmdCancel.UseVisualStyleBackColor = true;
+      this.cmdInvert.Location = new System.Drawing.Point(3, 59);
+      this.cmdInvert.Name = "cmdInvert";
+      this.cmdInvert.Size = new System.Drawing.Size(177, 23);
+      this.cmdInvert.TabIndex = 3;
+      this.cmdInvert.Text = "Invert";
+      this.toolTip1.SetToolTip(this.cmdInvert, "flip order");
+      this.cmdInvert.UseVisualStyleBackColor = true;
+      this.cmdInvert.Click += new System.EventHandler(this.cmdInvert_Click);
       // 
-      // cmdOK
+      // txtReplacement
       // 
-      this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-      this.cmdOK.Location = new System.Drawing.Point(649, 4);
-      this.cmdOK.Name = "cmdOK";
-      this.cmdOK.Size = new System.Drawing.Size(75, 23);
-      this.cmdOK.TabIndex = 1;
-      this.cmdOK.Text = "&Ok";
-      this.cmdOK.UseVisualStyleBackColor = true;
-      // 
-      // cmdMerge
-      // 
-      this.cmdMerge.Location = new System.Drawing.Point(3, 3);
-      this.cmdMerge.Name = "cmdMerge";
-      this.cmdMerge.Size = new System.Drawing.Size(177, 23);
-      this.cmdMerge.TabIndex = 0;
-      this.cmdMerge.Text = "Merge Selected";
-      this.toolTip1.SetToolTip(this.cmdMerge, "Merge selected values (all get the first value)");
-      this.cmdMerge.UseVisualStyleBackColor = true;
-      this.cmdMerge.Click += new System.EventHandler(this.cmdMerge_Click);
+      this.txtReplacement.Location = new System.Drawing.Point(3, 32);
+      this.txtReplacement.Name = "txtReplacement";
+      this.txtReplacement.Size = new System.Drawing.Size(100, 20);
+      this.txtReplacement.TabIndex = 2;
+      this.txtReplacement.Text = "0";
+      this.txtReplacement.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
       // cmdReplace
       // 
@@ -196,25 +174,48 @@ namespace WFEditDMP.Forms
       this.cmdReplace.UseVisualStyleBackColor = true;
       this.cmdReplace.Click += new System.EventHandler(this.cmdReplace_Click);
       // 
-      // txtReplacement
+      // cmdMerge
       // 
-      this.txtReplacement.Location = new System.Drawing.Point(3, 32);
-      this.txtReplacement.Name = "txtReplacement";
-      this.txtReplacement.Size = new System.Drawing.Size(100, 20);
-      this.txtReplacement.TabIndex = 2;
-      this.txtReplacement.Text = "0";
-      this.txtReplacement.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      this.cmdMerge.Location = new System.Drawing.Point(3, 3);
+      this.cmdMerge.Name = "cmdMerge";
+      this.cmdMerge.Size = new System.Drawing.Size(177, 23);
+      this.cmdMerge.TabIndex = 0;
+      this.cmdMerge.Text = "Merge Selected";
+      this.toolTip1.SetToolTip(this.cmdMerge, "Merge selected values (all get the first value)");
+      this.cmdMerge.UseVisualStyleBackColor = true;
+      this.cmdMerge.Click += new System.EventHandler(this.cmdMerge_Click);
       // 
-      // cmdInvert
+      // panel1
       // 
-      this.cmdInvert.Location = new System.Drawing.Point(3, 59);
-      this.cmdInvert.Name = "cmdInvert";
-      this.cmdInvert.Size = new System.Drawing.Size(177, 23);
-      this.cmdInvert.TabIndex = 3;
-      this.cmdInvert.Text = "Invert";
-      this.toolTip1.SetToolTip(this.cmdInvert, "flip order");
-      this.cmdInvert.UseVisualStyleBackColor = true;
-      this.cmdInvert.Click += new System.EventHandler(this.cmdInvert_Click);
+      this.panel1.Controls.Add(this.cmdOK);
+      this.panel1.Controls.Add(this.cmdCancel);
+      this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.panel1.Location = new System.Drawing.Point(3, 489);
+      this.panel1.Name = "panel1";
+      this.panel1.Size = new System.Drawing.Size(808, 30);
+      this.panel1.TabIndex = 1;
+      // 
+      // cmdOK
+      // 
+      this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+      this.cmdOK.Location = new System.Drawing.Point(649, 4);
+      this.cmdOK.Name = "cmdOK";
+      this.cmdOK.Size = new System.Drawing.Size(75, 23);
+      this.cmdOK.TabIndex = 1;
+      this.cmdOK.Text = "&Ok";
+      this.cmdOK.UseVisualStyleBackColor = true;
+      // 
+      // cmdCancel
+      // 
+      this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+      this.cmdCancel.Location = new System.Drawing.Point(730, 4);
+      this.cmdCancel.Name = "cmdCancel";
+      this.cmdCancel.Size = new System.Drawing.Size(75, 23);
+      this.cmdCancel.TabIndex = 0;
+      this.cmdCancel.Text = "&Cancel";
+      this.cmdCancel.UseVisualStyleBackColor = true;
       // 
       // FormAdjustDmp
       // 
@@ -224,6 +225,7 @@ namespace WFEditDMP.Forms
       this.CancelButton = this.cmdCancel;
       this.ClientSize = new System.Drawing.Size(814, 522);
       this.Controls.Add(this.tableLayoutPanel1);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "FormAdjustDmp";
       this.Text = "Adjust ";
       this.tableLayoutPanel1.ResumeLayout(false);
@@ -231,7 +233,6 @@ namespace WFEditDMP.Forms
       this.splitContainer1.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
-      this.panel1.ResumeLayout(false);
       this.splitContainer2.Panel1.ResumeLayout(false);
       this.splitContainer2.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -239,6 +240,7 @@ namespace WFEditDMP.Forms
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.panel2.ResumeLayout(false);
       this.panel2.PerformLayout();
+      this.panel1.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }

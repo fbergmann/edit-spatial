@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("WFEditDMP")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Edit DMP")]
+[assembly: AssemblyDescription("This application edits dmp files to be used as geometries or for initial conditions.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WFEditDMP")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright ©  2014-2015 Frank Bergmann")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

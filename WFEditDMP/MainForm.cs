@@ -118,6 +118,10 @@ namespace WFEditDMP
 
     private void OnAboutClick(object sender, EventArgs e)
     {
+      using (var dlg = new AboutBox())
+      {
+        dlg.ShowDialog();
+      }
     }
 
     private void SaveAs(string fileName)
