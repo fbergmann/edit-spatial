@@ -69,6 +69,7 @@ namespace WFEditDMP
       LastOpenDir = Path.GetDirectoryName(filename);
       Model = DmpModel.FromFile(filename);
       ctrlPalette1.UpdateValues(Model.Min, ctrlPalette1.Current.Value, Model.Max);
+      dmpRenderControl1.CurrentValue = Model.Max;
       Model.Palette = ctrlPalette1.Palette;
       UpdateUI();
     }
@@ -77,6 +78,7 @@ namespace WFEditDMP
     {
       Model = new DmpModel(50, 50);
       ctrlPalette1.UpdateValues(Model.Min, ctrlPalette1.Current.Value, Model.Max);
+      dmpRenderControl1.CurrentValue = Model.Max;
       Model.Palette = ctrlPalette1.Palette;
       UpdateUI();
     }
