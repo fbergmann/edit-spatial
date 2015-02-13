@@ -131,7 +131,7 @@ namespace LibEditSpatial.Controls
       if (test >= Palette.Colors.Count)
         test = Palette.Colors.Count - 1;
 
-      var stretchX = Math.Round((test/Palette.Colors.Count)*Current.Max, 2);
+      var stretchX = Math.Round(Current.MapFromUnit(test / Palette.Colors.Count), 2);
       SetCurrent(stretchX);
       txtCurrent.Text = stretchX.ToString();
       //
@@ -151,7 +151,7 @@ namespace LibEditSpatial.Controls
       if (test >= Palette.Colors.Count)
         test = Palette.Colors.Count - 1;
 
-      var stretchX = Math.Round((test/Palette.Colors.Count)*Current.Max, 2);
+      var stretchX = Math.Round(Current.MapFromUnit(test / Palette.Colors.Count), 2);
       SetCurrent(stretchX);
       txtCurrent.Text = stretchX.ToString();
     }

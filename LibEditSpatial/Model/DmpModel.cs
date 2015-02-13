@@ -39,6 +39,22 @@ namespace LibEditSpatial.Model
       }
     }
 
+    public double XRange {
+      get { return MaxX - MinX; }
+    }
+
+    public double YRange
+    {
+      get { return MaxY - MinY; }
+    }
+
+    public double DataRange
+    {
+      get { return Max - Min; }
+    }
+  
+
+
     public int Rows { get; set; }
 
     /// <summary>
@@ -212,7 +228,7 @@ namespace LibEditSpatial.Model
 
     private Color GetColor(double val)
     {
-      return Palette.GetColor(Max == 0 ? 0 : (val - Min)/Max);
+      return Palette.GetColor(MapToUnit(val));
     }
 
     public Bitmap ToImage()
@@ -294,6 +310,21 @@ namespace LibEditSpatial.Model
       }
 
       return model;
+    }
+
+    public double MapToUnit(double value)
+    {
+      if (value < Min) return 0;
+      if (value > Max) return 1;
+
+      if (DataRange == 0) return 0;
+
+      return (value-Min)/DataRange;
+    }
+
+    public double MapFromUnit(double value)
+    {
+      return value*DataRange + Min;
     }
 
     private Rectangle FindDimensions()
