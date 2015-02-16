@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using EditSpatial.Model;
@@ -91,29 +92,23 @@ namespace EditSpatial.Converter
 
         compartments.Sort();
 
-        var builder = new StringBuilder("in_");
         var formula = new StringBuilder();
         foreach (var id in compartments)
         {
-          builder.Append(id);
           formula.AppendFormat("isIn_{0} * ", id);
           if (!AdditionalVars.Contains("isIn_" + id))
           {
+            // create parameter temporarily to get passt validation later on
             var param = model.createParameter();
             param.setId("isIn_" + id);            
             AdditionalVars.Add("isIn_" + id);
           }
         }
 
-        string extraId = builder.ToString();
         formula.AppendFormat("({0})", libsbml.formulaToString(kinetics.getMath()));
         kinetics.setMath(libsbml.parseFormula(formula.ToString()));
 
-        //if (AdditionalVars.ContainsKey(extraId)) continue;
-        //AdditionalVars[extraId] = formula.ToString();
-
       }
-
 
     }
 
@@ -165,6 +160,7 @@ namespace EditSpatial.Converter
 
       _Model = _Document.getModel();
 
+      // remove parameters added only to pass validation
       foreach (var id in AdditionalVars)
       {
         _Model.removeParameter(id);
@@ -367,7 +363,7 @@ namespace EditSpatial.Converter
           builder.AppendFormat(")");
           return builder.ToString();
         }
-        case libsbml.AST_NAME:
+        //case libsbml.AST_NAME:
         default:
         {
           var name = math.getName();
@@ -402,7 +398,7 @@ namespace EditSpatial.Converter
       WriteLocalOperator(path);
       WriteMainFile(path, name);
       WriteReactionAdapter(path);
-      if (_Original != null)
+      if (_Original != null && path != null)
         libsbml.writeSBMLToFile(_Original, Path.Combine(path, "sbml.xml"));
     }
 
@@ -553,16 +549,16 @@ namespace EditSpatial.Converter
       var map = new Dictionary<string, string>();
 
       map["%GEOMETRY_FILE%"] = GeometryFile;
-      map["%GEOMETRY_MIN%"] = GeometryMin.ToString();
-      map["%GEOMETRY_MAX%"] = GeometryMax.ToString();
+      map["%GEOMETRY_MIN%"] = GeometryMin.ToString(CultureInfo.InvariantCulture);
+      map["%GEOMETRY_MAX%"] = GeometryMax.ToString(CultureInfo.InvariantCulture);
 
       map["%NAME%"] = name;
       map["%TIME_TEND%"] = "500";
       map["%TIME_DTMAX%"] = "1";
       map["%TIME_DTPLOT%"] = "1";
 
-      map["%WORLD_WIDTH%"] = _Geometry.getCoordinateComponent(0).getBoundaryMax().getValue().ToString();
-      map["%WORLD_HEIGHT%"] = _Geometry.getCoordinateComponent(1).getBoundaryMax().getValue().ToString();
+      map["%WORLD_WIDTH%"] = _Geometry.getCoordinateComponent(0).getBoundaryMax().getValue().ToString(CultureInfo.InvariantCulture);
+      map["%WORLD_HEIGHT%"] = _Geometry.getCoordinateComponent(1).getBoundaryMax().getValue().ToString(CultureInfo.InvariantCulture);
 
       map["%GRID_X%"] = "64";
       map["%GRID_Y%"] = "64";

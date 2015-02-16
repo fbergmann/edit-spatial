@@ -108,22 +108,22 @@ namespace EditSpatial.Converter
 
         boundaryValue[current.getId()] = new Dictionary<string, string>();
         var bcValue = current.getXMinBC();
-        if (bcValue.HasValue && bcValue.Value != 0)
-          boundaryValue[current.getId()]["-x"] = bcValue.Value.ToString();
+        if (bcValue.HasValue && Math.Abs(bcValue.Value) > 1e-16)
+          boundaryValue[current.getId()]["-x"] = bcValue.Value.ToString(CultureInfo.InvariantCulture);
         bcValue = current.getXMaxBC();
-        if (bcValue.HasValue && bcValue.Value != 0)
-          boundaryValue[current.getId()]["x"] = bcValue.Value.ToString();
+        if (bcValue.HasValue && Math.Abs(bcValue.Value) > 1e-16)
+          boundaryValue[current.getId()]["x"] = bcValue.Value.ToString(CultureInfo.InvariantCulture);
         bcValue = current.getYMinBC();
-        if (bcValue.HasValue && bcValue.Value != 0)
-          boundaryValue[current.getId()]["-y"] = bcValue.Value.ToString();
+        if (bcValue.HasValue && Math.Abs(bcValue.Value) > 1e-16)
+          boundaryValue[current.getId()]["-y"] = bcValue.Value.ToString(CultureInfo.InvariantCulture);
         bcValue = current.getYMaxBC();
-        if (bcValue.HasValue && bcValue.Value != 0)
-          boundaryValue[current.getId()]["y"] = bcValue.Value.ToString();
+        if (bcValue.HasValue && Math.Abs(bcValue.Value) > 1e-16)
+          boundaryValue[current.getId()]["y"] = bcValue.Value.ToString(CultureInfo.InvariantCulture);
 
         if (current.isSetInitialConcentration())
-          initial[current.getId()] = current.getInitialConcentration().ToString();
+          initial[current.getId()] = current.getInitialConcentration().ToString(CultureInfo.InvariantCulture);
         else if (current.isSetInitialAmount())
-          initial[current.getId()] = current.getInitialAmount().ToString();
+          initial[current.getId()] = current.getInitialAmount().ToString(CultureInfo.InvariantCulture);
 
         var assignment = Model.getInitialAssignment(current.getId());
         if (assignment == null) continue;
@@ -165,7 +165,7 @@ namespace EditSpatial.Converter
           return math.getInteger().ToString();
         case libsbml.AST_REAL:
         case libsbml.AST_REAL_E:
-          return math.getReal().ToString();
+          return math.getReal().ToString(CultureInfo.InvariantCulture);
         case libsbml.AST_DIVIDE:
         {
           var builder = new StringBuilder();
@@ -289,7 +289,7 @@ namespace EditSpatial.Converter
           builder.AppendFormat(", {0})", TranslateExpression(math.getChild(1), map));
           return builder.ToString();
         }
-        case libsbml.AST_NAME:
+        //case libsbml.AST_NAME:
         default:
           if (map != null && map.ContainsKey(math.getName()))
           {
@@ -304,7 +304,7 @@ namespace EditSpatial.Converter
       switch (type.ToLowerInvariant())
       {
         default:
-        case "flux":
+        //case "flux":
           return "constant";
         case "value":
           return "noflux";
@@ -461,7 +461,7 @@ namespace EditSpatial.Converter
 
         writer.WriteStartElement("Constant");
         writer.WriteAttributeString("symbol", current.getId());
-        writer.WriteAttributeString("value", current.getSize().ToString());
+        writer.WriteAttributeString("value", current.getSize().ToString(CultureInfo.InvariantCulture));
         writer.WriteEndElement(); // Constant
       }
       for (var i = 0; i < Model.getNumParameters(); ++i)
@@ -472,7 +472,7 @@ namespace EditSpatial.Converter
 
         writer.WriteStartElement("Constant");
         writer.WriteAttributeString("symbol", current.getId());
-        writer.WriteAttributeString("value", current.getValue().ToString());
+        writer.WriteAttributeString("value", current.getValue().ToString(CultureInfo.InvariantCulture));
         writer.WriteEndElement(); // Constant
       }
 
