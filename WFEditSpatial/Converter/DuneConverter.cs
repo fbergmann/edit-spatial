@@ -17,7 +17,7 @@ namespace EditSpatial.Converter
     private readonly SBMLDocument _Original;
     private readonly SpatialModelPlugin SpatialModelPlugin;
 
-    private Dictionary<string, string> AdditionalVars;
+    private List<string> AdditionalVars;
 
     /// <summary>
     /// This function tags all reactions in the document with a factor that indicates whether 
@@ -26,7 +26,7 @@ namespace EditSpatial.Converter
     /// <param name="document"></param>
     private void TagReactions(SBMLDocument document)
     {
-      AdditionalVars = new Dictionary<string, string>();
+      AdditionalVars = new List<string>();
 
       var model = document.getModel();
       if (model == null) return;
@@ -97,11 +97,17 @@ namespace EditSpatial.Converter
         {
           builder.Append(id);
           formula.AppendFormat("isIn_{0} * ", id);
+          if (!AdditionalVars.Contains("isIn_" + id))
+          {
+            var param = model.createParameter();
+            param.setId("isIn_" + id);            
+            AdditionalVars.Add("isIn_" + id);
+          }
         }
 
         string extraId = builder.ToString();
         formula.AppendFormat("({0})", libsbml.formulaToString(kinetics.getMath()));
-        kinetics.setMath(libsbml.parseFormula(extraId));
+        kinetics.setMath(libsbml.parseFormula(formula.ToString()));
 
         //if (AdditionalVars.ContainsKey(extraId)) continue;
         //AdditionalVars[extraId] = formula.ToString();
@@ -158,6 +164,11 @@ namespace EditSpatial.Converter
       }
 
       _Model = _Document.getModel();
+
+      foreach (var id in AdditionalVars)
+      {
+        _Model.removeParameter(id);
+      }
 
       for (var i = 0; i < _Model.getNumRules(); ++i)
       {
