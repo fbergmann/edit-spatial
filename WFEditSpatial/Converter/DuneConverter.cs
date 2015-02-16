@@ -17,12 +17,108 @@ namespace EditSpatial.Converter
     private readonly SBMLDocument _Original;
     private readonly SpatialModelPlugin SpatialModelPlugin;
 
+    private Dictionary<string, string> AdditionalVars;
+
+    /// <summary>
+    /// This function tags all reactions in the document with a factor that indicates whether 
+    /// it is spanning multiple compartments.
+    /// </summary>
+    /// <param name="document"></param>
+    private void TagReactions(SBMLDocument document)
+    {
+      AdditionalVars = new Dictionary<string, string>();
+
+      var model = document.getModel();
+      if (model == null) return;
+      if (model.getNumCompartments() < 2) return;
+
+      var numReactions = model.getNumReactions();
+      for (int i = 0; i < numReactions; ++i)
+      {
+        var compartments = new List<string>();
+        var reaction = model.getReaction(i);
+
+        if (!reaction.isSetKineticLaw()) continue;
+
+        var kinetics = reaction.getKineticLaw();
+        if (kinetics == null || !kinetics.isSetMath()) continue;
+
+        var numSubstrates = reaction.getNumReactants();
+        var numProducts = reaction.getNumProducts();
+        var numModifiers = reaction.getNumModifiers();
+        if (numSubstrates + numProducts < 2) continue;
+
+        for (int j = 0; j < numSubstrates; ++j)
+        {
+          var current = reaction.getReactant(j);
+          if (!current.isSetSpecies()) continue;
+          var species = model.getSpecies(current.getSpecies());
+          if (species == null || !species.isSetCompartment()) continue;
+          string compartment = species.getCompartment();
+          if (!compartments.Contains(compartment))
+          {
+            compartments.Add(compartment);
+          }
+        }
+
+        for (int j = 0; j < numProducts; ++j)
+        {
+          var current = reaction.getProduct(j);
+          if (!current.isSetSpecies()) continue;
+          var species = model.getSpecies(current.getSpecies());
+          if (species == null || !species.isSetCompartment()) continue;
+          string compartment = species.getCompartment();
+          if (!compartments.Contains(compartment))
+          {
+            compartments.Add(compartment);
+          }
+        }
+
+        for (int j = 0; j < numModifiers; ++j)
+        {
+          var current = reaction.getModifier(j);
+          if (!current.isSetSpecies()) continue;
+          var species = model.getSpecies(current.getSpecies());
+          if (species == null || !species.isSetCompartment()) continue;
+          string compartment = species.getCompartment();
+          if (!compartments.Contains(compartment))
+          {
+            compartments.Add(compartment);
+          }
+        }
+
+        if (compartments.Count < 2) continue;
+
+        compartments.Sort();
+
+        var builder = new StringBuilder("in_");
+        var formula = new StringBuilder();
+        foreach (var id in compartments)
+        {
+          builder.Append(id);
+          formula.AppendFormat("isIn_{0} * ", id);
+        }
+
+        string extraId = builder.ToString();
+        formula.AppendFormat("({0})", libsbml.formulaToString(kinetics.getMath()));
+        kinetics.setMath(libsbml.parseFormula(extraId));
+
+        //if (AdditionalVars.ContainsKey(extraId)) continue;
+        //AdditionalVars[extraId] = formula.ToString();
+
+      }
+
+
+    }
+
     public DuneConverter(SBMLDocument original)
     {
       OdeVariables = new List<string>();
       _errorBuilder = new StringBuilder();
       _Document = original.clone();
       _Original = original;
+
+      TagReactions(_Document);
 
       _Document.getErrorLog().setSeverityOverride(libsbml.LIBSBML_OVERRIDE_DONT_LOG);
       var prop = new ConversionProperties();
@@ -345,7 +441,7 @@ namespace EditSpatial.Converter
           var comp = _Model.getCompartment(i);
           var compId = comp.getId();
           initializer.AppendFormat(
-            "	   , dh_in{0}(DataHelper::forFile(param.sub(\"Reaction\").template get<std::string>(\"in_{0}\", \"\"))){1}"
+            "	   , dh_in{0}(DataHelper::forFile(param.sub(\"Reaction\").template get<std::string>(\"in_{0}\", \"\"), NearestNeighbor)){1}"
             , compId
             , Environment.NewLine
             );
@@ -471,7 +567,9 @@ namespace EditSpatial.Converter
         if (current.IsSpatial()) continue;
 
         ParameterIds.Add(current.getId());
-        builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getValue(), Environment.NewLine);
+        double currentValue = current.getValue();
+        if (double.IsNaN(currentValue)) currentValue = 0;
+        builder.AppendFormat("{0} = {1}{2}", current.getId(), currentValue, Environment.NewLine);
       }
 
       for (var i = 0; i < _Model.getNumCompartments(); ++i)
@@ -487,7 +585,9 @@ namespace EditSpatial.Converter
         var current = _Model.getSpecies(i);
         if (current == null || !current.getBoundaryCondition()) continue;
         ParameterIds.Add(current.getId());
-        builder.AppendFormat("{0} = {1}{2}", current.getId(), current.getInitialConcentration(), Environment.NewLine);
+        double currentValue = current.getInitialConcentration();
+        if (!current.isSetInitialConcentration()) currentValue = current.getInitialAmount();
+        builder.AppendFormat("{0} = {1}{2}", current.getId(), currentValue, Environment.NewLine);
       }
 
       builder.AppendLine();
@@ -497,7 +597,7 @@ namespace EditSpatial.Converter
       {
         var species = _Model.getSpecies(OdeVariables[i]);
         if (species == null) continue;
-        var plug = (SpatialSpeciesRxnPlugin) species.getPlugin("spatial");
+        var plug = (SpatialSpeciesRxnPlugin)species.getPlugin("spatial");
         if (plug == null || plug.getIsSpatial() == false) continue;
 
         var diff = species.getDiffusionX();
@@ -756,7 +856,7 @@ namespace EditSpatial.Converter
           var comp = _Model.getCompartment(i);
           var compId = comp.getId();
           initializer.AppendFormat(
-            "	   , dh_in{0}(DataHelper::forFile(param.sub(\"Reaction\").template get<std::string>(\"in_{0}\", \"\"))){1}"
+            "	   , dh_in{0}(DataHelper::forFile(param.sub(\"Reaction\").template get<std::string>(\"in_{0}\", \"\"), NearestNeighbor)){1}"
             , compId
             , Environment.NewLine
             );

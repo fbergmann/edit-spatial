@@ -54,9 +54,9 @@ public:
     , boundarytype(BCType::Neumann)
     , dh_bcType(DataHelper::forFile(param.sub(cname).template get<std::string>("file_bcType", "")))
     , dh_neumann(DataHelper::forFile(param.sub(cname).template get<std::string>("file_neumann", "")))
-    , dh_dirichlet(DataHelper::forFile(param.sub(cname).template get<std::string>("file_dirichlet", "")))
+    , dh_dirichlet(DataHelper::forFile(param.sub(cname).template get<std::string>("file_dirichlet", ""), NearestNeighbor))
     , dh_dc(DataHelper::forFile(param.sub(cname).template get<std::string>("file_dc", "")))
-    , dh_compartment(DataHelper::forFile(param.sub(cname).template get<std::string>("file_compartment", "")))
+    , dh_compartment(DataHelper::forFile(param.sub(cname).template get<std::string>("file_compartment", ""), NearestNeighbor))
 
   {
     int bc = param.sub(cname).template get<int>("BCType");
