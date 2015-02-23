@@ -23,6 +23,11 @@ namespace LibEditSpatial.Model
     }
 
     /// <summary>
+    /// Flag indicating whether the current model needs to be saved
+    /// </summary>
+    public bool Dirty { get; set; }
+
+    /// <summary>
     /// Current Palette
     /// </summary>
     public DmpPalette Palette { get; set; }
@@ -177,6 +182,7 @@ namespace LibEditSpatial.Model
 
     public void OnModelChanged()
     {
+      Dirty = true;
       if (ModelChanged != null && IssueEvents)
       {
         ModelChanged(this, this);
@@ -248,6 +254,7 @@ namespace LibEditSpatial.Model
 
       File.WriteAllText(fileName, builder.ToString());
       FileName = fileName;
+      Dirty = false;
     }
 
     private Color GetColor(double val)

@@ -151,6 +151,7 @@ namespace EditSpatial.Model
     {
       if (Document == null) return;
       FileName = filename;
+      Dirty = false;
       libsbml.writeSBMLToFile(Document, filename);
     }
 

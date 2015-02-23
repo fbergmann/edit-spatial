@@ -31,6 +31,7 @@ namespace WFDuneRunner
       NewModel();
     }
 
+
     public DuneConfig Config { get; set; }
     public string FileName { get; set; }
     public string CurrentDir { get; set; }
@@ -542,6 +543,29 @@ namespace WFDuneRunner
         {
           InitFromSBML(dlg.FileName);
         }
+      }
+    }
+
+    private void OnFormClosing(object sender, FormClosingEventArgs e)
+    {
+      if (Config == null || !Config.Dirty) return;
+
+      DialogResult result =
+        MessageBox.Show(this,
+          "There are unsaved changes in the model. Would you like to save them?",
+          "Save changes?",
+          MessageBoxButtons.YesNoCancel,
+          MessageBoxIcon.Question,
+          MessageBoxDefaultButton.Button3);
+
+      if (result == DialogResult.Cancel)
+      {
+        e.Cancel = true;
+      }
+
+      if (result == DialogResult.Yes)
+      {
+        OnSaveFile(sender, e);
       }
     }
   }

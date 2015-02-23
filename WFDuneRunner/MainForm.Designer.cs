@@ -693,6 +693,7 @@ namespace WFDuneRunner
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "MainForm";
       this.Text = "Dune Runner";
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
       this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
       this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
       this.toolStripContainer1.ContentPanel.ResumeLayout(false);

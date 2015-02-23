@@ -9,6 +9,8 @@ namespace LibEditSpatial.Model
 {
   public class DuneConfig
   {
+    public bool Dirty { get; set; }
+
     internal const string STR_GLOBAL = "Global";
     internal DomainConfig _DomainConfig;
     internal GlobalConfig _GlobalConfig;
@@ -49,6 +51,7 @@ namespace LibEditSpatial.Model
       }
       set
       {
+        Dirty = true;
         _GlobalConfig = value;
         Entries.Remove(STR_GLOBAL);
         Entries.Add(STR_GLOBAL, value.ToDict());
@@ -71,6 +74,7 @@ namespace LibEditSpatial.Model
       }
       set
       {
+        Dirty = true;
         _NewtonConfig = value;
         Entries.Remove("Newton");
         Entries.Add("Newton", value.ToDict());
@@ -93,6 +97,7 @@ namespace LibEditSpatial.Model
       }
       set
       {
+        Dirty = true;
         _DomainConfig = value;
         Entries.Remove("Domain");
         Entries.Add("Domain", value.ToDict());
@@ -115,6 +120,7 @@ namespace LibEditSpatial.Model
       }
       set
       {
+        Dirty = true;
         _TimeConfig = value;
         Entries.Remove("Timeloop");
         Entries.Add("Timeloop", value.ToDict());
@@ -233,6 +239,8 @@ namespace LibEditSpatial.Model
       File.WriteAllText(fileName, builder.ToString());
 
       FileName = fileName;
+      Dirty = false;
+      
     }
 
     public void ApplyCompartmentMasking(string compId, string fileName)
@@ -252,7 +260,7 @@ namespace LibEditSpatial.Model
       if (main == null) return;
 
       main["in_" + compId] = fileName;
-
+      Dirty = true;
     }
 
 
@@ -331,6 +339,7 @@ namespace LibEditSpatial.Model
         if (key.StartsWith("in_"))
           main.Remove(key);
       }
+      Dirty = true;
 
     }
     public void InitCompartmentMasking()

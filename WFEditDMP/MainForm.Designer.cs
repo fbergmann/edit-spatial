@@ -573,6 +573,7 @@ namespace WFEditDMP
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "MainForm";
       this.Text = "Edit DMP";
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
       this.Load += new System.EventHandler(this.OnLoad);
       this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
       this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
