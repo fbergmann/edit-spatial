@@ -56,6 +56,8 @@ Section "MainSection" SEC01
   File "bin\libsbmlcsP.dll"
   File "bin\mathLibrary.dll"
   File "bin\Ookii.Dialogs.dll"
+  File "bin\start.bat.in"
+  File "bin\compile.bat.in"
   SetOutPath "$INSTDIR\Palettes"
   File "bin\Palettes\black-blue.txt"
   File "bin\Palettes\black-green.txt"
@@ -143,6 +145,8 @@ Section Uninstall
   Delete "$INSTDIR\EditSpatial.pdb"
   Delete "$INSTDIR\EditSpatial.exe.config"
   Delete "$INSTDIR\EditSpatial.exe"
+  Delete "$INSTDIR\start.bat.in"
+  Delete "$INSTDIR\compile.bat.in"
 
   Delete "$SMPROGRAMS\Spatial Tools\Uninstall.lnk"
   Delete "$SMPROGRAMS\Spatial Tools\Website.lnk"

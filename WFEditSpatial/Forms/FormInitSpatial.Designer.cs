@@ -51,6 +51,7 @@ namespace EditSpatial.Forms
       this.colBoundaryYm = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.colType = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.panel3 = new System.Windows.Forms.Panel();
+      this.cmdIsoTropic = new System.Windows.Forms.Button();
       this.cmdApplyDiff = new System.Windows.Forms.Button();
       this.txtDiffDefault = new System.Windows.Forms.TextBox();
       this.label7 = new System.Windows.Forms.Label();
@@ -79,15 +80,14 @@ namespace EditSpatial.Forms
       this.radAnalytic = new System.Windows.Forms.RadioButton();
       this.radDefault = new System.Windows.Forms.RadioButton();
       this.panel6 = new System.Windows.Forms.Panel();
-      this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
-      this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
       this.panel1 = new System.Windows.Forms.Panel();
       this.cmdPrev = new System.Windows.Forms.Button();
       this.cmdFinish = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.cmdNext = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-      this.cmdIsoTropic = new System.Windows.Forms.Button();
+      this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
+      this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
       this.tableLayoutPanel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabSpecies.SuspendLayout();
@@ -214,6 +214,7 @@ namespace EditSpatial.Forms
       this.grid.Size = new System.Drawing.Size(745, 408);
       this.grid.TabIndex = 4;
       this.grid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellEndEdit);
+      this.grid.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.OnSortCompare);
       this.grid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.OnUserDeletingRow);
       // 
       // colSpeciesId
@@ -229,14 +230,14 @@ namespace EditSpatial.Forms
       this.colDiffusionX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colDiffusionX.HeaderText = "Diffusion X";
       this.colDiffusionX.Name = "colDiffusionX";
-      this.colDiffusionX.Width = 75;
+      this.colDiffusionX.Width = 81;
       // 
       // colDiffusionY
       // 
       this.colDiffusionY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colDiffusionY.HeaderText = "Diffusion Y";
       this.colDiffusionY.Name = "colDiffusionY";
-      this.colDiffusionY.Width = 75;
+      this.colDiffusionY.Width = 81;
       // 
       // colInitialExpression
       // 
@@ -249,28 +250,28 @@ namespace EditSpatial.Forms
       this.colBoundaryX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colBoundaryX.HeaderText = "Boundary X";
       this.colBoundaryX.Name = "colBoundaryX";
-      this.colBoundaryX.Width = 78;
+      this.colBoundaryX.Width = 85;
       // 
       // colBoundaryY
       // 
       this.colBoundaryY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colBoundaryY.HeaderText = "Boundary Y";
       this.colBoundaryY.Name = "colBoundaryY";
-      this.colBoundaryY.Width = 78;
+      this.colBoundaryY.Width = 85;
       // 
       // colBoundaryXm
       // 
       this.colBoundaryXm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colBoundaryXm.HeaderText = "Boundary X-";
       this.colBoundaryXm.Name = "colBoundaryXm";
-      this.colBoundaryXm.Width = 81;
+      this.colBoundaryXm.Width = 88;
       // 
       // colBoundaryYm
       // 
       this.colBoundaryYm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colBoundaryYm.HeaderText = "Boundary Y-";
       this.colBoundaryYm.Name = "colBoundaryYm";
-      this.colBoundaryYm.Width = 81;
+      this.colBoundaryYm.Width = 88;
       // 
       // colType
       // 
@@ -280,7 +281,7 @@ namespace EditSpatial.Forms
             "Neumann",
             "Dirichlet"});
       this.colType.Name = "colType";
-      this.colType.Width = 47;
+      this.colType.Width = 52;
       // 
       // panel3
       // 
@@ -297,6 +298,18 @@ namespace EditSpatial.Forms
       this.panel3.Name = "panel3";
       this.panel3.Size = new System.Drawing.Size(745, 29);
       this.panel3.TabIndex = 6;
+      // 
+      // cmdIsoTropic
+      // 
+      this.cmdIsoTropic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdIsoTropic.Location = new System.Drawing.Point(386, 3);
+      this.cmdIsoTropic.Name = "cmdIsoTropic";
+      this.cmdIsoTropic.Size = new System.Drawing.Size(75, 23);
+      this.cmdIsoTropic.TabIndex = 7;
+      this.cmdIsoTropic.Text = "Copy X";
+      this.toolTip1.SetToolTip(this.cmdIsoTropic, "Make the diffusion isotropic by copying X to Y");
+      this.cmdIsoTropic.UseVisualStyleBackColor = true;
+      this.cmdIsoTropic.Click += new System.EventHandler(this.OnMakeIsotropic);
       // 
       // cmdApplyDiff
       // 
@@ -607,33 +620,6 @@ namespace EditSpatial.Forms
       this.panel6.Size = new System.Drawing.Size(875, 379);
       this.panel6.TabIndex = 3;
       // 
-      // controlSampleFieldGeometry1
-      // 
-      this.controlSampleFieldGeometry1.Current = null;
-      this.controlSampleFieldGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlSampleFieldGeometry1.IsInitializing = false;
-      this.controlSampleFieldGeometry1.Location = new System.Drawing.Point(0, 0);
-      this.controlSampleFieldGeometry1.Name = "controlSampleFieldGeometry1";
-      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(875, 379);
-      this.controlSampleFieldGeometry1.SpatialGeometry = null;
-      this.controlSampleFieldGeometry1.TabIndex = 1;
-      this.controlSampleFieldGeometry1.UpdateAction = null;
-      this.controlSampleFieldGeometry1.Visible = false;
-      // 
-      // controlAnalyticGeometry1
-      // 
-      this.controlAnalyticGeometry1.Current = null;
-      this.controlAnalyticGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlAnalyticGeometry1.IsInitializing = false;
-      this.controlAnalyticGeometry1.Location = new System.Drawing.Point(0, 0);
-      this.controlAnalyticGeometry1.Name = "controlAnalyticGeometry1";
-      this.controlAnalyticGeometry1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlAnalyticGeometry1.RowsAdded")));
-      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(875, 379);
-      this.controlAnalyticGeometry1.SpatialGeometry = null;
-      this.controlAnalyticGeometry1.TabIndex = 0;
-      this.controlAnalyticGeometry1.UpdateAction = null;
-      this.controlAnalyticGeometry1.Visible = false;
-      // 
       // panel1
       // 
       this.panel1.Controls.Add(this.cmdPrev);
@@ -693,17 +679,32 @@ namespace EditSpatial.Forms
       this.cmdNext.UseVisualStyleBackColor = true;
       this.cmdNext.Click += new System.EventHandler(this.OnNextClick);
       // 
-      // cmdIsoTropic
+      // controlSampleFieldGeometry1
       // 
-      this.cmdIsoTropic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdIsoTropic.Location = new System.Drawing.Point(386, 3);
-      this.cmdIsoTropic.Name = "cmdIsoTropic";
-      this.cmdIsoTropic.Size = new System.Drawing.Size(75, 23);
-      this.cmdIsoTropic.TabIndex = 7;
-      this.cmdIsoTropic.Text = "Copy X";
-      this.toolTip1.SetToolTip(this.cmdIsoTropic, "Make the diffusion isotropic by copying X to Y");
-      this.cmdIsoTropic.UseVisualStyleBackColor = true;
-      this.cmdIsoTropic.Click += new System.EventHandler(this.OnMakeIsotropic);
+      this.controlSampleFieldGeometry1.Current = null;
+      this.controlSampleFieldGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlSampleFieldGeometry1.IsInitializing = false;
+      this.controlSampleFieldGeometry1.Location = new System.Drawing.Point(0, 0);
+      this.controlSampleFieldGeometry1.Name = "controlSampleFieldGeometry1";
+      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(875, 379);
+      this.controlSampleFieldGeometry1.SpatialGeometry = null;
+      this.controlSampleFieldGeometry1.TabIndex = 1;
+      this.controlSampleFieldGeometry1.UpdateAction = null;
+      this.controlSampleFieldGeometry1.Visible = false;
+      // 
+      // controlAnalyticGeometry1
+      // 
+      this.controlAnalyticGeometry1.Current = null;
+      this.controlAnalyticGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlAnalyticGeometry1.IsInitializing = false;
+      this.controlAnalyticGeometry1.Location = new System.Drawing.Point(0, 0);
+      this.controlAnalyticGeometry1.Name = "controlAnalyticGeometry1";
+      this.controlAnalyticGeometry1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlAnalyticGeometry1.RowsAdded")));
+      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(875, 379);
+      this.controlAnalyticGeometry1.SpatialGeometry = null;
+      this.controlAnalyticGeometry1.TabIndex = 0;
+      this.controlAnalyticGeometry1.UpdateAction = null;
+      this.controlAnalyticGeometry1.Visible = false;
       // 
       // FormInitSpatial
       // 

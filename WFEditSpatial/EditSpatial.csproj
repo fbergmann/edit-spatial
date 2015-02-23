@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -194,19 +195,12 @@
     <Compile Include="Forms\FormPrepareDune.Designer.cs">
       <DependentUpon>FormPrepareDune.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormSettings.Designer.cs">
-      <DependentUpon>FormSettings.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormSpatialAnnotation.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormSpatialAnnotation.Designer.cs">
       <DependentUpon>FormSpatialAnnotation.cs</DependentUpon>
     </Compile>
-    <Compile Include="Model\EditSpatialSettings.cs" />
     <Compile Include="Model\ISBWAnalyzer.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -282,9 +276,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormPrepareDune.resx">
       <DependentUpon>FormPrepareDune.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSettings.resx">
-      <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSpatialAnnotation.resx">
       <DependentUpon>FormSpatialAnnotation.cs</DependentUpon>

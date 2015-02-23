@@ -51,13 +51,14 @@ namespace EditSpatial.Forms
 
     private void OnBrowseClicke(object sender, EventArgs e)
     {
-      txtTargetDir.Text = Util.GetDir(txtTargetDir.Text);
+      txtTargetDir.Text = LibEditSpatial.Util.GetDir(txtTargetDir.Text);
     }
 
     private void DoCreateHost()
     {
       Util.UnzipArchive(
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "host.zip"), Target);
+      txtResult.Text = "Host created in: " + Target;
     }
 
     private void OnCreateHostClick(object sender, EventArgs e)
@@ -148,7 +149,7 @@ namespace EditSpatial.Forms
         Invoke(new VoidStringDelegate(OnAddString), data);
         return;
       }
-      textBox1.AppendText(data.Replace("\n", Environment.NewLine) + Environment.NewLine);
+      txtResult.AppendText(data.Replace("\n", Environment.NewLine) + Environment.NewLine);
     }
 
     public async Task StartProcess(ProcessStartInfo info)
@@ -174,7 +175,7 @@ namespace EditSpatial.Forms
       if (!Directory.Exists(BuildDir))
         Directory.CreateDirectory(BuildDir);
       // run cmake
-
+      
       Task.Factory.StartNew(() => RunCMake(BuildDir)
         .ContinueWith(prevTask => RunMake(BuildDir)));
     }
@@ -187,7 +188,7 @@ namespace EditSpatial.Forms
           MessageBoxButtons.OK, MessageBoxIcon.Error);
         return;
       }
-
+      txtResult.Text = "Compiling Model";
       DoCompile();
     }
 
@@ -195,6 +196,7 @@ namespace EditSpatial.Forms
     {
       // export model into host/src
       Model.ExportToDune(Path.Combine(Path.Combine(Target, "src"), "host.cc"));
+      txtResult.Text = "Dune model exported into: " + Path.Combine(Target, "src");
     }
 
     private void OnExportModel(object sender, EventArgs e)

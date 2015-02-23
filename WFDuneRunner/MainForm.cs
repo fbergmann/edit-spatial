@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using libsbmlcs;
 using LibEditSpatial.Dialogs;
 using LibEditSpatial.Model;
+using WFDuneRunner.Properties;
 
 namespace WFDuneRunner
 {
@@ -238,7 +240,9 @@ namespace WFDuneRunner
       using (var dialog = new DlgRun
       {
         Config = Config,
-        FileName = fileName
+        FileName = fileName, 
+        CygwinDir = Settings.CygwinDir, 
+        ParaViewDir = Settings.ParaViewDir
       })
       {
         dialog.ShowDialog(this);
@@ -567,6 +571,65 @@ namespace WFDuneRunner
       {
         OnSaveFile(sender, e);
       }
+    }
+
+    private void OnParameterValueChanged(object sender, DataGridViewCellEventArgs e)
+    {
+      if (_isLoading) return;
+
+      if (e.RowIndex < 0) return;
+
+      var row = gridParameters.Rows[e.RowIndex];
+      if (row.IsNewRow) return;
+
+      var id = row.Cells[0].Value as string;
+      if (string.IsNullOrEmpty(id)) return;
+
+      var value = row.Cells[1].Value as string;
+      var data = Config["Reaction"];
+
+      data[id] = value;
+
+      
+    }
+
+    EditSpatialSettings Settings { get; set; }
+
+    public void ReadSettings()
+    {
+      Settings = EditSpatialSettings.GetDefault(Size);
+
+      if (Settings.Width < Screen.FromControl(this).WorkingArea.Width &&
+          Settings.Height < Screen.FromControl(this).WorkingArea.Height)
+        Size = new Size(Settings.Width, Settings.Height);
+
+    }
+    private void OnFormClosed(object sender, FormClosedEventArgs e)
+    {
+      WriteSettings();
+    }
+
+    private void WriteSettings()
+    {
+      if (Settings != null)
+      Settings.Save();
+    }
+
+    private void OnEditPreferencesClick(object sender, EventArgs e)
+    {
+      using (var dlg = new FormSettings { Settings = Settings })
+      {
+        if (dlg.ShowDialog(this) == DialogResult.OK)
+        {
+          dlg.Settings.Save();
+          ReadSettings();
+        }
+      }
+    }
+
+    private void OnFormLoad(object sender, EventArgs e)
+    {
+      ReadSettings();
     }
   }
 }

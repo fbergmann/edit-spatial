@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
@@ -157,11 +158,13 @@ namespace EditSpatial.Forms
       lstSpatialSpecies.Items.Add(spatialSpecies);
 
       grid.Rows.Add(spatialSpecies.Id,
-        spatialSpecies.DiffusionX,
-        spatialSpecies.DiffusionY,
+        spatialSpecies.DiffusionX.ToString(CultureInfo.InvariantCulture),
+        spatialSpecies.DiffusionY.ToString(CultureInfo.InvariantCulture),
         spatialSpecies.InitialCondition,
-        spatialSpecies.MaxBoundaryX, spatialSpecies.MaxBoundaryY,
-        spatialSpecies.MinBoundaryX, spatialSpecies.MinBoundaryY,
+        spatialSpecies.MaxBoundaryX.ToString(CultureInfo.InvariantCulture), 
+        spatialSpecies.MaxBoundaryY.ToString(CultureInfo.InvariantCulture),
+        spatialSpecies.MinBoundaryX.ToString(CultureInfo.InvariantCulture), 
+        spatialSpecies.MinBoundaryY.ToString(CultureInfo.InvariantCulture),
         spatialSpecies.BCType);
     }
 
@@ -500,6 +503,29 @@ namespace EditSpatial.Forms
 
         species.DiffusionY = species.DiffusionX;
       }
+    }
+
+    private void OnSortCompare(object sender, DataGridViewSortCompareEventArgs e)
+    {
+      if (e.CellValue1 == e.CellValue2)
+      {
+        e.SortResult = 0;
+        return;
+      }
+
+      if (e.CellValue1 == null)
+      {
+        e.SortResult = -1;
+        return;
+      }
+
+      if (e.CellValue2 == null)
+      {
+        e.SortResult = 1;
+        return;
+      }
+
+      e.SortResult = ((IComparable)e.CellValue1).CompareTo(e.CellValue2);
     }
   }
 }

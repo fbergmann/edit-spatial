@@ -133,6 +133,7 @@ namespace LibEditSpatial.Dialogs
 
       if (CheckIfEmpty(dir)) return;
 
+      txtResult.Text = "Starting with config: temp.conf";
 
       if (!Directory.Exists(outdir))
         Directory.CreateDirectory(outdir);
@@ -148,7 +149,7 @@ namespace LibEditSpatial.Dialogs
         RedirectStandardOutput = true,
         UseShellExecute = false,
         CreateNoWindow = true
-      };
+      };      
 
 #pragma warning disable 4014
       StartProcess(info);
@@ -409,6 +410,18 @@ namespace LibEditSpatial.Dialogs
     private void UpdateWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
     {
       LaunchUpdate();
+    }
+
+    private void OnFolderClick(object sender, EventArgs e)
+    {
+      try
+      {
+        Process.Start(Path.GetDirectoryName(FileName));
+      }
+      catch
+      {
+          
+      }
     }
   }
 }

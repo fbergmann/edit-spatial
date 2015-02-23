@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using EditSpatial.Model;
+using LibEditSpatial.Model;
 
-namespace EditSpatial.Forms
+namespace LibEditSpatial.Dialogs
 {
   public partial class FormSettings : Form
   {

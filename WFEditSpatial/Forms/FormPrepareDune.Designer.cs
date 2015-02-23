@@ -37,6 +37,7 @@ namespace EditSpatial.Forms
       this.panel2 = new System.Windows.Forms.Panel();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.panel3 = new System.Windows.Forms.Panel();
+      this.cmdFolder = new System.Windows.Forms.Button();
       this.cmdEditConfig = new System.Windows.Forms.Button();
       this.cmdRun = new System.Windows.Forms.Button();
       this.cmdCompile = new System.Windows.Forms.Button();
@@ -47,8 +48,7 @@ namespace EditSpatial.Forms
       this.txtTargetDir = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.cmdCreateHost = new System.Windows.Forms.Button();
-      this.textBox1 = new System.Windows.Forms.TextBox();
-      this.cmdFolder = new System.Windows.Forms.Button();
+      this.txtResult = new System.Windows.Forms.TextBox();
       this.tableLayoutPanel1.SuspendLayout();
       this.panel1.SuspendLayout();
       this.panel2.SuspendLayout();
@@ -117,7 +117,7 @@ namespace EditSpatial.Forms
       // 
       // splitContainer1.Panel2
       // 
-      this.splitContainer1.Panel2.Controls.Add(this.textBox1);
+      this.splitContainer1.Panel2.Controls.Add(this.txtResult);
       this.splitContainer1.Size = new System.Drawing.Size(635, 399);
       this.splitContainer1.SplitterDistance = 107;
       this.splitContainer1.TabIndex = 0;
@@ -140,6 +140,17 @@ namespace EditSpatial.Forms
       this.panel3.Name = "panel3";
       this.panel3.Size = new System.Drawing.Size(635, 107);
       this.panel3.TabIndex = 0;
+      // 
+      // cmdFolder
+      // 
+      this.cmdFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.cmdFolder.Location = new System.Drawing.Point(395, 75);
+      this.cmdFolder.Name = "cmdFolder";
+      this.cmdFolder.Size = new System.Drawing.Size(75, 23);
+      this.cmdFolder.TabIndex = 10;
+      this.cmdFolder.Text = "&Folder";
+      this.cmdFolder.UseVisualStyleBackColor = true;
+      this.cmdFolder.Click += new System.EventHandler(this.cmdFolder_Click);
       // 
       // cmdEditConfig
       // 
@@ -242,28 +253,17 @@ namespace EditSpatial.Forms
       this.cmdCreateHost.UseVisualStyleBackColor = true;
       this.cmdCreateHost.Click += new System.EventHandler(this.OnCreateHostClick);
       // 
-      // textBox1
+      // txtResult
       // 
-      this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.textBox1.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.textBox1.Location = new System.Drawing.Point(0, 0);
-      this.textBox1.MaxLength = 0;
-      this.textBox1.Multiline = true;
-      this.textBox1.Name = "textBox1";
-      this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.textBox1.Size = new System.Drawing.Size(635, 288);
-      this.textBox1.TabIndex = 0;
-      // 
-      // cmdFolder
-      // 
-      this.cmdFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.cmdFolder.Location = new System.Drawing.Point(395, 75);
-      this.cmdFolder.Name = "cmdFolder";
-      this.cmdFolder.Size = new System.Drawing.Size(75, 23);
-      this.cmdFolder.TabIndex = 10;
-      this.cmdFolder.Text = "&Folder";
-      this.cmdFolder.UseVisualStyleBackColor = true;
-      this.cmdFolder.Click += new System.EventHandler(this.cmdFolder_Click);
+      this.txtResult.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.txtResult.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.txtResult.Location = new System.Drawing.Point(0, 0);
+      this.txtResult.MaxLength = 0;
+      this.txtResult.Multiline = true;
+      this.txtResult.Name = "txtResult";
+      this.txtResult.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+      this.txtResult.Size = new System.Drawing.Size(635, 288);
+      this.txtResult.TabIndex = 0;
       // 
       // FormPrepareDune
       // 
@@ -300,7 +300,7 @@ namespace EditSpatial.Forms
     private Panel panel2;
     private SplitContainer splitContainer1;
     private Panel panel3;
-    private TextBox textBox1;
+    private TextBox txtResult;
     private TextBox txtName;
     private Label label2;
     private Button cmdBrowseTarget;

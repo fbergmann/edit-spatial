@@ -6,6 +6,8 @@ using EditSpatial.Controls;
 using EditSpatial.Forms;
 using EditSpatial.Model;
 using libsbmlcs;
+using LibEditSpatial.Dialogs;
+using LibEditSpatial.Model;
 using SBW;
 using SBW.Utils;
 
@@ -1065,13 +1067,13 @@ namespace EditSpatial
       }
     }
 
-    private void chkMultipleCompartments_Click(object sender, EventArgs e)
+    private void OnCheckMultipleCompartmentsClick(object sender, EventArgs e)
     {
       Settings.IgnoreMultiCompartments = chkMultipleCompartments.Checked;
       Settings.Save();
     }
 
-    private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+    private void OnEditPreferencesClick(object sender, EventArgs e)
     {
       using (var dlg = new FormSettings {Settings = Settings})
       {

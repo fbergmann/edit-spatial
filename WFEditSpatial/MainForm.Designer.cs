@@ -835,7 +835,7 @@ namespace EditSpatial
       this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
       this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
       this.preferencesToolStripMenuItem.Text = "Preferences";
-      this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
+      this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.OnEditPreferencesClick);
       // 
       // mnuSBW
       // 
@@ -889,7 +889,7 @@ namespace EditSpatial
       this.chkMultipleCompartments.Name = "chkMultipleCompartments";
       this.chkMultipleCompartments.Size = new System.Drawing.Size(305, 22);
       this.chkMultipleCompartments.Text = "Ignore Multiple Compartments";
-      this.chkMultipleCompartments.Click += new System.EventHandler(this.chkMultipleCompartments_Click);
+      this.chkMultipleCompartments.Click += new System.EventHandler(this.OnCheckMultipleCompartmentsClick);
       // 
       // toolStripMenuItem3
       // 

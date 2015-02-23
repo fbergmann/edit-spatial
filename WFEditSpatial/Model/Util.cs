@@ -990,15 +990,7 @@ namespace EditSpatial.Model
       return defaultValue;
     }
 
-    public static string GetDir(string baseDir)
-    {
-      using (var dlg = new VistaFolderBrowserDialog {SelectedPath = baseDir, Description = "Open Directory"})
-      {
-        if (dlg.ShowDialog() == DialogResult.OK)
-          return dlg.SelectedPath;
-      }
-      return baseDir;
-    }
+    
 
     public static double GetDouble(this DataGridViewCell cell, double defaultValue = 0)
     {
