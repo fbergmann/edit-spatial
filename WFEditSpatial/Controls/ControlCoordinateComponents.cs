@@ -50,6 +50,7 @@ namespace EditSpatial.Controls
         if (current == null) continue;
         current.SaveChanges();
       }
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()

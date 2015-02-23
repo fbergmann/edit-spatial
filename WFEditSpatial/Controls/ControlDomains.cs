@@ -66,6 +66,7 @@ namespace EditSpatial.Controls
           interior.setCoord3(point.Item3);
         }
       }
+      OnModelChanged();
     }
 
     private List<Tuple<double, double, double>> GetPoints(string value)

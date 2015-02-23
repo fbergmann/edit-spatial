@@ -48,6 +48,8 @@ namespace EditSpatial.Controls
         current.setSymbol((string) row.Cells[0].Value);
         current.setMath(node);
       }
+
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()

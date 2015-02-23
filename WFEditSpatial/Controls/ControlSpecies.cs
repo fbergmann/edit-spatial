@@ -124,6 +124,8 @@ namespace EditSpatial.Controls
           }
         }
       }
+
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()

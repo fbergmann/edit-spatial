@@ -1,0 +1,15 @@
+@echo off
+REM 
+REM This file compiles the host application again, in case 
+REM some changes were necessary.
+REM
+
+SET THIS_DIR=%~dp0
+SET CYG_DIR=$$CYG_DIR$$
+
+:: add cygwin to path
+SET PATH=%CYG_DIR%;%PATH%
+
+%CYG_DIR%\bash -c make
+
+pause

@@ -54,6 +54,7 @@ namespace EditSpatial
       this.treeSpatial = new System.Windows.Forms.TreeView();
       this.contextMenuStripSpatial = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.toolAddAnalyticGeometry = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolAddSampleField = new System.Windows.Forms.ToolStripMenuItem();
       this.toolDeleteSpatial = new System.Windows.Forms.ToolStripMenuItem();
       this.controlMapCompartments1 = new EditSpatial.Controls.ControlMapCompartments();
       this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
@@ -132,7 +133,6 @@ namespace EditSpatial
       this.cmdAkira = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.toolAddSampleField = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -275,7 +275,7 @@ namespace EditSpatial
             this.toolAddSampleField,
             this.toolDeleteSpatial});
       this.contextMenuStripSpatial.Name = "contextMenuStrip1";
-      this.contextMenuStripSpatial.Size = new System.Drawing.Size(222, 92);
+      this.contextMenuStripSpatial.Size = new System.Drawing.Size(222, 70);
       // 
       // toolAddAnalyticGeometry
       // 
@@ -283,6 +283,13 @@ namespace EditSpatial
       this.toolAddAnalyticGeometry.Size = new System.Drawing.Size(221, 22);
       this.toolAddAnalyticGeometry.Text = "&Add Analytic Geometry";
       this.toolAddAnalyticGeometry.Click += new System.EventHandler(this.OnAddAnalyticGeometry);
+      // 
+      // toolAddSampleField
+      // 
+      this.toolAddSampleField.Name = "toolAddSampleField";
+      this.toolAddSampleField.Size = new System.Drawing.Size(221, 22);
+      this.toolAddSampleField.Text = "Add Sample Field &Geometry";
+      this.toolAddSampleField.Click += new System.EventHandler(this.OnAddSampledFieldGeometry);
       // 
       // toolDeleteSpatial
       // 
@@ -1049,13 +1056,6 @@ namespace EditSpatial
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAbout);
       // 
-      // toolAddSampleField
-      // 
-      this.toolAddSampleField.Name = "toolAddSampleField";
-      this.toolAddSampleField.Size = new System.Drawing.Size(221, 22);
-      this.toolAddSampleField.Text = "Add Sample Field &Geometry";
-      this.toolAddSampleField.Click += new System.EventHandler(this.OnAddSampledFieldGeometry);
-      // 
       // MainForm
       // 
       this.AllowDrop = true;
@@ -1068,6 +1068,7 @@ namespace EditSpatial
       this.MinimumSize = new System.Drawing.Size(800, 600);
       this.Name = "MainForm";
       this.Text = "Edit Spatial";
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
       this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnFormClosed);
       this.Load += new System.EventHandler(this.OnLoad);
       this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);

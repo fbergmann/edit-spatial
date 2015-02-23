@@ -294,6 +294,20 @@ namespace LibEditSpatial.Dialogs
       await Task.Run(() => process.WaitForExit());
     }
 
+    public static void WriteBatchFiles(string dir, string cygwinDir)
+    {
+      foreach (var item in new[] { "start.bat", "compile.bat" })
+      {
+        if (File.Exists(Path.Combine(dir, "start.bat"))) continue;
+        
+        var batch = File.ReadAllText(
+          Path.Combine(
+          Path.GetDirectoryName(Application.ExecutablePath), item + ".in"));
+        batch = batch.Replace("$$CYG_DIR$$", cygwinDir);
+        File.WriteAllText(Path.Combine(dir, "src\\" + item), batch);
+      }
+    }
+
     private void OnCompileClick(object sender, EventArgs e)
     {
       if (process != null) return;
@@ -316,6 +330,8 @@ namespace LibEditSpatial.Dialogs
 #pragma warning disable 4014
       StartProcess(info);
 #pragma warning restore 4014
+
+      WriteBatchFiles(dir, CygwinDir);
     }
 
     private void OnBrowseClick(object sender, EventArgs e)

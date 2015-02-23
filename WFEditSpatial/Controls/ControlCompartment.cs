@@ -88,6 +88,8 @@ namespace EditSpatial.Controls
         if (double.TryParse((string) row.Cells[3].Value, out value))
           current.setSpatialDimensions(value);
       }
+
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()

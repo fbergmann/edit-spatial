@@ -155,6 +155,7 @@ namespace EditSpatial.Controls
       }
 
       Current.ExpandMath();
+      OnModelChanged();
     }
 
     private DmpModel GenerateDmp(int thumbSize)

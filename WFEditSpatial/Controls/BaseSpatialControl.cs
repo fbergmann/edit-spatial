@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using EditSpatial.Model;
 
 namespace EditSpatial.Controls
 {
@@ -12,6 +13,8 @@ namespace EditSpatial.Controls
 
     public bool IsInitializing { get; set; }
     public Action UpdateAction { get; set; }
+    
+    public event EventHandler ModelChanged;
 
     public virtual void SaveChanges()
     {
@@ -20,5 +23,14 @@ namespace EditSpatial.Controls
     public virtual void InvalidateSelection()
     {
     }
+
+
+    protected virtual void OnModelChanged()
+    {
+      var handler = ModelChanged;
+      if (handler != null) handler(this, EventArgs.Empty);
+    }
   }
+
+  
 }

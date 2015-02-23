@@ -1,0 +1,21 @@
+@echo off
+REM 
+REM This file starts the built host application, it takes an optional argument, 
+REM the config file to run. If it is not given, the host.conf file in the 
+REM current directory will be run.
+REM
+
+SET THIS_DIR=%~dp0
+SET CYG_DIR=$$CYG_DIR$$
+
+:: add cygwin to path
+SET PATH=%CYG_DIR%;%PATH%
+
+SET CONFIG=%1
+if "%CONFIG%" == "" SET CONFIG="%THIS_DIR%\host.conf"
+
+:: ignore warning about backslash in filename
+SET CYGWIN=nodosfilewarning
+
+%THIS_DIR%\host.exe %CONFIG%
+pause

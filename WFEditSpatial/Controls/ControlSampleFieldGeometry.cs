@@ -104,6 +104,8 @@ namespace EditSpatial.Controls
         if (double.TryParse((string) row.Cells[4].Value, out value))
           current.setMaxValue(value);
       }
+
+      OnModelChanged();
     }
 
     private List<int> GetUniqueValues(int[] data)

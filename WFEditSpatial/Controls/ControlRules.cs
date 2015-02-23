@@ -67,6 +67,8 @@ namespace EditSpatial.Controls
         current.setVariable((string) row.Cells[0].Value);
         current.setMath(node);
       }
+
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()

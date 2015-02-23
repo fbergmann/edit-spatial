@@ -53,6 +53,8 @@ namespace EditSpatial.Controls
         if (map == null) continue;
         map.setDomainType((string) row.Cells[1].Value);
       }
+
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()

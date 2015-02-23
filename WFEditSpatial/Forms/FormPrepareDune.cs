@@ -31,7 +31,6 @@ namespace EditSpatial.Forms
       get
       {
         return Path.Combine(TargetDir, ModuleName);
-        ;
       }
     }
 
@@ -125,9 +124,13 @@ namespace EditSpatial.Forms
         CreateNoWindow = true
       };
 
+
 #pragma warning disable 4014
       await StartProcess(info);
 #pragma warning restore 4014
+
+      DlgRun.WriteBatchFiles(buildDir, Settings.CygwinDir);
+
     }
 
     private void ReEnableUI()

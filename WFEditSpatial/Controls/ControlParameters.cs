@@ -84,6 +84,8 @@ namespace EditSpatial.Controls
         if (double.TryParse((string) row.Cells[2].Value, out value))
           current.setValue(value);
       }
+
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()

@@ -33,7 +33,9 @@ namespace EditSpatial.Controls
         current.setSpatialId((string) row.Cells[0].Value);
         current.setSpatialDimensions((long) row.Cells[1].Value);
       }
+      OnModelChanged();
     }
+
 
     public override void InvalidateSelection()
     {

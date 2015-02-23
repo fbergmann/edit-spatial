@@ -53,6 +53,31 @@ namespace EditSpatial
           UpdateTreeWithInitialAssignments(Model.Document.getModel());
       };
 
+      controlAdjacentDomains1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlAnalyticGeometry1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlCompartment1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlCoordinateComponents1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlDomains1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlDomainTypes1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlInitialAssignments1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlMapCompartments1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlParameters1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlRules1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlSampleFieldGeometry1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+      controlSpecies1.ModelChanged += (e, o) =>
+      { if (Model != null) Model.Dirty = true; };
+
       NewModel();
     }
 
@@ -70,6 +95,7 @@ namespace EditSpatial
       else
       {
         LoadFromString(model);
+        Model.Dirty = true;
       }
     }
 
@@ -865,6 +891,8 @@ namespace EditSpatial
 
       var geom = Model.Geometry.createSampledFieldGeometry();
       geom.setSpatialId(String.Format("sampledFieldGeometry{0}", Model.Geometry.GetNumSampledFieldGeometries()));
+
+      Model.Dirty = true;
       UpdateUI();
     }
 
@@ -874,6 +902,8 @@ namespace EditSpatial
 
       var geom = Model.Geometry.createAnalyticGeometry();
       geom.setSpatialId(String.Format("analyticGeometry{0}", Model.Geometry.GetNumAnalyticGeometries()));
+      
+      Model.Dirty = true;
       UpdateUI();
     }
 
@@ -885,6 +915,8 @@ namespace EditSpatial
       var selectedId = selected.Text;
       var parent = selected.Parent;
       if (Model.Geometry == null) return;
+
+      Model.Dirty = true;
 
       if (selected.Level == 1)
         switch (parent.Name)
@@ -1001,6 +1033,8 @@ namespace EditSpatial
     {
       if (Model == null) return;
       Model.MoveAllRulesToAssignments();
+
+      Model.Dirty = true;
       UpdateUI();
     }
 
@@ -1100,5 +1134,28 @@ namespace EditSpatial
     }
 
     #endregion
+
+    private void OnFormClosing(object sender, FormClosingEventArgs e)
+    {
+      if (Model == null || !Model.Dirty) return;
+      
+      DialogResult result = 
+        MessageBox.Show(this,
+          "There are unsaved changes in the model. Would you like to save them?", 
+          "Save changes?",
+          MessageBoxButtons.YesNoCancel, 
+          MessageBoxIcon.Question, 
+          MessageBoxDefaultButton.Button3);
+      
+      if (result == DialogResult.Cancel)
+      {
+        e.Cancel = true;
+      }
+
+      if (result == DialogResult.Yes)
+      {
+        OnSaveFile(sender, e);
+      }
+    }
   }
 }

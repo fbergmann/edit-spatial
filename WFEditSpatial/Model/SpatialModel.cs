@@ -14,6 +14,9 @@ namespace EditSpatial.Model
 {
   public class SpatialModel
   {
+    public bool Dirty { get; set; }
+
+
     internal static CustomSpatialValidator CustomSpatialValidator = new CustomSpatialValidator();
 
     public SpatialModel()

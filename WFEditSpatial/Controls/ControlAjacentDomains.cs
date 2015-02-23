@@ -39,6 +39,8 @@ namespace EditSpatial.Controls
         domain.setDomain1((string) row.Cells[1].Value);
         domain.setDomain2((string) row.Cells[2].Value);
       }
+
+      OnModelChanged();
     }
 
     public override void InvalidateSelection()
