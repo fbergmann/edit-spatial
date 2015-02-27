@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
+using LibEditSpatial.Dialogs;
 using LibEditSpatial.Model;
 using WFEditDMP.Forms;
 
@@ -61,12 +64,13 @@ namespace WFEditDMP
       txtMinY.Text = Model.MinY.ToString(CultureInfo.InvariantCulture);
       txtMaxY.Text = Model.MaxY.ToString(CultureInfo.InvariantCulture);
       dmpRenderControl1.LoadModel(Model);
+      ctrlPalette1.UpdateValues(Model.Min, ctrlPalette1.Current.Value, Model.Max);
       SetTitle(Model.FileName);
     }
 
     public void OpenFile(string filename)
     {
-      LastOpenDir = Path.GetDirectoryName(filename);
+      LastOpenDir = Path.GetDirectoryName(filename);           
       Model = DmpModel.FromFile(filename);
       ctrlPalette1.UpdateValues(Model.Min, ctrlPalette1.Current.Value, Model.Max);
       dmpRenderControl1.CurrentValue = Model.Max;
@@ -75,6 +79,11 @@ namespace WFEditDMP
     }
 
     private void NewModel()
+    {
+      NewModel(new Size(50, 50), new RectangleF(0, 50, 0, 50));
+    }
+
+    private void NewModel(Size size, RectangleF rect)
     {
       Model = new DmpModel(50, 50);
       ctrlPalette1.UpdateValues(Model.Min, ctrlPalette1.Current.Value, Model.Max);
@@ -85,23 +94,42 @@ namespace WFEditDMP
 
     private void OnNewClick(object sender, EventArgs e)
     {
-      NewModel();
+      if (SaveModelIfDirtyOrCancel())
+        return;
+
+      using (var dlg = new FormResize { 
+        Dimensions = new Size(Model.Columns, Model.Rows),
+        CanvasBounds = new RectangleF((float)Model.MinX, (float)Model.MinY, (float)Model.MaxX, (float)Model.MaxY)
+      } )
+      { 
+        if (dlg.ShowDialog(this) == DialogResult.OK)
+        { 
+          NewModel(dlg.Dimensions, dlg.CanvasBounds);
+        }
+      }
     }
 
     private void OnOpenClick(object sender, EventArgs e)
     {
+      if (SaveModelIfDirtyOrCancel())
+        return;
+
       using (var dialog = new OpenFileDialog
       {
         Title = "Open file",
-        Filter = "DMP files|*.dmp|TIFF files|*.tif;*.tiff|All files|*.*",
+        Filter = "DMP files|*.dmp|Image files|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
         AutoUpgradeEnabled = true,
         InitialDirectory = LastOpenDir
       })
       {
         if (dialog.ShowDialog() == DialogResult.OK)
+        {          
           OpenFile(dialog.FileName);
+        }
       }
     }
+
+    
 
     private void OnSaveClick(object sender, EventArgs e)
     {
@@ -264,7 +292,7 @@ namespace WFEditDMP
         Model.MaxY = temp;
     }
 
-    private void OnSplitIntoIndividuals(object sender, EventArgs e)
+    private void OnAdjustClick(object sender, EventArgs e)
     {
       if (Model == null) return;
       var range = Model.Range;
@@ -332,9 +360,13 @@ namespace WFEditDMP
       }
     }
 
-    private void OnFormClosing(object sender, FormClosingEventArgs e)
+    /// <summary>
+    /// This function asks a user whether the model should be saved
+    /// </summary>
+    /// <returns>true, if model is dirty and the user pressed cancel, false otherwise</returns>
+    private bool SaveModelIfDirtyOrCancel()
     {
-      if (Model == null || !Model.Dirty) return;
+      if (Model == null || !Model.Dirty) return false;
 
       DialogResult result =
         MessageBox.Show(this,
@@ -346,13 +378,64 @@ namespace WFEditDMP
 
       if (result == DialogResult.Cancel)
       {
-        e.Cancel = true;
+        return true;
       }
 
       if (result == DialogResult.Yes)
       {
-        OnSaveClick(sender, e);
+        OnSaveClick(this, EventArgs.Empty);
+      }
+
+      return false;
+    }
+    private void OnFormClosing(object sender, FormClosingEventArgs e)
+    {
+      e.Cancel = SaveModelIfDirtyOrCancel();
+    }
+
+    private void OnResizeClick(object sender, EventArgs e)
+    {
+      using (var dlg = new FormResize
+      {
+        Dimensions = new Size(Model.Columns, Model.Rows),
+        CanvasBounds = new RectangleF((float) Model.MinX, (float) Model.MinY, (float) Model.MaxX, (float) Model.MaxY)
+      })
+      {
+        if (dlg.ShowDialog(this) == DialogResult.OK)
+        {
+          Model.Resize(dlg.Dimensions.Width, dlg.Dimensions.Height, dlg.ScaleContents);
+          Model.MinX = dlg.CanvasBounds.X;
+          Model.MinY = dlg.CanvasBounds.Y;
+          Model.MaxX = dlg.CanvasBounds.Width;
+          Model.MaxY = dlg.CanvasBounds.Height;
+          UpdateUI();
+        }
       }
     }
+
+    private void OnMaskWithCompartmentClick(object sender, EventArgs e)
+    {
+      using (var dlg = new OpenFileDialog { Title = "Choose DMP file to mask with. ", 
+      Filter = "DMP files|*.dmp|Image files|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
+        AutoUpgradeEnabled = true, InitialDirectory = this.LastOpenDir})
+      {
+        if (dlg.ShowDialog() == DialogResult.OK)
+        {
+          try
+          {
+            var file = DmpModel.FromFile(dlg.FileName);
+            Model.MaskWith(file);
+            UpdateUI();
+          }
+          catch
+          {
+            MessageBox.Show("Masking failed, ensure that the files have precisely the same dimensions", "Masking failed",
+              MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+        }
+      }
+    }
+
+
   }
 }

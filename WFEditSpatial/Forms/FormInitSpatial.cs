@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using EditSpatial.Model;
@@ -55,7 +56,7 @@ namespace EditSpatial.Forms
             for (var i = 0; i < _analyticGeometry.getNumAnalyticVolumes(); ++i)
             {
               var current = _analyticGeometry.getAnalyticVolume(i);
-              var math = libsbml.formulaToString(current.getMath());
+              var math = libsbml.formulaToL3String(current.getMath());
               if (math.Contains(" width "))
                 geom.UsedSymbols.Add("width");
               if (math.Contains(" height "))
@@ -259,7 +260,7 @@ namespace EditSpatial.Forms
       if (_analyticGeometry != null)
       {
         if (_analyticGeometry.getNumAnalyticVolumes() == 1 && _analyticGeometry.getAnalyticVolume(0).isSetMath()
-            && (libsbml.formulaToString(_analyticGeometry.getAnalyticVolume(0).getMath()) == "1"))
+            && (libsbml.formulaToL3String(_analyticGeometry.getAnalyticVolume(0).getMath()) == "1"))
           radDefault.Checked = true;
         else
           radAnalytic.Checked = true;
@@ -313,13 +314,20 @@ namespace EditSpatial.Forms
         }
         case 3:
         {
-          var node = libsbml.parseFormula((string) row.Cells[3].Value);
+          var node = libsbml.parseL3Formula((string) row.Cells[3].Value);
           if (node != null)
           {
-            var formula = libsbml.formulaToString(node);
+            var formula = libsbml.formulaToL3String(node);
             species.InitialCondition = formula;
             row.Cells[3].Value = formula;
+            row.Cells[3].Style.BackColor = Color.LightGreen;
           }
+          else
+          {
+            row.Cells[3].Style.BackColor = Color.Pink;
+          }
+
+
           break;
         }
         case 4:

@@ -101,6 +101,12 @@
     <Compile Include="Dialogs\DlgRun.Designer.cs">
       <DependentUpon>DlgRun.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\FormResize.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\FormResize.Designer.cs">
+      <DependentUpon>FormResize.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DlgRun.resx">
       <DependentUpon>DlgRun.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\FormResize.resx">
+      <DependentUpon>FormResize.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>

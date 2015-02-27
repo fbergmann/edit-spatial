@@ -80,11 +80,13 @@ namespace WFEditDMP
       this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
       this.cmdCenter = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
       this.toolAdjust = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
+      this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -175,6 +177,7 @@ namespace WFEditDMP
       this.toolStripButton1.Name = "toolStripButton1";
       this.toolStripButton1.Size = new System.Drawing.Size(43, 22);
       this.toolStripButton1.Text = "&Resize";
+      this.toolStripButton1.ToolTipText = "Apply the dimensions specified. ";
       this.toolStripButton1.Click += new System.EventHandler(this.OnResizeClicked);
       // 
       // toolStripSeparator4
@@ -409,6 +412,8 @@ namespace WFEditDMP
             this.toolStripButton3,
             this.cmdCenter,
             this.toolStripSeparator5,
+            this.toolStripButton6,
+            this.toolStripButton5,
             this.toolAdjust,
             this.toolStripSeparator7,
             this.toolStripButton4,
@@ -523,6 +528,16 @@ namespace WFEditDMP
       this.toolStripSeparator5.Name = "toolStripSeparator5";
       this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
       // 
+      // toolStripButton5
+      // 
+      this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
+      this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.toolStripButton5.Name = "toolStripButton5";
+      this.toolStripButton5.Size = new System.Drawing.Size(43, 22);
+      this.toolStripButton5.Text = "Resize";
+      this.toolStripButton5.Click += new System.EventHandler(this.OnResizeClick);
+      // 
       // toolAdjust
       // 
       this.toolAdjust.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -531,7 +546,7 @@ namespace WFEditDMP
       this.toolAdjust.Name = "toolAdjust";
       this.toolAdjust.Size = new System.Drawing.Size(45, 22);
       this.toolAdjust.Text = "Adjust";
-      this.toolAdjust.Click += new System.EventHandler(this.OnSplitIntoIndividuals);
+      this.toolAdjust.Click += new System.EventHandler(this.OnAdjustClick);
       // 
       // toolStripSeparator7
       // 
@@ -562,6 +577,16 @@ namespace WFEditDMP
       this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAboutClick);
+      // 
+      // toolStripButton6
+      // 
+      this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
+      this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.toolStripButton6.Name = "toolStripButton6";
+      this.toolStripButton6.Size = new System.Drawing.Size(39, 22);
+      this.toolStripButton6.Text = "&Mask";
+      this.toolStripButton6.Click += new System.EventHandler(this.OnMaskWithCompartmentClick);
       // 
       // MainForm
       // 
@@ -647,6 +672,8 @@ namespace WFEditDMP
     private ToolStripButton toolAdjust;
     private ToolStripButton toolStripButton4;
     private ToolStripSeparator toolStripSeparator8;
+    private ToolStripButton toolStripButton5;
+    private ToolStripButton toolStripButton6;
   }
 }
 

@@ -153,7 +153,7 @@ namespace EditSpatial.Converter
 
     public static string TranslateExpression(string expression)
     {
-      return TranslateExpression(libsbml.parseFormula(expression), null);
+      return TranslateExpression(libsbml.parseL3Formula(expression), null);
     }
 
     public static string TranslateExpression(ASTNode math, Dictionary<string, string> map)

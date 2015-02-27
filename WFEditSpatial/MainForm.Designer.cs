@@ -1028,7 +1028,7 @@ namespace EditSpatial
       this.cmdPrepareDune.Name = "cmdPrepareDune";
       this.cmdPrepareDune.Size = new System.Drawing.Size(126, 22);
       this.cmdPrepareDune.Text = "Prepare Dune Module";
-      this.cmdPrepareDune.Click += new System.EventHandler(this.cmdPrepareDune_Click);
+      this.cmdPrepareDune.Click += new System.EventHandler(this.OnPrepareDuneClick);
       // 
       // cmdAkira
       // 

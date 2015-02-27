@@ -499,6 +499,7 @@ namespace EditSpatial
 
     private void OnNewModel(object sender, EventArgs e)
     {
+      if (SaveModelIfDirtyOrCancel()) return;
       NewModel();
     }
 
@@ -511,6 +512,8 @@ namespace EditSpatial
 
     private void OnOpenFile(object sender, EventArgs e)
     {
+      if (SaveModelIfDirtyOrCancel()) return;
+
       var dialog = new OpenFileDialog
       {
         Title = "Open Spatial SBML",
@@ -1085,7 +1088,7 @@ namespace EditSpatial
       }
     }
 
-    private void cmdPrepareDune_Click(object sender, EventArgs e)
+    private void OnPrepareDuneClick(object sender, EventArgs e)
     {
       if (Model == null || Model.Document == null) return;
       if (!Model.IsSpatial) return;
@@ -1137,27 +1140,39 @@ namespace EditSpatial
 
     #endregion
 
-    private void OnFormClosing(object sender, FormClosingEventArgs e)
+
+    /// <summary>
+    /// This function asks a user whether the model should be saved
+    /// </summary>
+    /// <returns>true, if model is dirty and the user pressed cancel, false otherwise</returns>
+    private bool SaveModelIfDirtyOrCancel()
     {
-      if (Model == null || !Model.Dirty) return;
-      
-      DialogResult result = 
+      if (Model == null || !Model.Dirty) return false;
+
+      DialogResult result =
         MessageBox.Show(this,
-          "There are unsaved changes in the model. Would you like to save them?", 
+          "There are unsaved changes in the model. Would you like to save them?",
           "Save changes?",
-          MessageBoxButtons.YesNoCancel, 
-          MessageBoxIcon.Question, 
+          MessageBoxButtons.YesNoCancel,
+          MessageBoxIcon.Question,
           MessageBoxDefaultButton.Button3);
-      
+
       if (result == DialogResult.Cancel)
       {
-        e.Cancel = true;
+        return true;
       }
 
       if (result == DialogResult.Yes)
       {
-        OnSaveFile(sender, e);
+        OnSaveFile(this, EventArgs.Empty);
       }
+
+      return false;
+    }
+
+    private void OnFormClosing(object sender, FormClosingEventArgs e)
+    {
+      e.Cancel = SaveModelIfDirtyOrCancel();
     }
   }
 }

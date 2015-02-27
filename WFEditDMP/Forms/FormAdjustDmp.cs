@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using LibEditSpatial.Model;
 
@@ -25,7 +26,10 @@ namespace WFEditDMP.Forms
         }
 
       if (Model != null)
-        pictureBox1.Image = Model.ToImage();
+      {
+        dmpRenderControl1.LoadModel( Model);
+        dmpRenderControl1.DisableEditing = true;
+      }
     }
 
     public void InitializeFrom(List<double> selection, DmpModel model)
@@ -46,7 +50,9 @@ namespace WFEditDMP.Forms
         listBox1.Items.Remove(current);
       }
 
-      Numbers = Model.Range;
+      Numbers = Model.Range; 
+      Model.Min = Numbers.FirstOrDefault();
+      Model.Max = Numbers.LastOrDefault();
       UpdateUI();
     }
 
@@ -58,9 +64,11 @@ namespace WFEditDMP.Forms
       if (!double.TryParse(txtReplacement.Text, out target))
         return;
 
-      for (var i = listBox1.SelectedItems.Count - 1; i >= 0; i--)
+      var list = listBox1.SelectedItems.Cast<double>().ToList();      
+
+      for (var i = list.Count - 1; i >= 0; i--)
       {
-        var current = (double) listBox1.SelectedItems[i];
+        var current = (double)list[i];
         Model.Transform(x => x == current ? target : x);
         listBox1.Items.Remove(current);
         Numbers.Remove(current);
@@ -68,14 +76,59 @@ namespace WFEditDMP.Forms
 
 
       Numbers = Model.Range;
+      Model.Min = Numbers.FirstOrDefault();
+      Model.Max = Numbers.LastOrDefault();
 
       UpdateUI();
     }
 
-    private void cmdInvert_Click(object sender, EventArgs e)
+    private void OnInvertClick(object sender, EventArgs e)
     {
       Model.Invert();
       UpdateUI();
+    }
+
+    private void OnMultiplyClick(object sender, EventArgs e)
+    {
+      double val;
+      if (!double.TryParse(txtScalar.Text, out val)) return;
+      
+      var list = listBox1.SelectedItems.Cast<double>().ToList();
+      if (!list.Any())
+        list.AddRange(Numbers);
+
+      Model.Transform(x => list.Contains(x) ?  x * val : x);
+      
+      Numbers = Model.Range;
+      Model.Min = Numbers.FirstOrDefault();
+      Model.Max = Numbers.LastOrDefault();
+      UpdateUI();
+    }
+
+    private void OnMaskClick(object sender, EventArgs e)
+    {
+      using (var dlg = new OpenFileDialog
+      {
+        Title = "Choose DMP file to mask with. ",
+        Filter = "DMP files|*.dmp|Image files|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
+        AutoUpgradeEnabled = true,
+      })
+      {
+        if (dlg.ShowDialog() == DialogResult.OK)
+        {
+          try
+          {
+            var file = DmpModel.FromFile(dlg.FileName);
+            Model.MaskWith(file);
+            UpdateUI();
+          }
+          catch
+          {
+            MessageBox.Show("Masking failed, ensure that the files have precisely the same dimensions", "Masking failed",
+              MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+        }
+      }
     }
   }
 }

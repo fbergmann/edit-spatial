@@ -105,8 +105,8 @@ namespace EditSpatial.Converter
           }
         }
 
-        formula.AppendFormat("({0})", libsbml.formulaToString(kinetics.getMath()));
-        kinetics.setMath(libsbml.parseFormula(formula.ToString()));
+        formula.AppendFormat("({0})", libsbml.formulaToL3String(kinetics.getMath()));
+        kinetics.setMath(libsbml.parseL3Formula(formula.ToString()));
 
       }
 
@@ -210,7 +210,7 @@ namespace EditSpatial.Converter
     public static string TranslateExpression(string expression, Dictionary<string, string> map = null,
       libsbmlcs.Model model = null)
     {
-      return TranslateExpression(libsbml.parseFormula(expression), map, model);
+      return TranslateExpression(libsbml.parseL3Formula(expression), map, model);
     }
 
     public static string TranslateExpression(ASTNode math, Dictionary<string, string> map = null,

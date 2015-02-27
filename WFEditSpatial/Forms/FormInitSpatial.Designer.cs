@@ -41,15 +41,6 @@ namespace EditSpatial.Forms
       this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
       this.lblIntro = new System.Windows.Forms.Label();
       this.grid = new System.Windows.Forms.DataGridView();
-      this.colSpeciesId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colDiffusionX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colDiffusionY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colInitialExpression = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryXm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colBoundaryYm = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.colType = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.panel3 = new System.Windows.Forms.Panel();
       this.cmdIsoTropic = new System.Windows.Forms.Button();
       this.cmdApplyDiff = new System.Windows.Forms.Button();
@@ -80,14 +71,23 @@ namespace EditSpatial.Forms
       this.radAnalytic = new System.Windows.Forms.RadioButton();
       this.radDefault = new System.Windows.Forms.RadioButton();
       this.panel6 = new System.Windows.Forms.Panel();
+      this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
+      this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
       this.panel1 = new System.Windows.Forms.Panel();
       this.cmdPrev = new System.Windows.Forms.Button();
       this.cmdFinish = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.cmdNext = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-      this.controlSampleFieldGeometry1 = new EditSpatial.Controls.ControlSampleFieldGeometry();
-      this.controlAnalyticGeometry1 = new EditSpatial.Controls.ControlAnalyticGeometry();
+      this.colSpeciesId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colDiffusionX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colDiffusionY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colInitialExpression = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryX = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryY = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryXm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colBoundaryYm = new System.Windows.Forms.DataGridViewTextBoxColumn();
+      this.colType = new System.Windows.Forms.DataGridViewComboBoxColumn();
       this.tableLayoutPanel1.SuspendLayout();
       this.tabControl1.SuspendLayout();
       this.tabSpecies.SuspendLayout();
@@ -216,72 +216,6 @@ namespace EditSpatial.Forms
       this.grid.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellEndEdit);
       this.grid.SortCompare += new System.Windows.Forms.DataGridViewSortCompareEventHandler(this.OnSortCompare);
       this.grid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.OnUserDeletingRow);
-      // 
-      // colSpeciesId
-      // 
-      this.colSpeciesId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colSpeciesId.HeaderText = "Id";
-      this.colSpeciesId.Name = "colSpeciesId";
-      this.colSpeciesId.ReadOnly = true;
-      this.colSpeciesId.Width = 39;
-      // 
-      // colDiffusionX
-      // 
-      this.colDiffusionX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colDiffusionX.HeaderText = "Diffusion X";
-      this.colDiffusionX.Name = "colDiffusionX";
-      this.colDiffusionX.Width = 81;
-      // 
-      // colDiffusionY
-      // 
-      this.colDiffusionY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colDiffusionY.HeaderText = "Diffusion Y";
-      this.colDiffusionY.Name = "colDiffusionY";
-      this.colDiffusionY.Width = 81;
-      // 
-      // colInitialExpression
-      // 
-      this.colInitialExpression.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-      this.colInitialExpression.HeaderText = "Initial Expression";
-      this.colInitialExpression.Name = "colInitialExpression";
-      // 
-      // colBoundaryX
-      // 
-      this.colBoundaryX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryX.HeaderText = "Boundary X";
-      this.colBoundaryX.Name = "colBoundaryX";
-      this.colBoundaryX.Width = 85;
-      // 
-      // colBoundaryY
-      // 
-      this.colBoundaryY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryY.HeaderText = "Boundary Y";
-      this.colBoundaryY.Name = "colBoundaryY";
-      this.colBoundaryY.Width = 85;
-      // 
-      // colBoundaryXm
-      // 
-      this.colBoundaryXm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryXm.HeaderText = "Boundary X-";
-      this.colBoundaryXm.Name = "colBoundaryXm";
-      this.colBoundaryXm.Width = 88;
-      // 
-      // colBoundaryYm
-      // 
-      this.colBoundaryYm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-      this.colBoundaryYm.HeaderText = "Boundary Y-";
-      this.colBoundaryYm.Name = "colBoundaryYm";
-      this.colBoundaryYm.Width = 88;
-      // 
-      // colType
-      // 
-      this.colType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-      this.colType.HeaderText = "BC Type";
-      this.colType.Items.AddRange(new object[] {
-            "Neumann",
-            "Dirichlet"});
-      this.colType.Name = "colType";
-      this.colType.Width = 52;
       // 
       // panel3
       // 
@@ -620,6 +554,33 @@ namespace EditSpatial.Forms
       this.panel6.Size = new System.Drawing.Size(875, 379);
       this.panel6.TabIndex = 3;
       // 
+      // controlSampleFieldGeometry1
+      // 
+      this.controlSampleFieldGeometry1.Current = null;
+      this.controlSampleFieldGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlSampleFieldGeometry1.IsInitializing = false;
+      this.controlSampleFieldGeometry1.Location = new System.Drawing.Point(0, 0);
+      this.controlSampleFieldGeometry1.Name = "controlSampleFieldGeometry1";
+      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(875, 379);
+      this.controlSampleFieldGeometry1.SpatialGeometry = null;
+      this.controlSampleFieldGeometry1.TabIndex = 1;
+      this.controlSampleFieldGeometry1.UpdateAction = null;
+      this.controlSampleFieldGeometry1.Visible = false;
+      // 
+      // controlAnalyticGeometry1
+      // 
+      this.controlAnalyticGeometry1.Current = null;
+      this.controlAnalyticGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.controlAnalyticGeometry1.IsInitializing = false;
+      this.controlAnalyticGeometry1.Location = new System.Drawing.Point(0, 0);
+      this.controlAnalyticGeometry1.Name = "controlAnalyticGeometry1";
+      this.controlAnalyticGeometry1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlAnalyticGeometry1.RowsAdded")));
+      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(875, 379);
+      this.controlAnalyticGeometry1.SpatialGeometry = null;
+      this.controlAnalyticGeometry1.TabIndex = 0;
+      this.controlAnalyticGeometry1.UpdateAction = null;
+      this.controlAnalyticGeometry1.Visible = false;
+      // 
       // panel1
       // 
       this.panel1.Controls.Add(this.cmdPrev);
@@ -679,32 +640,71 @@ namespace EditSpatial.Forms
       this.cmdNext.UseVisualStyleBackColor = true;
       this.cmdNext.Click += new System.EventHandler(this.OnNextClick);
       // 
-      // controlSampleFieldGeometry1
+      // colSpeciesId
       // 
-      this.controlSampleFieldGeometry1.Current = null;
-      this.controlSampleFieldGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlSampleFieldGeometry1.IsInitializing = false;
-      this.controlSampleFieldGeometry1.Location = new System.Drawing.Point(0, 0);
-      this.controlSampleFieldGeometry1.Name = "controlSampleFieldGeometry1";
-      this.controlSampleFieldGeometry1.Size = new System.Drawing.Size(875, 379);
-      this.controlSampleFieldGeometry1.SpatialGeometry = null;
-      this.controlSampleFieldGeometry1.TabIndex = 1;
-      this.controlSampleFieldGeometry1.UpdateAction = null;
-      this.controlSampleFieldGeometry1.Visible = false;
+      this.colSpeciesId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colSpeciesId.HeaderText = "Id";
+      this.colSpeciesId.Name = "colSpeciesId";
+      this.colSpeciesId.ReadOnly = true;
+      this.colSpeciesId.Width = 39;
       // 
-      // controlAnalyticGeometry1
+      // colDiffusionX
       // 
-      this.controlAnalyticGeometry1.Current = null;
-      this.controlAnalyticGeometry1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.controlAnalyticGeometry1.IsInitializing = false;
-      this.controlAnalyticGeometry1.Location = new System.Drawing.Point(0, 0);
-      this.controlAnalyticGeometry1.Name = "controlAnalyticGeometry1";
-      this.controlAnalyticGeometry1.RowsAdded = ((System.Collections.Generic.List<int>)(resources.GetObject("controlAnalyticGeometry1.RowsAdded")));
-      this.controlAnalyticGeometry1.Size = new System.Drawing.Size(875, 379);
-      this.controlAnalyticGeometry1.SpatialGeometry = null;
-      this.controlAnalyticGeometry1.TabIndex = 0;
-      this.controlAnalyticGeometry1.UpdateAction = null;
-      this.controlAnalyticGeometry1.Visible = false;
+      this.colDiffusionX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colDiffusionX.HeaderText = "Diffusion X";
+      this.colDiffusionX.Name = "colDiffusionX";
+      this.colDiffusionX.Width = 81;
+      // 
+      // colDiffusionY
+      // 
+      this.colDiffusionY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colDiffusionY.HeaderText = "Diffusion Y";
+      this.colDiffusionY.Name = "colDiffusionY";
+      this.colDiffusionY.Width = 81;
+      // 
+      // colInitialExpression
+      // 
+      this.colInitialExpression.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+      this.colInitialExpression.HeaderText = "Initial Expression";
+      this.colInitialExpression.Name = "colInitialExpression";
+      // 
+      // colBoundaryX
+      // 
+      this.colBoundaryX.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBoundaryX.HeaderText = "Boundary X";
+      this.colBoundaryX.Name = "colBoundaryX";
+      this.colBoundaryX.Width = 85;
+      // 
+      // colBoundaryY
+      // 
+      this.colBoundaryY.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBoundaryY.HeaderText = "Boundary Y";
+      this.colBoundaryY.Name = "colBoundaryY";
+      this.colBoundaryY.Width = 85;
+      // 
+      // colBoundaryXm
+      // 
+      this.colBoundaryXm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBoundaryXm.HeaderText = "Boundary X-";
+      this.colBoundaryXm.Name = "colBoundaryXm";
+      this.colBoundaryXm.Width = 88;
+      // 
+      // colBoundaryYm
+      // 
+      this.colBoundaryYm.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+      this.colBoundaryYm.HeaderText = "Boundary Y-";
+      this.colBoundaryYm.Name = "colBoundaryYm";
+      this.colBoundaryYm.Width = 88;
+      // 
+      // colType
+      // 
+      this.colType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+      this.colType.HeaderText = "BC Type";
+      this.colType.Items.AddRange(new object[] {
+            "Neumann",
+            "Dirichlet"});
+      this.colType.Name = "colType";
+      this.colType.Width = 52;
       // 
       // FormInitSpatial
       // 
@@ -791,6 +791,7 @@ namespace EditSpatial.Forms
     private Button cmdApplyDiff;
     private TextBox txtDiffDefault;
     private Label label7;
+    private Button cmdIsoTropic;
     private DataGridViewTextBoxColumn colSpeciesId;
     private DataGridViewTextBoxColumn colDiffusionX;
     private DataGridViewTextBoxColumn colDiffusionY;
@@ -800,6 +801,5 @@ namespace EditSpatial.Forms
     private DataGridViewTextBoxColumn colBoundaryXm;
     private DataGridViewTextBoxColumn colBoundaryYm;
     private DataGridViewComboBoxColumn colType;
-    private Button cmdIsoTropic;
   }
 }

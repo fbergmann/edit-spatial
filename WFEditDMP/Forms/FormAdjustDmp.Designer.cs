@@ -37,8 +37,10 @@ namespace WFEditDMP.Forms
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.listBox1 = new System.Windows.Forms.ListBox();
       this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-      this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.panel2 = new System.Windows.Forms.Panel();
+      this.cmdMask = new System.Windows.Forms.Button();
+      this.txtScalar = new System.Windows.Forms.TextBox();
+      this.cmdMultiply = new System.Windows.Forms.Button();
       this.cmdInvert = new System.Windows.Forms.Button();
       this.txtReplacement = new System.Windows.Forms.TextBox();
       this.cmdReplace = new System.Windows.Forms.Button();
@@ -47,6 +49,7 @@ namespace WFEditDMP.Forms
       this.cmdOK = new System.Windows.Forms.Button();
       this.cmdCancel = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.dmpRenderControl1 = new LibEditSpatial.Controls.DmpRenderControl();
       this.tableLayoutPanel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -56,7 +59,6 @@ namespace WFEditDMP.Forms
       this.splitContainer2.Panel1.SuspendLayout();
       this.splitContainer2.Panel2.SuspendLayout();
       this.splitContainer2.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.panel2.SuspendLayout();
       this.panel1.SuspendLayout();
       this.SuspendLayout();
@@ -112,7 +114,7 @@ namespace WFEditDMP.Forms
       // 
       // splitContainer2.Panel1
       // 
-      this.splitContainer2.Panel1.Controls.Add(this.pictureBox1);
+      this.splitContainer2.Panel1.Controls.Add(this.dmpRenderControl1);
       // 
       // splitContainer2.Panel2
       // 
@@ -121,18 +123,11 @@ namespace WFEditDMP.Forms
       this.splitContainer2.SplitterDistance = 310;
       this.splitContainer2.TabIndex = 0;
       // 
-      // pictureBox1
-      // 
-      this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-      this.pictureBox1.Name = "pictureBox1";
-      this.pictureBox1.Size = new System.Drawing.Size(664, 310);
-      this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-      this.pictureBox1.TabIndex = 0;
-      this.pictureBox1.TabStop = false;
-      // 
       // panel2
       // 
+      this.panel2.Controls.Add(this.cmdMask);
+      this.panel2.Controls.Add(this.txtScalar);
+      this.panel2.Controls.Add(this.cmdMultiply);
       this.panel2.Controls.Add(this.cmdInvert);
       this.panel2.Controls.Add(this.txtReplacement);
       this.panel2.Controls.Add(this.cmdReplace);
@@ -143,23 +138,54 @@ namespace WFEditDMP.Forms
       this.panel2.Size = new System.Drawing.Size(664, 166);
       this.panel2.TabIndex = 0;
       // 
+      // cmdMask
+      // 
+      this.cmdMask.Location = new System.Drawing.Point(3, 116);
+      this.cmdMask.Name = "cmdMask";
+      this.cmdMask.Size = new System.Drawing.Size(177, 23);
+      this.cmdMask.TabIndex = 6;
+      this.cmdMask.Text = "Mask";
+      this.toolTip1.SetToolTip(this.cmdMask, "mask model with other file");
+      this.cmdMask.UseVisualStyleBackColor = true;
+      this.cmdMask.Click += new System.EventHandler(this.OnMaskClick);
+      // 
+      // txtScalar
+      // 
+      this.txtScalar.Location = new System.Drawing.Point(3, 61);
+      this.txtScalar.Name = "txtScalar";
+      this.txtScalar.Size = new System.Drawing.Size(100, 20);
+      this.txtScalar.TabIndex = 3;
+      this.txtScalar.Text = "1";
+      this.txtScalar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+      // 
+      // cmdMultiply
+      // 
+      this.cmdMultiply.Location = new System.Drawing.Point(109, 59);
+      this.cmdMultiply.Name = "cmdMultiply";
+      this.cmdMultiply.Size = new System.Drawing.Size(71, 23);
+      this.cmdMultiply.TabIndex = 4;
+      this.cmdMultiply.Text = "Multiply";
+      this.toolTip1.SetToolTip(this.cmdMultiply, "multiply selected with the given value");
+      this.cmdMultiply.UseVisualStyleBackColor = true;
+      this.cmdMultiply.Click += new System.EventHandler(this.OnMultiplyClick);
+      // 
       // cmdInvert
       // 
-      this.cmdInvert.Location = new System.Drawing.Point(3, 59);
+      this.cmdInvert.Location = new System.Drawing.Point(3, 87);
       this.cmdInvert.Name = "cmdInvert";
       this.cmdInvert.Size = new System.Drawing.Size(177, 23);
-      this.cmdInvert.TabIndex = 3;
+      this.cmdInvert.TabIndex = 5;
       this.cmdInvert.Text = "Invert";
       this.toolTip1.SetToolTip(this.cmdInvert, "flip order");
       this.cmdInvert.UseVisualStyleBackColor = true;
-      this.cmdInvert.Click += new System.EventHandler(this.cmdInvert_Click);
+      this.cmdInvert.Click += new System.EventHandler(this.OnInvertClick);
       // 
       // txtReplacement
       // 
       this.txtReplacement.Location = new System.Drawing.Point(3, 32);
       this.txtReplacement.Name = "txtReplacement";
       this.txtReplacement.Size = new System.Drawing.Size(100, 20);
-      this.txtReplacement.TabIndex = 2;
+      this.txtReplacement.TabIndex = 1;
       this.txtReplacement.Text = "0";
       this.txtReplacement.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
       // 
@@ -168,7 +194,7 @@ namespace WFEditDMP.Forms
       this.cmdReplace.Location = new System.Drawing.Point(109, 30);
       this.cmdReplace.Name = "cmdReplace";
       this.cmdReplace.Size = new System.Drawing.Size(71, 23);
-      this.cmdReplace.TabIndex = 1;
+      this.cmdReplace.TabIndex = 2;
       this.cmdReplace.Text = "Replace";
       this.toolTip1.SetToolTip(this.cmdReplace, "replace selected with the given value");
       this.cmdReplace.UseVisualStyleBackColor = true;
@@ -217,6 +243,20 @@ namespace WFEditDMP.Forms
       this.cmdCancel.Text = "&Cancel";
       this.cmdCancel.UseVisualStyleBackColor = true;
       // 
+      // dmpRenderControl1
+      // 
+      this.dmpRenderControl1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+      this.dmpRenderControl1.CurrentValue = 10D;
+      this.dmpRenderControl1.DisableEditing = false;
+      this.dmpRenderControl1.DisableNotification = false;
+      this.dmpRenderControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.dmpRenderControl1.Location = new System.Drawing.Point(0, 0);
+      this.dmpRenderControl1.Model = null;
+      this.dmpRenderControl1.Name = "dmpRenderControl1";
+      this.dmpRenderControl1.PencilSize = 1;
+      this.dmpRenderControl1.Size = new System.Drawing.Size(664, 310);
+      this.dmpRenderControl1.TabIndex = 0;
+      // 
       // FormAdjustDmp
       // 
       this.AcceptButton = this.cmdOK;
@@ -237,7 +277,6 @@ namespace WFEditDMP.Forms
       this.splitContainer2.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
       this.splitContainer2.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.panel2.ResumeLayout(false);
       this.panel2.PerformLayout();
       this.panel1.ResumeLayout(false);
@@ -251,7 +290,6 @@ namespace WFEditDMP.Forms
     private SplitContainer splitContainer1;
     private ListBox listBox1;
     private SplitContainer splitContainer2;
-    private PictureBox pictureBox1;
     private Panel panel2;
     private Button cmdInvert;
     private ToolTip toolTip1;
@@ -261,5 +299,9 @@ namespace WFEditDMP.Forms
     private Panel panel1;
     private Button cmdOK;
     private Button cmdCancel;
+    private LibEditSpatial.Controls.DmpRenderControl dmpRenderControl1;
+    private TextBox txtScalar;
+    private Button cmdMultiply;
+    private Button cmdMask;
   }
 }

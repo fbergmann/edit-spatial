@@ -802,8 +802,8 @@ namespace EditSpatial.Model
         vol.setOrdinal(0);
       }
 
-      if (!vol.isSetMath() || string.IsNullOrWhiteSpace(libsbml.formulaToString(vol.getMath())))
-        vol.setMath(libsbml.parseFormula("1"));
+      if (!vol.isSetMath() || string.IsNullOrWhiteSpace(libsbml.formulaToL3String(vol.getMath())))
+        vol.setMath(libsbml.parseL3Formula("1"));
 
       vol.setDomainType("domainType0");
       vol.setFunctionType("layered");

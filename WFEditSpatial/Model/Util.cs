@@ -138,7 +138,7 @@ namespace EditSpatial.Model
         var current = analytic.getAnalyticVolume(i);
         if (current == null || !current.isSetMath())
           continue;
-        var formula = libsbml.formulaToString(current.getMath());
+        var formula = libsbml.formulaToL3String(current.getMath());
 
         for (var k = 0; k < InbuiltFunctions.Length; ++k)
         {
@@ -268,7 +268,7 @@ namespace EditSpatial.Model
 
       var model = species.getSBMLDocument().getModel();
 
-      var node = libsbml.parseFormula(expression);
+      var node = libsbml.parseL3Formula(expression);
 
       if (node == null) return;
 
@@ -340,7 +340,7 @@ namespace EditSpatial.Model
       var model = species.getSBMLDocument().getModel();
 
       var initial = model.getInitialAssignment(species.getId());
-      if (initial != null && initial.isSetMath()) return libsbml.formulaToString(initial.getMath());
+      if (initial != null && initial.isSetMath()) return libsbml.formulaToL3String(initial.getMath());
 
       if (species.isSetInitialAmount())
         return species.getInitialAmount().ToString();
@@ -635,7 +635,7 @@ namespace EditSpatial.Model
       }
       // at this point ... we should try and get a libSBML AST Tree and then evaluate it ...
 
-      var tree = libsbml.parseFormula(formula);
+      var tree = libsbml.parseL3Formula(formula);
 
       if (tree == null)
         throw new Exception("Invalid MathML in ComputeChange::ComputeValueForFormula");

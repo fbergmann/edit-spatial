@@ -161,5 +161,10 @@ namespace LibEditSpatial.Model
       }
       return result;
     }
+
+    public int GetIndex(Color color)
+    {
+      return Colors.IndexOf(color);
+    }
   }
 }
