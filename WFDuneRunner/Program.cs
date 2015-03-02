@@ -20,7 +20,7 @@ namespace WFDuneRunner
       {
         if (File.Exists(file))
         {
-          form.LoadFile(file);
+          form.OpenFile(file);
           break;
         }
       }

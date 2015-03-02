@@ -277,7 +277,7 @@ namespace EditSpatial.Forms
       if (config != null)
         using (var dlg = new WFDuneRunner.MainForm())
         {
-          dlg.LoadFile(config.FileName);
+          dlg.OpenFile(config.FileName);
           dlg.ShowDialog(this);
         }
     }

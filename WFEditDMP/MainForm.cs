@@ -63,8 +63,8 @@ namespace WFEditDMP
       txtMaxX.Text = Model.MaxX.ToString(CultureInfo.InvariantCulture);
       txtMinY.Text = Model.MinY.ToString(CultureInfo.InvariantCulture);
       txtMaxY.Text = Model.MaxY.ToString(CultureInfo.InvariantCulture);
-      dmpRenderControl1.LoadModel(Model);
       ctrlPalette1.UpdateValues(Model.Min, ctrlPalette1.Current.Value, Model.Max);
+      dmpRenderControl1.LoadModel(Model);
       SetTitle(Model.FileName);
     }
 
@@ -415,9 +415,11 @@ namespace WFEditDMP
 
     private void OnMaskWithCompartmentClick(object sender, EventArgs e)
     {
-      using (var dlg = new OpenFileDialog { Title = "Choose DMP file to mask with. ", 
-      Filter = "DMP files|*.dmp|Image files|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
-        AutoUpgradeEnabled = true, InitialDirectory = this.LastOpenDir})
+      using (var dlg = new OpenFileDialog { 
+        Title = "Choose DMP file to mask with. ",
+        Filter = "All supported|*.dmp;*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|DMP files|*.dmp|Image files|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
+        AutoUpgradeEnabled = true, 
+        InitialDirectory = this.LastOpenDir})
       {
         if (dlg.ShowDialog() == DialogResult.OK)
         {
@@ -436,6 +438,39 @@ namespace WFEditDMP
       }
     }
 
+    #region Drag / Drop
 
+    private void MainForm_DragDrop(object sender, DragEventArgs e)
+    {
+      try
+      {
+        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".dmp" || DmpModel.IsImageFile(sFilenames[0]))
+        {
+          OpenFile(sFilenames[0]);
+        }
+      }
+      catch (Exception)
+      {
+      }
+    }
+
+    private void MainForm_DragEnter(object sender, DragEventArgs e)
+    {
+      if (e.Data.GetDataPresent(DataFormats.FileDrop))
+      {
+        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".dmp" || DmpModel.IsImageFile(sFilenames[0]))
+        {
+          e.Effect = DragDropEffects.Copy;
+          return;
+        }
+      }
+      e.Effect = DragDropEffects.None;
+    }
+
+    #endregion
   }
 }

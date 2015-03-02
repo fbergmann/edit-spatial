@@ -354,7 +354,7 @@ namespace LibEditSpatial.Model
       return result;
     }
 
-    private static bool IsImageFile(string fileName)
+    public static bool IsImageFile(string fileName)
     {
       var ext = Path.GetExtension(fileName).ToLowerInvariant();
       return ext.EndsWith("tif") || ext.EndsWith("tiff") || ext.EndsWith("png") || ext.EndsWith("jpg") ||
@@ -551,7 +551,7 @@ namespace LibEditSpatial.Model
 
       for (var y = 0; y < Rows; ++y)
         for (var x = 0; x < Columns; ++x)
-          Data[x, y] = file[x,y] * Data[x, y];      
+          this[x, y] = file[x,y] * Data[x, y];      
     }
 
 

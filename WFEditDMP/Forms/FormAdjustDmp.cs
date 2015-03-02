@@ -110,7 +110,7 @@ namespace WFEditDMP.Forms
       using (var dlg = new OpenFileDialog
       {
         Title = "Choose DMP file to mask with. ",
-        Filter = "DMP files|*.dmp|Image files|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
+        Filter = "All supported|*.dmp;*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|DMP files|*.dmp|Image files|*.tif;*.tiff;*.png;*.jpg;*.jpeg;*.bmp|All files|*.*",
         AutoUpgradeEnabled = true,
       })
       {
@@ -120,6 +120,7 @@ namespace WFEditDMP.Forms
           {
             var file = DmpModel.FromFile(dlg.FileName);
             Model.MaskWith(file);
+            Numbers = Model.Range;
             UpdateUI();
           }
           catch

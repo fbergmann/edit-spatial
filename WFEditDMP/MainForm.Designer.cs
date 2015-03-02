@@ -80,13 +80,13 @@ namespace WFEditDMP
       this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
       this.cmdCenter = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+      this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
       this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
       this.toolAdjust = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
       this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
       this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
       this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-      this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
       this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
       this.toolStripContainer1.ContentPanel.SuspendLayout();
       this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -528,6 +528,16 @@ namespace WFEditDMP
       this.toolStripSeparator5.Name = "toolStripSeparator5";
       this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
       // 
+      // toolStripButton6
+      // 
+      this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
+      this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.toolStripButton6.Name = "toolStripButton6";
+      this.toolStripButton6.Size = new System.Drawing.Size(39, 22);
+      this.toolStripButton6.Text = "&Mask";
+      this.toolStripButton6.Click += new System.EventHandler(this.OnMaskWithCompartmentClick);
+      // 
       // toolStripButton5
       // 
       this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -578,18 +588,9 @@ namespace WFEditDMP
       this.helpToolStripButton.Text = "He&lp";
       this.helpToolStripButton.Click += new System.EventHandler(this.OnAboutClick);
       // 
-      // toolStripButton6
-      // 
-      this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
-      this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.toolStripButton6.Name = "toolStripButton6";
-      this.toolStripButton6.Size = new System.Drawing.Size(39, 22);
-      this.toolStripButton6.Text = "&Mask";
-      this.toolStripButton6.Click += new System.EventHandler(this.OnMaskWithCompartmentClick);
-      // 
       // MainForm
       // 
+      this.AllowDrop = true;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(984, 561);
@@ -600,6 +601,8 @@ namespace WFEditDMP
       this.Text = "Edit DMP";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnFormClosing);
       this.Load += new System.EventHandler(this.OnLoad);
+      this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+      this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
       this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
       this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
       this.toolStripContainer1.ContentPanel.ResumeLayout(false);

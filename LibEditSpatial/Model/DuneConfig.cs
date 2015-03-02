@@ -197,8 +197,8 @@ namespace LibEditSpatial.Model
         builder.AppendFormat("[{0}]{1}", key, Environment.NewLine);
 
       foreach (var item in map)
-      {
-        var val = item.Value.Trim();
+      {        
+        var val = item.Value ==null ? string.Empty : item.Value.Trim();
         if (!string.IsNullOrWhiteSpace(basedir) && val.StartsWith(basedir))
           val = val.Replace(basedir, "");
 

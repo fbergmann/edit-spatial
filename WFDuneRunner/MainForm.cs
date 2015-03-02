@@ -50,7 +50,7 @@ namespace WFDuneRunner
       }
     }
 
-    public void LoadFile(string filename)
+    public void OpenFile(string filename)
     {
       FileName = filename;
       CurrentDir = Path.GetDirectoryName(filename);
@@ -187,7 +187,7 @@ namespace WFDuneRunner
       })
       {
         if (dialog.ShowDialog() == DialogResult.OK)
-          LoadFile(dialog.FileName);
+          OpenFile(dialog.FileName);
       }
     }
 
@@ -631,5 +631,41 @@ namespace WFDuneRunner
     {
       ReadSettings();
     }
+
+    #region Drag / Drop
+
+    private void MainForm_DragDrop(object sender, DragEventArgs e)
+    {
+      try
+      {
+        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".conf")
+        {
+          OpenFile(sFilenames[0]);
+        }
+      }
+      catch (Exception)
+      {
+      }
+    }
+
+    private void MainForm_DragEnter(object sender, DragEventArgs e)
+    {
+      if (e.Data.GetDataPresent(DataFormats.FileDrop))
+      {
+        var sFilenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+        var oInfo = new FileInfo(sFilenames[0]);
+        if (oInfo.Extension.ToLower() == ".conf")
+        {
+          e.Effect = DragDropEffects.Copy;
+          return;
+        }
+      }
+      e.Effect = DragDropEffects.None;
+    }
+
+    #endregion
+
   }
 }
