@@ -217,6 +217,7 @@ namespace EditSpatial.Forms
 
     private DuneConfig GetConfigFromDir(string directory)
     {
+      if (!Directory.Exists(directory)) return null;
       var files = Directory.GetFiles(directory, "*.conf", SearchOption.TopDirectoryOnly);
       if (files.Length > 0)
       {

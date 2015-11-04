@@ -102,6 +102,7 @@
 #include "initial_conditions.hh"
 #include "reactionadapter.hh"
 
+#include <dune/copasi/utilities/solutiontimeoutput.hh>
 
 /**
  * global data helper variable, that can be used to exchange the geometry
@@ -111,6 +112,9 @@
 DataHelper* dh_geometry = NULL;
 double geometry_min = 10;
 double geometry_max = 10;
+
+
+EVENT_SUPPORT_GLOBALS(mEvents, skipOutputUntilEvent, appliedEvent);
 
 /** \brief Control time step after reaction.
 
@@ -302,10 +306,12 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
     if (verbosity) std::cout << "=== output0 " << watch.elapsed() << " s" << std::endl;
 
+    EVENT_SUPPORT_INITIALIZE(gv);
 
     double dt = timemanager.getTimeStepSize();
     while (!timemanager.finalize())
     {
+
         dt = timemanager.getTimeStepSize();
         if (gv.comm().rank() == 0)
         {
@@ -332,6 +338,7 @@ void run (const GV& gv, Dune::ParameterTree & param)
                 continue;
 
             }
+
             uold = unew;
 
             if (gv.comm().rank() == 0 && verbosity)
@@ -389,11 +396,16 @@ void run (const GV& gv, Dune::ParameterTree & param)
         // notify success in this timestep
         timemanager.notifySuccess(5);
 
+        EVENT_SUPPORT_HANDLE_EVENTS(timemanager.getTime(), %NUMCOMPONENTS%, mEvents, uold, unew);
+
         if (graphics && timemanager.isTimeForOutput())
         {
-          pvdwriter.write(timemanager.getTime());
-          if (!verbosity)
-            std::cout << "o" << std::flush;
+            if (skipOutputUntilEvent && appliedEvent)
+            {
+                pvdwriter.write(timemanager.getTime());
+                if (!verbosity)
+                    std::cout << "o" << std::flush;
+            }
         }
         else if (!verbosity)
         {
@@ -403,8 +415,6 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
 
     std::cout << std::endl;
-
-
 
 }
 
@@ -456,6 +466,8 @@ int main(int argc, char** argv)
         Dune::ParameterTree param;
         Dune::ParameterTreeParser parser;
         parser.readINITree(configfile, param);
+
+        EVENT_SUPPORT_READ_DATA(mEvents, parser, "eventinfo.ini", skipOutputUntilEvent);
 
         int dim=param.sub("Domain").get<int>("dim", 2);
 
@@ -525,3 +537,4 @@ int main(int argc, char** argv)
     //  return 1;
     //}
 }
+

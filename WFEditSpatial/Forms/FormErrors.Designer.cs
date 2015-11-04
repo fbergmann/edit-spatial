@@ -138,7 +138,6 @@ namespace EditSpatial.Forms
       this.controlText1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
       this.controlText1.Size = new System.Drawing.Size(618, 381);
       this.controlText1.TabIndex = 2;
-      this.controlText1.WordWrap = false;
       // 
       // FormErrors
       // 
