@@ -400,11 +400,15 @@ void run (const GV& gv, Dune::ParameterTree & param)
 
         if (graphics && timemanager.isTimeForOutput())
         {
-            if (skipOutputUntilEvent && appliedEvent)
+            if ((skipOutputUntilEvent && appliedEvent) || !skipOutputUntilEvent)  
             {
                 pvdwriter.write(timemanager.getTime());
                 if (!verbosity)
                     std::cout << "o" << std::flush;
+            }
+            else if (!verbosity)
+            {
+              std::cout << "n" << std::flush;
             }
         }
         else if (!verbosity)
