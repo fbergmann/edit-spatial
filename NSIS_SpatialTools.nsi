@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "SpatialTools"
-!define PRODUCT_VERSION "1.6"
+!define PRODUCT_VERSION "1.7"
 !define PRODUCT_PUBLISHER "Frank T. Bergmann"
 !define PRODUCT_WEB_SITE "http://github.com/fbergmann/edit-spatial"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\EditSpatial.exe"
