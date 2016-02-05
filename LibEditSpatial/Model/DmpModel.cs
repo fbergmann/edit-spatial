@@ -538,6 +538,18 @@ namespace LibEditSpatial.Model
       return tmp;
     }
 
+    public static DmpModel operator +(DmpModel model, DmpModel other)
+    {
+      var tmp = (DmpModel)model.Clone();
+      tmp.Resize(other.Columns, other.Rows);
+
+      for (var y = 0; y < other.Rows; ++y)
+        for (var x = 0; x < other.Columns; ++x)
+          tmp[x, y] = tmp[x, y] + other[x, y];
+      
+      return tmp;
+    }
+
     public static DmpModel operator *(DmpModel model, double value)
     {
       var tmp = (DmpModel) model.Clone();
