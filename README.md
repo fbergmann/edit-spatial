@@ -2,7 +2,12 @@
 This project contains a prototype editor for manipulating models using SBML Models using [SBML Level 3](http://sbml.org/Documents/Specifications) with the [Spatial package](http://sbml.org/Community/Wiki/SBML_Level_3_Proposals/Spatial_Geometries_and_Spatial_Processes "Spatial package"). 
 
 ## Using the Editor
-There is not much there just yet, basically just open the SBML model in it and inspect / modify the geometry. More to come...
+There is not much there just yet, basically just open the SBML model in it and inspect / modify the geometry. Currently supported geometries are images and analytic geometries. To make it easier to compose analytic geometries. The following predefined functions can be used: 
+
+* CIRCLE: use like: `CIRCLE(x,y,25,25,10)`
+* ELLIPSE: use like: `ELLIPSE(x,y,25,25,10,10)` 
+* RECTANGLE: use like: `RECT(x,y,10,10,10,10)` 
+* FISH: use like: `FISH(x,y,width,height)`
 
 ## How to build
 The project is a .NET project simply open and compile `EditSpatial.sln` with either Visual Studio or MonoDevelop. 
@@ -17,7 +22,7 @@ This project requires the following libraries:
 This project is licensed under the BSD license: 
 
 ```
-Copyright (c) 2015, Frank T. Bergmann  
+Copyright (c) 2015-2018, Frank T. Bergmann  
 All rights reserved. 
 
 Redistribution and use in source and binary forms, with or without 
