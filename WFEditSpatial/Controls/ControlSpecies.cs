@@ -30,7 +30,7 @@ namespace EditSpatial.Controls
         {
           var current = model.getSpecies(i);
 
-          var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+          var plug = (SpatialSpeciesPlugin) current.getPlugin("spatial");
           var isSpatial = "NA";
           if (plug != null && plug.isSetIsSpatial())
           {
@@ -77,7 +77,7 @@ namespace EditSpatial.Controls
 
             if (bool.TryParse((string) row.Cells[5].Value, out bvalue))
             {
-              var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+              var plug = (SpatialSpeciesPlugin) current.getPlugin("spatial");
               if (plug != null)
               {
                 plug.setIsSpatial(bvalue);
@@ -117,7 +117,7 @@ namespace EditSpatial.Controls
 
         if (bool.TryParse((string) row.Cells[5].Value, out bvalue))
         {
-          var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+          var plug = (SpatialSpeciesPlugin) current.getPlugin("spatial");
           if (plug != null)
           {
             plug.setIsSpatial(bvalue);

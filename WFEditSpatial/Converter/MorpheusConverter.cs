@@ -58,17 +58,17 @@ namespace EditSpatial.Converter
       {
         var current = Geometry.getCoordinateComponent(i);
         var prefix = "x";
-        if (current.getComponentType() == "cartesianX")
+        if (current.getType() == libsbml.SPATIAL_COORDINATEKIND_CARTESIAN_X)
           prefix = "x";
-        else if (current.getComponentType() == "cartesianY")
+        else if (current.getType() == libsbml.SPATIAL_COORDINATEKIND_CARTESIAN_Y)
           prefix = "y";
-        else if (current.getComponentType() == "cartesianZ")
+        else if (current.getType() == libsbml.SPATIAL_COORDINATEKIND_CARTESIAN_Z)
           prefix = "z";
 
-        coordinates[current.getSpatialId()] = prefix;
+        coordinates[current.getId()] = prefix;
 
-        boundaryLables[current.getBoundaryMin().getSpatialId()] = "-" + prefix;
-        boundaryLables[current.getBoundaryMax().getSpatialId()] = prefix;
+        boundaryLables[current.getBoundaryMin().getId()] = "-" + prefix;
+        boundaryLables[current.getBoundaryMax().getId()] = prefix;
       }
 
       dims = new Dimensions();
@@ -101,7 +101,7 @@ namespace EditSpatial.Converter
       for (var i = 0; i < Model.getNumSpecies(); ++i)
       {
         var current = Model.getSpecies(i);
-        var plugin = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+        var plugin = (SpatialSpeciesPlugin) current.getPlugin("spatial");
         if (plugin == null || !plugin.getIsSpatial()) continue;
 
         ++numVariables;
@@ -311,6 +311,19 @@ namespace EditSpatial.Converter
       }
     }
 
+    private string TranslateCondition(int type)
+    {
+      switch (type)
+      {
+        default:
+        case libsbml.SPATIAL_BOUNDARYKIND_NEUMANN:
+          //case "flux":
+          return "constant";
+        case libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET:
+          return "noflux";
+      }
+    }
+
     public string ToMorpheus(string filename = null)
     {
       var settings = new XmlWriterSettings {Indent = true, Encoding = Encoding.UTF8, OmitXmlDeclaration = true};
@@ -359,7 +372,7 @@ namespace EditSpatial.Converter
       for (var i = 0; i < Model.getNumSpecies(); i++)
       {
         var current = Model.getSpecies(i);
-        var plugin = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+        var plugin = (SpatialSpeciesPlugin) current.getPlugin("spatial");
         if (plugin == null) continue;
         if (plugin.getIsSpatial())
         {
@@ -394,7 +407,7 @@ namespace EditSpatial.Converter
       for (var i = 0; i < Model.getNumSpecies(); i++)
       {
         var current = Model.getSpecies(i);
-        var plugin = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+        var plugin = (SpatialSpeciesPlugin) current.getPlugin("spatial");
         if (plugin == null) continue;
         if (!plugin.getIsSpatial()) continue;
 

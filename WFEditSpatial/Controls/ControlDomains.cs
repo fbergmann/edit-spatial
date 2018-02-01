@@ -26,7 +26,7 @@ namespace EditSpatial.Controls
       {
         var domain = geometry.getDomain(i);
         var domainType = domain.getDomainType();
-        var spatialId = domain.getSpatialId();
+        var spatialId = domain.getId();
         var builder = new StringBuilder();
         for (long j = 0; j < domain.getNumInteriorPoints(); ++j)
         {
@@ -53,7 +53,7 @@ namespace EditSpatial.Controls
       {
         var current = Current.getDomain(i);
         var row = grid.Rows[i];
-        current.setSpatialId((string) row.Cells[0].Value);
+        current.setId((string) row.Cells[0].Value);
         current.setDomainType((string) row.Cells[1].Value);
 
         var points = GetPoints((string) row.Cells[2].Value);

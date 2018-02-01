@@ -390,10 +390,10 @@ namespace EditSpatial.Model
         if (plug == null) continue;
         if (plug.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
         var diff = plug.getDiffusionCoefficient();
-        if (diff == null || !diff.isSetCoordinateIndex()) continue;
+        if (diff == null || !diff.isSetCoordinateReference1()) continue;
         if (!dict.ContainsKey(diff.getVariable()))
           dict[diff.getVariable()] = new List<Tuple<int, Parameter>>();
-        dict[diff.getVariable()].Add(new Tuple<int, Parameter>((int) diff.getCoordinateIndex(), current));
+        dict[diff.getVariable()].Add(new Tuple<int, Parameter>((int) diff.getCoordinateReference1(), current));
       }
 
       foreach (var key in dict.Keys)
@@ -409,8 +409,8 @@ namespace EditSpatial.Model
           if (plug == null) continue;
           if (plug.getType() != libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT) continue;
           var diff = plug.getDiffusionCoefficient();
-          if (diff == null || !diff.isSetCoordinateIndex()) continue;
-          diff.unsetCoordinateIndex();
+          if (diff == null || !diff.isSetCoordinateReference1()) continue;
+          diff.unsetCoordinateReference1();
         }
 
         //for (int i = 0; i < 3; ++i)
@@ -439,8 +439,8 @@ namespace EditSpatial.Model
       Document.enablePackage(SpatialExtension.getXmlnsL3V1V1(), "spatial", true);
       Document.setPackageRequired("spatial", true);
 
-      Document.enablePackage(RequiredElementsExtension.getXmlnsL3V1V1(), "req", true);
-      Document.setPackageRequired("req", false);
+      //Document.enablePackage(RequiredElementsExtension.getXmlnsL3V1V1(), "req", true);
+      //Document.setPackageRequired("req", false);
 
       return true;
     }
@@ -654,7 +654,7 @@ namespace EditSpatial.Model
 
       var length = createModel.Geometry.Xmax/num3DComps;
       var def = geometry.createAnalyticGeometry();
-      def.setSpatialId("geometry");
+      def.setId("geometry");
 
       var order = OrderCompartments(model);
       var i = 0;
@@ -667,10 +667,10 @@ namespace EditSpatial.Model
         if (cplug == null)
           return false;
         var domainType = geometry.createDomainType();
-        domainType.setSpatialId("domainType_" + order[j]);
+        domainType.setId("domainType_" + order[j]);
         domainType.setSpatialDimensions((int) comp.getSpatialDimensionsAsDouble());
         var domain = geometry.createDomain();
-        domain.setSpatialId("domain_" + order[j]);
+        domain.setId("domain_" + order[j]);
         domain.setDomainType("domainType_" + order[j]);
         var point = domain.createInteriorPoint();
         point.setCoord1(i*length + length/2.0);
@@ -679,12 +679,12 @@ namespace EditSpatial.Model
         if (lastAdjacent != null)
         {
           var adj = geometry.createAdjacentDomains();
-          adj.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
-          adj.setDomain1(memDomain.getSpatialId());
-          adj.setDomain2(domain.getSpatialId());
+          adj.setId(String.Format("adj_{0}_{1}", memDomain.getId(), domain.getId()));
+          adj.setDomain1(memDomain.getId());
+          adj.setDomain2(domain.getId());
         }
         var vol = def.createAnalyticVolume();
-        vol.setSpatialId("vol_" + order[j]);
+        vol.setId("vol_" + order[j]);
         vol.setDomainType("domainType_" + order[j]);
         vol.setFunctionType("layered");
         vol.setOrdinal(i);
@@ -694,9 +694,8 @@ namespace EditSpatial.Model
             ? string.Format("geq(x, {0})", (i*length)) // last compartment gets rest
             : string.Format("and(geq(x, {0}), lt(x, {1}))", (i*length), ((i + 1)*length))));
         var map = cplug.getCompartmentMapping();
-        map.setSpatialId("mapping_" + order[j]);
-        map.setCompartment(comp.getId());
-        map.setDomainType(domainType.getSpatialId());
+        map.setId("mapping_" + order[j]);
+        map.setDomainType(domainType.getId());
         map.setUnitSize(1);
 
         if (i + 1 < numCompartments)
@@ -705,7 +704,7 @@ namespace EditSpatial.Model
           {
             // next compartment is a 2D compartment!
             domainType = geometry.createDomainType();
-            domainType.setSpatialId("domainType_" + order[j + 1]);
+            domainType.setId("domainType_" + order[j + 1]);
             domainType.setSpatialDimensions(2);
 
             comp = model.getCompartment(order[j + 1]);
@@ -713,23 +712,22 @@ namespace EditSpatial.Model
             if (cplug == null)
               return false;
             map = cplug.getCompartmentMapping();
-            map.setSpatialId("mapping_" + comp.getId());
-            map.setCompartment(comp.getId());
-            map.setDomainType(domainType.getSpatialId());
+            map.setId("mapping_" + comp.getId());
+            map.setDomainType(domainType.getId());
             map.setUnitSize(1);
 
             memDomain = geometry.createDomain();
-            memDomain.setSpatialId("domain_mem_" + order[j]);
-            memDomain.setDomainType(domainType.getSpatialId());
+            memDomain.setId("domain_mem_" + order[j]);
+            memDomain.setDomainType(domainType.getId());
             lastAdjacent = geometry.createAdjacentDomains();
-            lastAdjacent.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
-            lastAdjacent.setDomain1(memDomain.getSpatialId());
-            lastAdjacent.setDomain2(domain.getSpatialId());
+            lastAdjacent.setId(String.Format("adj_{0}_{1}", memDomain.getId(), domain.getId()));
+            lastAdjacent.setDomain1(memDomain.getId());
+            lastAdjacent.setDomain2(domain.getId());
 
             ++j; //++i;
 
             //vol = def.createAnalyticVolume();
-            //vol.setSpatialId("vol_" + order[j]);
+            //vol.setId("vol_" + order[j]);
             //vol.setDomainType("domainType_" + order[j]);
             //vol.setFunctionType("layered");
             //vol.setOrdinal(i);
@@ -741,7 +739,7 @@ namespace EditSpatial.Model
           else
           {
             domainType = geometry.createDomainType();
-            domainType.setSpatialId("mem_" + order[j]);
+            domainType.setId("mem_" + order[j]);
             domainType.setSpatialDimensions(2);
             comp = model.createCompartment();
             comp.initDefaults();
@@ -751,17 +749,16 @@ namespace EditSpatial.Model
             if (cplug == null)
               return false;
             map = cplug.getCompartmentMapping();
-            map.setSpatialId("mapping_" + comp.getId());
-            map.setCompartment(comp.getId());
-            map.setDomainType(domainType.getSpatialId());
+            map.setId("mapping_" + comp.getId());
+            map.setDomainType(domainType.getId());
             map.setUnitSize(1);
             memDomain = geometry.createDomain();
-            memDomain.setSpatialId("domain_mem_" + order[j]);
+            memDomain.setId("domain_mem_" + order[j]);
             memDomain.setDomainType("mem_" + order[j]);
             lastAdjacent = geometry.createAdjacentDomains();
-            lastAdjacent.setSpatialId(String.Format("adj_{0}_{1}", memDomain.getSpatialId(), domain.getSpatialId()));
-            lastAdjacent.setDomain1(memDomain.getSpatialId());
-            lastAdjacent.setDomain2(domain.getSpatialId());
+            lastAdjacent.setId(String.Format("adj_{0}_{1}", memDomain.getId(), domain.getId()));
+            lastAdjacent.setDomain1(memDomain.getId());
+            lastAdjacent.setDomain2(domain.getId());
           }
         }
         ++i;
@@ -772,11 +769,11 @@ namespace EditSpatial.Model
     private static bool SetupUnicompartmentalGeometry(libsbmlcs.Model model, Geometry geometry, CreateModel createModel)
     {
       var domainType = geometry.createDomainType();
-      domainType.setSpatialId("domainType0");
+      domainType.setId("domainType0");
       domainType.setSpatialDimensions(3);
 
       var domain = geometry.createDomain();
-      domain.setSpatialId("domain0");
+      domain.setId("domain0");
       domain.setDomainType("domainType0");
       var point = domain.createInteriorPoint();
       point.setCoord1(createModel.Geometry.Xmax/2.0);
@@ -791,14 +788,14 @@ namespace EditSpatial.Model
       if (def == null)
       {
         def = geometry.createAnalyticGeometry();
-        def.setSpatialId("geometry0");
+        def.setId("geometry0");
       }
 
       vol = def.getAnalyticVolume(0);
       if (vol == null)
       {
         vol = def.createAnalyticVolume();
-        vol.setSpatialId("vol0");
+        vol.setId("vol0");
         vol.setOrdinal(0);
       }
 
@@ -815,9 +812,8 @@ namespace EditSpatial.Model
         return false;
 
       var map = cplug.getCompartmentMapping();
-      map.setSpatialId("mapping0");
-      map.setCompartment(comp.getId());
-      map.setDomainType(domainType.getSpatialId());
+      map.setId("mapping0");
+      map.setDomainType(domainType.getId());
       map.setUnitSize(1);
 
       if (createModel.Geometry.WrapOutside)
@@ -828,11 +824,11 @@ namespace EditSpatial.Model
         cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
 
         domainType = geometry.createDomainType();
-        domainType.setSpatialId("domainType1");
+        domainType.setId("domainType1");
         domainType.setSpatialDimensions(3);
 
         domain = geometry.createDomain();
-        domain.setSpatialId("domain1");
+        domain.setId("domain1");
         domain.setDomainType("domainType1");
         point = domain.createInteriorPoint();
         point.setCoord1(0);
@@ -840,9 +836,8 @@ namespace EditSpatial.Model
         point.setCoord3(0);
 
         map = cplug.getCompartmentMapping();
-        map.setSpatialId("mapping1");
-        map.setCompartment(comp.getId());
-        map.setDomainType(domainType.getSpatialId());
+        map.setId("mapping1");
+        map.setDomainType(domainType.getId());
         map.setUnitSize(1);
 
         vol.setOrdinal(1);
@@ -855,7 +850,7 @@ namespace EditSpatial.Model
             ));
 
         vol = def.createAnalyticVolume();
-        vol.setSpatialId("vol1");
+        vol.setId("vol1");
         vol.setDomainType("domainType1");
         vol.setFunctionType("layered");
         vol.setOrdinal(0);
@@ -868,26 +863,25 @@ namespace EditSpatial.Model
         cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
 
         domainType = geometry.createDomainType();
-        domainType.setSpatialId("domainType2");
+        domainType.setId("domainType2");
         domainType.setSpatialDimensions(2);
 
         domain = geometry.createDomain();
-        domain.setSpatialId("domain2");
+        domain.setId("domain2");
         domain.setDomainType("domainType2");
 
         map = cplug.getCompartmentMapping();
-        map.setSpatialId("mapping2");
-        map.setCompartment(comp.getId());
-        map.setDomainType(domainType.getSpatialId());
+        map.setId("mapping2");
+        map.setDomainType(domainType.getId());
         map.setUnitSize(1);
 
         var adjacent = geometry.createAdjacentDomains();
-        adjacent.setSpatialId("adj_1");
+        adjacent.setId("adj_1");
         adjacent.setDomain1("domain2");
         adjacent.setDomain2("domain1");
 
         adjacent = geometry.createAdjacentDomains();
-        adjacent.setSpatialId("adj_2");
+        adjacent.setId("adj_2");
         adjacent.setDomain1("domain2");
         adjacent.setDomain2("domain0");
       }
@@ -902,7 +896,7 @@ namespace EditSpatial.Model
       for (var i = 0; i < model.getNumSpecies(); i++)
       {
         var species = model.getSpecies(i);
-        var splug = (SpatialSpeciesRxnPlugin) species.getPlugin("spatial");
+        var splug = (SpatialSpeciesPlugin) species.getPlugin("spatial");
         if (splug == null) continue;
         splug.setIsSpatial(false);
         var id = species.getId();
@@ -923,7 +917,7 @@ namespace EditSpatial.Model
         var pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
         var diff = pplug.getDiffusionCoefficient();
         diff.setVariable(id);
-        diff.setCoordinateIndex(0);
+        diff.setCoordinateReference1(0);
         SetRequiredElements(param);
 
         temp = species.getParameterDiffusionY();
@@ -937,7 +931,7 @@ namespace EditSpatial.Model
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
         diff = pplug.getDiffusionCoefficient();
         diff.setVariable(id);
-        diff.setCoordinateIndex(1);
+        diff.setCoordinateReference1(1);
         SetRequiredElements(param);
 
         temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmin");
@@ -1005,7 +999,7 @@ namespace EditSpatial.Model
       for (var i = 0; i < model.getNumReactions(); i++)
       {
         var reaction = model.getReaction(i);
-        var rplug = (SpatialSpeciesRxnPlugin) reaction.getPlugin("spatial");
+        var rplug = (SpatialReactionPlugin) reaction.getPlugin("spatial");
         if (rplug == null) continue;
         SetRequiredElements(reaction);
         var idsContainedIn = GetSpeciesReferenceIdsContainedIn(reaction);
@@ -1025,37 +1019,35 @@ namespace EditSpatial.Model
         coord = geometry.createCoordinateComponent();
       }
 
-      coord.setSpatialId("x");
-      coord.setSbmlUnit("um");
-      coord.setComponentType("cartesianX");
-      coord.setIndex(0);
+      coord.setId("x");
+      coord.setUnit("um");
+      coord.setType(libsbml.SPATIAL_COORDINATEKIND_CARTESIAN_X);      
 
       var min = coord.getBoundaryMin();
       if (min == null)
         min = coord.createBoundaryMin();
-      min.setSpatialId("Xmin");
+      min.setId("Xmin");
       min.setValue(settings.Xmin);
       var max = coord.getBoundaryMax();
       if (max == null) max = coord.createBoundaryMax();
-      max.setSpatialId("Xmax");
+      max.setId("Xmax");
       max.setValue(settings.Xmax);
 
       coord = geometry.getCoordinateComponent("y");
       if (coord == null)
         coord = geometry.createCoordinateComponent();
-      coord.setSpatialId("y");
-      coord.setSbmlUnit("um");
-      coord.setComponentType("cartesianY");
-      coord.setIndex(1);
+      coord.setId("y");
+      coord.setUnit("um");
+      coord.setType(libsbml.SPATIAL_COORDINATEKIND_CARTESIAN_Y);
       min = coord.getBoundaryMin();
       if (min == null)
         min = coord.createBoundaryMin();
-      min.setSpatialId("Ymin");
+      min.setId("Ymin");
       min.setValue(settings.Ymin);
       max = coord.getBoundaryMax();
       if (max == null)
         max = coord.createBoundaryMax();
-      max.setSpatialId("Ymax");
+      max.setId("Ymax");
       max.setValue(settings.Ymax);
 
       model.removeParameter("x");
@@ -1064,9 +1056,8 @@ namespace EditSpatial.Model
       param.setId("x");
       param.setValue(0);
       var pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-      var symbol = pplug.getSpatialSymbolReference();
-      symbol.setSpatialId("x");
-      symbol.setType("coordinateComponent");
+      var symbol = pplug.createSpatialSymbolReference();
+      symbol.setId("x");
       SetRequiredElements(param, false);
 
       model.removeParameter("y");
@@ -1075,9 +1066,8 @@ namespace EditSpatial.Model
       param.setId("y");
       param.setValue(0);
       pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-      symbol = pplug.getSpatialSymbolReference();
-      symbol.setSpatialId("y");
-      symbol.setType("coordinateComponent");
+      symbol = pplug.createSpatialSymbolReference();
+      symbol.setId("y");
       SetRequiredElements(param, false);
 
       if (settings.UsedSymbols.Contains("width"))
@@ -1088,9 +1078,8 @@ namespace EditSpatial.Model
         param.setId("width");
         param.setValue(settings.Xmax);
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        symbol = pplug.getSpatialSymbolReference();
-        symbol.setSpatialId("Xmax");
-        symbol.setType("");
+        symbol = pplug.createSpatialSymbolReference();
+        symbol.setId("Xmax");
         SetRequiredElements(param, false);
       }
 
@@ -1102,9 +1091,8 @@ namespace EditSpatial.Model
         param.setId("height");
         param.setValue(settings.Ymax);
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        symbol = pplug.getSpatialSymbolReference();
-        symbol.setSpatialId("Ymax");
-        symbol.setType("");
+        symbol = pplug.createSpatialSymbolReference();
+        symbol.setId("Ymax");
         SetRequiredElements(param, false);
       }
 
@@ -1116,9 +1104,8 @@ namespace EditSpatial.Model
         param.setId("Xmax");
         param.setValue(settings.Xmax);
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        symbol = pplug.getSpatialSymbolReference();
-        symbol.setSpatialId("Xmax");
-        symbol.setType("");
+        symbol = pplug.createSpatialSymbolReference();
+        symbol.setId("Xmax");
         SetRequiredElements(param, false);
       }
 
@@ -1130,9 +1117,8 @@ namespace EditSpatial.Model
         param.setId("Ymax");
         param.setValue(settings.Ymax);
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        symbol = pplug.getSpatialSymbolReference();
-        symbol.setSpatialId("Ymax");
-        symbol.setType("");
+        symbol = pplug.createSpatialSymbolReference();
+        symbol.setId("Ymax");
         SetRequiredElements(param, false);
       }
 
@@ -1145,9 +1131,8 @@ namespace EditSpatial.Model
         param.setId("Xmin");
         param.setValue(settings.Xmin);
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        symbol = pplug.getSpatialSymbolReference();
-        symbol.setSpatialId("Xmin");
-        symbol.setType("");
+        symbol = pplug.createSpatialSymbolReference();
+        symbol.setId("Xmin");
         SetRequiredElements(param, false);
       }
 
@@ -1159,9 +1144,8 @@ namespace EditSpatial.Model
         param.setId("Ymin");
         param.setValue(settings.Ymin);
         pplug = (SpatialParameterPlugin) param.getPlugin("spatial");
-        symbol = pplug.getSpatialSymbolReference();
-        symbol.setSpatialId("Ymin");
-        symbol.setType("");
+        symbol = pplug.createSpatialSymbolReference();
+        symbol.setId("Ymin");
         SetRequiredElements(param, false);
       }
     }
@@ -1348,7 +1332,7 @@ namespace EditSpatial.Model
         var id = currentRef.getSpecies();
         var current = model.getSpecies(id);
         if (current == null) continue;
-        var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+        var plug = (SpatialSpeciesPlugin) current.getPlugin("spatial");
         var isSpatial = plug != null && plug.getIsSpatial();
         if (isSpatial && !result.Contains(id))
           result.Add(id);
@@ -1359,7 +1343,7 @@ namespace EditSpatial.Model
         var id = currentRef.getSpecies();
         var current = model.getSpecies(id);
         if (current == null) continue;
-        var plug = (SpatialSpeciesRxnPlugin) current.getPlugin("spatial");
+        var plug = (SpatialSpeciesPlugin) current.getPlugin("spatial");
         var isSpatial = plug != null && plug.getIsSpatial();
         if (isSpatial && !result.Contains(id))
           result.Add(id);
@@ -1370,7 +1354,7 @@ namespace EditSpatial.Model
         var id = currentRef.getSpecies();
         var current = model.getSpecies(id);
         if (current == null) continue;
-        var plug = (SpatialSpeciesRxnPlugin) model.getSpecies(id).getPlugin("spatial");
+        var plug = (SpatialSpeciesPlugin) model.getSpecies(id).getPlugin("spatial");
         var isSpatial = plug != null && plug.getIsSpatial();
         if (isSpatial && !result.Contains(id))
           result.Add(id);
@@ -1388,10 +1372,10 @@ namespace EditSpatial.Model
 
     private static void SetRequiredElements(SBase sbase, bool hasAlternativeMath = true)
     {
-      var req = (RequiredElementsSBasePlugin) sbase.getPlugin("req");
-      if (req == null) return;
-      req.setCoreHasAlternateMath(hasAlternativeMath);
-      req.setMathOverridden("spatial");
+      //var req = (RequiredElementsSBasePlugin) sbase.getPlugin("req");
+      //if (req == null) return;
+      //req.setCoreHasAlternateMath(hasAlternativeMath);
+      //req.setMathOverridden("spatial");
     }
 
     public string ToMorpheus(string filename = null)

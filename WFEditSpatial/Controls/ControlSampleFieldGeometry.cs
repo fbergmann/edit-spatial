@@ -13,7 +13,7 @@ namespace EditSpatial.Controls
 {
   public partial class ControlSampleFieldGeometry : BaseSpatialControl
   {
-    private ImageData _Data;
+    private SampledField _Data;
     private SampledField _Field;
 
     public ControlSampleFieldGeometry()
@@ -50,7 +50,7 @@ namespace EditSpatial.Controls
       for (long i = 0; i < sampledFieldGeometry.getNumSampledVolumes(); ++i)
       {
         var vol = sampledFieldGeometry.getSampledVolume(i);
-        var spatialId = vol.getSpatialId();
+        var spatialId = vol.getId();
 
         grid.Rows.Add(
           spatialId,
@@ -61,8 +61,8 @@ namespace EditSpatial.Controls
           );
       }
 
-      _Field = sampledFieldGeometry.getSampledField();
-      _Data = _Field == null ? null : _Field.getImageData();
+      _Field = geometry.getSampledField( sampledFieldGeometry.getSampledField());
+      _Data = _Field;
       var numSamples = _Field == null ? 0 : _Field.getNumSamples3() - 1;
 
 
@@ -89,12 +89,12 @@ namespace EditSpatial.Controls
     {
       if (Current == null || SpatialGeometry == null) return;
 
-      Current.setSpatialId(txtId.Text);
+      Current.setId(txtId.Text);
       for (var i = 0; i < grid.Rows.Count && i < Current.getNumSampledVolumes(); ++i)
       {
         var row = grid.Rows[i];
         var current = Current.getSampledVolume(i);
-        current.setSpatialId((string) row.Cells[0].Value);
+        current.setId((string) row.Cells[0].Value);
         current.setDomainType((string) row.Cells[1].Value);
         double value;
         if (double.TryParse((string) row.Cells[2].Value, out value))
@@ -236,14 +236,14 @@ namespace EditSpatial.Controls
       txtZ.Text = trackBar1.Value.ToString();
       if (Current == null)
         return;
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     private void OnUpdateImage(object sender, EventArgs e)
     {
       if (Current == null)
         return;
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     private void OnReorder(object sender, EventArgs e)
@@ -260,7 +260,7 @@ namespace EditSpatial.Controls
       }
 
 
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     private void OnImageLoad(object sender, EventArgs e)
@@ -281,8 +281,11 @@ namespace EditSpatial.Controls
       {
         Current = SpatialGeometry.createSampledFieldGeometry();
       }
-      Current.setSpatialId(Path.GetFileNameWithoutExtension(fileName));
-      _Field = Current.createSampledField();
+      Current.setId(Path.GetFileNameWithoutExtension(fileName));
+      _Field = SpatialGeometry.createSampledField();
+      var id = string.Format("sampleFiled_{0}", SpatialGeometry.getNumSampledFields());
+      _Field.setId(id);
+      Current.setSampledField(id);
       _Field.setNumSamples1(image.Width);
       _Field.setNumSamples2(image.Height);
       _Field.setNumSamples3(1);
@@ -306,19 +309,18 @@ namespace EditSpatial.Controls
       foreach (var val in values)
       {
         var vol = Current.createSampledVolume();
-        vol.setSpatialId(string.Format("vol_{0}", col++));
+        vol.setId(string.Format("vol_{0}", col++));
         vol.setSampledValue(val);
         vol.setMinValue(val);
         vol.setMaxValue(val);
       }
 
-      _Data = _Field.createImageData();
-      _Data.setDataType("uncompressed");
-      _Data.setSamples(data, data.Length);
-      _Data.uncompress();
+      _Field.setDataType("uncompressed");
+      _Field.setSamples(data, data.Length);
+      _Field.uncompress();
 
 
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     private void OnImageSave(object sender, EventArgs e)
@@ -337,7 +339,7 @@ namespace EditSpatial.Controls
       if (Current == null) return;
       var id = e.Row.Cells[0].Value as string;
       Current.removeSampledVolume(id);
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
   }
 }

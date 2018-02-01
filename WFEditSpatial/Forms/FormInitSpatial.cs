@@ -417,14 +417,14 @@ namespace EditSpatial.Forms
       {
         _analyticGeometry = _geometry.createAnalyticGeometry();
         var vol = _analyticGeometry.createAnalyticVolume();
-        vol.setSpatialId("vol0");
+        vol.setId("vol0");
         vol.setDomainType("");
         vol.setFunctionType("layered");
         vol.setMath(libsbml.parseFormula("1"));
       }
 
-      if (!_analyticGeometry.isSetSpatialId())
-        _analyticGeometry.setSpatialId("ana1");
+      if (!_analyticGeometry.isSetId())
+        _analyticGeometry.setId("ana1");
 
       controlAnalyticGeometry1.InitializeFrom(_geometry, _analyticGeometry);
     }
@@ -461,10 +461,10 @@ namespace EditSpatial.Forms
         _sampleGeometry = _geometry.createSampledFieldGeometry();
       }
 
-      if (!_sampleGeometry.isSetSpatialId())
-        _sampleGeometry.setSpatialId("sample1");
+      if (!_sampleGeometry.isSetId())
+        _sampleGeometry.setId("sample1");
 
-      controlSampleFieldGeometry1.InitializeFrom(_geometry, _sampleGeometry.getSpatialId());
+      controlSampleFieldGeometry1.InitializeFrom(_geometry, _sampleGeometry.getId());
     }
 
     private void radDefault_CheckedChanged(object sender, EventArgs e)

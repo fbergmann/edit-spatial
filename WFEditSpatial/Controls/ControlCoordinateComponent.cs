@@ -17,17 +17,17 @@ namespace EditSpatial.Controls
       Current = comp;
       if (Current == null)
         return;
-      txtId.Text = comp.getSpatialId();
-      txtType.Text = comp.getComponentType();
-      txtIndex.Text = comp.getIndex().ToString();
-      txtUnit.Text = comp.getSbmlUnit();
+      txtId.Text = comp.getId();
+      txtType.Text = libsbml.CoordinateKind_toString(comp.getType());
+      txtIndex.Text = comp.getType().ToString();
+      txtUnit.Text = comp.getUnit();
 
       var min = comp.getBoundaryMin();
-      txtMinId.Text = min.getSpatialId();
+      txtMinId.Text = min.getId();
       txtMinValue.Text = min.getValue().ToString();
 
       var max = comp.getBoundaryMax();
-      txtMaxId.Text = max.getSpatialId();
+      txtMaxId.Text = max.getId();
       txtMaxValue.Text = max.getValue().ToString();
     }
 
@@ -35,17 +35,17 @@ namespace EditSpatial.Controls
     {
       if (Current == null) return;
 
-      Current.setSpatialId(txtId.Text);
-      Current.setComponentType(txtType.Text);
-      Current.setIndex(Util.SaveInt(txtIndex.Text, Current.getIndex()));
-      Current.setSbmlUnit(txtUnit.Text);
+      Current.setId(txtId.Text);
+      //Current.setComponentType(txtType.Text);
+      Current.setType(Util.SaveInt(txtIndex.Text, Current.getType()));
+      Current.setUnit(txtUnit.Text);
 
       var min = Current.getBoundaryMin();
-      min.setSpatialId(txtMinId.Text);
+      min.setId(txtMinId.Text);
       min.setValue(Util.SaveDouble(txtMinValue.Text, min.getValue()));
 
       var max = Current.getBoundaryMax();
-      max.setSpatialId(txtMaxId.Text);
+      max.setId(txtMaxId.Text);
       max.setValue(Util.SaveDouble(txtMaxValue.Text, max.getValue()));
     }
 

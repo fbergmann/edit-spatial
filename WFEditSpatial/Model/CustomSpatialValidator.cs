@@ -34,7 +34,7 @@ namespace EditSpatial.Model
 
       if (element.getTypeCode() == libsbml.SBML_SPECIES)
       {
-        var plug = (SpatialSpeciesRxnPlugin) (element.getPlugin("spatial"));
+        var plug = (SpatialSpeciesPlugin) (element.getPlugin("spatial"));
         if (plug == null) return false;
         return plug.getIsSpatial();
       }
@@ -67,7 +67,7 @@ namespace EditSpatial.Model
       for (var i = 0; i < model.getNumSpecies(); ++i)
       {
         var species = model.getSpecies(i);
-        var plug = (SpatialSpeciesRxnPlugin) species.getPlugin("spatial");
+        var plug = (SpatialSpeciesPlugin) species.getPlugin("spatial");
         if (plug == null) continue;
 
         if (plug.isSetIsSpatial() && plug.getIsSpatial()) continue;

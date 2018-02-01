@@ -530,7 +530,7 @@ namespace EditSpatial.Converter
       if (plug == null) return -1;
       var bc = plug.getBoundaryCondition();
       if (bc == null) return -1;
-      if (bc.getType() == "Value") return 1; // Dirichlet
+      if (bc.getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET) return 1; // Dirichlet
       return -1; // Neumann
     }
 
@@ -604,7 +604,7 @@ namespace EditSpatial.Converter
       {
         var species = _Model.getSpecies(OdeVariables[i]);
         if (species == null) continue;
-        var plug = (SpatialSpeciesRxnPlugin)species.getPlugin("spatial");
+        var plug = (SpatialSpeciesPlugin)species.getPlugin("spatial");
         if (plug == null || plug.getIsSpatial() == false) continue;
 
         var diff = species.getDiffusionX();
@@ -731,7 +731,7 @@ namespace EditSpatial.Converter
       return builder.ToString();
     }
 
-    private string WriteFieldToFile(string path, ImageData data, int numSamples1, int numSamples2, int z = 0,
+    private string WriteFieldToFile(string path, SampledField data, int numSamples1, int numSamples2, int z = 0,
       string basename = "geometry1.dmp")
     {
       var name = Path.Combine(path, basename);
@@ -756,10 +756,10 @@ namespace EditSpatial.Converter
       return name;
     }
 
-    private string GenerateExpressionForSampleFieldGeometry(SampledFieldGeometry sample, string path)
+    private string GenerateExpressionForSampleFieldGeometry(Geometry geometry, SampledFieldGeometry sample, string path)
     {
-      var field = sample.getSampledField();
-      var data = field.getImageData();
+      var field = geometry.getSampledField(sample.getSampledField());
+      var data = field;
 
       GeometryFile = WriteFieldToFile(path,
         data,
@@ -791,7 +791,7 @@ namespace EditSpatial.Converter
 
       var sample = _Geometry.GetFirstSampledFieldGeometry();
       if (sample != null && sample.getNumSampledVolumes() > 0)
-        return GenerateExpressionForSampleFieldGeometry(sample, path);
+        return GenerateExpressionForSampleFieldGeometry(_Geometry, sample, path);
 
       return result;
     }

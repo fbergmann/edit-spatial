@@ -19,7 +19,7 @@ namespace EditSpatial.Controls
       for (long i = 0; i < geometry.getNumDomainTypes(); ++i)
       {
         var domainType = geometry.getDomainType(i);
-        grid.Rows.Add(domainType.getSpatialId(), domainType.getSpatialDimensions());
+        grid.Rows.Add(domainType.getId(), domainType.getSpatialDimensions());
       }
     }
 
@@ -30,8 +30,8 @@ namespace EditSpatial.Controls
       {
         var current = Current.getDomainType(i);
         var row = grid.Rows[i];
-        current.setSpatialId((string) row.Cells[0].Value);
-        current.setSpatialDimensions((long) row.Cells[1].Value);
+        current.setId((string) row.Cells[0].Value);
+        current.setSpatialDimensions((int) row.Cells[1].Value);
       }
       OnModelChanged();
     }

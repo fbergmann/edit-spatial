@@ -29,7 +29,7 @@ namespace EditSpatial.Controls
         {
           var dtype = dtypes.get(i);
           if (dtype == null) continue;
-          colDomainType.Items.Add(dtype.getSpatialId());
+          colDomainType.Items.Add(dtype.getId());
         }
       }
 

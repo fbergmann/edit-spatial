@@ -391,25 +391,25 @@ namespace EditSpatial.Model
       var param = species.getBoundaryCondition("Xmax");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Value"
+          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Xmin");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Value"
+          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Ymax");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Value"
+          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Ymin");
       if (param != null)
         return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == "Value"
+          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       return "Neumann";
@@ -442,7 +442,7 @@ namespace EditSpatial.Model
             case libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT:
             {
               var diff = plugin.getDiffusionCoefficient();
-              diff.setCoordinateIndex((int) box);
+              diff.setCoordinateReference1((int) box);
               diff.setVariable(species.getId());
               break;
             }
@@ -484,7 +484,7 @@ namespace EditSpatial.Model
           var index = 0;
           if (box != null && box is int)
             index = (int) box;
-          if (diff == null || diff.getCoordinateIndex() != index || diff.getVariable() != species.getId()) continue;
+          if (diff == null || diff.getCoordinateReference1() != index || diff.getVariable() != species.getId()) continue;
         }
         else if (typeCode == libsbml.SBML_SPATIAL_BOUNDARYCONDITION)
         {
@@ -545,12 +545,11 @@ namespace EditSpatial.Model
       return result;
     }
 
-    internal static int[] GetArray(ImageData data)
+    internal static int[] GetArray(SampledField data)
     {
       switch (data.getDataType())
       {
-        case "":
-        case "compressed":
+        case libsbml.SPATIAL_COMPRESSIONKIND_DEFLATED:
         {
           var intValue = new int[data.getSamplesLength()];
           data.getSamples(intValue);
@@ -564,6 +563,7 @@ namespace EditSpatial.Model
           StreamUtils.Copy(zipInputStream, result, buffer);
           return ToInt(result.ToArray());
         }
+        case libsbml.SPATIAL_COMPRESSIONKIND_UNCOMPRESSED:
         default:
         {
           var intValue = new int[data.getSamplesLength()];

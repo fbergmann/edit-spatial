@@ -20,7 +20,7 @@ namespace EditSpatial.Controls
       for (long i = 0; i < geometry.getNumAdjacentDomains(); ++i)
       {
         var domain = geometry.getAdjacentDomains(i);
-        var spatialId = domain.getSpatialId();
+        var spatialId = domain.getId();
         grid.Rows.Add(spatialId, domain.getDomain1(), domain.getDomain2());
       }
     }
@@ -35,7 +35,7 @@ namespace EditSpatial.Controls
         var row = grid.Rows[i];
         if (domain == null) continue;
 
-        domain.setSpatialId((string) row.Cells[0].Value);
+        domain.setId((string) row.Cells[0].Value);
         domain.setDomain1((string) row.Cells[1].Value);
         domain.setDomain2((string) row.Cells[2].Value);
       }

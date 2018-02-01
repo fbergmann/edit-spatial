@@ -265,7 +265,7 @@ namespace EditSpatial.Forms
 
       species.setId(name);
       species.setCompartment(Model.getSpecies(ids[0]).getCompartment());
-      var plug = species.getPlugin("spatial") as SpatialSpeciesRxnPlugin;
+      var plug = species.getPlugin("spatial") as SpatialSpeciesPlugin;
       if (plug != null)
         plug.setIsSpatial(true);
 

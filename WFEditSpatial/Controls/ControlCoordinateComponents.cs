@@ -23,7 +23,7 @@ namespace EditSpatial.Controls
 
       Current = geometry;
       if (geometry == null) return;
-      txtCoordSystem.Text = geometry.getCoordinateSystem();
+      txtCoordSystem.Text = libsbml.GeometryKind_toString(geometry.getCoordinateSystem());
 
       for (long i = 0; i < geometry.getNumCoordinateComponents(); ++i)
       {

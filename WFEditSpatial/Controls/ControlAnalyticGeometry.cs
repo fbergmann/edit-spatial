@@ -54,11 +54,11 @@ namespace EditSpatial.Controls
         {
           var row = grid.Rows[RowsAdded[i]];
           var vol = analytic.createAnalyticVolume();
-          vol.setSpatialId(row.Cells[0].Value as string);
+          vol.setId(row.Cells[0].Value as string);
           vol.setFunctionType(row.Cells[1].Value as string);
           long ordinal = 0;
           if (long.TryParse(row.Cells[2].Value as string, out ordinal))
-            vol.setOrdinal(ordinal);
+            vol.setOrdinal((int)ordinal);
           vol.setDomainType(row.Cells[3].Value as string);
           vol.setMath(libsbml.parseL3Formula(row.Cells[4].Value as string));
           RowsAdded.RemoveAt(i);
@@ -88,12 +88,12 @@ namespace EditSpatial.Controls
         Current = analytic;
         if (analytic == null) return;
 
-        txtId.Text = analytic.getSpatialId();
+        txtId.Text = analytic.getId();
 
         for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
         {
           var vol = analytic.getAnalyticVolume(i);
-          var spatialId = vol.getSpatialId();
+          var spatialId = vol.getId();
           grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal().ToString(), vol.getDomainType(),
             libsbml.formulaToL3String(vol.getMath()));
         }
@@ -138,7 +138,7 @@ namespace EditSpatial.Controls
     {
       if (Current == null || SpatialGeometry == null) return;
 
-      Current.setSpatialId(txtId.Text);
+      Current.setId(txtId.Text);
 
       CommitAddedRows(Current);
 
@@ -147,9 +147,9 @@ namespace EditSpatial.Controls
         var row = grid.Rows[i];
         if (row.IsNewRow) continue;
         var current = Current.getAnalyticVolume(i);
-        current.setSpatialId((string) row.Cells[0].Value);
+        current.setId((string) row.Cells[0].Value);
         current.setFunctionType((string) row.Cells[1].Value);
-        current.setOrdinal(Util.SaveInt((string) row.Cells[2].Value, 0L));
+        current.setOrdinal((int)Util.SaveInt((string) row.Cells[2].Value, 0L));
         current.setDomainType((string) row.Cells[3].Value);
         current.setMath(libsbml.parseL3Formula((string) row.Cells[4].Value));
       }
@@ -379,7 +379,7 @@ namespace EditSpatial.Controls
       foreach (var item in ordered)
       {
         var current = geometry.getAnalyticVolume(item.Item1);
-        current.setOrdinal((geometry.getNumAnalyticVolumes() - 1) - item.Item2);
+        current.setOrdinal(((int)geometry.getNumAnalyticVolumes() - 1) - item.Item2);
       }
     }
 
@@ -393,7 +393,7 @@ namespace EditSpatial.Controls
       for (long i = 0; i < geometry.getNumAnalyticVolumes(); ++i)
       {
         var current = geometry.getAnalyticVolume(i);
-        list.Add(new Tuple<int, int, string>((int) i, (int) current.getOrdinal(), current.getSpatialId()));
+        list.Add(new Tuple<int, int, string>((int) i, (int) current.getOrdinal(), current.getId()));
       }
 
       var ordered = list.OrderByDescending(item => item.Item2);
@@ -411,7 +411,7 @@ namespace EditSpatial.Controls
         return;
 
       FlipOrder(Current);
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     private void OnSortClick(object sender, EventArgs e)
@@ -420,7 +420,7 @@ namespace EditSpatial.Controls
         return;
 
       SortedOrder(Current);
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     private void OnUpdateImage(object sender, EventArgs e)
@@ -431,7 +431,7 @@ namespace EditSpatial.Controls
       IsInitializing = true;
       SaveChanges();
       IsInitializing = false;
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     private void OnTrackChanged(object sender, EventArgs e)
@@ -451,7 +451,7 @@ namespace EditSpatial.Controls
       txtZ.Text = x.ToString();
       if (Current == null)
         return;
-      InitializeFrom(SpatialGeometry, Current.getSpatialId());
+      InitializeFrom(SpatialGeometry, Current.getId());
     }
 
     public override void InvalidateSelection()
@@ -501,11 +501,11 @@ namespace EditSpatial.Controls
       {
         var current = Current.getAnalyticVolume(i);
         if (current == null) continue;
-        if (current.getSpatialId() != selected) continue;
+        if (current.getId() != selected) continue;
 
         Current.removeAnalyticVolume(i);
         Current.getListOfAnalyticVolumes().insertAndOwn(0, current);
-        InitializeFrom(SpatialGeometry, Current.getSpatialId());
+        InitializeFrom(SpatialGeometry, Current.getId());
         break;
       }
     }

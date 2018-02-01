@@ -424,7 +424,7 @@ namespace EditSpatial
       for (long i = 0; i < geom.getNumCoordinateComponents(); ++i)
       {
         var current = geom.getCoordinateComponent(i);
-        var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
 
@@ -433,7 +433,7 @@ namespace EditSpatial
       for (long i = 0; i < geom.getNumDomainTypes(); ++i)
       {
         var current = geom.getDomainType(i);
-        var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
 
@@ -443,7 +443,7 @@ namespace EditSpatial
       for (long i = 0; i < geom.getNumDomains(); ++i)
       {
         var current = geom.getDomain(i);
-        var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
 
@@ -452,7 +452,7 @@ namespace EditSpatial
       for (long i = 0; i < geom.getNumAdjacentDomains(); ++i)
       {
         var current = geom.getAdjacentDomains(i);
-        var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
         root.Nodes.Add(node);
       }
 
@@ -461,7 +461,7 @@ namespace EditSpatial
       for (long i = 0; i < geom.getNumGeometryDefinitions(); ++i)
       {
         var current = geom.getGeometryDefinition(i);
-        var node = new TreeNode(current.getSpatialId()) {Tag = current.toSBML()};
+        var node = new TreeNode(current.getId()) {Tag = current.toSBML()};
 
         var analytic = current as AnalyticGeometry;
         if (analytic != null)
@@ -469,7 +469,7 @@ namespace EditSpatial
           for (long j = 0; j < analytic.getNumAnalyticVolumes(); ++j)
           {
             var vol = analytic.getAnalyticVolume(j);
-            var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
+            var volNode = new TreeNode(vol.getId()) {Tag = vol.toSBML()};
             node.Nodes.Add(volNode);
           }
         }
@@ -477,16 +477,17 @@ namespace EditSpatial
         var sample = current as SampledFieldGeometry;
         if (sample != null)
         {
-          var field = sample.getSampledField();
+          var field = geom.getSampledField(sample.getSampledField());
+
           if (field != null)
           {
-            var fieldNode = new TreeNode(field.getSpatialId()) {Tag = field.toSBML()};
+            var fieldNode = new TreeNode(field.getId()) {Tag = field.toSBML()};
             node.Nodes.Add(fieldNode);
 
             for (long j = 0; j < sample.getNumSampledVolumes(); ++j)
             {
               var vol = sample.getSampledVolume(j);
-              var volNode = new TreeNode(vol.getSpatialId()) {Tag = vol.toSBML()};
+              var volNode = new TreeNode(vol.getId()) {Tag = vol.toSBML()};
               node.Nodes.Add(volNode);
             }
           }
@@ -895,7 +896,7 @@ namespace EditSpatial
       if (Model.Geometry == null) return;
 
       var geom = Model.Geometry.createSampledFieldGeometry();
-      geom.setSpatialId(String.Format("sampledFieldGeometry{0}", Model.Geometry.GetNumSampledFieldGeometries()));
+      geom.setId(String.Format("sampledFieldGeometry{0}", Model.Geometry.GetNumSampledFieldGeometries()));
 
       Model.Dirty = true;
       UpdateUI();
@@ -906,7 +907,7 @@ namespace EditSpatial
       if (Model.Geometry == null) return;
 
       var geom = Model.Geometry.createAnalyticGeometry();
-      geom.setSpatialId(String.Format("analyticGeometry{0}", Model.Geometry.GetNumAnalyticGeometries()));
+      geom.setId(String.Format("analyticGeometry{0}", Model.Geometry.GetNumAnalyticGeometries()));
       
       Model.Dirty = true;
       UpdateUI();
