@@ -55,7 +55,7 @@ namespace EditSpatial.Controls
           var row = grid.Rows[RowsAdded[i]];
           var vol = analytic.createAnalyticVolume();
           vol.setId(row.Cells[0].Value as string);
-          vol.setFunctionType(row.Cells[1].Value as string);
+          vol.setFunctionType(libsbml.FunctionKind_fromString(row.Cells[1].Value as string));
           long ordinal = 0;
           if (long.TryParse(row.Cells[2].Value as string, out ordinal))
             vol.setOrdinal((int)ordinal);
@@ -94,7 +94,7 @@ namespace EditSpatial.Controls
         {
           var vol = analytic.getAnalyticVolume(i);
           var spatialId = vol.getId();
-          grid.Rows.Add(spatialId, vol.getFunctionType(), vol.getOrdinal().ToString(), vol.getDomainType(),
+          grid.Rows.Add(spatialId, libsbml.FunctionKind_toString(vol.getFunctionType()), vol.getOrdinal().ToString(), vol.getDomainType(),
             libsbml.formulaToL3String(vol.getMath()));
         }
 
@@ -148,7 +148,7 @@ namespace EditSpatial.Controls
         if (row.IsNewRow) continue;
         var current = Current.getAnalyticVolume(i);
         current.setId((string) row.Cells[0].Value);
-        current.setFunctionType((string) row.Cells[1].Value);
+        current.setFunctionType(libsbml.FunctionKind_fromString((string) row.Cells[1].Value));
         current.setOrdinal((int)Util.SaveInt((string) row.Cells[2].Value, 0L));
         current.setDomainType((string) row.Cells[3].Value);
         current.setMath(libsbml.parseL3Formula((string) row.Cells[4].Value));

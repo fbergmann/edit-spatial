@@ -113,6 +113,20 @@ namespace EditSpatial.Model
         Document = libsbml.readSBMLFromFile(fileName),
         FileName = fileName
       };
+
+      if (model.Document.getNumErrors(libsbml.LIBSBML_SEV_ERROR) > 0)
+      {
+        var docString = File.ReadAllText(fileName);
+        if (docString.Contains("spatial:spatialId"))
+        {
+          var assembly = System.Reflection.Assembly.GetAssembly(typeof(SBMLDocument));
+          var converter = from type in assembly.GetTypes() where type.Name == "OldSpatialToSpatialConverter" select type;
+          if (converter != null && converter.Any())
+          model.Document = converter.First().GetMethod("convertOldSpatialSBMLFromString").Invoke(null, new object[] { docString }) as SBMLDocument;
+          //libsbml.Oldspat
+        }
+      }
+
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_UNITS_CONSISTENCY, false);
       model.Document.setConsistencyChecks(libsbml.LIBSBML_CAT_MODELING_PRACTICE, false);
       model.Document.addValidator(CustomSpatialValidator);
@@ -686,7 +700,7 @@ namespace EditSpatial.Model
         var vol = def.createAnalyticVolume();
         vol.setId("vol_" + order[j]);
         vol.setDomainType("domainType_" + order[j]);
-        vol.setFunctionType("layered");
+        vol.setFunctionType(libsbml.SPATIAL_FUNCTIONKIND_LAYERED);
         vol.setOrdinal(i);
         vol.setMath(libsbml.parseFormula(i == 0
           ? "1" // first compartment gets all
@@ -729,7 +743,7 @@ namespace EditSpatial.Model
             //vol = def.createAnalyticVolume();
             //vol.setId("vol_" + order[j]);
             //vol.setDomainType("domainType_" + order[j]);
-            //vol.setFunctionType("layered");
+            //vol.setFunctionType(libsbml.SPATIAL_FUNCTIONKIND_LAYERED);
             //vol.setOrdinal(i);
             //vol.setMath(libsbml.parseFormula(i == 0 ? "1" : //            string.Format(
             //  //"and(geq(x, {0}), lt(x, {1}))", (i * length), ((i + 1) * length))
@@ -803,7 +817,7 @@ namespace EditSpatial.Model
         vol.setMath(libsbml.parseL3Formula("1"));
 
       vol.setDomainType("domainType0");
-      vol.setFunctionType("layered");
+      vol.setFunctionType(libsbml.SPATIAL_FUNCTIONKIND_LAYERED);
 
 
       var comp = model.getCompartment(0);
@@ -852,7 +866,7 @@ namespace EditSpatial.Model
         vol = def.createAnalyticVolume();
         vol.setId("vol1");
         vol.setDomainType("domainType1");
-        vol.setFunctionType("layered");
+        vol.setFunctionType(libsbml.SPATIAL_FUNCTIONKIND_LAYERED);
         vol.setOrdinal(0);
         vol.setMath(libsbml.parseFormula("1"));
 

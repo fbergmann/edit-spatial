@@ -419,7 +419,7 @@ namespace EditSpatial.Forms
         var vol = _analyticGeometry.createAnalyticVolume();
         vol.setId("vol0");
         vol.setDomainType("");
-        vol.setFunctionType("layered");
+        vol.setFunctionType(libsbml.SPATIAL_FUNCTIONKIND_LAYERED);
         vol.setMath(libsbml.parseFormula("1"));
       }
 
