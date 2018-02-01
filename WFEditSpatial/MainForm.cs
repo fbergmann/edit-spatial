@@ -564,21 +564,7 @@ namespace EditSpatial
         if (Model != null && !Model.IsSpatial)
         {
           Model.ConvertToL3();
-
-          var dialog = new FormInitSpatial {SpatialModel = Model};
-          if (dialog.ShowDialog(this) == DialogResult.OK)
-          {
-            var selection = dialog.CreateModel;
-
-            if (!Model.ConvertToSpatial(selection))
-            {
-              ShowErrors();
-            }
-            else
-            {
-              UpdateUI();
-            }
-          }
+          ConvertToSpatial();
         }
       }
       catch (Exception ex)
@@ -815,9 +801,9 @@ namespace EditSpatial
       File.WriteAllText(fileName, Model.ToMorpheus(fileName));
     }
 
-    private void OnShowSpatialWizard(object sender, EventArgs e)
+    private void ConvertToSpatial()
     {
-      var dialog = new FormInitSpatial {SpatialModel = Model};
+      var dialog = new FormInitSpatial { SpatialModel = Model };
       if (dialog.ShowDialog(this) == DialogResult.OK)
       {
         var selection = dialog.CreateModel;
@@ -831,6 +817,11 @@ namespace EditSpatial
           UpdateUI();
         }
       }
+    }
+
+    private void OnShowSpatialWizard(object sender, EventArgs e)
+    {
+      ConvertToSpatial();
     }
 
     private void OnExportDuneSBMLClick(object sender, EventArgs e)

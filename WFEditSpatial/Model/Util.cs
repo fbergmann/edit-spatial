@@ -386,30 +386,42 @@ namespace EditSpatial.Model
       return param.getValue();
     }
 
+    public static int getBoundaryConditionType(this Parameter param, int defaultValue = libsbml.SPATIAL_BOUNDARYKIND_NEUMANN)
+    {
+      if (param == null)
+        return defaultValue;
+
+      var plugin = param.getPlugin("spatial") as SpatialParameterPlugin;
+      if (plugin == null)
+        return defaultValue;
+
+      var bc = plugin.getBoundaryCondition();
+      if (bc == null)
+        return defaultValue;
+
+      return bc.getType();
+    }
+
     public static string getBcType(this Species species)
     {
       var param = species.getBoundaryCondition("Xmax");
       if (param != null)
-        return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
+        return param.getBoundaryConditionType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Xmin");
       if (param != null)
-        return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
+        return param.getBoundaryConditionType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Ymax");
       if (param != null)
-        return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
+        return param.getBoundaryConditionType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       param = species.getBoundaryCondition("Ymin");
       if (param != null)
-        return ((SpatialParameterPlugin) param.getPlugin("spatial"))
-          .getBoundaryCondition().getType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
+        return param.getBoundaryConditionType() == libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET
           ? "Dirichlet"
           : "Neumann";
       return "Neumann";
@@ -442,6 +454,8 @@ namespace EditSpatial.Model
             case libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT:
             {
               var diff = plugin.getDiffusionCoefficient();
+              if (diff == null)
+                diff = plugin.createDiffusionCoefficient();
               diff.setCoordinateReference1((int) box);
               diff.setVariable(species.getId());
               break;
@@ -449,6 +463,8 @@ namespace EditSpatial.Model
             case libsbml.SBML_SPATIAL_BOUNDARYCONDITION:
             {
               var bc = plugin.getBoundaryCondition();
+                if (bc == null)
+                  bc = plugin.createBoundaryCondition();
               bc.setVariable(species.getId());
               bc.setCoordinateBoundary((string) box);
               break;
@@ -1011,7 +1027,11 @@ namespace EditSpatial.Model
       if (comp == null) return null;
       var cplug = (SpatialCompartmentPlugin) comp.getPlugin("spatial");
       if (cplug == null) return null;
-      return cplug.getCompartmentMapping();
+      var map = cplug.getCompartmentMapping();
+      if (map == null)
+        map = cplug.createCompartmentMapping();
+
+      return map;
     }
 
     public static int GetNumAnalyticGeometries(this Geometry geom)

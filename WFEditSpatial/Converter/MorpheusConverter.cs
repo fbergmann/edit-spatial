@@ -86,11 +86,13 @@ namespace EditSpatial.Converter
         if (plugin.getType() == libsbml.SBML_SPATIAL_BOUNDARYCONDITION)
         {
           var condition = plugin.getBoundaryCondition();
+          if (condition != null)
           boundaryConditions[condition.getCoordinateBoundary()] = TranslateCondition(condition.getType());
         }
         if (plugin.getType() == libsbml.SBML_SPATIAL_DIFFUSIONCOEFFICIENT)
         {
           var diff = plugin.getDiffusionCoefficient();
+          if (diff != null)
           diffusion[diff.getVariable()] = current.getValue().ToString(CultureInfo.InvariantCulture);
         }
       }
