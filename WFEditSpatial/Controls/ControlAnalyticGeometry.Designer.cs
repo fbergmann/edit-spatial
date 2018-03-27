@@ -56,6 +56,7 @@ namespace EditSpatial.Controls
       this.label2 = new System.Windows.Forms.Label();
       this.cmdReorder = new System.Windows.Forms.Button();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.chkIsActive = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.thumbGeometry)).BeginInit();
@@ -85,7 +86,7 @@ namespace EditSpatial.Controls
       this.colSpatialId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colSpatialId.HeaderText = "Spatial Id";
       this.colSpatialId.Name = "colSpatialId";
-      this.colSpatialId.Width = 74;
+      this.colSpatialId.Width = 76;
       // 
       // colType
       // 
@@ -99,7 +100,7 @@ namespace EditSpatial.Controls
       this.colOrdinal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colOrdinal.HeaderText = "Ordinal";
       this.colOrdinal.Name = "colOrdinal";
-      this.colOrdinal.Width = 63;
+      this.colOrdinal.Width = 65;
       // 
       // colDomainType
       // 
@@ -177,6 +178,7 @@ namespace EditSpatial.Controls
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.chkIsActive);
       this.panel1.Controls.Add(this.cmdExport);
       this.panel1.Controls.Add(this.cmdMakeFirst);
       this.panel1.Controls.Add(this.cmdSort);
@@ -318,6 +320,16 @@ namespace EditSpatial.Controls
       this.cmdReorder.UseVisualStyleBackColor = true;
       this.cmdReorder.Click += new System.EventHandler(this.OnReorderClick);
       // 
+      // chkIsActive
+      // 
+      this.chkIsActive.AutoSize = true;
+      this.chkIsActive.Location = new System.Drawing.Point(21, 36);
+      this.chkIsActive.Name = "chkIsActive";
+      this.chkIsActive.Size = new System.Drawing.Size(64, 17);
+      this.chkIsActive.TabIndex = 15;
+      this.chkIsActive.Text = "IsActive";
+      this.chkIsActive.UseVisualStyleBackColor = true;
+      // 
       // ControlAnalyticGeometry
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -362,5 +374,6 @@ namespace EditSpatial.Controls
     private Button cmdSort;
     private Button cmdMakeFirst;
     private Button cmdExport;
+    private CheckBox chkIsActive;
   }
 }

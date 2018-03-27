@@ -54,6 +54,7 @@ namespace EditSpatial.Controls
       this.txtSize = new System.Windows.Forms.TextBox();
       this.label2 = new System.Windows.Forms.Label();
       this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+      this.chkIsActive = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
       this.groupBox1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.thumbGeometry)).BeginInit();
@@ -84,7 +85,7 @@ namespace EditSpatial.Controls
       this.colSpatialId.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
       this.colSpatialId.HeaderText = "Spatial Id";
       this.colSpatialId.Name = "colSpatialId";
-      this.colSpatialId.Width = 68;
+      this.colSpatialId.Width = 70;
       // 
       // colDomainType
       // 
@@ -175,6 +176,7 @@ namespace EditSpatial.Controls
       // 
       // panel1
       // 
+      this.panel1.Controls.Add(this.chkIsActive);
       this.panel1.Controls.Add(this.cmdSave);
       this.panel1.Controls.Add(this.cmdLoad);
       this.panel1.Controls.Add(this.cmdReorder);
@@ -293,6 +295,16 @@ namespace EditSpatial.Controls
       this.label2.TabIndex = 5;
       this.label2.Text = "ThumbSize:";
       // 
+      // chkIsActive
+      // 
+      this.chkIsActive.AutoSize = true;
+      this.chkIsActive.Location = new System.Drawing.Point(10, 37);
+      this.chkIsActive.Name = "chkIsActive";
+      this.chkIsActive.Size = new System.Drawing.Size(64, 17);
+      this.chkIsActive.TabIndex = 18;
+      this.chkIsActive.Text = "IsActive";
+      this.chkIsActive.UseVisualStyleBackColor = true;
+      // 
       // ControlSampleFieldGeometry
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -335,5 +347,6 @@ namespace EditSpatial.Controls
     private Button cmdSave;
     private ToolTip toolTip1;
     private Button cmdLoad;
+    private CheckBox chkIsActive;
   }
 }

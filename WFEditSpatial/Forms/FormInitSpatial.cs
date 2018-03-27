@@ -98,6 +98,17 @@ namespace EditSpatial.Forms
         txtDimX.Text = txtWidth.Text;
         txtDimY.Text = txtHeight.Text;
       }
+
+      if (radAnalytic.Checked)
+      {
+        controlAnalyticGeometry1.SaveChanges();
+      }
+
+      if (radSample.Checked)
+      {
+        controlSampleFieldGeometry1.SaveChanges();
+      }
+
       Close();
     }
 
@@ -420,6 +431,7 @@ namespace EditSpatial.Forms
         vol.setId("vol0");
         vol.setDomainType("");
         vol.setFunctionType(libsbml.SPATIAL_FUNCTIONKIND_LAYERED);
+        vol.setOrdinal(0);
         vol.setMath(libsbml.parseFormula("1"));
       }
 

@@ -57,6 +57,7 @@ namespace EditSpatial.Controls
           vol.setId(row.Cells[0].Value as string);
           vol.setFunctionType(libsbml.FunctionKind_fromString(row.Cells[1].Value as string));
           long ordinal = 0;
+          vol.setOrdinal((int)ordinal);
           if (long.TryParse(row.Cells[2].Value as string, out ordinal))
             vol.setOrdinal((int)ordinal);
           vol.setDomainType(row.Cells[3].Value as string);
@@ -88,6 +89,7 @@ namespace EditSpatial.Controls
         Current = analytic;
         if (analytic == null) return;
 
+        chkIsActive.Checked = analytic.getIsActive();
         txtId.Text = analytic.getId();
 
         for (long i = 0; i < analytic.getNumAnalyticVolumes(); ++i)
@@ -139,6 +141,8 @@ namespace EditSpatial.Controls
       if (Current == null || SpatialGeometry == null) return;
 
       Current.setId(txtId.Text);
+
+      Current.setIsActive(chkIsActive.Checked);
 
       CommitAddedRows(Current);
 

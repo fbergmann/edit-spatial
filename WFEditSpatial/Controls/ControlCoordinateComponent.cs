@@ -38,7 +38,10 @@ namespace EditSpatial.Controls
       Current.setId(txtId.Text);
       //Current.setComponentType(txtType.Text);
       Current.setType(Util.SaveInt(txtIndex.Text, Current.getType()));
-      Current.setUnit(txtUnit.Text);
+      if (string.IsNullOrWhiteSpace(txtUnit.Text))
+        Current.unsetUnit();
+      else
+        Current.setUnit(txtUnit.Text);
 
       var min = Current.getBoundaryMin();
       min.setId(txtMinId.Text);

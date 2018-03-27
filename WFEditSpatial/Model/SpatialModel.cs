@@ -990,7 +990,7 @@ namespace EditSpatial.Model
           bc = pplug.createBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Xmin");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ?  libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET :  libsbml.SPATIAL_BOUNDARYKIND_NEUMANN);
         SetRequiredElements(param);
 
         temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Xmax");
@@ -1006,7 +1006,7 @@ namespace EditSpatial.Model
           bc = pplug.createBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Xmax");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ? libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET : libsbml.SPATIAL_BOUNDARYKIND_NEUMANN);
         SetRequiredElements(param);
 
         temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymin");
@@ -1023,7 +1023,7 @@ namespace EditSpatial.Model
           bc = pplug.createBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Ymin");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ? libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET : libsbml.SPATIAL_BOUNDARYKIND_NEUMANN);
         SetRequiredElements(param);
 
         temp = species.getSpatialParameter(libsbml.SBML_SPATIAL_BOUNDARYCONDITION, "Ymax");
@@ -1040,7 +1040,7 @@ namespace EditSpatial.Model
           bc = pplug.createBoundaryCondition();
         bc.setVariable(id);
         bc.setCoordinateBoundary("Ymax");
-        bc.setType(currentSpecies.BCType == "Dirichlet" ? "Value" : "Flux");
+        bc.setType(currentSpecies.BCType == "Dirichlet" ? libsbml.SPATIAL_BOUNDARYKIND_DIRICHLET : libsbml.SPATIAL_BOUNDARYKIND_NEUMANN);
         SetRequiredElements(param);
       }
     }
@@ -1069,6 +1069,19 @@ namespace EditSpatial.Model
       {
         coord = geometry.createCoordinateComponent();
       }
+
+      var unitDef = model.getUnitDefinition("um");
+      if (unitDef == null)
+      {
+        unitDef = model.createUnitDefinition();
+        unitDef.setId("um");
+        var kind = unitDef.createUnit();
+        kind.setExponent(1);
+        kind.setMultiplier(1e-6);
+        kind.setScale(0);
+        kind.setKind(libsbml.UNIT_KIND_METRE);
+      }
+
 
       coord.setId("x");
       coord.setUnit("um");
@@ -1108,7 +1121,7 @@ namespace EditSpatial.Model
       param.setValue(0);
       var pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
       var symbol = pplug.createSpatialSymbolReference();
-      symbol.setId("x");
+      symbol.setSpatialRef("x");
       SetRequiredElements(param, false);
 
       model.removeParameter("y");
@@ -1118,7 +1131,7 @@ namespace EditSpatial.Model
       param.setValue(0);
       pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
       symbol = pplug.createSpatialSymbolReference();
-      symbol.setId("y");
+      symbol.setSpatialRef("y");
       SetRequiredElements(param, false);
 
       if (settings.UsedSymbols.Contains("width"))
@@ -1130,7 +1143,7 @@ namespace EditSpatial.Model
         param.setValue(settings.Xmax);
         pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
         symbol = pplug.createSpatialSymbolReference();
-        symbol.setId("Xmax");
+        symbol.setSpatialRef("Xmax");
         SetRequiredElements(param, false);
       }
 
@@ -1143,7 +1156,7 @@ namespace EditSpatial.Model
         param.setValue(settings.Ymax);
         pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
         symbol = pplug.createSpatialSymbolReference();
-        symbol.setId("Ymax");
+        symbol.setSpatialRef("Ymax");
         SetRequiredElements(param, false);
       }
 
@@ -1156,7 +1169,7 @@ namespace EditSpatial.Model
         param.setValue(settings.Xmax);
         pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
         symbol = pplug.createSpatialSymbolReference();
-        symbol.setId("Xmax");
+        symbol.setSpatialRef("Xmax");
         SetRequiredElements(param, false);
       }
 
@@ -1169,7 +1182,7 @@ namespace EditSpatial.Model
         param.setValue(settings.Ymax);
         pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
         symbol = pplug.createSpatialSymbolReference();
-        symbol.setId("Ymax");
+        symbol.setSpatialRef("Ymax");
         SetRequiredElements(param, false);
       }
 
@@ -1183,7 +1196,7 @@ namespace EditSpatial.Model
         param.setValue(settings.Xmin);
         pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
         symbol = pplug.createSpatialSymbolReference();
-        symbol.setId("Xmin");
+        symbol.setSpatialRef("Xmin");
         SetRequiredElements(param, false);
       }
 
@@ -1196,7 +1209,7 @@ namespace EditSpatial.Model
         param.setValue(settings.Ymin);
         pplug = (SpatialParameterPlugin)param.getPlugin("spatial");
         symbol = pplug.createSpatialSymbolReference();
-        symbol.setId("Ymin");
+        symbol.setSpatialRef("Ymin");
         SetRequiredElements(param, false);
       }
     }

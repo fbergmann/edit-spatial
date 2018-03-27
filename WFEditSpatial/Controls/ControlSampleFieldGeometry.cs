@@ -47,6 +47,8 @@ namespace EditSpatial.Controls
       Current = sampledFieldGeometry;
       if (sampledFieldGeometry == null) return;
 
+      chkIsActive.Checked = Current.getIsActive();
+
       for (long i = 0; i < sampledFieldGeometry.getNumSampledVolumes(); ++i)
       {
         var vol = sampledFieldGeometry.getSampledVolume(i);
@@ -90,6 +92,9 @@ namespace EditSpatial.Controls
       if (Current == null || SpatialGeometry == null) return;
 
       Current.setId(txtId.Text);
+
+      Current.setIsActive(chkIsActive.Checked);
+
       for (var i = 0; i < grid.Rows.Count && i < Current.getNumSampledVolumes(); ++i)
       {
         var row = grid.Rows[i];
@@ -265,7 +270,7 @@ namespace EditSpatial.Controls
 
     private void OnImageLoad(object sender, EventArgs e)
     {
-      using (var dialog = new OpenFileDialog {Filter = "TIFF files|*.tif|All files|*.*"})
+      using (var dialog = new OpenFileDialog {Filter = "Image files|*.tif;*.png|TIFF files|*.tif|PNG files|*.png|All files|*.*" })
       {
         if (dialog.ShowDialog() == DialogResult.OK)
         {
