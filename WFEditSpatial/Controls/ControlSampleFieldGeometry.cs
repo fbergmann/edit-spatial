@@ -320,8 +320,10 @@ namespace EditSpatial.Controls
         vol.setMaxValue(val);
       }
 
-      _Field.setDataType("uncompressed");
+      _Field.setDataType(libsbml.SPATIAL_DATAKIND_UINT8);
+      _Field.setCompression(libsbml.SPATIAL_COMPRESSIONKIND_UNCOMPRESSED);
       _Field.setSamples(data, data.Length);
+      _Field.setInterpolationType(libsbml.SPATIAL_INTERPOLATIONKIND_NEARESTNEIGHBOR);
       _Field.uncompress();
 
 

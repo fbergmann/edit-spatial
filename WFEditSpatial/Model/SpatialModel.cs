@@ -211,6 +211,7 @@ namespace EditSpatial.Model
 
       if (Document == null) return result;
 
+      FixUnits();
 
       FixDiffusionCoefficients();
 
@@ -387,6 +388,110 @@ namespace EditSpatial.Model
         OnModelChanged();
 
       return result;
+    }
+
+    public void FixUnits()
+    {
+      if (Document == null) return;
+
+
+      var model = Document.getModel();
+      if (model == null) return;
+
+      var needUpdate = false;
+
+      if (!model.isSetLengthUnits())
+      {
+        model.setLengthUnits("length");
+        needUpdate = true;
+      }
+
+
+      if (!model.isSetVolumeUnits())
+      {
+        model.setVolumeUnits("volume");
+        needUpdate = true;
+      }
+
+      if (!model.isSetSubstanceUnits())
+      {
+        model.setSubstanceUnits("substance");
+        needUpdate = true;
+      }
+
+      if (!model.isSetTimeUnits())
+      {
+        model.setTimeUnits("time");
+        needUpdate = true;
+      }
+
+
+      var unit = model.getUnitDefinition("length");
+      if (unit == null)
+      {
+        unit = model.createUnitDefinition();
+        unit.setId("length");
+        var kind = unit.createUnit();
+        kind.setKind(libsbml.UNIT_KIND_METRE);
+        kind.setExponent(1);
+        kind.setScale(0);
+        kind.setMultiplier(1e-06);
+
+        needUpdate = true;
+      }
+
+      unit = model.getUnitDefinition("volume");
+      if (unit == null)
+      {
+        unit = model.createUnitDefinition();
+        unit.setId("volume");
+        var kind = unit.createUnit();
+        kind.setKind(libsbml.UNIT_KIND_LITRE);
+        kind.setExponent(1);
+        kind.setScale(-3);
+        kind.setMultiplier(1);
+
+        model.setVolumeUnits("volume");
+
+        needUpdate = true;
+      }
+
+      unit = model.getUnitDefinition("substance");
+      if (unit == null)
+      {
+        unit = model.createUnitDefinition();
+        unit.setId("substance");
+        var kind = unit.createUnit();
+        kind.setKind(libsbml.UNIT_KIND_MOLE);
+        kind.setExponent(1);
+        kind.setScale(-6);
+        kind.setMultiplier(1);
+
+        model.setSubstanceUnits("substance");
+
+        needUpdate = true;
+      }
+
+      unit = model.getUnitDefinition("time");
+      if (unit == null)
+      {
+        unit = model.createUnitDefinition();
+        unit.setId("time");
+        var kind = unit.createUnit();
+        kind.setKind(libsbml.UNIT_KIND_SECOND);
+        kind.setExponent(1);
+        kind.setScale(0);
+        kind.setMultiplier(60);
+
+        model.setTimeUnits("time");
+
+        needUpdate = true;
+      }
+
+      if (needUpdate)
+      OnModelChanged();
+
+
     }
 
     public void FixDiffusionCoefficients()
